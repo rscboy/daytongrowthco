@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dayton Growth Co. | More Calls. More Customers.</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes modalScaleIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-overlay {
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+        
+        .modal-content {
+            animation: modalScaleIn 0.3s ease-out forwards;
+        }
+
+        /* Abstract Chart Animation */
+        @keyframes abstractBarGrow {
+            0% { transform: scaleY(0); }
+            100% { transform: scaleY(1); }
+        }
+        .abstract-bar {
+            transform-origin: bottom;
+            animation: abstractBarGrow 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] selection:bg-blue-500/30 selection:text-blue-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-[#F5F5F7]/70 backdrop-blur-2xl border-b border-[#1D1D1F]/[0.03] transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center gap-3">
+                        <img src="https://i.postimg.cc/tTZjR1gr/Chat-GPT-Image-Feb-24-2026-12-25-18-PM.png" alt="Dayton Growth Co. Logo" class="h-9 w-auto rounded-md mix-blend-multiply" />
+                        <span class="font-semibold text-lg tracking-tight text-[#1D1D1F]">
+                            DaytonGrowthCo.
+                        </span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="#services" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Services</a>
+                    <a href="#results" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Approach</a>
+                    <a href="#pricing" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Pricing</a>
+                    <a href="#form" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.4)] hover:-translate-y-0.5">
+                        Get Plan
+                    </a>
+                </div>
+
+                <!-- Mobile Nav Button -->
+                <div class="flex items-center md:hidden">
+                    <button id="mobileMenuBtn" class="text-[#1D1D1F] p-2 focus:outline-none">
+                        <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                        <svg id="closeIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 hidden"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileMenu" class="md:hidden absolute w-full bg-[#F5F5F7]/95 backdrop-blur-3xl border-b border-[#1D1D1F]/[0.03] shadow-2xl overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0 pointer-events-none">
+            <div class="px-6 py-8 space-y-6 flex flex-col items-center">
+                <a href="#services" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Services</a>
+                <a href="#results" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Approach</a>
+                <a href="#pricing" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Pricing</a>
+                <a href="#form" class="mobile-link bg-blue-600 text-white px-8 py-3.5 rounded-full font-medium w-full text-center text-[15px] shadow-lg shadow-blue-500/25">Get Your Growth Plan</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative bg-[#050505] text-[#F5F5F7] overflow-hidden py-32 lg:py-56 flex items-center justify-center text-center">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-gradient-to-tr from-blue-600/30 via-purple-600/20 to-teal-400/20 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10 flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 backdrop-blur-xl border border-blue-400/20 text-[11px] font-semibold tracking-widest uppercase text-blue-300 mb-10 shadow-[0_0_30px_rgba(59,130,246,0.15)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 text-blue-400"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Greater Dayton Area
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.03em] mb-8 leading-[1.02] text-white">
+                Clarity in growth. <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">Confidence in tech.</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-[#A1A1AA] mb-14 leading-relaxed max-w-2xl font-normal tracking-[-0.01em]">
+                We architect and manage elite digital presences for local service businesses. Predictable results, zero friction.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-5 w-full sm:w-auto">
+                <a href="#form" class="group bg-blue-600 text-white px-8 py-4 rounded-full font-medium text-[15px] transition-all duration-500 hover:bg-blue-500 flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:shadow-[0_0_60px_rgba(37,99,235,0.5)]">
+                    Initiate Project 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <a href="#pricing" class="bg-white/5 text-white border border-white/10 hover:border-white/30 hover:bg-white/10 px-8 py-4 rounded-full font-medium text-[15px] transition-all duration-500 flex items-center justify-center backdrop-blur-md">
+                    Explore Tiers
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Pillars -->
+    <section id="services" class="py-40 bg-[#F5F5F7] relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-24">
+                <h2 class="text-4xl md:text-[56px] font-semibold text-[#1D1D1F] tracking-[-0.02em] mb-6 leading-tight">Meticulous.<br/>Managed.</h2>
+                <p class="text-[19px] text-[#86868B] font-normal tracking-[-0.01em] leading-relaxed">
+                    We replace fragmented freelancers with a singular, sophisticated partnership. Your digital infrastructure, perfectly maintained.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(37,99,235,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-blue-100 group">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-blue-600 transition-all duration-500 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors duration-500"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                    </div>
+                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Architecture</h3>
+                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
+                        Minimalist, high-performance web experiences engineered to convert. We strip away the unnecessary to elevate your core message.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(147,51,234,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-purple-100 group">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-purple-600 transition-all duration-500 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-purple-600 group-hover:text-white transition-colors duration-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Positioning</h3>
+                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
+                        Aggressive, data-driven local SEO. We secure your dominance in local search so prospects find you before they find competitors.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(16,185,129,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-emerald-100 group">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-emerald-500 transition-all duration-500 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors duration-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    </div>
+                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Continuity</h3>
+                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
+                        Invisible, seamless maintenance. Security updates, content adjustments, and performance monitoring handled quietly in the background.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before and After Section -->
+    <section id="results" class="py-40 bg-white overflow-hidden rounded-t-[3rem] shadow-[0_-20px_40px_rgba(0,0,0,0.02)] border-t border-[#1D1D1F]/[0.02]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-24">
+                
+                <div class="w-full lg:w-5/12 space-y-8">
+                    <h2 class="text-4xl md:text-[48px] font-semibold text-[#1D1D1F] tracking-[-0.02em] leading-[1.1]">The cost of digital decay.</h2>
+                    <p class="text-[19px] text-[#86868B] font-normal leading-relaxed tracking-[-0.01em]">
+                        A dated interface subconsciously signals inferior service. We bridge the gap between your real-world expertise and your digital representation.
+                    </p>
+                    <ul class="space-y-6 pt-6">
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center transition-colors duration-500 group-hover:bg-blue-600 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-600 group-hover:text-white transition-colors duration-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                            </div>
+                            <span class="text-[#1D1D1F] text-[15px] font-medium tracking-[-0.01em]">Frictionless mobile interactions</span>
+                        </li>
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center transition-colors duration-500 group-hover:bg-blue-600 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-600 group-hover:text-white transition-colors duration-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                            </div>
+                            <span class="text-[#1D1D1F] text-[15px] font-medium tracking-[-0.01em]">Strategic content hierarchy</span>
+                        </li>
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center transition-colors duration-500 group-hover:bg-blue-600 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-600 group-hover:text-white transition-colors duration-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                            </div>
+                            <span class="text-[#1D1D1F] text-[15px] font-medium tracking-[-0.01em]">Instantaneous load performance</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="w-full lg:w-7/12">
+                    <div class="relative bg-[#F5F5F7] p-8 md:p-14 rounded-[40px] border border-[#1D1D1F]/[0.03]">
+                        <div class="flex flex-col md:flex-row gap-8">
+                            
+                            <!-- Legacy System - Cluttered, Boxy, Outdated -->
+                            <div class="w-full md:w-1/2">
+                                <span class="text-[10px] font-bold uppercase text-[#86868B] tracking-[0.2em] mb-4 block">Legacy System</span>
+                                <div class="bg-[#C0C0C0] h-[320px] rounded-sm p-1 flex flex-col border-[3px] border-white border-r-[#808080] border-b-[#808080] shadow-[inset_1px_1px_#dfdfdf,inset_-1px_-1px_#0a0a0a] relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-[#000080] to-[#1084d0] h-7 flex items-center justify-between px-2 w-full mb-1 shrink-0">
+                                        <span class="text-white text-[9px] font-bold font-sans tracking-tight">Business Webpage</span>
+                                        <div class="flex gap-0.5">
+                                            <div class="w-4 h-4 bg-[#C0C0C0] border border-white border-r-[#808080] border-b-[#808080] flex items-center justify-center text-[8px] font-bold text-black pb-1">_</div>
+                                            <div class="w-4 h-4 bg-[#C0C0C0] border border-white border-r-[#808080] border-b-[#808080] flex items-center justify-center text-[10px] font-bold text-black pb-0.5">□</div>
+                                            <div class="w-4 h-4 bg-[#C0C0C0] border border-white border-r-[#808080] border-b-[#808080] flex items-center justify-center text-[8px] font-bold text-black">X</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-col gap-1 mb-2 px-1 shrink-0">
+                                        <div class="flex gap-1">
+                                            <div class="px-2 py-0.5 text-[8px] border border-white border-r-[#808080] border-b-[#808080] bg-[#C0C0C0] text-black">Back</div>
+                                            <div class="px-2 py-0.5 text-[8px] border border-white border-r-[#808080] border-b-[#808080] bg-[#C0C0C0] text-black">Forward</div>
+                                            <div class="px-2 py-0.5 text-[8px] border border-white border-r-[#808080] border-b-[#808080] bg-[#C0C0C0] text-black">Stop</div>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-[8px] font-sans text-black">Address</span>
+                                            <div class="bg-white flex-1 h-4 border-2 border-[#808080] border-r-white border-b-white text-[8px] px-1 flex items-center text-blue-800 font-sans truncate">http://local-biz-online.net</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white flex-1 border-2 border-[#808080] border-r-white border-b-white p-2 flex flex-col overflow-hidden relative">
+                                        <div class="text-center border-b-[3px] border-double border-red-600 pb-1 mb-2 shrink-0">
+                                            <h1 class="text-[#FF0000] font-serif font-bold text-[10px]">WELCOME TO OUR HOMEPAGE</h1>
+                                        </div>
+                                        
+                                        <div class="flex gap-2 flex-1 min-h-0">
+                                            <div class="w-[35%] bg-[#00FFFF] border-[2px] border-[#808080] border-r-white border-b-white p-1.5 flex flex-col gap-1.5 h-full">
+                                                <div class="text-[7px] text-blue-800 underline font-sans cursor-pointer hover:text-red-600 truncate">Home Page</div>
+                                                <div class="text-[7px] text-blue-800 underline font-sans cursor-pointer hover:text-red-600 truncate">About Us</div>
+                                                <div class="text-[7px] text-blue-800 underline font-sans cursor-pointer hover:text-red-600 truncate">Our Services</div>
+                                                <div class="text-[7px] text-blue-800 underline font-sans cursor-pointer hover:text-red-600 truncate">Gallery</div>
+                                                <div class="text-[7px] text-blue-800 underline font-sans cursor-pointer hover:text-red-600 truncate">Contact Us</div>
+                                            </div>
+                                            
+                                            <div class="w-[65%] flex flex-col gap-1.5 overflow-hidden">
+                                                <div class="text-[7px] font-serif leading-tight text-black font-bold">Serving the Miami Valley area since 1998!</div>
+                                                <div class="text-[6px] font-serif leading-[1.3] text-gray-800">
+                                                    We provide the best services in town. Call us today.
+                                                </div>
+                                                <div class="w-12 h-10 border border-gray-400 flex flex-col items-center justify-center mt-1 bg-gray-50 shrink-0">
+                                                    <div class="w-3 h-3 border border-gray-400 flex items-center justify-center text-[6px] text-red-500 bg-white">x</div>
+                                                </div>
+                                                <div class="text-[6px] font-serif mt-1 flex gap-1 items-center">
+                                                    <span class="w-1 h-1 bg-black inline-block"></span> Fully Licensed
+                                                </div>
+                                                <div class="text-[6px] font-serif flex gap-1 items-center">
+                                                    <span class="w-1 h-1 bg-black inline-block"></span> Bonded & Insured
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-2 bg-black border-[2px] border-[#808080] border-r-white border-b-white text-[7px] font-mono text-center text-[#00FF00] py-0.5 tracking-widest flex justify-center items-center gap-2 shrink-0">
+                                            VISITORS: <span class="bg-[#333] px-1 text-red-500">00042</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dayton Growth - Premium, Minimal, Alive -->
+                            <div class="w-full md:w-1/2 relative z-10 pt-4 md:pt-2">
+                                <span class="text-[10px] font-bold uppercase text-blue-600 tracking-[0.2em] mb-4 flex items-center gap-2 relative z-20">
+                                    Dayton Growth 
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                    </span>
+                                </span>
+                                <div class="bg-[#0A0A0B] h-[320px] rounded-[32px] p-5 flex flex-col gap-3 shadow-[0_30px_60px_rgba(37,99,235,0.15)] relative overflow-hidden transform md:scale-105 transition-transform duration-700 ring-1 ring-blue-500/20 mt-2">
+                                    <div class="absolute -top-16 -right-16 w-48 h-48 bg-blue-500/30 rounded-full blur-[50px] -z-10"></div>
+                                    <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-indigo-500/20 rounded-full blur-[50px] -z-10"></div>
+                                    
+                                    <div class="flex justify-between items-center bg-white/[0.04] backdrop-blur-md border border-white/[0.05] rounded-full p-1.5 pl-4 shrink-0">
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
+                                            <div class="h-1.5 w-12 bg-white/20 rounded-full"></div>
+                                        </div>
+                                        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-1.5 rounded-full flex items-center justify-center text-[8px] font-bold tracking-[0.2em] shadow-[0_0_20px_rgba(59,130,246,0.4)] shrink-0">
+                                            ENGAGE
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-3 h-[110px] shrink-0">
+                                        <div class="w-2/3 bg-gradient-to-br from-blue-900/20 to-transparent border border-blue-500/10 rounded-[20px] p-4 flex flex-col justify-between relative overflow-hidden">
+                                            <div class="text-blue-300/60 text-[7px] tracking-widest uppercase font-semibold z-10">Conversion Lift</div>
+                                            <div class="text-white text-2xl font-light tracking-tight z-10">+348%</div>
+                                            <svg class="absolute bottom-0 left-0 w-full h-2/3 text-blue-400/30" preserveAspectRatio="none" viewBox="0 0 100 100" fill="none">
+                                                <path d="M0,100 Q15,85 35,90 T75,40 T100,10 L100,100 Z" fill="currentColor" opacity="0.4"/>
+                                                <path d="M0,100 Q15,85 35,90 T75,40 T100,10" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                            </svg>
+                                        </div>
+                                        <div class="w-1/3 bg-white/[0.03] border border-white/[0.05] rounded-[20px] p-4 flex flex-col items-center justify-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 relative">
+                                                <div class="absolute inset-0 rounded-full border border-indigo-400/40 animate-[spin_4s_linear_infinite]"></div>
+                                                <div class="w-3 h-3 rounded-full bg-indigo-400 shadow-[0_0_12px_rgba(129,140,248,0.8)]"></div>
+                                            </div>
+                                            <div class="h-1 w-8 bg-white/20 rounded-full"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-3 h-[56px] shrink-0">
+                                        <div class="w-1/2 bg-white/[0.02] border border-white/[0.05] rounded-[16px] p-2.5 flex items-center gap-3">
+                                            <div class="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shrink-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                                            </div>
+                                            <div class="space-y-1.5 flex-1">
+                                                <div class="h-1 w-full bg-white/20 rounded-full"></div>
+                                                <div class="h-1 w-2/3 bg-white/10 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                        <div class="w-1/2 bg-white/[0.02] border border-white/[0.05] rounded-[16px] p-2.5 flex items-center gap-3">
+                                            <div class="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20 shrink-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-purple-400"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                                            </div>
+                                            <div class="space-y-1.5 flex-1">
+                                                <div class="h-1 w-full bg-white/20 rounded-full"></div>
+                                                <div class="h-1 w-1/2 bg-white/10 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-3 flex-1 min-h-0">
+                                        <div class="w-full bg-white/[0.02] border border-white/[0.05] rounded-[16px] p-3 flex flex-col justify-between">
+                                            <div class="flex gap-2 mb-1 shrink-0">
+                                                <div class="h-1.5 w-1.5 rounded-full bg-emerald-400/80"></div>
+                                                <div class="text-[6px] uppercase tracking-widest text-white/40 font-semibold">Live Traffic</div>
+                                            </div>
+                                            <div class="flex items-end gap-1.5 h-full pt-1">
+                                                <!-- Abstract bars -->
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 40%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 70%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 45%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 90%"><div class="absolute inset-0 bg-blue-500/40"></div></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 60%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 80%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 50%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 100%"><div class="absolute inset-0 bg-blue-500/40"></div><div class="absolute top-0 left-0 w-full h-1 bg-blue-400"></div></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 65%"></div>
+                                                <div class="flex-1 bg-white/10 rounded-t-sm relative overflow-hidden abstract-bar" style="height: 85%"><div class="absolute inset-0 bg-blue-500/40"></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-40 bg-[#F5F5F7]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-24">
+                <h2 class="text-4xl md:text-[56px] font-semibold text-[#1D1D1F] tracking-[-0.02em] mb-6 leading-tight">Quiet predictability.</h2>
+                <p class="text-[19px] text-[#86868B] font-normal mb-12 tracking-[-0.01em] leading-relaxed">
+                    Transparent investments designed for long-term compounding value. No hourly billing, no surprises.
+                </p>
+                
+                <!-- Toggle -->
+                <div class="inline-flex items-center justify-center bg-white p-1.5 rounded-full border border-[#1D1D1F]/[0.04] shadow-sm">
+                    <button id="toggleMonthly" class="px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 bg-blue-600 text-white shadow-md shadow-blue-500/20">
+                        Monthly
+                    </button>
+                    <button id="toggleAnnual" class="px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 flex items-center gap-2 text-[#86868B] hover:text-blue-600">
+                        Annually <span id="annualBadge" class="text-[9px] uppercase tracking-[0.1em] font-bold px-2 py-0.5 rounded-full transition-colors duration-500 bg-blue-50 text-blue-600">2 Mos Free</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
+                <!-- Starter -->
+                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group">
+                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-2 group-hover:text-blue-600 transition-colors">Starter</h3>
+                    <p class="text-[#86868B] font-normal text-[14px] mb-10 h-10 leading-relaxed">The foundational presence for independent operators.</p>
+                    <div class="mb-12 flex items-baseline gap-1">
+                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="149" data-annual="1,490">149</span></span>
+                        <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                    </div>
+                    <ul class="space-y-4 mb-12 flex-1">
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Hosting & maintenance</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Security & backups</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Mobile optimization</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Minor text updates</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Starter</a>
+                </div>
+
+                <!-- Growth (Most Popular) -->
+                <div class="bg-[#1D1D1F] p-10 lg:p-12 rounded-[40px] shadow-[0_20px_40px_rgba(37,99,235,0.15)] hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] transition-all duration-700 flex flex-col relative z-10 text-white transform md:-translate-y-4 border border-[#333] hover:border-blue-500/30 overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 pointer-events-none"></div>
+                    <div class="absolute top-8 right-8 text-[9px] uppercase tracking-[0.2em] font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 px-3 py-1.5 rounded-full shadow-lg shadow-blue-500/30">
+                        Recommended
+                    </div>
+                    <h3 class="text-[22px] font-semibold tracking-[-0.01em] mb-2 relative z-10">Growth</h3>
+                    <p class="text-[#A1A1AA] font-normal text-[14px] mb-10 h-10 leading-relaxed relative z-10">Engineered for businesses ready to dominate local markets.</p>
+                    <div class="mb-12 flex items-baseline gap-1 relative z-10">
+                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-white">$<span class="price-val" data-monthly="299" data-annual="2,990">299</span></span>
+                        <span class="text-[#A1A1AA] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                    </div>
+                    <ul class="space-y-4 mb-12 flex-1 relative z-10">
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Unlimited minor updates</li>
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Local SEO optimization</li>
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Google Profile management</li>
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Speed enhancements</li>
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Performance analytics</li>
+                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Content updates</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-medium text-[14px] py-4 rounded-full transition-colors duration-500 shadow-lg shadow-blue-500/25 relative z-10">Select Growth</a>
+                </div>
+
+                <!-- Pro -->
+                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group">
+                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-2 group-hover:text-blue-600 transition-colors">Pro</h3>
+                    <p class="text-[#86868B] font-normal text-[14px] mb-10 h-10 leading-relaxed">For established leaders requiring absolute perfection.</p>
+                    <div class="mb-12 flex items-baseline gap-1">
+                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="499" data-annual="4,990">499</span></span>
+                        <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                    </div>
+                    <ul class="space-y-4 mb-12 flex-1">
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Everything in Growth</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Branding & graphics</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Conversion optimization</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Advanced SEO campaigns</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Strategy consulting</li>
+                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Priority support line</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Pro</a>
+                </div>
+            </div>
+
+            <div class="mt-24 text-center">
+                <p class="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#86868B] mb-3">Initial Deployment</p>
+                <p class="text-[14px] text-[#86868B] font-normal max-w-2xl mx-auto leading-relaxed">
+                    A one-time architectural fee ($500–$2,000) applies to design, engineer, and optimize your initial platform. Your subscription ensures it perpetually performs.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intake Form Section -->
+    <section id="form" class="py-40 bg-[#050505] text-[#F5F5F7] rounded-t-[3rem] relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-[56px] font-semibold tracking-[-0.02em] mb-6 leading-tight">Begin the process.</h2>
+                <p class="text-[19px] text-[#A1A1AA] font-normal max-w-2xl mx-auto leading-relaxed">Provide your parameters below. We will conduct a preliminary audit and return with a focused, pressure-free strategy.</p>
+            </div>
+
+            <div class="bg-[#111111]/80 backdrop-blur-xl rounded-[40px] border border-white/[0.05] shadow-[0_30px_60px_rgba(0,0,0,0.5)] p-10 md:p-16 relative">
+                
+                <form class="space-y-12" onsubmit="event.preventDefault();">
+                    
+                    <!-- Basic Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="relative group">
+                            <input type="text" id="contactName" class="w-full bg-transparent border-b border-[#86868B]/40 py-3 text-[15px] text-[#F5F5F7] focus:outline-none focus:border-blue-500 transition-colors duration-500 peer" placeholder=" " required />
+                            <label for="contactName" class="absolute left-0 top-3 text-[#86868B] text-[15px] cursor-text transition-all duration-500 peer-focus:-top-4 peer-focus:text-[11px] peer-focus:text-blue-400 peer-focus:uppercase peer-focus:tracking-widest peer-valid:-top-4 peer-valid:text-[11px] peer-valid:uppercase peer-valid:tracking-widest">Contact Name *</label>
+                        </div>
+                        <div class="relative group">
+                            <input type="text" id="bizName" class="w-full bg-transparent border-b border-[#86868B]/40 py-3 text-[15px] text-[#F5F5F7] focus:outline-none focus:border-blue-500 transition-colors duration-500 peer" placeholder=" " required />
+                            <label for="bizName" class="absolute left-0 top-3 text-[#86868B] text-[15px] cursor-text transition-all duration-500 peer-focus:-top-4 peer-focus:text-[11px] peer-focus:text-blue-400 peer-focus:uppercase peer-focus:tracking-widest peer-valid:-top-4 peer-valid:text-[11px] peer-valid:uppercase peer-valid:tracking-widest">Business Entity *</label>
+                        </div>
+                        <div class="relative group">
+                            <input type="email" id="email" class="w-full bg-transparent border-b border-[#86868B]/40 py-3 text-[15px] text-[#F5F5F7] focus:outline-none focus:border-blue-500 transition-colors duration-500 peer" placeholder=" " required />
+                            <label for="email" class="absolute left-0 top-3 text-[#86868B] text-[15px] cursor-text transition-all duration-500 peer-focus:-top-4 peer-focus:text-[11px] peer-focus:text-blue-400 peer-focus:uppercase peer-focus:tracking-widest peer-valid:-top-4 peer-valid:text-[11px] peer-valid:uppercase peer-valid:tracking-widest">Email Address *</label>
+                        </div>
+                        <div class="relative group">
+                            <input type="url" id="website" class="w-full bg-transparent border-b border-[#86868B]/40 py-3 text-[15px] text-[#F5F5F7] focus:outline-none focus:border-blue-500 transition-colors duration-500 peer" placeholder=" " />
+                            <label for="website" class="absolute left-0 top-3 text-[#86868B] text-[15px] cursor-text transition-all duration-500 peer-focus:-top-4 peer-focus:text-[11px] peer-focus:text-blue-400 peer-focus:uppercase peer-focus:tracking-widest peer-valid:-top-4 peer-valid:text-[11px] peer-valid:uppercase peer-valid:tracking-widest">Current Domain (Optional)</label>
+                        </div>
+                    </div>
+
+                    <!-- Selections -->
+                    <div class="space-y-12 pt-8">
+                        <div>
+                            <label class="block text-[11px] font-bold tracking-[0.2em] uppercase text-[#86868B] mb-6">Primary Directive *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="flex items-center p-5 border border-white/[0.05] rounded-[20px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300">
+                                    <input type="radio" name="goal" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <span class="ml-4 text-[#F5F5F7] font-normal text-[14px]">Increase lead generation</span>
+                                </label>
+                                <label class="flex items-center p-5 border border-white/[0.05] rounded-[20px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300">
+                                    <input type="radio" name="goal" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <span class="ml-4 text-[#F5F5F7] font-normal text-[14px]">Modernize infrastructure</span>
+                                </label>
+                                <label class="flex items-center p-5 border border-white/[0.05] rounded-[20px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300">
+                                    <input type="radio" name="goal" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <span class="ml-4 text-[#F5F5F7] font-normal text-[14px]">Dominate local search</span>
+                                </label>
+                                <label class="flex items-center p-5 border border-white/[0.05] rounded-[20px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300">
+                                    <input type="radio" name="goal" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <span class="ml-4 text-[#F5F5F7] font-normal text-[14px]">Comprehensive overhaul</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold tracking-[0.2em] uppercase text-[#86868B] mb-6">Service Tier *</label>
+                            <div class="space-y-3">
+                                <label class="flex items-start p-6 border border-white/[0.05] rounded-[24px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300 group">
+                                    <input type="radio" name="plan" class="mt-1 w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <div class="ml-5">
+                                        <span class="block text-[#F5F5F7] font-medium text-[15px]">Starter — $149/mo</span>
+                                        <span class="block text-[#86868B] font-normal text-[14px] mt-1.5 leading-relaxed">Foundational hosting, security, and minor maintenance.</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start p-6 border border-blue-500/30 bg-blue-900/10 rounded-[24px] cursor-pointer relative transition-colors duration-300 shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]">
+                                    <div class="absolute top-6 right-6 text-[9px] uppercase tracking-[0.2em] font-bold text-white bg-blue-600 px-3 py-1 rounded-full shadow-lg shadow-blue-500/30">Recommended</div>
+                                    <input type="radio" name="plan" checked class="mt-1 w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <div class="ml-5">
+                                        <span class="block text-white font-medium text-[15px]">Growth — $299/mo</span>
+                                        <span class="block text-blue-200/70 font-normal text-[14px] mt-1.5 leading-relaxed">Comprehensive SEO, performance tuning, and unlimited updates.</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start p-6 border border-white/[0.05] rounded-[24px] cursor-pointer hover:bg-blue-900/10 hover:border-blue-500/30 transition-colors duration-300">
+                                    <input type="radio" name="plan" class="mt-1 w-4 h-4 text-blue-600 focus:ring-blue-500 border-white/[0.2] bg-transparent accent-blue-500" />
+                                    <div class="ml-5">
+                                        <span class="block text-[#F5F5F7] font-medium text-[15px]">Pro — $499/mo</span>
+                                        <span class="block text-[#86868B] font-normal text-[14px] mt-1.5 leading-relaxed">Aggressive strategy, conversion optimization, and priority consulting.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="relative group pt-4">
+                            <textarea id="details" rows="1" class="w-full bg-transparent border-b border-[#86868B]/40 py-3 text-[15px] text-[#F5F5F7] focus:outline-none focus:border-blue-500 transition-colors duration-500 resize-none peer" placeholder=" "></textarea>
+                            <label for="details" class="absolute left-0 top-3 text-[#86868B] text-[15px] cursor-text transition-all duration-500 peer-focus:-top-4 peer-focus:text-[11px] peer-focus:text-blue-400 peer-focus:uppercase peer-focus:tracking-widest peer-valid:-top-4 peer-valid:text-[11px] peer-valid:uppercase peer-valid:tracking-widest">Additional Parameters (Optional)</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-10">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-[15px] py-5 rounded-full transition-all duration-500 flex justify-center items-center gap-3 shadow-[0_0_30px_rgba(37,99,235,0.3)] hover:shadow-[0_0_50px_rgba(37,99,235,0.5)]">
+                            Submit Inquiry
+                        </button>
+                        <p class="text-center text-[#86868B] text-[11px] mt-6 tracking-[0.1em] uppercase font-semibold">Response guaranteed within 24 hours.</p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#050505] text-[#86868B] py-24 border-t border-white/[0.05]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-16 mb-20">
+                <div>
+                    <div class="flex items-center gap-3 mb-8">
+                        <img src="https://i.postimg.cc/tTZjR1gr/Chat-GPT-Image-Feb-24-2026-12-25-18-PM.png" alt="Dayton Growth Co. Logo" class="h-7 w-auto rounded mix-blend-screen opacity-80" />
+                        <span class="font-medium text-[17px] tracking-tight text-[#F5F5F7]">
+                            DaytonGrowthCo.
+                        </span>
+                    </div>
+                    <p class="text-[14px] leading-relaxed font-normal max-w-[280px]">
+                        Engineering predictable digital growth for Miami Valley's premier service businesses.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-[#F5F5F7] font-semibold mb-8 text-[11px] uppercase tracking-[0.2em]">Contact</h4>
+                    <ul class="space-y-5 text-[14px] font-normal">
+                        <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Dayton, OH</li>
+                        <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (937) 555-0198</li>
+                        <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> hello@daytongrowth.co</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[#F5F5F7] font-semibold mb-8 text-[11px] uppercase tracking-[0.2em]">Expertise</h4>
+                    <ul class="space-y-5 text-[14px] font-normal">
+                        <li><a href="#services" class="hover:text-blue-400 transition-colors duration-300">Architecture</a></li>
+                        <li><a href="#services" class="hover:text-blue-400 transition-colors duration-300">Local Search</a></li>
+                        <li><a href="#services" class="hover:text-blue-400 transition-colors duration-300">Profile Management</a></li>
+                        <li><a href="#services" class="hover:text-blue-400 transition-colors duration-300">Continuity</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/[0.05] pt-10 flex flex-col md:flex-row justify-between items-center text-[12px] font-normal tracking-wide">
+                <p>&copy; <span id="currentYear"></span> Dayton Growth Co. All rights reserved.</p>
+                <div class="flex flex-wrap gap-8 mt-6 md:mt-0">
+                    <button class="legal-link hover:text-white transition-colors duration-300 text-left" data-modal="terms">Terms of Service</button>
+                    <button class="legal-link hover:text-white transition-colors duration-300 text-left" data-modal="privacy">Privacy Policy</button>
+                    <button class="legal-link hover:text-white transition-colors duration-300 text-left" data-modal="disclaimer">Disclaimer</button>
+                    <button class="legal-link hover:text-white transition-colors duration-300 text-left" data-modal="accessibility">Accessibility</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Modal Overlay -->
+    <div id="legalModal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 hidden modal-overlay">
+        <!-- Modal Container -->
+        <div class="bg-white w-full max-w-[800px] max-h-[90vh] rounded-[24px] shadow-2xl flex flex-col relative modal-content" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="p-6 md:p-8 border-b border-gray-100 flex justify-between items-center shrink-0">
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 tracking-tight"></h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-full transition-colors focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <!-- Scrollable Body -->
+            <div id="modalBody" class="p-6 md:p-8 overflow-y-auto text-[15px] leading-relaxed text-gray-600">
+                <!-- Content injected here via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set dynamic year
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+            const closeIcon = document.getElementById('closeIcon');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('max-h-0', 'opacity-0', 'pointer-events-none');
+                    mobileMenu.classList.add('max-h-[400px]', 'opacity-100');
+                    menuIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                } else {
+                    mobileMenu.classList.add('max-h-0', 'opacity-0', 'pointer-events-none');
+                    mobileMenu.classList.remove('max-h-[400px]', 'opacity-100');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                }
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleMenu);
+            mobileLinks.forEach(link => link.addEventListener('click', () => {
+                if (isMenuOpen) toggleMenu();
+            }));
+
+            // Pricing Toggle
+            const toggleMonthly = document.getElementById('toggleMonthly');
+            const toggleAnnual = document.getElementById('toggleAnnual');
+            const annualBadge = document.getElementById('annualBadge');
+            const priceVals = document.querySelectorAll('.price-val');
+            const priceTerms = document.querySelectorAll('.price-term');
+            
+            let isAnnual = false;
+
+            function updatePricingUI() {
+                if (isAnnual) {
+                    toggleMonthly.className = "px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 text-[#86868B] hover:text-blue-600";
+                    toggleAnnual.className = "px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 flex items-center gap-2 bg-blue-600 text-white shadow-md shadow-blue-500/20";
+                    annualBadge.className = "text-[9px] uppercase tracking-[0.1em] font-bold px-2 py-0.5 rounded-full transition-colors duration-500 bg-white/20 text-white";
+                    
+                    priceVals.forEach(el => el.textContent = el.getAttribute('data-annual'));
+                    priceTerms.forEach(el => el.textContent = 'yr');
+                } else {
+                    toggleMonthly.className = "px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 bg-blue-600 text-white shadow-md shadow-blue-500/20";
+                    toggleAnnual.className = "px-8 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 flex items-center gap-2 text-[#86868B] hover:text-blue-600";
+                    annualBadge.className = "text-[9px] uppercase tracking-[0.1em] font-bold px-2 py-0.5 rounded-full transition-colors duration-500 bg-blue-50 text-blue-600";
+                    
+                    priceVals.forEach(el => el.textContent = el.getAttribute('data-monthly'));
+                    priceTerms.forEach(el => el.textContent = 'mo');
+                }
+            }
+
+            toggleMonthly.addEventListener('click', () => { isAnnual = false; updatePricingUI(); });
+            toggleAnnual.addEventListener('click', () => { isAnnual = true; updatePricingUI(); });
+
+            // Legal Modals Content Dictionary
+            const legalContent = {
+                terms: {
+                    title: "Terms of Service",
+                    html: `
+                        <div class="space-y-6">
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">1. Scope of Services</h3>
+                                <p>Dayton Growth Co. provides web modernization, local SEO, and digital growth management services. While we utilize industry-best practices, we do not guarantee specific rankings, traffic volumes, or a set number of new customers.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">2. Subscription & Billing</h3>
+                                <p>Our services are billed on a recurring monthly or annual subscription basis. Subscriptions automatically renew unless canceled. A minimum of 30 days' written notice is required to cancel your recurring subscription.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">3. No Guarantees</h3>
+                                <p>Search engine algorithms change frequently and are outside of our control. We cannot and do not guarantee specific SEO rankings or instant business growth. We commit to executing proven strategies designed to improve your local presence over time.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">4. Limitation of Liability</h3>
+                                <p>In no event shall Dayton Growth Co. be liable for any indirect, incidental, or consequential damages. Our maximum liability under any circumstance is strictly capped at the total amount of fees paid by you in the three (3) months preceding the claim.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">5. Termination</h3>
+                                <p>We reserve the right to suspend or terminate services if payments are missed or if the client relationship becomes uncooperative. Upon cancellation, you retain ownership of your domain and any original content you provided.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">6. Contact Information</h3>
+                                <p>If you have any questions about these Terms, please contact us at hello@daytongrowth.co.</p>
+                            </section>
+                        </div>
+                    `
+                },
+                privacy: {
+                    title: "Privacy Policy",
+                    html: `
+                        <div class="space-y-6">
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">1. Information We Collect</h3>
+                                <p>We collect information you provide directly via contact forms, including your name, email, phone number, and business details. We also collect basic analytics and usage data via cookies when you visit our site.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">2. How Information is Used</h3>
+                                <p>Your information is used strictly to provide and improve our services, communicate with you regarding your project, process payments, and send important service updates. We do not sell your personal data to data brokers.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">3. Third-Party Tools</h3>
+                                <p>We utilize trusted third-party tools for hosting, analytics, and payment processing (e.g., Stripe). These providers have their own strict privacy policies and are only provided the data necessary to perform their specific functions.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">4. Data Protection</h3>
+                                <p>We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">5. Data Removal Requests</h3>
+                                <p>You have the right to request access to, correction of, or deletion of your personal data. To make a request, please email us at hello@daytongrowth.co.</p>
+                            </section>
+                        </div>
+                    `
+                },
+                disclaimer: {
+                    title: "Disclaimer",
+                    html: `
+                        <div class="space-y-6">
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">1. General Information Only</h3>
+                                <p>The information provided by Dayton Growth Co. on our website and in our communications is for general business and informational purposes only. It is not intended as professional legal, financial, or tax advice.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">2. No Guarantee of Results</h3>
+                                <p>Any marketing case studies, testimonials, or examples of conversion lifts are illustrative of past successes and are not a guarantee that you will achieve the exact same results. Business growth depends on numerous factors outside of digital marketing, including market conditions and your operational capacity.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">3. External Links</h3>
+                                <p>Our website or client sites may contain links to external websites that are not provided or maintained by us. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.</p>
+                            </section>
+                        </div>
+                    `
+                },
+                accessibility: {
+                    title: "Accessibility Statement",
+                    html: `
+                        <div class="space-y-6">
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">1. Our Commitment</h3>
+                                <p>Dayton Growth Co. is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and aim to apply the relevant accessibility standards to our digital properties.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">2. Ongoing Improvements</h3>
+                                <p>We view accessibility as an ongoing effort. We actively monitor our website and implement updates to improve navigation, readability, and compatibility with assistive technologies.</p>
+                            </section>
+                            <hr class="border-gray-100" />
+                            <section>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">3. Feedback & Contact</h3>
+                                <p>We welcome your feedback on the accessibility of Dayton Growth Co. If you encounter accessibility barriers on our site, please contact us immediately so we can evaluate and resolve the issue.</p>
+                                <p class="mt-2 font-medium text-gray-900">Email: hello@daytongrowth.co<br/>Phone: (937) 555-0198</p>
+                            </section>
+                        </div>
+                    `
+                }
+            };
+
+            // Modal Logic
+            const legalModal = document.getElementById('legalModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const legalLinks = document.querySelectorAll('.legal-link');
+
+            function openModal(key) {
+                const data = legalContent[key];
+                if (!data) return;
+                
+                modalTitle.textContent = data.title;
+                modalBody.innerHTML = data.html;
+                legalModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Lock background scroll
+            }
+
+            function closeModal() {
+                legalModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scroll
+            }
+
+            // Bind links
+            legalLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const key = link.getAttribute('data-modal');
+                    openModal(key);
+                });
+            });
+
+            // Bind close events
+            closeModalBtn.addEventListener('click', closeModal);
+            legalModal.addEventListener('click', closeModal); // Closes on overlay click
+            
+        });
+    </script>
+</body>
+</html>
