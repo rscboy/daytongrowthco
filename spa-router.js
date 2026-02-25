@@ -1,5 +1,13 @@
-(function () {
+// spa-router.js
+(() => {
+  // Prevent browser from trying to restore scroll on SPA navigations
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+
   const app = document.getElementById("app");
+
+  // Map routes -> template IDs
   const routes = {
     "/": "tpl-home",
     "/aboutus": "tpl-aboutus",
@@ -9,26 +17,29 @@
     const tplId = routes[pathname] || routes["/"];
     const tpl = document.getElementById(tplId);
 
-    if (!tpl) {
-      app.innerHTML = "<div style='padding:40px'>Missing template.</div>";
-      return;
-    }
+    if (!tpl || !app) return;
 
+    // Swap content
     app.innerHTML = "";
     app.appendChild(tpl.content.cloneNode(true));
 
     // Scroll behavior:
-    // - If there’s a hash, scroll to it (home sections)
-    // - Else scroll to top for normal routes
-    if (location.hash) {
+    // - Only honor hash scrolling on the HOME route (/)
+    // - For all other routes, always go to top
+    if (location.pathname === "/" && location.hash) {
       const el = document.querySelector(location.hash);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Use "auto" so it doesn't animate from some deep scroll position
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
-    // Re-init per-page JS hooks
-    if (window.onRouteRendered) window.onRouteRendered();
+    // Re-init per-route hooks (icons, reveals, etc.)
+    if (typeof window.onRouteRendered === "function") {
+      window.onRouteRendered();
+    }
   }
 
   function navigate(to) {
@@ -36,30 +47,44 @@
     render(location.pathname);
   }
 
-  // Intercept internal link clicks
+  // Intercept internal navigation
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a");
     if (!a) return;
 
-    // ignore new tab / modified clicks
-    if (a.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    // allow new-tab / modified clicks
+    if (
+      a.target === "_blank" ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0
+    ) {
+      return;
+    }
 
-    const url = new URL(a.href, location.origin);
+    const url = new URL(a.getAttribute("href") || a.href, location.origin);
 
-    // only handle same-origin
+    // only same-origin
     if (url.origin !== location.origin) return;
 
-    // allow normal anchor scrolling for hashes on same page (like /#services)
-    // BUT: if you’re currently on /aboutus and click /#services, we want to SPA-navigate to /
-    const isHashNav = url.pathname === "/" && url.hash;
+    // Decide if this click should be handled by the SPA:
+    // 1) Any known route, e.g. /aboutus
+    // 2) Any home hash navigation, e.g. /#services
+    const isKnownRoute = Object.prototype.hasOwnProperty.call(routes, url.pathname);
+    const isHomeHashNav = url.pathname === "/" && !!url.hash;
 
-    // handle SPA routes or hash-to-home
-    const isSpaRoute = routes[url.pathname] || isHashNav;
-
-    if (!isSpaRoute) return;
+    if (!isKnownRoute && !isHomeHashNav) return;
 
     e.preventDefault();
-    navigate(url.pathname + url.hash);
+
+    // IMPORTANT:
+    // - If going to a home section, keep the hash.
+    // - Otherwise, drop hash so /aboutus never inherits a scroll target.
+    const to = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
+
+    navigate(to);
   });
 
   // Back/forward support
@@ -68,6 +93,8 @@
   // Initial render
   render(location.pathname);
 
-  // Run once hooks if you defined them
-  if (window.setCurrentYearOnce) window.setCurrentYearOnce();
+  // Optional: run once hooks if you defined them
+  if (typeof window.setCurrentYearOnce === "function") {
+    window.setCurrentYearOnce();
+  }
 })();
