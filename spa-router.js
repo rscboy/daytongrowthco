@@ -9,34 +9,18 @@
     "/aboutus": "tpl-aboutus",
   };
 
-  // --- Scroll lock helpers (prevents "keeps my old scroll position" bugs) ---
-  let lockedScrollY = 0;
-
-  function lockScroll() {
-    lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${lockedScrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
-  }
-
-  function unlockScroll() {
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.left = "";
-    document.body.style.right = "";
-    document.body.style.width = "";
-  }
-
   function scrollTopHard() {
+    // Blur can prevent "scroll into view" fights (especially after hash jumps)
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
+
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     window.scrollTo(0, 0);
   }
 
-  function scrollTopAfterPaintAndImages() {
-    // immediate
+  function forceTopAfterPaintAndImages() {
     scrollTopHard();
 
     // after paint (twice)
@@ -45,11 +29,11 @@
       requestAnimationFrame(scrollTopHard);
     });
 
-    // after short delays (layout shifts/fonts)
+    // after short delays (fonts/layout shifts)
     setTimeout(scrollTopHard, 50);
     setTimeout(scrollTopHard, 200);
 
-    // after images load (biggest source of jump)
+    // after images load (major cause of jumping)
     const imgs = app ? app.querySelectorAll("img") : [];
     imgs.forEach((img) => {
       if (!img.complete) {
@@ -61,7 +45,7 @@
     setTimeout(scrollTopHard, 350);
   }
 
-  function render(pathname) {
+  function render(pathname, hash) {
     const tplId = routes[pathname] || routes["/"];
     const tpl = document.getElementById(tplId);
     if (!tpl || !app) return;
@@ -70,38 +54,32 @@
     app.innerHTML = "";
     app.appendChild(tpl.content.cloneNode(true));
 
-    // Re-init per-route hooks (icons, reveals, etc.)
+    // Re-init per-route hooks (lucide, reveals, etc.)
     if (typeof window.onRouteRendered === "function") window.onRouteRendered();
 
     // Scroll rules:
-    // - If HOME (/) + hash: scroll to section
-    // - Otherwise: go to top (robust)
-    if (location.pathname === "/" && location.hash) {
-      // unlock first so scrollIntoView can work normally
-      unlockScroll();
-      const el = document.querySelector(location.hash);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        scrollTopAfterPaintAndImages();
-      }
+    // - Only honor hash scrolling on HOME (/)
+    // - All other routes: ALWAYS go to top
+    if (pathname === "/" && hash) {
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      else forceTopAfterPaintAndImages();
     } else {
-      // Force top while still locked, then unlock and force again
-      scrollTopHard();
-      unlockScroll();
-      scrollTopAfterPaintAndImages();
+      forceTopAfterPaintAndImages();
     }
   }
 
   function navigate(to) {
-    // Lock scroll BEFORE changing state/rendering
-    lockScroll();
+    const url = new URL(to, location.origin);
 
-    history.pushState(null, "", to);
-    render(location.pathname);
+    // Update URL first
+    history.pushState(null, "", url.pathname + url.hash);
+
+    // Render using the URL we just pushed (never stale hash)
+    render(url.pathname, url.hash);
   }
 
-  // Only intercept links you mark with data-link
+  // Only intercept <a data-link>
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a[data-link]");
     if (!a) return;
@@ -127,19 +105,18 @@
 
     e.preventDefault();
 
-    // Keep hash only for home-section links
+    // Keep hash only for home-section links. Drop it for /aboutus.
     const to = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
+
     navigate(to);
   });
 
   window.addEventListener("popstate", () => {
-    // Back/forward: lock + render so it doesn’t preserve old scroll
-    lockScroll();
-    render(location.pathname);
+    render(location.pathname, location.hash);
   });
 
   // Initial render
-  render(location.pathname);
+  render(location.pathname, location.hash);
 
   if (typeof window.setCurrentYearOnce === "function") window.setCurrentYearOnce();
 })();
