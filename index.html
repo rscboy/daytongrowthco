@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dayton Growth Co. | More Calls. More Customers.</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="https://i.postimg.cc/B6RPTxTT/favicon.jpg" type="image/jpeg">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -38,6 +41,28 @@
             transform-origin: bottom;
             animation: abstractBarGrow 1s ease-out forwards;
         }
+
+        /* Scroll Reveal Animations */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-on-scroll.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Specific Animations (Runs immediately on load) */
+        @keyframes heroFadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-animate {
+            opacity: 0;
+            animation: heroFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] selection:bg-blue-500/30 selection:text-blue-900">
@@ -47,10 +72,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0 flex items-center gap-3">
-                        <img src="https://i.postimg.cc/tTZjR1gr/Chat-GPT-Image-Feb-24-2026-12-25-18-PM.png" alt="Dayton Growth Co. Logo" class="h-9 w-auto rounded-md mix-blend-multiply" />
-                        <span class="font-semibold text-lg tracking-tight text-[#1D1D1F]">
-                            DaytonGrowthCo.
+                    <a href="#" class="flex-shrink-0 flex items-center group">
+                        <span class="text-[20px] tracking-tighter text-[#1D1D1F] transition-transform duration-300 group-hover:scale-105 inline-block">
+                            <span class="font-bold">Dayton</span><span class="font-normal text-[#86868B]">Growth</span><span class="font-bold text-blue-600">Co.</span>
                         </span>
                     </a>
                 </div>
@@ -59,6 +83,7 @@
                 <div class="hidden md:flex items-center space-x-12">
                     <a href="#services" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Services</a>
                     <a href="#results" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Approach</a>
+                    <a href="https://www.daytongrowth.co/aboutus" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">About Us</a>
                     <a href="#pricing" class="text-[13px] font-medium tracking-wide text-[#86868B] hover:text-blue-600 transition-colors duration-300">Pricing</a>
                     <a href="#form" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-[13px] font-medium transition-all duration-500 shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.4)] hover:-translate-y-0.5">
                         Get Plan
@@ -80,6 +105,7 @@
             <div class="px-6 py-8 space-y-6 flex flex-col items-center">
                 <a href="#services" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Services</a>
                 <a href="#results" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Approach</a>
+                <a href="https://www.daytongrowth.co/aboutus" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">About Us</a>
                 <a href="#pricing" class="mobile-link text-[15px] font-medium tracking-wide text-[#1D1D1F] hover:text-blue-600">Pricing</a>
                 <a href="#form" class="mobile-link bg-blue-600 text-white px-8 py-3.5 rounded-full font-medium w-full text-center text-[15px] shadow-lg shadow-blue-500/25">Get Your Growth Plan</a>
             </div>
@@ -87,10 +113,10 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative bg-[#050505] text-[#F5F5F7] overflow-hidden py-32 lg:py-56 flex items-center justify-center text-center">
+    <section class="relative bg-[#050505] text-[#F5F5F7] overflow-hidden pt-32 pb-48 md:pb-0 lg:pt-44 flex flex-col items-center text-center border-b border-white/[0.05]">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-gradient-to-tr from-blue-600/30 via-purple-600/20 to-teal-400/20 rounded-full blur-[120px] pointer-events-none"></div>
         
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10 flex flex-col items-center">
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10 flex flex-col items-center hero-animate">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 backdrop-blur-xl border border-blue-400/20 text-[11px] font-semibold tracking-widest uppercase text-blue-300 mb-10 shadow-[0_0_30px_rgba(59,130,246,0.15)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 text-blue-400"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                 Greater Dayton Area
@@ -101,7 +127,7 @@
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">Confidence in tech.</span>
             </h1>
             
-            <p class="text-xl md:text-2xl text-[#A1A1AA] mb-14 leading-relaxed max-w-2xl font-normal tracking-[-0.01em]">
+            <p class="text-xl md:text-2xl text-[#A1A1AA] mb-12 leading-relaxed max-w-2xl font-normal tracking-[-0.01em]">
                 We architect and manage elite digital presences for local service businesses. Predictable results, zero friction.
             </p>
             
@@ -115,12 +141,75 @@
                 </a>
             </div>
         </div>
+
+        <!-- NEW: Hero Floating UI Mockup -->
+        <div class="relative w-full max-w-[1000px] mx-auto mt-20 px-4 sm:px-6 z-10 hidden md:block hero-animate" style="perspective: 1000px; animation-delay: 200ms;">
+            <div class="w-full h-[340px] bg-[#0A0A0B]/90 backdrop-blur-3xl rounded-t-[32px] border border-white/10 shadow-[0_-30px_80px_rgba(37,99,235,0.15)] flex overflow-hidden ring-1 ring-white/5 relative transform origin-bottom" style="transform: rotateX(6deg) translateY(10px);">
+                <!-- Mockup Header -->
+                <div class="absolute top-0 left-0 w-full h-12 border-b border-white/[0.05] flex items-center px-6 gap-4 bg-white/[0.02]">
+                    <div class="flex gap-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-white/20"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-white/20"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-white/20"></div>
+                    </div>
+                    <div class="h-5 w-64 bg-white/[0.03] rounded-md mx-auto border border-white/5 flex items-center justify-center">
+                        <div class="h-1 w-24 bg-white/20 rounded-full"></div>
+                    </div>
+                </div>
+                <!-- Mockup Sidebar -->
+                <div class="w-64 h-full border-r border-white/[0.05] pt-16 px-6 flex flex-col gap-4 bg-white/[0.01]">
+                    <div class="h-2 w-1/3 bg-white/10 rounded-full mb-2"></div>
+                    <div class="h-8 w-full bg-blue-500/10 rounded-md border border-blue-500/20 flex items-center px-3 gap-3">
+                        <div class="w-3 h-3 rounded bg-blue-400/50"></div>
+                        <div class="h-1.5 w-1/2 bg-blue-200/50 rounded-full"></div>
+                    </div>
+                    <div class="h-8 w-full bg-white/[0.02] rounded-md flex items-center px-3 gap-3">
+                        <div class="w-3 h-3 rounded bg-white/10"></div>
+                        <div class="h-1.5 w-2/3 bg-white/10 rounded-full"></div>
+                    </div>
+                    <div class="h-8 w-full bg-white/[0.02] rounded-md flex items-center px-3 gap-3">
+                        <div class="w-3 h-3 rounded bg-white/10"></div>
+                        <div class="h-1.5 w-1/2 bg-white/10 rounded-full"></div>
+                    </div>
+                </div>
+                <!-- Mockup Main Body -->
+                <div class="flex-1 pt-16 p-8 flex flex-col gap-6 relative">
+                    <div class="absolute top-20 right-20 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] -z-10"></div>
+                    <!-- Stats Row -->
+                    <div class="flex gap-6">
+                        <!-- Stat Card 1 -->
+                        <div class="flex-1 h-36 bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.05] rounded-2xl p-5 flex flex-col justify-between overflow-hidden relative">
+                            <div class="h-2 w-1/3 bg-white/20 rounded-full z-10"></div>
+                            <div class="h-6 w-1/2 bg-white rounded-full z-10 mt-2"></div>
+                            <div class="flex items-end gap-1.5 h-12 mt-4 z-10">
+                                <div class="flex-1 bg-emerald-400/40 rounded-t-sm h-[30%]"></div>
+                                <div class="flex-1 bg-emerald-400/60 rounded-t-sm h-[50%]"></div>
+                                <div class="flex-1 bg-emerald-400/80 rounded-t-sm h-[70%]"></div>
+                                <div class="flex-1 bg-emerald-400 rounded-t-sm h-[100%] relative"><div class="absolute -top-1 left-0 w-full h-0.5 bg-emerald-300 rounded-full"></div></div>
+                                <div class="flex-1 bg-emerald-400/60 rounded-t-sm h-[60%]"></div>
+                                <div class="flex-1 bg-emerald-400/80 rounded-t-sm h-[85%]"></div>
+                            </div>
+                        </div>
+                        <!-- Stat Card 2 -->
+                        <div class="flex-1 h-36 bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 rounded-2xl p-5 flex flex-col justify-between">
+                            <div class="h-2 w-1/3 bg-blue-200/50 rounded-full"></div>
+                            <div class="text-3xl text-white font-light mt-1 tracking-tight">+ 1,240</div>
+                            <div class="h-1.5 w-full bg-white/10 rounded-full mt-auto overflow-hidden">
+                                <div class="h-full w-4/5 bg-blue-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bottom Fade Overlay to blend into background -->
+                <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none"></div>
+            </div>
+        </div>
     </section>
 
     <!-- Core Pillars -->
-    <section id="services" class="py-40 bg-[#F5F5F7] relative z-20">
+    <section id="services" class="py-32 lg:py-40 bg-[#F5F5F7] relative z-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-24">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal-on-scroll">
                 <h2 class="text-4xl md:text-[56px] font-semibold text-[#1D1D1F] tracking-[-0.02em] mb-6 leading-tight">Meticulous.<br/>Managed.</h2>
                 <p class="text-[19px] text-[#86868B] font-normal tracking-[-0.01em] leading-relaxed">
                     We replace fragmented freelancers with a singular, sophisticated partnership. Your digital infrastructure, perfectly maintained.
@@ -128,38 +217,115 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-                <!-- Service 1 -->
-                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(37,99,235,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-blue-100 group">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-blue-600 transition-all duration-500 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors duration-500"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
-                    </div>
-                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Architecture</h3>
-                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
+                
+                <!-- Service 1: Architecture -->
+                <div class="bg-white/60 backdrop-blur-2xl p-8 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(37,99,235,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-blue-100 group flex flex-col h-full reveal-on-scroll">
+                    <!-- Abstract UI Graphic -->
+                    <div class="w-full h-40 bg-slate-50 rounded-[20px] mb-8 relative overflow-hidden border border-black/5 flex flex-col p-4 group-hover:bg-blue-50/50 transition-colors duration-500">
+                            <!-- Mac OS style header -->
+                            <div class="w-full h-5 bg-white rounded-md shadow-sm border border-black/5 flex items-center px-2 gap-1.5 mb-3 z-10">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-400"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div><div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                            </div>
+                            <div class="flex gap-3 flex-1 h-full z-10">
+                                <!-- Sidebar -->
+                                <div class="w-1/3 bg-white rounded-md shadow-sm border border-black/5 h-full flex flex-col gap-1.5 p-1.5">
+                                    <div class="h-1.5 w-full bg-slate-100 rounded-full"></div>
+                                    <div class="h-1.5 w-3/4 bg-slate-100 rounded-full"></div>
+                                    <div class="h-1.5 w-5/6 bg-slate-100 rounded-full"></div>
+                                </div>
+                                <!-- Content -->
+                                <div class="flex-1 flex flex-col gap-2 h-full">
+                                    <div class="h-8 w-full bg-blue-100/50 rounded-md border border-blue-200/50"></div>
+                                    <div class="flex gap-2 flex-1">
+                                         <div class="flex-1 bg-white rounded-md border border-black/5 shadow-sm"></div>
+                                         <div class="flex-1 bg-white rounded-md border border-black/5 shadow-sm"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Floating Icon Box -->
+                            <div class="absolute bottom-3 right-3 w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 z-20">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-3">Architecture</h3>
+                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal flex-1">
                         Minimalist, high-performance web experiences engineered to convert. We strip away the unnecessary to elevate your core message.
                     </p>
                 </div>
 
-                <!-- Service 2 -->
-                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(147,51,234,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-purple-100 group">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-purple-600 transition-all duration-500 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-purple-600 group-hover:text-white transition-colors duration-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    </div>
-                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Positioning</h3>
-                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
+                <!-- Service 2: Positioning -->
+                <div class="bg-white/60 backdrop-blur-2xl p-8 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(147,51,234,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-purple-100 group flex flex-col h-full reveal-on-scroll" style="transition-delay: 100ms;">
+                    <!-- Abstract UI Graphic -->
+                    <div class="w-full h-40 bg-slate-50 rounded-[20px] mb-8 relative overflow-hidden border border-black/5 flex flex-col p-4 group-hover:bg-purple-50/50 transition-colors duration-500">
+                            <!-- Abstract Search/Map -->
+                            <div class="w-3/4 h-7 bg-white rounded-full shadow-sm border border-black/5 flex items-center px-3 gap-2 mb-3 z-10">
+                                <div class="w-2.5 h-2.5 rounded-full border-[2px] border-purple-400"></div>
+                                <div class="h-1.5 w-1/2 bg-purple-100 rounded-full"></div>
+                            </div>
+                            <div class="w-full flex-1 bg-white rounded-xl shadow-sm border border-black/5 p-2 flex gap-3 z-10">
+                                <div class="w-12 h-full bg-purple-50 rounded-lg border border-purple-100 flex items-center justify-center relative overflow-hidden">
+                                    <div class="w-3 h-3 bg-purple-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                                </div>
+                                <div class="flex-1 flex flex-col gap-2.5 justify-center">
+                                    <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                                    <div class="flex gap-1">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full"></div><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                    </div>
+                                    <div class="h-1.5 w-2/3 bg-slate-100 rounded-full mt-0.5"></div>
+                                </div>
+                            </div>
+                            <!-- Floating Icon Box -->
+                            <div class="absolute bottom-3 right-3 w-9 h-9 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 z-20">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-3">Positioning</h3>
+                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal flex-1">
                         Aggressive, data-driven local SEO. We secure your dominance in local search so prospects find you before they find competitors.
                     </p>
                 </div>
 
-                <!-- Service 3 -->
-                <div class="bg-white/60 backdrop-blur-2xl p-10 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(16,185,129,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-emerald-100 group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-10 group-hover:scale-105 group-hover:bg-emerald-500 transition-all duration-500 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors duration-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                <!-- Service 3: Continuity -->
+                <div class="bg-white/60 backdrop-blur-2xl p-8 rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_60px_rgba(16,185,129,0.08)] hover:-translate-y-1 transition-all duration-700 border border-white hover:border-emerald-100 group flex flex-col h-full reveal-on-scroll" style="transition-delay: 200ms;">
+                    <!-- Abstract UI Graphic -->
+                    <div class="w-full h-40 bg-slate-50 rounded-[20px] mb-8 relative overflow-hidden border border-black/5 flex flex-col p-4 justify-between group-hover:bg-emerald-50/50 transition-colors duration-500">
+                            <div class="flex justify-between items-start z-10 w-full h-16">
+                                <!-- Graph -->
+                                <div class="flex gap-1.5 items-end h-full w-2/3">
+                                    <div class="w-1/6 bg-emerald-200 rounded-t-sm h-[40%]"></div>
+                                    <div class="w-1/6 bg-emerald-300 rounded-t-sm h-[70%]"></div>
+                                    <div class="w-1/6 bg-emerald-400 rounded-t-sm h-[50%]"></div>
+                                    <div class="w-1/6 bg-emerald-500 rounded-t-sm h-[90%] relative"><div class="absolute -top-1 left-0 w-full h-0.5 bg-emerald-600 rounded-full"></div></div>
+                                    <div class="w-1/6 bg-emerald-400 rounded-t-sm h-[80%]"></div>
+                                </div>
+                                <!-- Live Status -->
+                                <div class="px-2 py-1 bg-white rounded-md shadow-sm border border-black/5 flex items-center gap-1.5">
+                                    <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                    <span class="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Live</span>
+                                </div>
+                            </div>
+                            <!-- Server Status Bar -->
+                            <div class="w-full h-10 bg-white rounded-xl shadow-sm border border-black/5 flex flex-col justify-center px-3 gap-2 z-10">
+                                <div class="flex justify-between items-center">
+                                    <div class="h-1.5 w-1/4 bg-slate-200 rounded-full"></div>
+                                    <div class="h-1.5 w-8 bg-emerald-100 rounded-full"></div>
+                                </div>
+                                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="w-11/12 h-full bg-emerald-400 rounded-full"></div>
+                                </div>
+                            </div>
+                            <!-- Floating Icon Box -->
+                            <div class="absolute bottom-3 right-3 w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 z-20">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-3">Continuity</h3>
+                        <p class="text-[#86868B] leading-relaxed text-[15px] font-normal flex-1">
+                            Invisible, seamless maintenance. Security updates, content adjustments, and performance monitoring handled quietly in the background.
+                        </p>
                     </div>
-                    <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-4">Continuity</h3>
-                    <p class="text-[#86868B] leading-relaxed text-[15px] font-normal">
-                        Invisible, seamless maintenance. Security updates, content adjustments, and performance monitoring handled quietly in the background.
-                    </p>
                 </div>
+
             </div>
         </div>
     </section>
@@ -169,7 +335,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row items-center gap-24">
                 
-                <div class="w-full lg:w-5/12 space-y-8">
+                <div class="w-full lg:w-5/12 space-y-8 reveal-on-scroll">
                     <h2 class="text-4xl md:text-[48px] font-semibold text-[#1D1D1F] tracking-[-0.02em] leading-[1.1]">The cost of digital decay.</h2>
                     <p class="text-[19px] text-[#86868B] font-normal leading-relaxed tracking-[-0.01em]">
                         A dated interface subconsciously signals inferior service. We bridge the gap between your real-world expertise and your digital representation.
@@ -196,7 +362,7 @@
                     </ul>
                 </div>
 
-                <div class="w-full lg:w-7/12">
+                <div class="w-full lg:w-7/12 reveal-on-scroll" style="transition-delay: 200ms;">
                     <div class="relative bg-[#F5F5F7] p-8 md:p-14 rounded-[40px] border border-[#1D1D1F]/[0.03]">
                         <div class="flex flex-col md:flex-row gap-8">
                             
@@ -360,7 +526,7 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-40 bg-[#F5F5F7]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-24">
+            <div class="text-center max-w-3xl mx-auto mb-24 reveal-on-scroll">
                 <h2 class="text-4xl md:text-[56px] font-semibold text-[#1D1D1F] tracking-[-0.02em] mb-6 leading-tight">Quiet predictability.</h2>
                 <p class="text-[19px] text-[#86868B] font-normal mb-12 tracking-[-0.01em] leading-relaxed">
                     Transparent investments designed for long-term compounding value. No hourly billing, no surprises.
@@ -379,66 +545,67 @@
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
                 <!-- Starter -->
-                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group">
+                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group reveal-on-scroll">
                     <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-2 group-hover:text-blue-600 transition-colors">Starter</h3>
                     <p class="text-[#86868B] font-normal text-[14px] mb-10 h-10 leading-relaxed">The foundational presence for independent operators.</p>
-                    <div class="mb-12 flex items-baseline gap-1">
-                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="149" data-annual="1,490">149</span></span>
-                        <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
-                    </div>
-                    <ul class="space-y-4 mb-12 flex-1">
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Hosting & maintenance</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Security & backups</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Mobile optimization</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Minor text updates</li>
-                    </ul>
-                    <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Starter</a>
+                        <div class="mb-12 flex items-baseline gap-1">
+                            <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="149" data-annual="1,490">149</span></span>
+                            <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                        </div>
+                        <ul class="space-y-4 mb-12 flex-1">
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Hosting & maintenance</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Security & backups</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Mobile optimization</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Minor text updates</li>
+                        </ul>
+                        <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Starter</a>
                 </div>
 
                 <!-- Growth (Most Popular) -->
-                <div class="bg-[#1D1D1F] p-10 lg:p-12 rounded-[40px] shadow-[0_20px_40px_rgba(37,99,235,0.15)] hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] transition-all duration-700 flex flex-col relative z-10 text-white transform md:-translate-y-4 border border-[#333] hover:border-blue-500/30 overflow-hidden">
+                <div class="bg-[#1D1D1F] p-10 lg:p-12 rounded-[40px] shadow-[0_20px_40px_rgba(37,99,235,0.15)] hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] transition-all duration-700 flex flex-col relative z-10 text-white transform md:-translate-y-4 border border-[#333] hover:border-blue-500/30 overflow-hidden reveal-on-scroll" style="transition-delay: 100ms;">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 pointer-events-none"></div>
                     <div class="absolute top-8 right-8 text-[9px] uppercase tracking-[0.2em] font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 px-3 py-1.5 rounded-full shadow-lg shadow-blue-500/30">
-                        Recommended
-                    </div>
-                    <h3 class="text-[22px] font-semibold tracking-[-0.01em] mb-2 relative z-10">Growth</h3>
-                    <p class="text-[#A1A1AA] font-normal text-[14px] mb-10 h-10 leading-relaxed relative z-10">Engineered for businesses ready to dominate local markets.</p>
-                    <div class="mb-12 flex items-baseline gap-1 relative z-10">
-                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-white">$<span class="price-val" data-monthly="299" data-annual="2,990">299</span></span>
-                        <span class="text-[#A1A1AA] font-medium text-[15px]">/<span class="price-term">mo</span></span>
-                    </div>
-                    <ul class="space-y-4 mb-12 flex-1 relative z-10">
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Unlimited minor updates</li>
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Local SEO optimization</li>
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Google Profile management</li>
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Speed enhancements</li>
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Performance analytics</li>
-                        <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Content updates</li>
-                    </ul>
-                    <a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-medium text-[14px] py-4 rounded-full transition-colors duration-500 shadow-lg shadow-blue-500/25 relative z-10">Select Growth</a>
+                            Recommended
+                        </div>
+                        <h3 class="text-[22px] font-semibold tracking-[-0.01em] mb-2 relative z-10">Growth</h3>
+                        <p class="text-[#A1A1AA] font-normal text-[14px] mb-10 h-10 leading-relaxed relative z-10">Engineered for businesses ready to dominate local markets.</p>
+                        <div class="mb-12 flex items-baseline gap-1 relative z-10">
+                            <span class="text-[48px] font-semibold tracking-[-0.03em] text-white">$<span class="price-val" data-monthly="299" data-annual="2,990">299</span></span>
+                            <span class="text-[#A1A1AA] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                        </div>
+                        <ul class="space-y-4 mb-12 flex-1 relative z-10">
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Unlimited minor updates</li>
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Local SEO optimization</li>
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Google Profile management</li>
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Speed enhancements</li>
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Performance analytics</li>
+                            <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Content updates</li>
+                        </ul>
+                        <a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-medium text-[14px] py-4 rounded-full transition-colors duration-500 shadow-lg shadow-blue-500/25 relative z-10">Select Growth</a>
                 </div>
 
                 <!-- Pro -->
-                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group">
+                <div class="bg-white/60 backdrop-blur-xl p-10 lg:p-12 rounded-[40px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.06)] transition-all duration-700 border border-white hover:border-blue-100 flex flex-col h-full group reveal-on-scroll" style="transition-delay: 200ms;">
                     <h3 class="text-[22px] font-semibold text-[#1D1D1F] tracking-[-0.01em] mb-2 group-hover:text-blue-600 transition-colors">Pro</h3>
                     <p class="text-[#86868B] font-normal text-[14px] mb-10 h-10 leading-relaxed">For established leaders requiring absolute perfection.</p>
-                    <div class="mb-12 flex items-baseline gap-1">
-                        <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="499" data-annual="4,990">499</span></span>
-                        <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                        <div class="mb-12 flex items-baseline gap-1">
+                            <span class="text-[48px] font-semibold tracking-[-0.03em] text-[#1D1D1F]">$<span class="price-val" data-monthly="499" data-annual="4,990">499</span></span>
+                            <span class="text-[#86868B] font-medium text-[15px]">/<span class="price-term">mo</span></span>
+                        </div>
+                        <ul class="space-y-4 mb-12 flex-1">
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Everything in Growth</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Branding & graphics</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Conversion optimization</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Advanced SEO campaigns</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Strategy consulting</li>
+                            <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Priority support line</li>
+                        </ul>
+                        <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Pro</a>
                     </div>
-                    <ul class="space-y-4 mb-12 flex-1">
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Everything in Growth</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Branding & graphics</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Conversion optimization</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Advanced SEO campaigns</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Strategy consulting</li>
-                        <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Priority support line</li>
-                    </ul>
-                    <a href="#form" class="block w-full text-center bg-[#F5F5F7] hover:bg-blue-50 text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Pro</a>
                 </div>
             </div>
 
-            <div class="mt-24 text-center">
+            <div class="mt-24 text-center reveal-on-scroll">
                 <p class="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#86868B] mb-3">Initial Deployment</p>
                 <p class="text-[14px] text-[#86868B] font-normal max-w-2xl mx-auto leading-relaxed">
                     A one-time architectural fee ($500–$2,000) applies to design, engineer, and optimize your initial platform. Your subscription ensures it perpetually performs.
@@ -453,12 +620,12 @@
         <div class="absolute bottom-0 left-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-            <div class="text-center mb-20">
+            <div class="text-center mb-20 reveal-on-scroll">
                 <h2 class="text-4xl md:text-[56px] font-semibold tracking-[-0.02em] mb-6 leading-tight">Begin the process.</h2>
                 <p class="text-[19px] text-[#A1A1AA] font-normal max-w-2xl mx-auto leading-relaxed">Provide your parameters below. We will conduct a preliminary audit and return with a focused, pressure-free strategy.</p>
             </div>
 
-            <div class="bg-[#111111]/80 backdrop-blur-xl rounded-[40px] border border-white/[0.05] shadow-[0_30px_60px_rgba(0,0,0,0.5)] p-10 md:p-16 relative">
+            <div class="bg-[#111111]/80 backdrop-blur-xl rounded-[40px] border border-white/[0.05] shadow-[0_30px_60px_rgba(0,0,0,0.5)] p-10 md:p-16 relative reveal-on-scroll" style="transition-delay: 150ms;">
                 
                 <form class="space-y-12" onsubmit="event.preventDefault();">
                     
@@ -553,14 +720,14 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-[#050505] text-[#86868B] py-24 border-t border-white/[0.05]">
+    <footer class="bg-[#050505] text-[#86868B] py-24 border-t border-white/[0.05] reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-3 gap-16 mb-20">
                 <div>
                     <div class="flex items-center gap-3 mb-8">
                         <img src="https://i.postimg.cc/tTZjR1gr/Chat-GPT-Image-Feb-24-2026-12-25-18-PM.png" alt="Dayton Growth Co. Logo" class="h-7 w-auto rounded mix-blend-screen opacity-80" />
-                        <span class="font-medium text-[17px] tracking-tight text-[#F5F5F7]">
-                            DaytonGrowthCo.
+                        <span class="text-[18px] tracking-tighter text-[#F5F5F7]">
+                            <span class="font-bold">Dayton</span><span class="font-normal text-[#86868B]">Growth</span><span class="font-bold text-blue-500">Co.</span>
                         </span>
                     </div>
                     <p class="text-[14px] leading-relaxed font-normal max-w-[280px]">
@@ -572,7 +739,7 @@
                     <h4 class="text-[#F5F5F7] font-semibold mb-8 text-[11px] uppercase tracking-[0.2em]">Contact</h4>
                     <ul class="space-y-5 text-[14px] font-normal">
                         <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Dayton, OH</li>
-                        <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (937) 555-0198</li>
+                        <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (937) 367-7089</li>
                         <li class="flex items-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500/70"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> hello@daytongrowth.co</li>
                     </ul>
                 </div>
@@ -623,6 +790,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Set dynamic year
             document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Intersection Observer for Scroll Animations
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px -50px 0px', // Trigger slightly before it hits the bottom
+                threshold: 0.1
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
 
             // Mobile Menu Toggle
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -790,7 +974,7 @@
                             <section>
                                 <h3 class="text-lg font-semibold text-gray-900 mb-2">3. Feedback & Contact</h3>
                                 <p>We welcome your feedback on the accessibility of Dayton Growth Co. If you encounter accessibility barriers on our site, please contact us immediately so we can evaluate and resolve the issue.</p>
-                                <p class="mt-2 font-medium text-gray-900">Email: hello@daytongrowth.co<br/>Phone: (937) 555-0198</p>
+                                <p class="mt-2 font-medium text-gray-900">Email: hello@daytongrowth.co<br/>Phone: (937) 367-7089</p>
                             </section>
                         </div>
                     `
@@ -830,6 +1014,26 @@
             // Bind close events
             closeModalBtn.addEventListener('click', closeModal);
             legalModal.addEventListener('click', closeModal); // Closes on overlay click
+            
+            // Scroll Reveal Animation Logic
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const scrollObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                        observer.unobserve(entry.target); // Reveal only once
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                scrollObserver.observe(el);
+            });
             
         });
     </script>
