@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Dayton Growth Co.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F6F8;
+            overflow-x: hidden;
+        }
+        
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        
+        /* Custom Background Pattern */
+        .bg-grid-pattern {
+            background-image: radial-gradient(#3B82F6 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        saas: {
+                            dark1: '#0B1020',
+                            blue: '#3B82F6',
+                            blueHover: '#2F6FEA',
+                            violet: '#9B6BFF',
+                            bg: '#F5F6F8',
+                            card: '#FFFFFF',
+                            border: '#E6E8EC',
+                            textDark: '#111318',
+                            textMuted: '#6B7280',
+                            label: '#9CA3AF'
+                        }
+                    },
+                    boxShadow: {
+                        'cta': '0 6px 18px rgba(59,130,246,0.3)',
+                        'cta-hover': '0 8px 24px rgba(59,130,246,0.45)',
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'card-hover': '0 20px 40px -10px rgba(59,130,246,0.1)'
+                    },
+                    letterSpacing: {
+                        micro: '0.12em'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-saas-textMuted antialiased selection:bg-saas-blue/20 selection:text-saas-textDark relative">
+
+    <!-- Decorative Top Gradients -->
+    <div class="absolute top-0 left-0 w-full h-[500px] overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-saas-blue/10 blur-[100px] rounded-full mix-blend-multiply"></div>
+        <div class="absolute top-[50px] right-[-100px] w-[500px] h-[500px] bg-saas-violet/10 blur-[120px] rounded-full mix-blend-multiply"></div>
+        <div class="absolute inset-0 bg-grid-pattern opacity-[0.03] mask-image:linear-gradient(to_bottom,white,transparent)"></div>
+    </div>
+
+    <!-- Premium SaaS Header -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-saas-border transition-all duration-150">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10 h-[80px] flex items-center justify-between">
+            
+            <!-- Logo Wordmark -->
+            <div class="flex items-center">
+                <a href="#" class="text-[22px] font-[700] tracking-tight flex items-center">
+                    <span class="text-saas-textDark">DaytonGrowth</span><span class="text-saas-blue">Co.</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center ml-auto mr-10 gap-[36px]">
+                <a href="#" class="text-saas-textMuted hover:text-saas-textDark text-[15px] font-[500] transition-colors duration-150 ease-out">Home</a>
+                <a href="#" class="text-saas-textMuted hover:text-saas-textDark text-[15px] font-[500] transition-colors duration-150 ease-out">Services</a>
+                <a href="#" class="text-saas-textDark text-[15px] font-[500]">About Us</a>
+            </div>
+
+            <!-- Primary CTA -->
+            <div class="hidden md:block">
+                <a href="#" class="bg-[linear-gradient(90deg,#3B82F6,#9B6BFF)] text-white px-[22px] py-[12px] rounded-full font-[600] text-[15px] shadow-cta hover:shadow-cta-hover hover:-translate-y-[2px] transition-all duration-200 ease-out inline-block">
+                    Contact Us
+                </a>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="flex items-center md:hidden">
+                <button class="text-saas-textMuted hover:text-saas-textDark">
+                    <i data-lucide="menu" class="w-6 h-6" stroke-width="1.5"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Intro & Meet the Founder -->
+    <section class="pt-[60px] pb-[80px] lg:pt-[80px] lg:pb-[100px]">
+        <div class="max-w-[1000px] mx-auto px-6 lg:px-8">
+            
+            <!-- Tighter Intro -->
+            <div class="text-center mb-[60px] lg:mb-[80px] reveal">
+                <span class="inline-block py-1.5 px-3 rounded-full bg-saas-blue/10 text-saas-blue text-[13px] font-[600] tracking-micro uppercase mb-4 border border-saas-blue/20">Our Story</span>
+                <h1 class="text-[36px] md:text-[52px] font-[800] text-saas-textDark leading-[1.1] tracking-tight mb-5">
+                    About <span class="text-transparent bg-clip-text bg-[linear-gradient(90deg,#3B82F6,#9B6BFF)]">Us</span>
+                </h1>
+            </div>
+
+            <!-- Founder Feature -->
+            <div class="flex flex-col md:flex-row gap-12 lg:gap-16 items-center md:items-start reveal delay-100">
+                
+                <!-- Refined, Smaller Portrait with Accent -->
+                <div class="relative w-full max-w-[280px] md:max-w-[320px] shrink-0 mx-auto md:mx-0">
+                    <!-- Colorful Background Glow -->
+                    <div class="absolute -inset-4 bg-[linear-gradient(135deg,#3B82F6,#9B6BFF)] opacity-20 rounded-[20px] blur-[24px] animate-float z-0"></div>
+                    
+                    <!-- Offset Accent Box -->
+                    <div class="absolute top-[16px] -right-[16px] w-full h-full border-2 border-saas-violet/30 rounded-[16px] z-0 animate-float-delayed"></div>
+                    <div class="absolute -bottom-[16px] -left-[16px] w-[60%] h-[60%] bg-saas-blue/10 rounded-bl-[16px] rounded-tr-[40px] z-0"></div>
+
+                    <!-- Main Image -->
+                    <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" 
+                         alt="Samuel Caruso, Founder" 
+                         class="relative w-full h-auto aspect-[4/5] object-cover rounded-[16px] border-[4px] border-white shadow-soft z-10 hover:-translate-y-[2px] transition-transform duration-300">
+                </div>
+                
+                <!-- Founder Text -->
+                <div class="flex-1 mt-4 md:mt-0">
+                    <h2 class="text-[28px] md:text-[32px] font-[700] text-saas-textDark mb-6 flex items-center gap-3">
+                        <i data-lucide="user" class="w-6 h-6 text-saas-blue" stroke-width="2.5"></i>
+                        Meet the Founder
+                    </h2>
+                    <div class="space-y-5 text-[16px] md:text-[17px] leading-[1.65] text-saas-textMuted">
+                        <p>
+                            Born and raised in Dayton, Ohio, <strong class="text-saas-textDark font-[600]">Samuel Caruso</strong> has always loved building things, whether that meant physical projects, systems, or growth strategies.
+                        </p>
+                        <p>
+                            He earned his undergraduate degree in History from the University of Michigan and later completed a Master’s in Entrepreneurship and Emerging Technology, blending strategic thinking with modern digital tools.
+                        </p>
+                        
+                        <!-- Accent Quote Block -->
+                        <div class="relative pl-6 py-2 my-8 border-l-[3px] border-transparent">
+                            <div class="absolute left-[-3px] top-0 h-full w-[3px] bg-[linear-gradient(to_bottom,#3B82F6,#9B6BFF)] rounded-full"></div>
+                            <div class="absolute top-0 left-4 w-8 h-8 bg-saas-blue/5 rounded-full blur-md -z-10"></div>
+                            <p class="text-[18px] text-saas-textDark font-[500] italic leading-relaxed">
+                                "Most Dayton businesses don't need another website. They need a reliable partner focused on getting them more customers."
+                            </p>
+                        </div>
+                        
+                        <p>
+                            After seeing too many great local businesses struggle with outdated websites and inconsistent online visibility, Samuel founded Dayton Growth Co. to give Dayton business owners a reliable, ongoing partner focused on one thing: <strong class="text-transparent bg-clip-text bg-[linear-gradient(90deg,#2F6FEA,#9B6BFF)] font-[700]">helping them generate more calls and customers without the technology stress.</strong>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Consolidated Mission & Difference Section -->
+    <section class="py-[80px] lg:py-[100px] bg-white border-t border-saas-border relative overflow-hidden">
+        
+        <!-- Subtle background accent -->
+        <div class="absolute right-0 bottom-0 w-[600px] h-[600px] bg-saas-blue/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+                
+                <!-- The Mission & Problem -->
+                <div class="reveal">
+                    <span class="text-saas-blue font-[700] tracking-micro uppercase text-[12px] mb-3 block">Why We Exist</span>
+                    <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">Our Mission</h3>
+                    <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
+                        To help Dayton-area businesses grow through reliable, modern, results-driven online presence management. Too many owners are stuck with slow sites, poor Google visibility, and unclear marketing results. <strong class="text-saas-textDark font-[600]">We're here to solve that.</strong>
+                    </p>
+                    
+                    <div class="bg-gradient-to-br from-[#FAFBFF] to-[#F5F8FF] rounded-[20px] p-8 border border-saas-blue/10 shadow-soft hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                        <p class="font-[600] text-saas-textDark mb-4 text-[16px] flex items-center gap-2">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-saas-violet" stroke-width="2"></i>
+                            When you work with us, you're investing in:
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3 text-[15px] text-saas-textMuted bg-white p-3 rounded-[12px] border border-saas-border shadow-sm">
+                                <div class="bg-saas-blue/10 p-1.5 rounded-full"><i data-lucide="arrow-right" class="w-4 h-4 text-saas-blue" stroke-width="2.5"></i></div>
+                                <span class="font-[500] text-saas-textDark">More customers & calls</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-[15px] text-saas-textMuted bg-white p-3 rounded-[12px] border border-saas-border shadow-sm">
+                                <div class="bg-saas-blue/10 p-1.5 rounded-full"><i data-lucide="arrow-right" class="w-4 h-4 text-saas-blue" stroke-width="2.5"></i></div>
+                                <span class="font-[500] text-saas-textDark">Peace of mind with tech</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-[15px] text-saas-textMuted bg-white p-3 rounded-[12px] border border-saas-border shadow-sm">
+                                <div class="bg-saas-violet/10 p-1.5 rounded-full"><i data-lucide="shield" class="w-4 h-4 text-saas-violet" stroke-width="2.5"></i></div>
+                                <span class="font-[500] text-saas-textDark">A local partner who has your back</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- The Difference -->
+                <div class="reveal delay-200">
+                    <span class="text-saas-violet font-[700] tracking-micro uppercase text-[12px] mb-3 block">The Solution</span>
+                    <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">What Makes Us Different</h3>
+                    <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
+                        We don't sell one-time websites. We provide continuous growth and management so you can focus on running your business.
+                    </p>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4 group">
+                            <div class="bg-saas-bg border border-saas-border p-2 rounded-xl group-hover:bg-saas-blue/5 group-hover:border-saas-blue/20 transition-colors">
+                                <i data-lucide="check" class="w-5 h-5 text-saas-blue" stroke-width="2.5"></i>
+                            </div>
+                            <span class="text-[15px] text-saas-textMuted mt-1.5"><strong class="text-saas-textDark font-[600]">Ongoing Management:</strong> We handle the updates and security.</span>
+                        </li>
+                        <li class="flex items-start gap-4 group">
+                            <div class="bg-saas-bg border border-saas-border p-2 rounded-xl group-hover:bg-saas-violet/5 group-hover:border-saas-violet/20 transition-colors">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-saas-violet" stroke-width="2.5"></i>
+                            </div>
+                            <span class="text-[15px] text-saas-textMuted mt-1.5"><strong class="text-saas-textDark font-[600]">Local SEO:</strong> Google Business Profile optimization and visibility.</span>
+                        </li>
+                        <li class="flex items-start gap-4 group">
+                            <div class="bg-saas-bg border border-saas-border p-2 rounded-xl group-hover:bg-saas-blue/5 group-hover:border-saas-blue/20 transition-colors">
+                                <i data-lucide="zap" class="w-5 h-5 text-saas-blue" stroke-width="2.5"></i>
+                            </div>
+                            <span class="text-[15px] text-saas-textMuted mt-1.5"><strong class="text-saas-textDark font-[600]">Performance Upgrades:</strong> Lightning-fast speed and mobile formatting.</span>
+                        </li>
+                        <li class="flex items-start gap-4 group">
+                            <div class="bg-saas-bg border border-saas-border p-2 rounded-xl group-hover:bg-saas-violet/5 group-hover:border-saas-violet/20 transition-colors">
+                                <i data-lucide="bar-chart" class="w-5 h-5 text-saas-violet" stroke-width="2.5"></i>
+                            </div>
+                            <span class="text-[15px] text-saas-textMuted mt-1.5"><strong class="text-saas-textDark font-[600]">Monthly Reporting:</strong> Clear insights on your traffic and conversions.</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Cinematic Dark Footer -->
+    <footer class="bg-saas-dark1 pt-[80px] lg:pt-[100px] pb-[32px] lg:pb-[40px] relative overflow-hidden">
+        
+        <!-- Subtle footer glow -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[1px] bg-gradient-to-r from-transparent via-saas-blue/30 to-transparent"></div>
+        
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10">
+            
+            <!-- Main Footer Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-[80px] lg:gap-[120px] mb-[48px] reveal">
+                
+                <!-- Left Column (Brand Block) -->
+                <div class="flex flex-col">
+                    <a href="#" class="text-[22px] font-[700] tracking-tight flex items-center mb-5">
+                        <span class="text-white">DaytonGrowth</span><span class="text-saas-blue">Co.</span>
+                    </a>
+                    <p class="text-[#9CA3AF] text-[15px] md:text-[16px] leading-[1.6]">
+                        Engineered to help local Dayton businesses attract more customers, modernize their online presence, and eliminate technology stress.
+                    </p>
+                </div>
+
+                <!-- Center Column (Contact) -->
+                <div class="flex flex-col">
+                    <span class="uppercase tracking-micro text-[12px] text-[#9CA3AF] font-[600] mb-6 block">Contact</span>
+                    <ul class="space-y-[16px]">
+                        <li>
+                            <a href="#" class="flex items-center gap-3 group">
+                                <i data-lucide="mail" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
+                                <span class="text-[#D1D5DB] text-[15px] group-hover:text-white transition-colors duration-150 ease-out">hello@daytongrowth.co</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 group">
+                                <i data-lucide="phone" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
+                                <span class="text-[#D1D5DB] text-[15px] group-hover:text-white transition-colors duration-150 ease-out">(937) 555-0123</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="map-pin" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
+                                <span class="text-[#D1D5DB] text-[15px]">Dayton, Ohio</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Right Column (Expertise / Links) -->
+                <div class="flex flex-col">
+                    <span class="uppercase tracking-micro text-[12px] text-[#9CA3AF] font-[600] mb-6 block">Expertise</span>
+                    <ul class="space-y-[14px]">
+                        <li><a href="#" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Website Management</a></li>
+                        <li><a href="#" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Local SEO & Visibility</a></li>
+                        <li><a href="#" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Performance Upgrades</a></li>
+                        <li><a href="#" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Google Business Profiles</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Divider & Bottom Bar -->
+            <div class="border-t border-white/[0.06] pt-[32px] md:pt-[40px] flex flex-col md:flex-row justify-between items-center gap-6 reveal delay-100">
+                <!-- Left -->
+                <p class="text-[#6B7280] text-[14px]">&copy; 2026 Dayton Growth Co. All rights reserved.</p>
+                
+                <!-- Right -->
+                <div class="flex flex-wrap justify-center gap-[24px] md:gap-[32px]">
+                    <a href="#" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Terms</a>
+                    <a href="#" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Privacy</a>
+                    <a href="#" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Disclaimer</a>
+                    <a href="#" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Accessibility</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons & Animations -->
+    <script>
+        lucide.createIcons();
+
+        // Scroll Reveal Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+            
+            // Trigger immediately for elements already in view on load
+            setTimeout(() => {
+                reveals.forEach(reveal => {
+                    const rect = reveal.getBoundingClientRect();
+                    if(rect.top < window.innerHeight) {
+                        reveal.classList.add('active');
+                    }
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
