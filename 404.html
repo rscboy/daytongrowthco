@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // Preserve the path so the SPA can read it
+      var redirectTo = "/" + (location.pathname || "").replace(/^\/+/, "");
+      var search = location.search || "";
+      var hash = location.hash || "";
+      location.replace("/?redirect=" + encodeURIComponent(redirectTo + search + hash));
+    </script>
+  </head>
+  <body></body>
+</html>
