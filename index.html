@@ -698,7 +698,7 @@
 
                 <div class="bg-[#111111]/80 backdrop-blur-xl rounded-[40px] border border-white/[0.05] shadow-[0_30px_60px_rgba(0,0,0,0.5)] p-10 md:p-16 relative reveal-on-scroll" style="transition-delay: 150ms;">
                     
-                    <form id="auditForm" class="space-y-12">
+                    <form id="auditForm" class="space-y-12" method="POST" action="https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec" target="hidden_iframe">
                         
                         <!-- Basic Info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -787,6 +787,7 @@
                         </div>
 
                     </form>
+                    <iframe name="hidden_iframe" style="display:none;"></iframe>
                 </div>
             </div>
         </section>
@@ -1238,40 +1239,18 @@
     <script src="/spa-router.js"></script>
 
     <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("auditForm");
-      const statusEl = document.getElementById("auditStatus");
-
-      if (!form) return;
-
-      form.addEventListener("submit", async (ev) => {
-        ev.preventDefault();
-        if (statusEl) statusEl.textContent = "Sending...";
-
-        const fd = new FormData(form);
-        const payload = Object.fromEntries(fd.entries());
-
-        try {
-          const res = await fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          const data = await res.json().catch(() => ({}));
-
-          if (data.ok) {
-            if (statusEl) statusEl.textContent = "Received. We will reply within 24 hours.";
-            form.reset();
-          } else {
-            if (statusEl) statusEl.textContent = "Something went wrong. Please try again.";
-          }
-        } catch (e) {
-          if (statusEl) statusEl.textContent = "Could not submit right now. Please try again.";
+    // Listen for submissions globally to support the SPA template injection
+    document.addEventListener("submit", (ev) => {
+        if (ev.target && ev.target.id === "auditForm") {
+            const statusEl = document.getElementById("auditStatus");
+            if (statusEl) statusEl.textContent = "Sending...";
+            
+            // Allow the form to submit to the hidden iframe, then update UI and reset
+            setTimeout(() => {
+                if (statusEl) statusEl.textContent = "Received. We will reply within 24 hours.";
+                ev.target.reset();
+            }, 1000);
         }
-      });
     });
     </script>
 </body>
