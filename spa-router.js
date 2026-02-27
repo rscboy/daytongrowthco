@@ -10,30 +10,27 @@
   };
 
   function scrollTopHard() {
-    // Blur can prevent "scroll into view" fights (especially after hash jumps)
     if (document.activeElement && typeof document.activeElement.blur === "function") {
       document.activeElement.blur();
     }
-
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     window.scrollTo(0, 0);
   }
 
   function forceTopAfterPaintAndImages() {
+    // Synchronous first — runs before browser has a chance to restore scroll
     scrollTopHard();
 
-    // after paint (twice)
     requestAnimationFrame(() => {
       scrollTopHard();
       requestAnimationFrame(scrollTopHard);
     });
 
-    // after short delays (fonts/layout shifts)
     setTimeout(scrollTopHard, 50);
     setTimeout(scrollTopHard, 200);
+    setTimeout(scrollTopHard, 350);
 
-    // after images load (major cause of jumping)
     const imgs = app ? app.querySelectorAll("img") : [];
     imgs.forEach((img) => {
       if (!img.complete) {
@@ -41,14 +38,23 @@
         img.addEventListener("error", scrollTopHard, { once: true });
       }
     });
-
-    setTimeout(scrollTopHard, 350);
   }
 
   function render(pathname, hash) {
     const tplId = routes[pathname] || routes["/"];
     const tpl = document.getElementById(tplId);
     if (!tpl || !app) return;
+
+    // ── KEY FIX ──────────────────────────────────────────────────────────────
+    // For any non-home route, strip the hash from the URL immediately so the
+    // browser never tries to scroll to a named anchor from a previous page.
+    if (pathname !== "/") {
+      history.replaceState(null, "", pathname);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Scroll to top BEFORE swapping content so there's no flash at old position
+    scrollTopHard();
 
     // Swap content
     app.innerHTML = "";
@@ -57,14 +63,15 @@
     // Re-init per-route hooks (lucide, reveals, etc.)
     if (typeof window.onRouteRendered === "function") window.onRouteRendered();
 
-    // Scroll rules:
-    // - Only honor hash scrolling on HOME (/)
-    // - All other routes: ALWAYS go to top
     if (pathname === "/" && hash) {
       const el = document.querySelector(hash);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      else forceTopAfterPaintAndImages();
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        forceTopAfterPaintAndImages();
+      }
     } else {
+      // Always force top for /aboutus and any other non-home route
       forceTopAfterPaintAndImages();
     }
   }
@@ -72,10 +79,10 @@
   function navigate(to) {
     const url = new URL(to, location.origin);
 
-    // Update URL first
-    history.pushState(null, "", url.pathname + url.hash);
+    // Strip hash when navigating to non-home routes so it can't interfere
+    const pushPath = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
+    history.pushState(null, "", pushPath);
 
-    // Render using the URL we just pushed (never stale hash)
     render(url.pathname, url.hash);
   }
 
@@ -105,9 +112,7 @@
 
     e.preventDefault();
 
-    // Keep hash only for home-section links. Drop it for /aboutus.
     const to = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
-
     navigate(to);
   });
 
