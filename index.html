@@ -636,7 +636,8 @@
                                 <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Mobile optimization</li>
                                 <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Minor text updates</li>
                             </ul>
-                            <a href="#form" class="block w-full text-center bg-white hover:bg-blue-50 border border-[#1D1D1F]/[0.05] text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Starter</a>
+                            <!-- Monthly defaults to popup window to bypass iframe restrictions -->
+                            <a href="https://buy.stripe.com/28E6oG91M4fq77o4oAaMU00" id="btn-starter" onclick="event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));" class="block w-full text-center bg-white hover:bg-blue-50 border border-[#1D1D1F]/[0.05] text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Starter</a>
                     </div>
 
                     <!-- Growth (Most Popular) -->
@@ -659,7 +660,8 @@
                                 <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Performance analytics</li>
                                 <li class="flex gap-4 text-[#F5F5F7] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Content updates</li>
                             </ul>
-                            <a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-medium text-[14px] py-4 rounded-full transition-colors duration-500 shadow-lg shadow-blue-500/25 relative z-10">Select Growth</a>
+                            <!-- Monthly defaults to popup window to bypass iframe restrictions -->
+                            <a href="https://buy.stripe.com/5kQdR80vg27idvM08kaMU01" id="btn-growth" onclick="event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-medium text-[14px] py-4 rounded-full transition-colors duration-500 shadow-lg shadow-blue-500/25 relative z-10">Select Growth</a>
                     </div>
 
                     <!-- Pro -->
@@ -678,7 +680,8 @@
                                 <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Strategy consulting</li>
                                 <li class="flex gap-4 text-[#1D1D1F] text-[14px] items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Priority support line</li>
                             </ul>
-                            <a href="#form" class="block w-full text-center bg-white hover:bg-blue-50 border border-[#1D1D1F]/[0.05] text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Pro</a>
+                            <!-- Monthly defaults to popup window to bypass iframe restrictions -->
+                            <a href="https://buy.stripe.com/aFa00i7XIdQ0ajA4oAaMU02" id="btn-pro" onclick="event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));" class="block w-full text-center bg-white hover:bg-blue-50 border border-[#1D1D1F]/[0.05] text-[#1D1D1F] hover:text-blue-700 font-medium text-[14px] py-4 rounded-full transition-colors duration-500">Select Pro</a>
                     </div>
                 </div>
 
@@ -915,9 +918,13 @@
                             <span class="font-bold">Dayton</span><span class="font-normal text-[#86868B]">Growth</span><span class="font-bold text-blue-500">Co.</span>
                         </span>
                     </div>
-                    <p class="text-[14px] leading-relaxed font-normal max-w-[280px]">
+                    <p class="text-[14px] leading-relaxed font-normal max-w-[280px] mb-8">
                         Helping Dayton-area businesses get found online and turn visitors into customers.
                     </p>
+                    <a href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] hover:border-white/[0.1] text-white text-[13px] font-medium transition-all duration-300 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-400"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        Client Billing
+                    </a>
                 </div>
                 
                 <div>
@@ -1062,6 +1069,42 @@
                     
                     priceVals.forEach(el => el.textContent = el.getAttribute('data-monthly'));
                     priceTerms.forEach(el => el.textContent = 'mo');
+                }
+                
+                // Update Starter button link
+                const btnStarter = document.getElementById('btn-starter');
+                if (btnStarter) {
+                    if (isAnnual) {
+                        btnStarter.href = "/#form";
+                        btnStarter.removeAttribute('onclick');
+                    } else {
+                        btnStarter.href = "https://buy.stripe.com/28E6oG91M4fq77o4oAaMU00";
+                        btnStarter.setAttribute('onclick', "event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));");
+                    }
+                }
+
+                // Update Growth button link
+                const btnGrowth = document.getElementById('btn-growth');
+                if (btnGrowth) {
+                    if (isAnnual) {
+                        btnGrowth.href = "/#form";
+                        btnGrowth.removeAttribute('onclick');
+                    } else {
+                        btnGrowth.href = "https://buy.stripe.com/5kQdR80vg27idvM08kaMU01";
+                        btnGrowth.setAttribute('onclick', "event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));");
+                    }
+                }
+
+                // Update Pro button link
+                const btnPro = document.getElementById('btn-pro');
+                if (btnPro) {
+                    if (isAnnual) {
+                        btnPro.href = "/#form";
+                        btnPro.removeAttribute('onclick');
+                    } else {
+                        btnPro.href = "https://buy.stripe.com/aFa00i7XIdQ0ajA4oAaMU02";
+                        btnPro.setAttribute('onclick', "event.preventDefault(); window.open(this.href, 'stripePopup', 'width=500,height=800,left='+(screen.width/2-250)+',top='+(screen.height/2-400));");
+                    }
                 }
             }
 
@@ -1229,6 +1272,7 @@
             // Expose initialization logic to SPA Router
             window.onRouteRendered = function() {
                 initObservers();
+                updatePricingUI(); // rebind UI components after rendering template
                 if (window.lucide) {
                     lucide.createIcons();
                 }
