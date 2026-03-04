@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Client Editor</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
+  <script src="https://unpkg.com/grapesjs"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #gjs { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="gjs"></div>
+
+  <script>
+    // 1) Start GrapesJS
+    const editor = grapesjs.init({
+      container: '#gjs',
+      height: '100vh',
+      fromElement: false,
+      storageManager: false, // we'll do our own save/publish
+    });
+
+    // 2) Load your actual homepage HTML into the canvas
+    // IMPORTANT: this fetches index.html and puts it into the editor
+    fetch('/index.html', { cache: 'no-store' })
+      .then(r => r.text())
+      .then(html => {
+        editor.setComponents(html);
+      })
+      .catch(err => {
+        console.error(err);
+        editor.setComponents('<h1>Could not load /index.html</h1><p>Check path and hosting.</p>');
+      });
+
+    // 3) Add a simple "Publish" button
+    editor.Panels.addButton('options', [{
+      id: 'publish',
+      className: 'fa fa-cloud-upload',
+      label: 'Publish',
+      command: 'publish-to-github',
+      attributes: { title: 'Publish (creates PR)' }
+    }]);
+
+    // 4) Publish command: sends the HTML to your backend (we build next)
+    editor.Commands.add('publish-to-github', {
+      run() {
+        const html = editor.getHtml();
+        const css = editor.getCss();
+
+        // Build one HTML file output (simple MVP)
+        const finalHtml = html.includes('<html')
+          ? html
+          : `<!doctype html><html><head><style>${css}</style></head><body>${html}</body></html>`;
+
+        fetch('/.netlify/functions/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: 'index.html',
+            content: finalHtml
+          })
+        }).then(async (res) => {
+          const text = await res.text();
+          if (!res.ok) throw new Error(text);
+          alert('Published to editor branch + PR created ✅\n\n' + text);
+        }).catch((e) => {
+          console.error(e);
+          alert('Publish failed:\n' + e.message);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
