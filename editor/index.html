@@ -16,64 +16,85 @@
 <body>
   <div id="gjs"></div>
 
-  <script>
-    // 1) Start GrapesJS
-    const editor = grapesjs.init({
-      container: '#gjs',
-      height: '100vh',
-      fromElement: false,
-      storageManager: false, // we'll do our own save/publish
-    });
+<script>
+  const editor = grapesjs.init({
+    container: '#gjs',
+    height: '100vh',
+    fromElement: false,
+    storageManager: false,
+  });
 
-    // 2) Load your actual homepage HTML into the canvas
-    // IMPORTANT: this fetches index.html and puts it into the editor
-    fetch('/index.html', { cache: 'no-store' })
-      .then(r => r.text())
-      .then(html => {
-        editor.setComponents(html);
-      })
-      .catch(err => {
-        console.error(err);
-        editor.setComponents('<h1>Could not load /index.html</h1><p>Check path and hosting.</p>');
+  // Helper: inject CSS into canvas
+  function addCanvasCss(href) {
+    editor.Canvas.getDocument().head.insertAdjacentHTML(
+      'beforeend',
+      `<link rel="stylesheet" href="${href}">`
+    );
+  }
+
+  // Helper: inject JS into canvas
+  function addCanvasScript(src) {
+    editor.Canvas.getDocument().body.insertAdjacentHTML(
+      'beforeend',
+      `<script src="${src}"><\/script>`
+    );
+  }
+
+  // When the editor iframe (canvas) is ready…
+  editor.on('load', async () => {
+    // 1) Load your actual homepage HTML into GrapesJS
+    const html = await fetch('/index.html', { cache: 'no-store' }).then(r => r.text());
+    editor.setComponents(html);
+
+    // 2) Inject the same CSS/JS your site needs
+    // If you have local CSS files, add them like: addCanvasCss('/styles.css')
+
+    // Tailwind (your site uses it)
+    addCanvasScript('https://cdn.tailwindcss.com');
+
+    // Lucide icons (your site uses it)
+    addCanvasScript('https://unpkg.com/lucide@latest');
+
+    // Your site JS (adjust paths if needed)
+    addCanvasScript('/spa-router.js');
+
+    // If you rely on any other JS files, add them too:
+    // addCanvasScript('/whatever.js');
+
+    // Optional: if you want Netlify identity to load in editor preview
+    // addCanvasScript('https://identity.netlify.com/v1/netlify-identity-widget.js');
+  });
+
+  // Add Publish button (same as before)
+  editor.Panels.addButton('options', [{
+    id: 'publish',
+    label: 'Publish',
+    command: 'publish-to-github',
+    attributes: { title: 'Publish (creates PR)' }
+  }]);
+
+  editor.Commands.add('publish-to-github', {
+    run() {
+      const html = editor.getHtml();
+      const css = editor.getCss();
+
+      const finalHtml = html.includes('<html')
+        ? html
+        : `<!doctype html><html><head><style>${css}</style></head><body>${html}</body></html>`;
+
+      fetch('/.netlify/functions/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: 'index.html', content: finalHtml })
+      }).then(async (res) => {
+        const text = await res.text();
+        if (!res.ok) throw new Error(text);
+        alert('Published ✅\n\n' + text);
+      }).catch((e) => {
+        alert('Publish failed:\n' + e.message);
       });
-
-    // 3) Add a simple "Publish" button
-    editor.Panels.addButton('options', [{
-      id: 'publish',
-      className: 'fa fa-cloud-upload',
-      label: 'Publish',
-      command: 'publish-to-github',
-      attributes: { title: 'Publish (creates PR)' }
-    }]);
-
-    // 4) Publish command: sends the HTML to your backend (we build next)
-    editor.Commands.add('publish-to-github', {
-      run() {
-        const html = editor.getHtml();
-        const css = editor.getCss();
-
-        // Build one HTML file output (simple MVP)
-        const finalHtml = html.includes('<html')
-          ? html
-          : `<!doctype html><html><head><style>${css}</style></head><body>${html}</body></html>`;
-
-        fetch('/.netlify/functions/publish', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            path: 'index.html',
-            content: finalHtml
-          })
-        }).then(async (res) => {
-          const text = await res.text();
-          if (!res.ok) throw new Error(text);
-          alert('Published to editor branch + PR created ✅\n\n' + text);
-        }).catch((e) => {
-          console.error(e);
-          alert('Publish failed:\n' + e.message);
-        });
-      }
-    });
-  </script>
+    }
+  });
+</script>
 </body>
 </html>
