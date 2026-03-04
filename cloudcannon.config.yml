@@ -1,0 +1,23 @@
+paths:
+  static: ''
+  uploads: uploads
+timezone: America/New_York
+markdown:
+  engine: commonmark
+  options: {}
+collections_config:
+  pages:
+    path: ''
+    icon: wysiwyg
+  aboutus:
+    path: aboutus
+    icon: acute
+  local_seo:
+    path: local-seo
+    icon: local_see
+  website_design:
+    path: website-design
+    icon: density_medium
+  website_maintenance:
+    path: website-maintenance
+    icon: reset_white_balance
