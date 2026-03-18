@@ -95,14 +95,22 @@
     forceTopAfterPaintAndImages();
   }
 
+  function normalizeRouteHash(url) {
+    if (url.pathname === "/aboutus" && url.hash === "#about-top") {
+      return "";
+    }
+
+    return url.hash;
+  }
+
   function navigate(to) {
     const url = new URL(to, location.origin);
+    const normalizedHash = normalizeRouteHash(url);
 
-    // Preserve hashes so route-specific anchors can scroll into place after render
-    const pushPath = url.pathname + url.hash;
+    const pushPath = url.pathname + normalizedHash;
     history.pushState(null, "", pushPath);
 
-    render(url.pathname, url.hash);
+    render(url.pathname, normalizedHash);
   }
 
   // Only intercept <a data-link>
@@ -135,11 +143,12 @@
   });
 
   window.addEventListener("popstate", () => {
-    render(location.pathname, location.hash);
+    const normalizedHash = normalizeRouteHash(new URL(location.href));
+    render(location.pathname, normalizedHash);
   });
 
   // Initial render
-  render(location.pathname, location.hash);
+  render(location.pathname, normalizeRouteHash(new URL(location.href)));
 
   if (typeof window.setCurrentYearOnce === "function") window.setCurrentYearOnce();
 })();
