@@ -18,6 +18,36 @@
     window.scrollTo(0, 0);
   }
 
+  function keepTargetAtTop(target) {
+    if (!target) return;
+
+    const alignTarget = () => {
+      const top = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset);
+      window.scrollTo({ top, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = top;
+      document.body.scrollTop = top;
+    };
+
+    alignTarget();
+
+    requestAnimationFrame(() => {
+      alignTarget();
+      requestAnimationFrame(alignTarget);
+    });
+
+    setTimeout(alignTarget, 50);
+    setTimeout(alignTarget, 200);
+    setTimeout(alignTarget, 350);
+
+    const imgs = app ? app.querySelectorAll("img") : [];
+    imgs.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", alignTarget, { once: true });
+        img.addEventListener("error", alignTarget, { once: true });
+      }
+    });
+  }
+
   function forceTopAfterPaintAndImages() {
     // Synchronous first — runs before browser has a chance to restore scroll
     scrollTopHard();
@@ -58,9 +88,7 @@
     const hashTarget = hash ? app.querySelector(hash) || document.querySelector(hash) : null;
 
     if (hashTarget) {
-      requestAnimationFrame(() => {
-        hashTarget.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+      keepTargetAtTop(hashTarget);
       return;
     }
 
