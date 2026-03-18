@@ -45,14 +45,6 @@
     const tpl = document.getElementById(tplId);
     if (!tpl || !app) return;
 
-    // ── KEY FIX ──────────────────────────────────────────────────────────────
-    // For any non-home route, strip the hash from the URL immediately so the
-    // browser never tries to scroll to a named anchor from a previous page.
-    if (pathname !== "/") {
-      history.replaceState(null, "", pathname);
-    }
-    // ─────────────────────────────────────────────────────────────────────────
-
     // Scroll to top BEFORE swapping content so there's no flash at old position
     scrollTopHard();
 
@@ -63,24 +55,23 @@
     // Re-init per-route hooks (lucide, reveals, etc.)
     if (typeof window.onRouteRendered === "function") window.onRouteRendered();
 
-    if (pathname === "/" && hash) {
-      const el = document.querySelector(hash);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        forceTopAfterPaintAndImages();
-      }
-    } else {
-      // Always force top for /aboutus and any other non-home route
-      forceTopAfterPaintAndImages();
+    const hashTarget = hash ? app.querySelector(hash) || document.querySelector(hash) : null;
+
+    if (hashTarget) {
+      requestAnimationFrame(() => {
+        hashTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      return;
     }
+
+    forceTopAfterPaintAndImages();
   }
 
   function navigate(to) {
     const url = new URL(to, location.origin);
 
-    // Strip hash when navigating to non-home routes so it can't interfere
-    const pushPath = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
+    // Preserve hashes so route-specific anchors can scroll into place after render
+    const pushPath = url.pathname + url.hash;
     history.pushState(null, "", pushPath);
 
     render(url.pathname, url.hash);
@@ -112,8 +103,7 @@
 
     e.preventDefault();
 
-    const to = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
-    navigate(to);
+    navigate(url.pathname + url.hash);
   });
 
   window.addEventListener("popstate", () => {
