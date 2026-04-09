@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth scroll-pt-24">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -240,11 +240,10 @@
             content: '';
             position: absolute;
             inset: 0;
-            /* Reduced numOctaves to 1 for massive mobile GPU performance gains */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
             pointer-events: none;
             opacity: 0.4;
-            transform: translateZ(0); /* Hardware accelerate */
+            transform: translateZ(0);
         }
 
         /* Stat counter */
@@ -277,7 +276,7 @@
         /* Mobile menu - Hardware Accelerated & Snappy */
         #mobileMenu {
             position: absolute;
-            top: 72px; /* Matches navbar height exactly */
+            top: 72px;
             left: 0;
             width: 100%;
             opacity: 0;
@@ -286,7 +285,6 @@
             transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0.15s;
             will-change: transform, opacity;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-            z-index: -1;
         }
         #mobileMenu.open {
             opacity: 1;
@@ -1038,6 +1036,292 @@
 </div>
 
 <!-- ============================================================
+     PROCESS VIEW
+     ============================================================ -->
+<div id="view-process" class="hidden">
+
+<!-- STAT INTERRUPT #1 - THE REALITY CHECK -->
+<section class="stat-interrupt pt-24 pb-16 lg:pt-32 lg:pb-20 relative overflow-hidden noise">
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-1/4 w-[600px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-1/4 w-[500px] h-[400px] bg-indigo-600/15 rounded-full blur-[100px]"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 w-full">
+        <div class="text-center mb-12 lg:mb-16 reveal flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.03] border border-white/[0.08] rounded-full text-[12px] font-semibold text-blue-300 uppercase tracking-widest mb-5 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                The Reality Check
+            </div>
+            <h2 class="text-[36px] md:text-[48px] lg:text-[56px] font-bold text-white tracking-[-0.02em] leading-[1.1]">
+                The Numbers <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Don't Lie.</span>
+            </h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <!-- Stat 1 -->
+            <div class="stat-card-bg rounded-[24px] p-8 text-center reveal border border-white/[0.08] hover:border-blue-500/30 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(37,99,235,0.1)] flex flex-col justify-center">
+                <div class="mb-4 text-center">
+                    <span class="text-[64px] md:text-[80px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">76%</span>
+                </div>
+                <div class="text-white font-bold text-[18px] mb-2">More Likely to Buy</div>
+                <p class="text-slate-400 text-[14px] leading-relaxed">Customers are 76% more likely to contact a business that has a professional, well-maintained website over one that looks outdated.</p>
+            </div>
+            <!-- Stat 2 -->
+            <div class="stat-card-bg rounded-[24px] p-8 text-center reveal reveal-delay-1 border border-white/[0.08] hover:border-blue-500/30 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(37,99,235,0.1)] flex flex-col justify-center">
+                <div class="mb-4 text-center">
+                    <span class="text-[64px] md:text-[80px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">9</span>
+                    <span class="text-[28px] md:text-[36px] text-slate-400 font-semibold mx-1">in</span>
+                    <span class="text-[64px] md:text-[80px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">10</span>
+                </div>
+                <div class="text-white font-bold text-[18px] mb-2">Check Before They Call</div>
+                <p class="text-slate-400 text-[14px] leading-relaxed">Nine out of ten customers look a business up online before making contact. What they find determines whether they call you or your competitor.</p>
+            </div>
+            <!-- Stat 3 -->
+            <div class="stat-card-bg rounded-[24px] p-8 text-center reveal reveal-delay-2 border border-white/[0.08] hover:border-blue-500/30 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(37,99,235,0.1)] flex flex-col justify-center">
+                <div class="mb-4 text-center">
+                    <span class="text-[64px] md:text-[80px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">3</span>
+                    <span class="text-[28px] md:text-[36px] text-slate-400 font-semibold ml-1">sec</span>
+                </div>
+                <div class="text-white font-bold text-[18px] mb-2">Before They're Gone</div>
+                <p class="text-slate-400 text-[14px] leading-relaxed">If your site takes more than 3 seconds to load, over half of visitors abandon it. Slow websites lose real customers every single day.</p>
+            </div>
+        </div>
+        <div class="text-center mt-12 lg:mt-16 reveal">
+            <a href="#form" class="inline-flex items-center gap-2.5 bg-white text-brand-dark px-8 py-4 rounded-full font-bold text-[15px] hover:bg-blue-50 transition-colors shadow-xl hover:shadow-2xl">
+                Find Out Where You Stand - Free Audit
+                <svg class="w-4 h-4 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- PROCESS SECTION - HOW WE GROW YOUR BUSINESS -->
+<section id="process-content" class="py-24 lg:py-36 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16 lg:mb-20 reveal">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-[12px] font-semibold text-brand-blue uppercase tracking-widest mb-5">The Process</div>
+            <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-5">How We Grow Your<br>Business Online</h2>
+            <p class="text-[18px] text-brand-muted leading-relaxed">Four clear steps from where you are now to where you want to be - and we're with you every step of the way.</p>
+        </div>
+
+        <!-- Steps -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-5 relative">
+            <!-- Connector lines (desktop only) -->
+            <div class="hidden lg:block absolute top-[52px] left-[calc(25%+20px)] right-[calc(25%+20px)] h-[2px] pointer-events-none" style="background: linear-gradient(90deg, #3B82F6, #8B5CF6); opacity: 0.2;"></div>
+
+            <!-- Step 1 -->
+            <div class="relative reveal">
+                <div class="bg-brand-light rounded-[24px] p-7 h-full border border-slate-100 hover:border-blue-100 hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)] transition-all duration-500">
+                    <div class="relative mb-6">
+                        <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-[0_8px_24px_rgba(37,99,235,0.3)] relative z-10">
+                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-brand-blue text-[13px]">01</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-[20px] text-brand-dark mb-3 tracking-tight">Audit Your Online Presence</h3>
+                    <p class="text-brand-muted text-[14px] leading-relaxed">We start with a free, honest look at your website speed, Google ranking, Business Profile health, and local visibility - identifying exactly what's costing you customers.</p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative reveal reveal-delay-1">
+                <div class="bg-brand-light rounded-[24px] p-7 h-full border border-slate-100 hover:border-blue-100 hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)] transition-all duration-500">
+                    <div class="relative mb-6">
+                        <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-[0_8px_24px_rgba(79,70,229,0.3)] relative z-10">
+                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-indigo-600 text-[13px]">02</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-[20px] text-brand-dark mb-3 tracking-tight">Build a Customer-Focused Website</h3>
+                    <p class="text-brand-muted text-[14px] leading-relaxed">We design and build a fast, professional website with a clear layout, compelling copy, and prominent calls-to-action - engineered to make your phone ring.</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative reveal reveal-delay-2">
+                <div class="bg-brand-light rounded-[24px] p-7 h-full border border-slate-100 hover:border-blue-100 hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)] transition-all duration-500">
+                    <div class="relative mb-6">
+                        <div class="w-14 h-14 bg-purple-600 rounded-2xl flex items-center justify-center shadow-[0_8px_24px_rgba(147,51,234,0.3)] relative z-10">
+                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-8 h-8 bg-purple-50 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-purple-600 text-[13px]">03</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-[20px] text-brand-dark mb-3 tracking-tight">Optimize for Local Google Searches</h3>
+                    <p class="text-brand-muted text-[14px] leading-relaxed">We optimize your Google Business Profile, local keywords, and map listings so that Dayton-area customers searching for your services find you at the top - not buried on page three.</p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="relative reveal reveal-delay-3">
+                <div class="bg-brand-light rounded-[24px] p-7 h-full border border-slate-100 hover:border-blue-100 hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)] transition-all duration-500">
+                    <div class="relative mb-6">
+                        <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-[0_8px_24px_rgba(5,150,105,0.3)] relative z-10">
+                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-8 h-8 bg-emerald-50 rounded-full flex items-center justify-center">
+                            <span class="font-bold text-emerald-600 text-[13px]">04</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-[20px] text-brand-dark mb-3 tracking-tight">Improve & Grow Every Month</h3>
+                    <p class="text-brand-muted text-[14px] leading-relaxed">Every month we review your performance, apply updates, and keep tweaking what's underperforming. Your online presence gets stronger month after month.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA below process -->
+        <div class="mt-14 text-center reveal">
+            <a href="#form" class="inline-flex items-center gap-2 text-brand-blue font-semibold text-[15px] hover:gap-3 transition-all">
+                Start with a free audit of your current presence
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- STAT INTERRUPT #2 - LOCAL SEARCH REALITY -->
+<section class="py-20 bg-brand-blue relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+        <div class="reveal">
+            <div class="text-[96px] md:text-[128px] font-extrabold text-white/20 leading-none select-none mb-[-20px]">46%</div>
+            <div class="text-[32px] md:text-[42px] font-bold text-white leading-tight mb-5 relative z-10">
+                of all Google searches<br>have <span class="underline decoration-blue-200/50 decoration-4">local intent</span>.
+            </div>
+            <p class="text-blue-100 text-[18px] max-w-xl mx-auto mb-8 leading-relaxed">That means nearly half of all Google searches are people looking for a business near them - right now. The question is: are they finding you, or your competition?</p>
+            <a href="#form" class="inline-flex items-center gap-2 bg-white text-brand-blue px-7 py-3.5 rounded-full font-bold text-[15px] hover:bg-blue-50 transition-colors shadow-xl">
+                See How You Rank in Dayton
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- COMPARISON SECTION -->
+<section id="compare-content" class="py-24 lg:py-36 bg-brand-light">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[12px] font-semibold text-red-600 uppercase tracking-widest mb-5">Before You Decide</div>
+            <h2 class="text-[42px] md:text-[52px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-5">Not all options<br>are created equal.</h2>
+            <p class="text-[17px] text-brand-muted leading-relaxed">There are plenty of ways to handle your online presence. Here's what you're actually choosing between.</p>
+        </div>
+
+        <div class="overflow-x-auto reveal">
+            <table class="w-full min-w-[680px] border-collapse">
+                <thead>
+                    <tr>
+                        <th class="py-4 px-5 text-left text-[13px] font-semibold text-brand-muted w-[32%]"></th>
+                        <th class="py-4 px-5 text-center text-[13px] font-semibold text-brand-muted w-[17%] bg-white rounded-tl-2xl border border-b-0 border-slate-100">
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="text-[20px]">🧑‍💻</span>
+                                <span>Freelancer</span>
+                            </div>
+                        </th>
+                        <th class="py-4 px-5 text-center text-[13px] font-semibold text-brand-muted w-[17%] bg-white border-x border-b-0 border-slate-100">
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="text-[20px]">🔧</span>
+                                <span>DIY Builder</span>
+                            </div>
+                        </th>
+                        <th class="py-4 px-5 text-center text-[13px] font-semibold text-brand-muted w-[17%] bg-white border border-b-0 border-slate-100">
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="text-[20px]">🏢</span>
+                                <span>Big Agency</span>
+                            </div>
+                        </th>
+                        <th class="py-4 px-5 text-center w-[17%] bg-brand-blue rounded-tr-2xl">
+                            <div class="flex flex-col items-center gap-1.5">
+                                <div class="bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">Best Value</div>
+                                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                </div>
+                                <span class="text-white font-bold text-[13px]">DaytonGrowthCo.</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row helper: label, freelancer, diy, agency, us -->
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white">Professional custom website</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">✅</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">✅</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] text-[18px]">✅</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white">Ongoing monthly updates</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] text-[18px]">✅</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white">Local SEO included</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] text-[18px]">✅</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white">Google Business Profile management</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] text-[18px]">✅</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white">Flat monthly price</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] text-[18px]">✅</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3.5 px-5 text-[14px] font-medium text-brand-dark bg-white rounded-bl-2xl">Focused on getting more customers</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">❌</td>
+                        <td class="py-3.5 px-5 text-center bg-white text-[18px]">⚠️</td>
+                        <td class="py-3.5 px-5 text-center bg-blue-600/[0.08] rounded-br-2xl text-[18px]">✅</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-4 justify-center mt-5 text-[13px] text-brand-muted reveal">
+            <span class="flex items-center gap-1.5">✅ <span>Included</span></span>
+            <span class="flex items-center gap-1.5">⚠️ <span>Partial / extra cost</span></span>
+            <span class="flex items-center gap-1.5">❌ <span>Not available</span></span>
+        </div>
+
+        <!-- Callout below table -->
+        <div class="mt-12 bg-white rounded-[24px] border border-blue-100 p-8 lg:p-10 flex flex-col md:flex-row items-center gap-6 reveal">
+            <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
+                <svg class="w-8 h-8 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <h3 class="text-[20px] font-bold text-brand-dark mb-2">The difference: we're a growth partner, not a one-time vendor.</h3>
+                <p class="text-brand-muted text-[15px] leading-relaxed">Freelancers disappear after the launch. DIY builders leave you on your own. Big agencies add you to a list. We stay with you - updating, improving, and reporting every single month.</p>
+            </div>
+            <a href="#form" class="shrink-0 bg-brand-blue text-white px-7 py-3 rounded-full font-semibold text-[14px] hover:bg-blue-700 transition-colors shadow-[0_4px_16px_rgba(37,99,235,0.3)] whitespace-nowrap">Get Started</a>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<!-- ============================================================
      ABOUT VIEW
      ============================================================ -->
 <div id="view-about" class="hidden">
@@ -1702,16 +1986,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (iconClose) iconClose.classList.add('hidden');
         }
 
-        // Helper to force an instant scroll to top, bypassing CSS smooth scrolling
-        const forceScrollTop = () => {
-            const html = document.documentElement;
-            html.classList.remove('scroll-smooth');
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-                // Re-enable smooth scrolling for internal anchor links
-                setTimeout(() => html.classList.add('scroll-smooth'), 50);
-            }, 10);
-        };
+        // By removing 'scroll-smooth' from the <html> tag, window.scrollTo(0,0) is instantly applied
+        // preventing the "smooth slide" bug when switching DOM views.
+        const forceScrollTop = () => window.scrollTo(0, 0);
 
         if (hash === '#about') {
             if (viewHome) viewHome.classList.add('hidden');
@@ -1728,7 +2005,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (viewProcess) viewProcess.classList.add('hidden');
             if (viewHome) viewHome.classList.remove('hidden');
             
-            // Allow layout to render before scrolling to anchor
+            // Allow layout to render before scrolling to anchor (e.g. #services, #pricing)
             if (hash && hash !== '#' && hash !== '#home') {
                 setTimeout(() => {
                     const el = document.querySelector(hash);
@@ -1753,16 +2030,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('hashchange', handleRoute);
     handleRoute(); // Call on initial load
 
-    // Expose to SPA router (if used externally) or just run
-    const path = window.location.pathname;
-    const hashPath = window.location.hash || '#';
-    const meta = {
-        '#about': { title: 'About DaytonGrowthCo. | Your Local Digital Growth Partner in Dayton, OH', desc: 'Meet DaytonGrowthCo., a Dayton-based partner helping local small businesses get more customers through ongoing website management, local SEO, and Google Business Profile optimization.', canonical: 'https://www.daytongrowth.co/#about', keywords: 'about DaytonGrowthCo, Dayton Ohio web design company, local SEO agency Dayton OH, Samuel Caruso' },
-        '#process': { title: 'How It Works | DaytonGrowthCo.', desc: 'See our proven 4-step process for growing local businesses in Dayton, Ohio. We handle website design, local SEO, and monthly management.', canonical: 'https://www.daytongrowth.co/#process', keywords: 'Dayton SEO process, website management, Dayton Ohio digital marketing' }
-    };
-    
+    // Manage Page Titles and Meta for specific views
     const updateMeta = () => {
         const currentHash = window.location.hash || '#';
+        const meta = {
+            '#about': { title: 'About DaytonGrowthCo. | Your Local Digital Growth Partner in Dayton, OH', desc: 'Meet DaytonGrowthCo., a Dayton-based partner helping local small businesses get more customers through ongoing website management, local SEO, and Google Business Profile optimization.', canonical: 'https://www.daytongrowth.co/#about', keywords: 'about DaytonGrowthCo, Dayton Ohio web design company, local SEO agency Dayton OH, Samuel Caruso' },
+            '#process': { title: 'How It Works | DaytonGrowthCo.', desc: 'See our proven 4-step process for growing local businesses in Dayton, Ohio. We handle website design, local SEO, and monthly management.', canonical: 'https://www.daytongrowth.co/#process', keywords: 'Dayton SEO process, website management, Dayton Ohio digital marketing' }
+        };
         const cfg = meta[currentHash] || { title: 'DaytonGrowthCo. | Monthly Website + Local SEO Management in Dayton, OH', desc: 'DaytonGrowthCo. helps Dayton, OH small businesses get more customers with monthly website management, local SEO, and Google Business Profile optimization. Flat monthly rate. No contracts.', canonical: 'https://www.daytongrowth.co/', keywords: 'Dayton Ohio website design, local SEO Dayton OH, Google Business Profile management Dayton, small business website Dayton, website maintenance Dayton Ohio, Miami Valley SEO' };
         
         document.title = cfg.title;
@@ -1774,13 +2048,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('hashchange', updateMeta);
     updateMeta();
 });
-</script>
-
-<!-- GitHub Pages SPA Redirect -->
-<script>
-const params = new URLSearchParams(location.search);
-const redirect = params.get("redirect");
-if (redirect) history.replaceState(null, "", redirect);
 </script>
 
 <script>
