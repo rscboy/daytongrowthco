@@ -1750,6 +1750,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', closeModal);
 
+    const scrollToHashTarget = (hash, behavior = 'smooth') => {
+        const el = document.querySelector(hash);
+        if (!el) return;
+        const headerOffset = 80;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({
+            top: offsetPosition,
+            behavior
+        });
+    };
+
     // Vanilla Hash Router Logic
     const handleRoute = () => {
         const hash = window.location.hash;
@@ -1791,16 +1803,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (hash && hash !== '#' && hash !== '#home') {
                 setTimeout(() => {
-                    const el = document.querySelector(hash);
-                    if (el) {
-                        const headerOffset = 80;
-                        const elementPosition = el.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: "smooth"
-                        });
-                    }
+                    scrollToHashTarget(hash);
                 }, 50);
             } else {
                 forceScrollTop();
@@ -1812,6 +1815,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
+    
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', e => {
+            const targetHash = link.getAttribute('href');
+            if (!targetHash || targetHash === '#') return;
+
+            if (window.location.hash === targetHash) {
+                e.preventDefault();
+                if (targetHash === '#about' || targetHash === '#process') {
+                    handleRoute();
+                } else if (targetHash === '#home') {
+                    const html = document.documentElement;
+                    html.classList.remove('scroll-smooth');
+                    setTimeout(() => {
+                        window.scrollTo(0, 0);
+                        setTimeout(() => html.classList.add('scroll-smooth'), 50);
+                    }, 10);
+                } else {
+                    scrollToHashTarget(targetHash);
+                }
+            }
+        });
+    });
 
     const updateMeta = () => {
         const currentHash = window.location.hash || '#';
