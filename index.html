@@ -1253,6 +1253,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('currentYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+    const rootEl = document.documentElement;
+    const viewHome = document.getElementById('view-home');
+    const viewAbout = document.getElementById('view-about');
+    const viewProcess = document.getElementById('view-process');
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
 
     // ── STAGGERED GSAP/FRAMER STYLE REVEAL ANIMATIONS ──
     const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -1278,8 +1285,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
 
     const initReveal = () => {
-        document.querySelectorAll('.reveal, .reveal-sweep').forEach(el => revealObserver.observe(el));
-        document.querySelectorAll('.stagger-group').forEach(el => staggerObserver.observe(el));
+        document.querySelectorAll('.reveal, .reveal-sweep').forEach(el => {
+            if (el.dataset.revealObserved === 'true') return;
+            el.dataset.revealObserved = 'true';
+            revealObserver.observe(el);
+        });
+        document.querySelectorAll('.stagger-group').forEach(el => {
+            if (el.dataset.staggerObserved === 'true') return;
+            el.dataset.staggerObserved = 'true';
+            staggerObserver.observe(el);
+        });
     };
 
     initReveal();
@@ -1307,12 +1322,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', () => {
+    const closeMobileMenu = () => {
         isMobileMenuOpen = false;
         if (menu) menu.classList.remove('open');
         if (iconOpen) iconOpen.classList.remove('hidden');
         if (iconClose) iconClose.classList.add('hidden');
-    }));
+    };
+
+    document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', closeMobileMenu));
 
     // Pricing toggle
     let isAnnual = false;
@@ -1763,28 +1780,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Vanilla Hash Router Logic
+    const forceScrollTop = () => {
+        rootEl.classList.remove('scroll-smooth');
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+            setTimeout(() => rootEl.classList.add('scroll-smooth'), 50);
+        }, 10);
+    };
+
     const handleRoute = () => {
         const hash = window.location.hash;
-        const viewHome = document.getElementById('view-home');
-        const viewAbout = document.getElementById('view-about');
-        const viewProcess = document.getElementById('view-process');
         
         // Close mobile menu if open
         if (isMobileMenuOpen) {
-            isMobileMenuOpen = false;
-            if (menu) menu.classList.remove('open');
-            if (iconOpen) iconOpen.classList.remove('hidden');
-            if (iconClose) iconClose.classList.add('hidden');
+            closeMobileMenu();
         }
-
-        const forceScrollTop = () => {
-            const html = document.documentElement;
-            html.classList.remove('scroll-smooth');
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-                setTimeout(() => html.classList.add('scroll-smooth'), 50);
-            }, 10);
-        };
 
         if (hash === '#about') {
             if (viewHome) viewHome.classList.add('hidden');
@@ -1826,12 +1836,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (targetHash === '#about' || targetHash === '#process') {
                     handleRoute();
                 } else if (targetHash === '#home') {
-                    const html = document.documentElement;
-                    html.classList.remove('scroll-smooth');
-                    setTimeout(() => {
-                        window.scrollTo(0, 0);
-                        setTimeout(() => html.classList.add('scroll-smooth'), 50);
-                    }, 10);
+                    forceScrollTop();
                 } else {
                     scrollToHashTarget(targetHash);
                 }
@@ -1848,9 +1853,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cfg = meta[currentHash] || { title: 'DaytonGrowthCo. | Monthly Website + Local SEO Management in Dayton, OH', desc: 'DaytonGrowthCo. helps Dayton, OH small businesses get more customers with monthly website management, local SEO, and Google Business Profile optimization. Flat monthly rate. No contracts.', canonical: 'https://www.daytongrowth.co/', keywords: 'Dayton Ohio website design, local SEO Dayton OH, Google Business Profile management Dayton, small business website Dayton, website maintenance Dayton Ohio, Miami Valley SEO' };
         
         document.title = cfg.title;
-        document.querySelector('meta[name="description"]')?.setAttribute('content', cfg.desc);
-        document.querySelector('meta[name="keywords"]')?.setAttribute('content', cfg.keywords);
-        document.querySelector('link[rel="canonical"]')?.setAttribute('href', cfg.canonical);
+        metaDescription?.setAttribute('content', cfg.desc);
+        metaKeywords?.setAttribute('content', cfg.keywords);
+        canonicalLink?.setAttribute('href', cfg.canonical);
     };
 
     window.addEventListener('hashchange', updateMeta);
@@ -1858,20 +1863,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── ASYNC/AWAIT HERO MOCKUP ANIMATION LOGIC ──
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    
+    const mockupEls = {
+        nameEls: document.querySelectorAll('.mockup-name'),
+        svcEls: document.querySelectorAll('.mockup-service'),
+        cursorNames: document.querySelectorAll('.mockup-name-cursor'),
+        cursorSvcs: document.querySelectorAll('.mockup-svc-cursor'),
+        btns: document.querySelectorAll('.mockup-submit'),
+        toasts: document.querySelectorAll('.mockup-toast'),
+        rows: document.querySelectorAll('.mockup-row'),
+        oldStatuses: document.querySelectorAll('.mockup-status-old'),
+        nameContainers: document.querySelectorAll('.mockup-name-container'),
+        svcContainers: document.querySelectorAll('.mockup-svc-container')
+    };
+
     const runMockupAnim = async () => {
-        const nameEls = document.querySelectorAll('.mockup-name');
-        const svcEls = document.querySelectorAll('.mockup-service');
-        const cursorNames = document.querySelectorAll('.mockup-name-cursor');
-        const cursorSvcs = document.querySelectorAll('.mockup-svc-cursor');
-        const btns = document.querySelectorAll('.mockup-submit');
-        const toasts = document.querySelectorAll('.mockup-toast');
-        const rows = document.querySelectorAll('.mockup-row');
-        const oldStatuses = document.querySelectorAll('.mockup-status-old');
-        const nameContainers = document.querySelectorAll('.mockup-name-container');
-        const svcContainers = document.querySelectorAll('.mockup-svc-container');
-        
-        if (!nameEls.length) return;
+        const { nameEls, svcEls, cursorNames, cursorSvcs, btns, toasts, rows, oldStatuses, nameContainers, svcContainers } = mockupEls;
+        if (!nameEls.length || document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         // Reset state
         nameEls.forEach(el => el.textContent = '');
@@ -1941,11 +1948,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Restart Loop
         await sleep(4000);
-        runMockupAnim();
     };
 
-    // Run after a short delay
-    setTimeout(runMockupAnim, 500);
+    const startMockupLoop = async () => {
+        while (true) {
+            await runMockupAnim();
+            await sleep(document.hidden ? 2000 : 500);
+        }
+    };
+
+    let mockupLoopStarted = false;
+    const startMockupIfNeeded = () => {
+        if (mockupLoopStarted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        mockupLoopStarted = true;
+        setTimeout(startMockupLoop, 500);
+    };
+
+    startMockupIfNeeded();
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) startMockupIfNeeded();
+    });
 });
 </script>
 
@@ -1968,23 +1990,49 @@ document.addEventListener("submit", ev => {
 });
 </script>
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
 (function () {
     var hash = window.location.hash || "";
+    var identityLoaded = false;
+
+    function loadIdentityScript(cb) {
+        if (window.netlifyIdentity) {
+            cb();
+            return;
+        }
+        if (identityLoaded) return;
+        identityLoaded = true;
+        var script = document.createElement("script");
+        script.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
+        script.defer = true;
+        script.onload = cb;
+        document.head.appendChild(script);
+    }
+
     function openRecovery() {
         if (!window.netlifyIdentity) return;
         window.netlifyIdentity.open("recovery");
     }
     if (hash.includes("invite_token=") || hash.includes("recovery_token=")) {
-        setTimeout(openRecovery, 200);
-        setTimeout(openRecovery, 800);
-    }
-
-    if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("login", function () {
-            window.location.href = "/admin/";
+        loadIdentityScript(function () {
+            setTimeout(openRecovery, 200);
+            setTimeout(openRecovery, 800);
         });
+    }
+    
+    var bootIdentityLoginHandler = function () {
+        if (!window.netlifyIdentity) return;
+        window.netlifyIdentity.on("login", function () {
+            if (window.location.pathname !== "/admin/") {
+                window.location.href = "/admin/";
+            }
+        });
+    };
+
+    if ("requestIdleCallback" in window) {
+        requestIdleCallback(function () { loadIdentityScript(bootIdentityLoginHandler); }, { timeout: 2500 });
+    } else {
+        setTimeout(function () { loadIdentityScript(bootIdentityLoginHandler); }, 1500);
     }
 })();
 </script>
