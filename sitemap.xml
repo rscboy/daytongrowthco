@@ -8,33 +8,45 @@
   </url>
 
   <url>
-    <loc>https://www.daytongrowth.co/#services</loc>
+    <loc>https://www.daytongrowth.co/how-it-works/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.daytongrowth.co/#results</loc>
+    <loc>https://www.daytongrowth.co/pricing/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.daytongrowth.co/aboutus</loc>
+    <loc>https://www.daytongrowth.co/about/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://www.daytongrowth.co/#pricing</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.daytongrowth.co/terms-of-service/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://www.daytongrowth.co/#form</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://www.daytongrowth.co/privacy-policy/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.daytongrowth.co/disclaimer/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://www.daytongrowth.co/accessibility/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
 
 </urlset>
