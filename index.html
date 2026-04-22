@@ -14,6 +14,10 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://i.postimg.cc">
 
+    <!-- Priority hero/OG assets -->
+    <link rel="preload" as="image" href="https://www.daytongrowth.co/thumbnail.jpeg" fetchpriority="high">
+    <link rel="preload" as="image" href="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" fetchpriority="high">
+
     <meta name="description" content="DaytonGrowthCo. helps Dayton, OH small businesses get more customers with monthly website management, local SEO, and Google Business Profile optimization. Flat monthly rate. No contracts.">
     <meta name="keywords" content="Dayton Ohio website design, local SEO Dayton OH, Google Business Profile management Dayton, small business website Dayton, website maintenance Dayton Ohio, Miami Valley SEO">
     <meta name="robots" content="index,follow">
@@ -203,6 +207,10 @@
                         fadeIn: {
                             from: { opacity: '0' },
                             to: { opacity: '1' },
+                        },
+                        overviewSweep: {
+                            '0%': { transform: 'translateX(-120%)' },
+                            '100%': { transform: 'translateX(120%)' },
                         }
                     }
                 }
@@ -226,6 +234,36 @@
         .reveal-delay-2 { transition-delay: 200ms; }
         .reveal-delay-3 { transition-delay: 300ms; }
         .reveal-delay-4 { transition-delay: 400ms; }
+
+        /* Overview sub-header sweep */
+        .overview-sweep {
+            position: relative;
+            overflow: hidden;
+        }
+        .overview-sweep::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-120%);
+            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.24) 48%, transparent 78%);
+            pointer-events: none;
+        }
+        .overview-sweep.sweep-active::after {
+            animation: overviewSweep 0.95s cubic-bezier(0.16,1,0.3,1) 0.25s 1;
+        }
+
+        /* Scroll stagger cards (whileInView-style) */
+        .stagger-group .stagger-item {
+            opacity: 0;
+            transform: translateY(30px) scale(0.985);
+            transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+            transition-delay: calc(var(--stagger-index, 0) * 110ms);
+            will-change: transform, opacity;
+        }
+        .stagger-group.in-view .stagger-item {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
         /* Hero gradient text */
         .gradient-text {
@@ -307,6 +345,11 @@
         }
 
         /* Stat bar animation */
+        @keyframes overviewSweep {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(120%); }
+        }
+
         @keyframes barGrow {
             from { transform: scaleY(0); }
             to { transform: scaleY(1); }
@@ -473,7 +516,7 @@
             <span class="gradient-text">Found First.</span>
         </h1>
 
-        <p class="text-[18px] md:text-[21px] text-slate-300 mb-4 max-w-2xl mx-auto leading-relaxed font-light" style="animation: slideUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;">
+        <p class="overview-sweep text-[18px] md:text-[21px] text-slate-300 mb-4 max-w-2xl mx-auto leading-relaxed font-light" style="animation: slideUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;">
             We build and manage your entire online presence: website, local SEO, and Google Business Profile, so customers find <em>you</em> instead of your competitor.
         </p>
 
@@ -624,9 +667,9 @@
             <p class="text-[18px] text-brand-muted leading-relaxed">Stop juggling freelancers who never talk to each other. Your website, local SEO, and Google listing - all handled in one flat monthly plan.</p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div class="stagger-group grid md:grid-cols-3 gap-6 lg:gap-8">
             <!-- Service 1 -->
-            <div class="service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(37,99,235,0.1)] hover:border-blue-100 reveal">
+            <div class="stagger-item service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(37,99,235,0.1)] hover:border-blue-100 reveal" style="--stagger-index: 0;">
                 <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors">
                     <svg class="w-7 h-7 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
@@ -643,7 +686,7 @@
             </div>
 
             <!-- Service 2 -->
-            <div class="service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(139,92,246,0.1)] hover:border-purple-100 reveal reveal-delay-1">
+            <div class="stagger-item service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(139,92,246,0.1)] hover:border-purple-100 reveal reveal-delay-1" style="--stagger-index: 1;">
                 <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center mb-6">
                     <svg class="w-7 h-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
@@ -660,7 +703,7 @@
             </div>
 
             <!-- Service 3 -->
-            <div class="service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(16,185,129,0.1)] hover:border-emerald-100 reveal reveal-delay-2">
+            <div class="stagger-item service-card bg-white rounded-[28px] p-8 border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_48px_rgba(16,185,129,0.1)] hover:border-emerald-100 reveal reveal-delay-2" style="--stagger-index: 2;">
                 <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
                     <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
@@ -858,9 +901,9 @@
             </div>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-5xl mx-auto items-stretch">
+        <div class="stagger-group grid md:grid-cols-3 gap-6 lg:gap-7 max-w-5xl mx-auto items-stretch">
             <!-- Tier 1 -->
-            <div class="bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col reveal">
+            <div class="stagger-item bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col reveal" style="--stagger-index: 0;">
                 <div class="text-[11px] font-bold uppercase tracking-widest text-brand-blue mb-3">Micro-Business</div>
                 <h3 class="text-[24px] font-bold text-brand-dark mb-2">Foundations</h3>
                 <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">The entry point for businesses who need a clean, professional presence online.</p>
@@ -879,7 +922,7 @@
             </div>
 
             <!-- Tier 2 - Featured -->
-            <div class="bg-brand-dark rounded-[32px] p-8 lg:p-10 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_60px_rgba(37,99,235,0.18)] md:-translate-y-4 reveal reveal-delay-1">
+            <div class="stagger-item bg-brand-dark rounded-[32px] p-8 lg:p-10 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_60px_rgba(37,99,235,0.18)] md:-translate-y-4 reveal reveal-delay-1" style="--stagger-index: 1;">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 pointer-events-none"></div>
                 <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
                 <div class="absolute top-7 right-7 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg z-10">Most Popular</div>
@@ -908,7 +951,7 @@
             </div>
 
             <!-- Tier 3 -->
-            <div class="bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col reveal reveal-delay-2">
+            <div class="stagger-item bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col reveal reveal-delay-2" style="--stagger-index: 2;">
                 <h3 class="text-[24px] font-bold text-brand-dark mb-2">Growth & Leads</h3>
                 <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">High-competition lead generation for businesses ready to dominate their market.</p>
                 <div class="mb-2 flex items-baseline gap-1">
@@ -1465,12 +1508,44 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
     };
 
+    const initOverviewSweep = () => {
+        const overview = document.querySelector('.overview-sweep');
+        if (!overview) return;
+        const sweepObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('sweep-active');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.45 });
+        sweepObserver.observe(overview);
+    };
+
+    const initStaggerGroups = () => {
+        const groupObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -50px 0px', threshold: 0.14 });
+
+        document.querySelectorAll('.stagger-group:not(.in-view)').forEach(group => groupObserver.observe(group));
+    };
+
     const appEl = document.getElementById('app');
     if (appEl) {
         new MutationObserver(() => {
             initReveal();
+            initStaggerGroups();
         }).observe(appEl, { childList: true, subtree: true });
     }
+
+    initReveal();
+    initOverviewSweep();
+    initStaggerGroups();
 
     // Mobile menu
     const btn = document.getElementById('mobileMenuBtn');
