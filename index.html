@@ -402,6 +402,10 @@
         .hero-grid-cursor.active {
             opacity: 1;
         }
+        .hero-plus-cursor,
+        .hero-plus-cursor * {
+            cursor: none !important;
+        }
         @media (max-width: 768px), (pointer: coarse) {
             .hero-grid-overlay {
                 opacity: 0.55;
@@ -1602,9 +1606,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const config = {
             glowRadius: isLowPower ? 190 : 250,
             falloff: isLowPower ? 1.9 : 2.2,
-            textSafePadding: isLowPower ? 78 : 88,
-            cursorTextGap: isLowPower ? 34 : 40,
-            cursorSmoothing: isLowPower ? 0.14 : 0.18
+            textSafePadding: isLowPower ? 28 : 20,
+            glowCursorGap: isLowPower ? 12 : 8,
+            glowSmoothing: isLowPower ? 0.14 : 0.18
         };
 
         const pointer = { x: 0, y: 0, active: false };
@@ -1616,9 +1620,9 @@ document.addEventListener('DOMContentLoaded', () => {
             current: new Float32Array(0),
             target: new Float32Array(0),
             exclusion: null,
-            interactiveZone: null
+            glowUnsafeZone: null
         };
-        const hotspot = { x: 0, y: 0, initialized: false };
+        const glowHotspot = { x: 0, y: 0, initialized: false };
         let rafId = 0;
         let heroRect = hero.getBoundingClientRect();
 
@@ -1659,18 +1663,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const contentRect = content.getBoundingClientRect();
             const exclusionPadding = config.textSafePadding;
-            const safeGap = config.cursorTextGap;
             state.exclusion = {
                 left: contentRect.left - exclusionPadding,
                 top: contentRect.top - exclusionPadding,
                 right: contentRect.right + exclusionPadding,
                 bottom: contentRect.bottom + exclusionPadding
             };
-            state.interactiveZone = {
-                left: state.exclusion.left - safeGap,
-                top: state.exclusion.top - safeGap,
-                right: state.exclusion.right + safeGap,
-                bottom: state.exclusion.bottom + safeGap
+            state.glowUnsafeZone = {
+                left: state.exclusion.left - config.glowCursorGap,
+                top: state.exclusion.top - config.glowCursorGap,
+                right: state.exclusion.right + config.glowCursorGap,
+                bottom: state.exclusion.bottom + config.glowCursorGap
             };
 
             let idx = 0;
@@ -1691,12 +1694,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-        const clampHotspotToValidArea = (x, y) => {
+        const clampPointToHero = (x, y) => {
+            return {
+                x: clamp(x, heroRect.left, heroRect.right),
+                y: clamp(y, heroRect.top, heroRect.bottom)
+            };
+        };
+
+        const clampGlowHotspotToValidArea = (x, y) => {
             const clampedToHero = {
                 x: clamp(x, heroRect.left, heroRect.right),
                 y: clamp(y, heroRect.top, heroRect.bottom)
             };
-            const unsafe = state.interactiveZone;
+            const unsafe = state.glowUnsafeZone;
             if (!pointInside(clampedToHero.x, clampedToHero.y, unsafe)) {
                 return clampedToHero;
             }
@@ -1720,22 +1730,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const tick = () => {
             if (!state.tiles.length) return;
 
-            if (!hotspot.initialized) {
-                hotspot.x = heroRect.left + (heroRect.width * 0.5);
-                hotspot.y = heroRect.top + (heroRect.height * 0.5);
-                hotspot.initialized = true;
+            if (!glowHotspot.initialized) {
+                glowHotspot.x = heroRect.left + (heroRect.width * 0.5);
+                glowHotspot.y = heroRect.top + (heroRect.height * 0.5);
+                glowHotspot.initialized = true;
             }
 
-            const clampedPointer = clampHotspotToValidArea(pointer.x, pointer.y);
-            hotspot.x += (clampedPointer.x - hotspot.x) * config.cursorSmoothing;
-            hotspot.y += (clampedPointer.y - hotspot.y) * config.cursorSmoothing;
-
-            const stableHotspot = clampHotspotToValidArea(hotspot.x, hotspot.y);
-            hotspot.x = stableHotspot.x;
-            hotspot.y = stableHotspot.y;
-
-            visualCursor.style.transform = `translate3d(${(hotspot.x - heroRect.left).toFixed(2)}px, ${(hotspot.y - heroRect.top).toFixed(2)}px, 0) translate(-50%, -50%)`;
+            const visualPointer = clampPointToHero(pointer.x, pointer.y);
+            visualCursor.style.transform = `translate3d(${(visualPointer.x - heroRect.left).toFixed(2)}px, ${(visualPointer.y - heroRect.top).toFixed(2)}px, 0) translate(-50%, -50%)`;
             visualCursor.classList.toggle('active', pointer.active);
+
+            const clampedGlowPointer = clampGlowHotspotToValidArea(pointer.x, pointer.y);
+            glowHotspot.x += (clampedGlowPointer.x - glowHotspot.x) * config.glowSmoothing;
+            glowHotspot.y += (clampedGlowPointer.y - glowHotspot.y) * config.glowSmoothing;
+
+            const stableHotspot = clampGlowHotspotToValidArea(glowHotspot.x, glowHotspot.y);
+            glowHotspot.x = stableHotspot.x;
+            glowHotspot.y = stableHotspot.y;
 
             const hasPointer = pointer.active;
             for (let i = 0; i < state.tiles.length; i += 1) {
@@ -1744,8 +1755,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 let nextTarget = 0;
 
                 if (!excluded && hasPointer) {
-                    const dx = center.x - hotspot.x;
-                    const dy = center.y - hotspot.y;
+                    const dx = center.x - glowHotspot.x;
+                    const dy = center.y - glowHotspot.y;
                     const distance = Math.hypot(dx, dy);
                     if (distance < config.glowRadius) {
                         const normalized = 1 - (distance / config.glowRadius);
@@ -1753,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 state.target[i] = nextTarget;
-                state.current[i] += (state.target[i] - state.current[i]) * config.cursorSmoothing;
+                state.current[i] += (state.target[i] - state.current[i]) * config.glowSmoothing;
 
                 const tile = state.tiles[i];
                 tile.dataset.excluded = excluded ? 'true' : 'false';
@@ -1773,15 +1784,17 @@ document.addEventListener('DOMContentLoaded', () => {
             pointer.x = event.clientX;
             pointer.y = event.clientY;
             pointer.active = true;
-            const start = clampHotspotToValidArea(pointer.x, pointer.y);
-            hotspot.x = start.x;
-            hotspot.y = start.y;
-            hotspot.initialized = true;
+            const start = clampGlowHotspotToValidArea(pointer.x, pointer.y);
+            glowHotspot.x = start.x;
+            glowHotspot.y = start.y;
+            glowHotspot.initialized = true;
+            hero.classList.add('hero-plus-cursor');
         }, { passive: true });
 
         hero.addEventListener('mouseleave', () => {
             pointer.active = false;
             visualCursor.classList.remove('active');
+            hero.classList.remove('hero-plus-cursor');
         });
 
         const handleResize = () => {
@@ -1798,6 +1811,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.cancelAnimationFrame(rafId);
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('scroll', refreshGeometry);
+            hero.classList.remove('hero-plus-cursor');
         });
     };
 
