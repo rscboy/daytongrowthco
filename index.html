@@ -351,6 +351,7 @@
             pointer-events: none;
             z-index: 1;
             overflow: hidden;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.96), rgba(0,0,0,0.9));
         }
         .hero-grid-tiles {
             position: absolute;
@@ -376,6 +377,30 @@
                 linear-gradient(rgba(255,255,255,0.075) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.075) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%;
+        }
+        .hero-grid-cursor {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate3d(-50%, -50%, 0);
+            color: rgba(191,219,254,0.95);
+            font-size: 20px;
+            line-height: 1;
+            font-weight: 500;
+            text-shadow: 0 0 16px rgba(96,165,250,0.4);
+            opacity: 0;
+            transition: opacity 200ms ease-out;
+            will-change: transform, opacity;
+            user-select: none;
+            pointer-events: none;
+        }
+        .hero-grid-cursor.active {
+            opacity: 1;
         }
         @media (max-width: 768px), (pointer: coarse) {
             .hero-grid-overlay {
@@ -542,6 +567,7 @@
     <!-- Cursor-reactive grid -->
     <div id="heroReactiveGrid" class="hero-grid-overlay opacity-[0.92]" aria-hidden="true">
         <div id="heroGridTiles" class="hero-grid-tiles"></div>
+        <div id="heroGridCursor" class="hero-grid-cursor">+</div>
     </div>
 
     <div id="heroContent" class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
@@ -1579,22 +1605,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const initHeroGridIllumination = () => {
         const hero = document.getElementById('heroSection');
         const gridEl = document.getElementById('heroGridTiles');
+        const visualCursor = document.getElementById('heroGridCursor');
         const content = document.getElementById('heroContent');
-        if (!hero || !gridEl || !content) return;
+        if (!hero || !gridEl || !content || !visualCursor) return;
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
         if (prefersReducedMotion || isCoarsePointer) return;
 
+        const isLowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+        const config = {
+            glowRadius: isLowPower ? 190 : 250,
+            falloff: isLowPower ? 1.9 : 2.2,
+            textSafePadding: isLowPower ? 78 : 88,
+            cursorTextGap: isLowPower ? 34 : 40,
+            cursorSmoothing: isLowPower ? 0.14 : 0.18
+        };
+
         const pointer = { x: 0, y: 0, active: false };
-        const state = { cols: 0, rows: 0, tiles: [], centers: [], current: new Float32Array(0), target: new Float32Array(0), exclusion: null };
+        const state = {
+            cols: 0,
+            rows: 0,
+            tiles: [],
+            centers: [],
+            current: new Float32Array(0),
+            target: new Float32Array(0),
+            exclusion: null,
+            interactiveZone: null
+        };
+        const hotspot = { x: 0, y: 0, initialized: false };
         let rafId = 0;
         let heroRect = hero.getBoundingClientRect();
-        let radius = 220;
 
         const rebuildTiles = () => {
             heroRect = hero.getBoundingClientRect();
-            const tileSize = window.innerWidth > 1280 ? 52 : 46;
+            const tileSize = isLowPower ? 62 : (window.innerWidth > 1280 ? 52 : 46);
             const cols = Math.max(8, Math.ceil(heroRect.width / tileSize));
             const rows = Math.max(7, Math.ceil(heroRect.height / tileSize));
             const total = cols * rows;
@@ -1628,12 +1673,19 @@ document.addEventListener('DOMContentLoaded', () => {
             state.centers.length = state.cols * state.rows;
 
             const contentRect = content.getBoundingClientRect();
-            const exclusionPadding = 70;
+            const exclusionPadding = config.textSafePadding;
+            const safeGap = config.cursorTextGap;
             state.exclusion = {
                 left: contentRect.left - exclusionPadding,
                 top: contentRect.top - exclusionPadding,
                 right: contentRect.right + exclusionPadding,
                 bottom: contentRect.bottom + exclusionPadding
+            };
+            state.interactiveZone = {
+                left: state.exclusion.left - safeGap,
+                top: state.exclusion.top - safeGap,
+                right: state.exclusion.right + safeGap,
+                bottom: state.exclusion.bottom + safeGap
             };
 
             let idx = 0;
@@ -1646,34 +1698,77 @@ document.addEventListener('DOMContentLoaded', () => {
                     idx += 1;
                 }
             }
-            radius = Math.max(180, Math.min(300, heroRect.width * 0.2));
         };
 
-        const pointerInsideExclusion = (x, y) => {
-            const box = state.exclusion;
+        const pointInside = (x, y, box) => {
             return box && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+        };
+
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+        const clampHotspotToValidArea = (x, y) => {
+            const clampedToHero = {
+                x: clamp(x, heroRect.left, heroRect.right),
+                y: clamp(y, heroRect.top, heroRect.bottom)
+            };
+            const unsafe = state.interactiveZone;
+            if (!pointInside(clampedToHero.x, clampedToHero.y, unsafe)) {
+                return clampedToHero;
+            }
+
+            const nearestX = Math.abs(clampedToHero.x - unsafe.left) < Math.abs(clampedToHero.x - unsafe.right) ? unsafe.left : unsafe.right;
+            const nearestY = Math.abs(clampedToHero.y - unsafe.top) < Math.abs(clampedToHero.y - unsafe.bottom) ? unsafe.top : unsafe.bottom;
+            const distX = Math.min(Math.abs(clampedToHero.x - unsafe.left), Math.abs(clampedToHero.x - unsafe.right));
+            const distY = Math.min(Math.abs(clampedToHero.y - unsafe.top), Math.abs(clampedToHero.y - unsafe.bottom));
+
+            if (distX < distY) {
+                clampedToHero.x = nearestX;
+            } else {
+                clampedToHero.y = nearestY;
+            }
+
+            clampedToHero.x = clamp(clampedToHero.x, heroRect.left, heroRect.right);
+            clampedToHero.y = clamp(clampedToHero.y, heroRect.top, heroRect.bottom);
+            return clampedToHero;
         };
 
         const tick = () => {
             if (!state.tiles.length) return;
 
-            const hasPointer = pointer.active && !pointerInsideExclusion(pointer.x, pointer.y);
+            if (!hotspot.initialized) {
+                hotspot.x = heroRect.left + (heroRect.width * 0.5);
+                hotspot.y = heroRect.top + (heroRect.height * 0.5);
+                hotspot.initialized = true;
+            }
+
+            const clampedPointer = clampHotspotToValidArea(pointer.x, pointer.y);
+            hotspot.x += (clampedPointer.x - hotspot.x) * config.cursorSmoothing;
+            hotspot.y += (clampedPointer.y - hotspot.y) * config.cursorSmoothing;
+
+            const stableHotspot = clampHotspotToValidArea(hotspot.x, hotspot.y);
+            hotspot.x = stableHotspot.x;
+            hotspot.y = stableHotspot.y;
+
+            visualCursor.style.transform = `translate3d(${(hotspot.x - heroRect.left).toFixed(2)}px, ${(hotspot.y - heroRect.top).toFixed(2)}px, 0) translate(-50%, -50%)`;
+            visualCursor.classList.toggle('active', pointer.active);
+
+            const hasPointer = pointer.active;
             for (let i = 0; i < state.tiles.length; i += 1) {
                 const center = state.centers[i];
-                const excluded = pointerInsideExclusion(center.x, center.y);
+                const excluded = pointInside(center.x, center.y, state.exclusion);
                 let nextTarget = 0;
 
                 if (!excluded && hasPointer) {
-                    const dx = center.x - pointer.x;
-                    const dy = center.y - pointer.y;
+                    const dx = center.x - hotspot.x;
+                    const dy = center.y - hotspot.y;
                     const distance = Math.hypot(dx, dy);
-                    if (distance < radius) {
-                        const normalized = 1 - (distance / radius);
-                        nextTarget = normalized * normalized;
+                    if (distance < config.glowRadius) {
+                        const normalized = 1 - (distance / config.glowRadius);
+                        nextTarget = Math.pow(normalized, config.falloff);
                     }
                 }
                 state.target[i] = nextTarget;
-                state.current[i] += (state.target[i] - state.current[i]) * 0.18;
+                state.current[i] += (state.target[i] - state.current[i]) * config.cursorSmoothing;
 
                 const tile = state.tiles[i];
                 tile.dataset.excluded = excluded ? 'true' : 'false';
@@ -1689,8 +1784,19 @@ document.addEventListener('DOMContentLoaded', () => {
             pointer.active = true;
         }, { passive: true });
 
+        hero.addEventListener('mouseenter', event => {
+            pointer.x = event.clientX;
+            pointer.y = event.clientY;
+            pointer.active = true;
+            const start = clampHotspotToValidArea(pointer.x, pointer.y);
+            hotspot.x = start.x;
+            hotspot.y = start.y;
+            hotspot.initialized = true;
+        }, { passive: true });
+
         hero.addEventListener('mouseleave', () => {
             pointer.active = false;
+            visualCursor.classList.remove('active');
         });
 
         const handleResize = () => {
