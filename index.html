@@ -566,29 +566,29 @@
         </div>
         <div class="reveal reveal-delay-2">
             <div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur">
-                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="inline-flex items-center rounded-full border border-brand-blue/40 bg-brand-blue/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200 mb-4">Live System Preview</div>
+                <div class="grid md:grid-cols-[1fr_auto_1fr] gap-4 text-sm items-center">
                     <div class="bg-[#0f172a] rounded-2xl border border-white/10 p-4">
-                        <p class="text-slate-400 mb-3">Lead Form</p>
+                        <p class="text-slate-300 font-semibold mb-1">Customer Form</p>
+                        <p class="text-[12px] text-slate-400 mb-3">Visitor sends a request</p>
                         <div class="space-y-2">
-                            <div class="h-2 rounded bg-white/20"></div>
-                            <div class="h-2 rounded bg-white/15"></div>
-                            <div class="h-8 rounded bg-brand-blue/60"></div>
+                            <div class="h-8 rounded bg-white/10 px-3 flex items-center text-[11px] text-slate-300">Name: John Smith</div>
+                            <div class="h-8 rounded bg-white/10 px-3 flex items-center text-[11px] text-slate-300">Service: Roof Repair</div>
+                            <div class="h-8 rounded bg-brand-blue/80 flex items-center justify-center text-[11px] font-semibold">Submit Request</div>
                         </div>
                     </div>
-                    <div class="bg-[#0f172a] rounded-2xl border border-white/10 p-4">
-                        <p class="text-slate-400 mb-3">Dashboard</p>
-                        <div class="space-y-2">
-                            <div class="h-8 rounded bg-emerald-500/30"></div>
-                            <div class="h-8 rounded bg-blue-500/30"></div>
-                            <div class="h-8 rounded bg-purple-500/30"></div>
+                    <div class="text-center text-blue-300 text-xl font-bold" aria-hidden="true">→</div>
+                    <div class="space-y-3">
+                        <div class="bg-[#0f172a] rounded-2xl border border-white/10 p-4">
+                            <p class="text-slate-300 font-semibold mb-1">New Lead Received</p>
+                            <p class="text-[12px] text-slate-400">John Smith • Roof Repair</p>
                         </div>
-                    </div>
-                    <div class="bg-[#0f172a] rounded-2xl border border-white/10 p-4">
-                        <p class="text-slate-400 mb-3">Notifications</p>
-                        <div class="space-y-2">
-                            <div class="h-6 rounded bg-white/20"></div>
-                            <div class="h-6 rounded bg-white/15"></div>
-                            <div class="h-6 rounded bg-white/10"></div>
+                        <div class="bg-[#0f172a] rounded-2xl border border-white/10 p-4">
+                            <p class="text-slate-300 font-semibold mb-2">Leads Dashboard</p>
+                            <div class="space-y-2 text-[11px] text-slate-300">
+                                <div class="flex justify-between"><span>John Smith</span><span class="text-emerald-300">New</span></div>
+                                <div class="flex justify-between"><span>Sarah Johnson</span><span class="text-blue-300">Contacted</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -628,26 +628,35 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14 reveal">
             <h2 class="text-[40px] md:text-[52px] font-bold tracking-[-0.02em] mb-4">What Your Website Can Actually Do</h2>
+            <p class="text-sm uppercase tracking-[0.16em] text-brand-blue font-semibold">Example Tools Your Team Would Use Daily</p>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">💬 Smart Lead Capture</h3><p class="text-brand-muted text-sm">Collect better info before customers even call.</p></div>
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">📅 Online Booking</h3><p class="text-brand-muted text-sm">Let customers schedule without picking up the phone.</p></div>
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">🔁 Auto Follow-Ups</h3><p class="text-brand-muted text-sm">Never lose a lead because you missed a call.</p></div>
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">📊 Simple Dashboard</h3><p class="text-brand-muted text-sm">Track leads and stay organized.</p></div>
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">📨 Missed Call Text-Back</h3><p class="text-brand-muted text-sm">Automatically respond when you can’t answer.</p></div>
-            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><h3 class="font-bold mb-2">🔧 Custom Tools</h3><p class="text-brand-muted text-sm">Need something specific? We can build it.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Lead Capture</span><h3 class="font-bold mb-2">Smart Lead Capture</h3><p class="text-brand-muted text-sm">Collect better info before customers even call.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Booking</span><h3 class="font-bold mb-2">Online Booking</h3><p class="text-brand-muted text-sm">Let customers schedule without picking up the phone.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Follow-Up</span><h3 class="font-bold mb-2">Auto Follow-Ups</h3><p class="text-brand-muted text-sm">Never lose a lead because you missed a call.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Dashboard</span><h3 class="font-bold mb-2">Simple Dashboard</h3><p class="text-brand-muted text-sm">Track leads and stay organized.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Notifications</span><h3 class="font-bold mb-2">Missed Call Text-Back</h3><p class="text-brand-muted text-sm">Automatically respond when you can’t answer.</p></div>
+            <div class="bg-brand-light rounded-2xl p-6 border border-slate-100"><span class="inline-flex text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-blue border border-blue-200 rounded-full px-2 py-1 mb-3">Custom System</span><h3 class="font-bold mb-2">Custom Tools</h3><p class="text-brand-muted text-sm">Need something specific? We can build it.</p></div>
         </div>
     </div>
 </section>
 
 <section id="demo" class="py-24 bg-brand-light">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-        <h2 class="text-[40px] md:text-[52px] font-bold tracking-[-0.02em] mb-6">See How It Works</h2>
+        <h2 class="text-[40px] md:text-[52px] font-bold tracking-[-0.02em] mb-3">See How It Works</h2>
+        <p class="text-brand-muted mb-6">This is what your website could be doing every day.</p>
         <div class="bg-[#0f172a] rounded-3xl border border-white/10 p-8 text-left text-slate-200 max-w-3xl mx-auto">
-            <p>1) User fills form → 2) Lead appears in dashboard → 3) Instant notification sent.</p>
-            <div class="mt-4 h-44 rounded-2xl bg-gradient-to-r from-blue-600/30 via-indigo-500/20 to-emerald-500/20 border border-white/10"></div>
+            <div class="inline-flex items-center rounded-full border border-blue-300/40 bg-blue-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200 mb-4">Example Tool Demo</div>
+            <p class="text-sm md:text-base">1) Visitor fills form <span class="text-blue-300">→</span> 2) System processes lead <span class="text-blue-300">→</span> 3) Business gets notified + dashboard updates.</p>
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+                <div class="grid sm:grid-cols-3 gap-3 text-[12px]">
+                    <div class="rounded-xl bg-white/5 p-3">Form Submitted</div>
+                    <div class="rounded-xl bg-white/5 p-3">Notification Sent</div>
+                    <div class="rounded-xl bg-white/5 p-3">Lead Added to CRM</div>
+                </div>
+            </div>
         </div>
-        <p class="mt-5 text-brand-muted">This is what most businesses are missing.</p>
+        <p class="mt-5 text-brand-muted">No abstract design — just a simple workflow your team can use.</p>
     </div>
 </section>
 
