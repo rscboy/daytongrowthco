@@ -793,51 +793,6 @@
 <!-- ═══════════════════════ PROCESS VIEW (HOW IT WORKS TAB) ═══════════════════════ -->
 <div id="view-process" class="hidden">
 
-    <!-- STAT INTERRUPT -->
-    <section id="process" class="pt-32 pb-20 relative bg-[#050505] text-white overflow-hidden noise min-h-[40vh] flex flex-col justify-center">
-        <div class="absolute inset-0 pointer-events-none bg-grid"></div>
-        <div class="absolute top-[10%] left-1/4 w-[600px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-[-10%] right-1/4 w-[500px] h-[400px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
-        
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 w-full stagger-group">
-            <div class="text-center mb-12 lg:mb-16 reveal-sweep">
-                <h1 class="text-[44px] md:text-[56px] lg:text-[64px] font-bold text-white tracking-[-0.02em] leading-[1.1]">
-                    The Numbers <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Don't Lie.</span>
-                </h1>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-                <!-- Stat 1 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-1 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">76%</span>
-                    </div>
-                    <div class="text-white font-bold text-[18px] mb-2">More Likely to Buy</div>
-                    <p class="text-slate-400 text-[14px] leading-relaxed">Customers are 76% more likely to contact a business that has a professional, well-maintained website.</p>
-                </div>
-                <!-- Stat 2 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-2 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">9</span>
-                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold">in</span>
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">10</span>
-                    </div>
-                    <div class="text-white font-bold text-[18px] mb-2">Check Before They Call</div>
-                    <p class="text-slate-400 text-[14px] leading-relaxed">Nine out of ten customers look a business up online before making contact with them.</p>
-                </div>
-                <!-- Stat 3 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-2 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">3</span>
-                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold ml-1">sec</span>
-                    </div>
-                    <div class="text-white font-bold text-[18px] mb-2">Before They're Gone</div>
-                    <p class="text-slate-400 text-[14px] leading-relaxed">If your site takes more than 3 seconds to load, over half of visitors abandon it immediately.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- THE ANIMATED VERTICAL TIMELINE -->
     <section class="py-24 lg:py-32 bg-white overflow-hidden border-t border-slate-100">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -941,6 +896,52 @@
             </div>
         </div>
     </section>
+
+    <!-- STAT INTERRUPT -->
+    <section id="process" class="pt-32 pb-20 relative bg-[#050505] text-white overflow-hidden noise min-h-[40vh] flex flex-col justify-center">
+        <div class="absolute inset-0 pointer-events-none bg-grid"></div>
+        <div class="absolute top-[10%] left-1/4 w-[600px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-1/4 w-[500px] h-[400px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 w-full stagger-group">
+            <div class="text-center mb-12 lg:mb-16 reveal-sweep">
+                <h1 class="text-[44px] md:text-[56px] lg:text-[64px] font-bold text-white tracking-[-0.02em] leading-[1.1]">
+                    The Numbers <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Don't Lie.</span>
+                </h1>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Stat 1 -->
+                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
+                    <div class="flex items-baseline justify-center gap-1 mb-3">
+                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">76%</span>
+                    </div>
+                    <div class="text-white font-bold text-[18px] mb-2">More Likely to Buy</div>
+                    <p class="text-slate-400 text-[14px] leading-relaxed">Customers are 76% more likely to contact a business that has a professional, well-maintained website.</p>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
+                    <div class="flex items-baseline justify-center gap-2 mb-3">
+                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">9</span>
+                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold">in</span>
+                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">10</span>
+                    </div>
+                    <div class="text-white font-bold text-[18px] mb-2">Check Before They Call</div>
+                    <p class="text-slate-400 text-[14px] leading-relaxed">Nine out of ten customers look a business up online before making contact with them.</p>
+                </div>
+                <!-- Stat 3 -->
+                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
+                    <div class="flex items-baseline justify-center gap-2 mb-3">
+                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">3</span>
+                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold ml-1">sec</span>
+                    </div>
+                    <div class="text-white font-bold text-[18px] mb-2">Before They're Gone</div>
+                    <p class="text-slate-400 text-[14px] leading-relaxed">If your site takes more than 3 seconds to load, over half of visitors abandon it immediately.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 </div>
 
