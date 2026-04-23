@@ -320,6 +320,88 @@
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
         .modal-inner { animation: modalIn 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+    
+
+        /* ── INDUSTRY TOOLS SECTION ── */
+        #industrySelector {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            padding-bottom: 0.4rem;
+            scrollbar-width: thin;
+        }
+        .industry-tab {
+            border: 1px solid #dbe4f1;
+            background: #f8fafc;
+            color: #334155;
+            padding: 0.6rem 0.95rem;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 220ms ease;
+        }
+        .industry-tab:hover,
+        .industry-tab:focus-visible { border-color: rgba(37,99,235,0.4); color: #1d4ed8; outline: none; }
+        .industry-tab[aria-selected="true"] {
+            background: #0f172a;
+            color: #f8fafc;
+            border-color: #0f172a;
+            box-shadow: 0 8px 24px rgba(15,23,42,0.16);
+        }
+        .industry-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            background: #fff;
+            padding: 1.25rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+        }
+        .industry-card:hover,
+        .industry-card:focus-within {
+            transform: translateY(-3px);
+            border-color: rgba(37,99,235,0.32);
+            box-shadow: 0 16px 36px rgba(15,23,42,0.09);
+        }
+        @media (min-width: 900px) {
+            .industry-card { grid-template-columns: minmax(0,1fr) 220px; align-items: center; min-height: 220px; }
+        }
+        .type-pill { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 9999px; display: inline-flex; width: fit-content; border: 1px solid #dbeafe; color: #1d4ed8; background: #eff6ff; }
+        .preview-shell {
+            border: 1px solid #dbe4f1;
+            border-radius: 16px;
+            background: #f8fafc;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+            padding: 0.75rem;
+        }
+        .tool-anim-item { position: absolute; border-radius: 8px; }
+        .tool-anim-pill { border-radius: 9999px; padding: 3px 8px; font-size: 10px; font-weight: 700; }
+
+        
+        @keyframes previewFadeIn { 0%,100% { opacity:.35; transform: translateY(3px);} 35%,75% {opacity:1; transform: translateY(0);} }
+        @keyframes previewGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.0);} 45% { box-shadow: 0 0 0 6px rgba(37,99,235,.12);} }
+        @keyframes previewSlideIn { 0%,100% { opacity:0; transform: translateY(10px);} 25%,80% {opacity:1; transform: translateY(0);} }
+        @keyframes previewPulse { 0%,100% { transform: scale(1); opacity:.55; } 50% { transform: scale(1.06); opacity:1; } }
+        @keyframes previewFill { 0%,100% { width: 16%; } 55% { width: 100%; } }
+        @keyframes previewShift { 0%,100% { transform: translateX(0);} 50% { transform: translateX(14px);} }
+        .preview-fade { animation: previewFadeIn 3.8s ease-in-out infinite; }
+        .preview-glow { animation: previewGlow 3.6s ease-in-out infinite; }
+        .preview-slide { animation: previewSlideIn 4s cubic-bezier(0.16,1,0.3,1) infinite; }
+        .preview-pulse { animation: previewPulse 2.8s ease-in-out infinite; }
+        .preview-fill { animation: previewFill 4s ease-in-out infinite; }
+        .preview-shift { animation: previewShift 3.2s ease-in-out infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .industry-card,
+            .industry-tab,
+            .industry-tools-fade,
+            .preview-shell * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+        }
+
     </style>
 </head>
 
@@ -585,106 +667,24 @@
         </div>
     </section>
 
-    <!-- 3. TOOLS BENTO GRID -->
-    <section class="py-24 bg-[#050505] text-white relative z-20 pb-32 border-t border-white/[0.04]">
+    <!-- 3. INDUSTRY TOOLS SECTION -->
+    <section id="industry-tools" class="py-20 md:py-24 lg:py-28 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
-            <div class="text-center mb-16 reveal-sweep">
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight mb-5">What Your Website Can <em>Actually</em> Do</h2>
+            <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
+                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">EXAMPLES BY INDUSTRY</div>
+                <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">See the Kinds of Tools We Can Build for Your Business</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Every business has different bottlenecks. Explore your industry to see examples of simple tools, automations, and custom systems that can help you capture more leads, save time, and stay organized.</p>
+                <p class="mt-4 text-[13px] md:text-[14px] text-slate-500">These are examples, not fixed packages. We use the best existing tools when they fit, and build custom solutions when they do not.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <!-- Tool 1 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group">
-                    <div class="flex items-center gap-3 mb-3">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <h3 class="text-[17px] font-bold text-white">Smart Lead Capture</h3>
-                    </div>
-                    <p class="text-slate-400 text-[13px] leading-relaxed flex-1">Collect better info before customers even call. Custom forms that qualify leads instantly.</p>
-                    <div class="mt-6 bg-[#161B22] border border-white/[0.05] rounded-xl p-4 transition-opacity">
-                        <div class="space-y-2">
-                            <div class="h-6 bg-[#0D1117] border border-white/[0.05] rounded text-[8px] text-slate-500 px-2 flex items-center">
-                                <span class="anim-tool-t1">John Smith</span>
-                            </div>
-                            <div class="h-6 bg-[#0D1117] border border-white/[0.05] rounded text-[8px] text-slate-500 px-2 flex items-center justify-between">
-                                <span class="anim-tool-t2">Roof Repair</span>
-                                <svg class="w-2 h-2 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7"/></svg>
-                            </div>
-                            <div class="h-7 rounded flex items-center justify-center text-[10px] font-bold text-white mt-1 anim-tool-btn">Submit</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Tool 2 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group">
-                    <div class="flex items-center gap-3 mb-3">
-                        <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <h3 class="text-[17px] font-bold text-white">Online Booking</h3>
-                    </div>
-                    <p class="text-slate-400 text-[13px] leading-relaxed flex-1">Let customers schedule estimates and appointments without picking up the phone.</p>
-                    <div class="mt-6 bg-[#161B22] border border-white/[0.05] rounded-xl p-4 transition-opacity">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="text-[9px] text-white font-bold">May 2026</div>
-                        </div>
-                        <div class="grid grid-cols-7 gap-1">
-                            <div class="h-4 bg-white/5 rounded-sm"></div><div class="h-4 bg-white/5 rounded-sm"></div><div class="h-4 bg-white/5 rounded-sm"></div>
-                            <div class="h-4 bg-white/5 rounded-sm"></div><div class="h-4 rounded-sm anim-tool-slot"></div><div class="h-4 bg-white/5 rounded-sm"></div><div class="h-4 bg-white/5 rounded-sm"></div>
-                        </div>
-                    </div>
-                </div>
+            <div id="industrySelector" class="reveal-sweep" role="tablist" aria-label="Industry examples"></div>
+            <div class="mt-8 md:mt-10">
+                <div id="industryToolsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6" aria-live="polite"></div>
+            </div>
 
-                <!-- Tool 3 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group">
-                    <div class="flex items-center gap-3 mb-3">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <h3 class="text-[17px] font-bold text-white">Auto Follow-Ups</h3>
-                    </div>
-                    <p class="text-slate-400 text-[13px] leading-relaxed flex-1">Never lose a lead because you missed a call or forgot to email them back.</p>
-                    <div class="mt-6 flex flex-col gap-1.5 pl-2 transition-opacity">
-                        <div class="bg-white/10 border border-white/20 rounded text-[9px] px-2 py-1 w-24 text-center text-white anim-cascade-1">New Lead</div>
-                        <div class="w-px h-3 bg-white/20 ml-12 anim-cascade-1"></div>
-                        <div class="bg-blue-600/20 border border-blue-500/50 text-blue-300 rounded text-[9px] px-2 py-1 w-28 text-center flex items-center justify-center gap-1 anim-cascade-2">✓ Send Email</div>
-                        <div class="w-px h-3 bg-white/20 ml-12 anim-cascade-2"></div>
-                        <div class="bg-emerald-600/20 border border-emerald-500/50 text-emerald-300 rounded text-[9px] px-2 py-1 w-28 text-center flex items-center justify-center gap-1 anim-cascade-3">✓ Send Text</div>
-                    </div>
-                </div>
-
-                <!-- Tool 4 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group">
-                    <div class="flex items-center gap-3 mb-3">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                        <h3 class="text-[17px] font-bold text-white">Simple Dashboard</h3>
-                    </div>
-                    <p class="text-slate-400 text-[13px] leading-relaxed flex-1">Track leads and stay organized with real-time updates directly in your browser.</p>
-                    <div class="mt-6 bg-[#161B22] border border-white/[0.05] rounded-xl p-3 transition-opacity">
-                        <div class="flex justify-between items-center border-b border-white/[0.05] pb-2 mb-2">
-                            <div class="flex gap-2 items-center"><div class="w-4 h-4 rounded-full bg-slate-600"></div><div class="h-2 w-12 bg-white/20 rounded"></div></div>
-                            <div class="px-1.5 rounded uppercase text-[7px] border anim-tag-change font-bold">New</div>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex gap-2 items-center"><div class="w-4 h-4 rounded-full bg-slate-600"></div><div class="h-2 w-14 bg-white/20 rounded"></div></div>
-                            <div class="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[7px] px-1.5 rounded uppercase font-bold">Booked</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tool 5 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group">
-                    <div class="flex items-center gap-3 mb-3">
-                        <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                        <h3 class="text-[17px] font-bold text-white">Missed Call Text-Back</h3>
-                    </div>
-                    <p class="text-slate-400 text-[13px] leading-relaxed flex-1">Automatically text customers immediately when you can't answer the phone.</p>
-                    <div class="mt-6 flex flex-col gap-2 px-2 transition-opacity">
-                        <div class="bg-[#161B22] border border-white/10 rounded-2xl rounded-tl-sm p-2 text-[9px] text-slate-300 w-3/4 self-start anim-bubble-1">Missed call from (555) 123...</div>
-                        <div class="bg-blue-600 rounded-2xl rounded-tr-sm p-2 text-[9px] text-white w-4/5 self-end text-right shadow-sm anim-bubble-2">Hi! Thanks for calling. How can we help you today?</div>
-                    </div>
-                </div>
-
-                <!-- Tool 6 -->
-                <div class="bg-[#0A0E1A] border border-white/[0.06] rounded-[24px] p-6 flex flex-col h-full stagger-item group items-center text-center justify-center">
-                    <svg class="w-12 h-12 text-blue-500 mx-auto mb-4 opacity-80 group-hover:opacity-100 transition-opacity group-hover:scale-110 transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
-                    <h3 class="text-[17px] font-bold text-white mb-2">Custom Tools</h3>
-                    <p class="text-slate-400 text-[13px] leading-relaxed">Need an area calculator or pricing estimator? If it helps you run your business, we can build it.</p>
-                </div>
+            <div class="mt-10 md:mt-12 rounded-[24px] border border-slate-200 bg-slate-50 px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4 reveal-sweep">
+                <p class="text-[15px] md:text-[16px] text-brand-dark">Need something specific? We can recommend the right setup or build it from scratch.</p>
+                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Get My Free Audit</a>
             </div>
         </div>
     </section>
@@ -1299,6 +1299,160 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     initReveal();
+
+    // Industry tools interactive section
+    const industryData = [
+      { id:'contractors', label:'Contractors', tools:[
+        { name:'Smart Quote Request Form', benefit:'Get better leads before the phone rings', description:'A custom form that asks the right questions about project type, location, urgency, and budget so contractors get better-qualified inquiries.', type:'Hybrid setup', animation:'form-submit' },
+        { name:'Service Area Estimator', benefit:'Help customers self-qualify instantly', description:'A simple tool that lets customers enter zip code, project type, or square footage to estimate if the company serves them and what the project range might be.', type:'Custom build', animation:'estimate-calc' },
+        { name:'Missed Call Text-Back System', benefit:'Capture leads even when the crew is busy', description:'Automatically text customers back when a call is missed so no lead disappears after hours or during jobs.', type:'Best with existing tools', animation:'text-reply' },
+        { name:'Lead Dashboard for Jobs', benefit:'Keep new requests organized', description:'A lightweight dashboard showing new inquiries, contacted leads, estimates sent, and booked jobs.', type:'Custom build', animation:'dashboard-status' }
+      ]},
+      { id:'auto-repair', label:'Auto Repair', tools:[
+        { name:'Repair Request Intake Form', benefit:'Pre-qualify service requests online', description:'A guided form that collects vehicle info, symptoms, urgency, and preferred appointment timing before the shop has to answer the phone.', type:'Hybrid setup', animation:'dropdown-select' },
+        { name:'Appointment Booking Tool', benefit:'Let customers request service after hours', description:'A scheduling interface for oil changes, inspections, diagnostics, and other common shop appointments.', type:'Best with existing tools', animation:'calendar-booking' },
+        { name:'Repair Status Tracker', benefit:'Reduce “is my car ready?” calls', description:'A simple customer-facing status tracker that shows progress like Received, Diagnosing, In Progress, Ready for Pickup.', type:'Custom build', animation:'pipeline-progress' },
+        { name:'Missed Call Follow-Up System', benefit:'Recover lost jobs automatically', description:'When the shop misses a call, the system immediately texts the customer and starts a simple intake flow.', type:'Best with existing tools', animation:'text-reply' }
+      ]},
+      { id:'dentists-ortho', label:'Dentists & Ortho', tools:[
+        { name:'New Patient Intake Flow', benefit:'Collect better patient info before scheduling', description:'A modern intake flow that gathers treatment interest, insurance status, and contact details before the office has to follow up.', type:'Hybrid setup', animation:'checklist-flow' },
+        { name:'Consultation Booking System', benefit:'Make it easier to book consultations', description:'A simple booking workflow for whitening consults, orthodontic consults, or cosmetic dentistry inquiries.', type:'Best with existing tools', animation:'calendar-booking' },
+        { name:'Treatment Interest Quiz', benefit:'Guide visitors to the right service', description:'A short guided quiz that helps visitors identify which service fits their needs and routes them to the correct next step.', type:'Custom build', animation:'quiz-flow' },
+        { name:'Lead Follow-Up Dashboard', benefit:'Track inquiries that haven’t booked yet', description:'A simple internal view showing new leads, contacted leads, and consultations booked.', type:'Custom build', animation:'dashboard-status' }
+      ]},
+      { id:'law-firms', label:'Law Firms', tools:[
+        { name:'Case Intake Form', benefit:'Filter and organize leads faster', description:'A structured intake form for injury, family law, or criminal defense leads that captures the right details up front.', type:'Hybrid setup', animation:'form-submit' },
+        { name:'Consultation Request Tool', benefit:'Make contacting the firm easier', description:'A modern consultation request flow that feels more professional than a basic contact form.', type:'Best with existing tools', animation:'notification-toast' },
+        { name:'Lead Qualification Workflow', benefit:'Reduce time spent on low-fit leads', description:'A logic-based workflow that routes inquiries based on location, case type, or urgency.', type:'Custom build', animation:'pipeline-progress' },
+        { name:'Simple Intake Dashboard', benefit:'Keep inquiries organized by stage', description:'A clean dashboard that tracks inquiry received, contacted, consult scheduled, and retained.', type:'Custom build', animation:'dashboard-status' }
+      ]},
+      { id:'med-spas', label:'Med Spas', tools:[
+        { name:'Treatment Consultation Quiz', benefit:'Guide prospects toward the right service', description:'A branded quiz helping visitors choose the most relevant service before booking.', type:'Custom build', animation:'quiz-flow' },
+        { name:'Booking System for Consults', benefit:'Make consultation scheduling frictionless', description:'A clean, premium booking experience for consultations and service requests.', type:'Best with existing tools', animation:'calendar-booking' },
+        { name:'Lead Nurture Follow-Up Flow', benefit:'Stay in front of warm prospects', description:'An automated follow-up sequence for consultation requests that have not booked yet.', type:'Hybrid setup', animation:'checklist-flow' },
+        { name:'Offer Landing Page Tool', benefit:'Promote seasonal campaigns more effectively', description:'A focused page and lead form setup for treatments, promos, and limited-time campaigns.', type:'Custom build', animation:'notification-toast' }
+      ]},
+      { id:'landscapers', label:'Landscapers', tools:[
+        { name:'Yard Quote Form', benefit:'Get clearer quote requests', description:'A service form that collects yard size, job type, timeline, and address before contact.', type:'Hybrid setup', animation:'form-submit' },
+        { name:'Seasonal Service Signup Tool', benefit:'Make recurring services easier to sell', description:'A simple signup interface for mowing, mulch, cleanup, snow removal, or maintenance plans.', type:'Custom build', animation:'checklist-flow' },
+        { name:'Service Area Checker', benefit:'Instantly confirm if they serve the customer', description:'A lightweight area checker using zip code or address to confirm service coverage.', type:'Custom build', animation:'estimate-calc' },
+        { name:'Missed Call Auto Reply', benefit:'Capture landscaping leads after hours', description:'Automatically respond when calls are missed and direct customers into the right inquiry flow.', type:'Best with existing tools', animation:'text-reply' }
+      ]},
+      { id:'cleaning-services', label:'Cleaning Services', tools:[
+        { name:'Cleaning Quote Calculator', benefit:'Make quote requests easier and faster', description:'A calculator that estimates pricing based on home size, frequency, and service type.', type:'Custom build', animation:'estimate-calc' },
+        { name:'Booking Request Form', benefit:'Collect service details before follow-up', description:'A form that captures square footage, service type, recurring vs one-time, and preferred schedule.', type:'Hybrid setup', animation:'form-submit' },
+        { name:'Recurring Service Signup Flow', benefit:'Encourage long-term recurring clients', description:'A cleaner signup process for weekly, biweekly, or monthly plans.', type:'Custom build', animation:'checklist-flow' },
+        { name:'Lead Follow-Up Automation', benefit:'Keep quote requests from going cold', description:'A simple message sequence that follows up on new inquiries if the customer does not respond right away.', type:'Best with existing tools', animation:'notification-toast' }
+      ]},
+      { id:'real-estate', label:'Real Estate', tools:[
+        { name:'Buyer Intake Form', benefit:'Pre-qualify leads before the call', description:'A form that collects timeline, price range, financing status, and target area.', type:'Hybrid setup', animation:'dropdown-select' },
+        { name:'Home Valuation Request Tool', benefit:'Generate seller leads more effectively', description:'A custom landing experience for homeowners requesting a valuation.', type:'Custom build', animation:'form-submit' },
+        { name:'Open House Follow-Up Flow', benefit:'Capture and nurture event leads', description:'A system that follows up with open house visitors automatically after they sign in.', type:'Best with existing tools', animation:'notification-toast' },
+        { name:'Lead Tracking Dashboard', benefit:'See exactly where each prospect stands', description:'A simple internal dashboard for New, Contacted, Viewing Scheduled, Offer Stage, Closed.', type:'Custom build', animation:'pipeline-progress' }
+      ]},
+      { id:'nonprofits', label:'Nonprofits', tools:[
+        { name:'Volunteer Signup System', benefit:'Make volunteering easier to manage', description:'A modern form and workflow for volunteer interest, availability, and role matching.', type:'Hybrid setup', animation:'checklist-flow' },
+        { name:'Donation Campaign Landing Tool', benefit:'Increase campaign clarity and conversions', description:'A focused landing page experience for a specific fundraising campaign.', type:'Best with existing tools', animation:'estimate-calc' },
+        { name:'Event Response Tracker', benefit:'Organize event signups more clearly', description:'A dashboard for RSVPs, follow-ups, attendance status, and reminders.', type:'Custom build', animation:'dashboard-status' },
+        { name:'Constituent Intake Workflow', benefit:'Keep outreach and responses organized', description:'A simple internal system for tracking inquiries, requests, and follow-up actions.', type:'Custom build', animation:'pipeline-progress' }
+      ]},
+      { id:'gyms-fitness', label:'Gyms & Fitness', tools:[
+        { name:'Trial Class Signup Tool', benefit:'Capture more trial leads', description:'A simple signup flow for trial classes, intro sessions, or personal training consultations.', type:'Hybrid setup', animation:'form-submit' },
+        { name:'Membership Interest Quiz', benefit:'Help visitors choose the right membership', description:'A short quiz that routes prospects toward the best plan based on goals and preferences.', type:'Custom build', animation:'quiz-flow' },
+        { name:'Consultation Booking Flow', benefit:'Make joining the gym easier', description:'A booking tool for tours, intro calls, and personal training consultations.', type:'Best with existing tools', animation:'calendar-booking' },
+        { name:'Lead Nurture Dashboard', benefit:'Track prospects who have not joined yet', description:'A lightweight lead board showing New, Contacted, Trial Booked, Joined.', type:'Custom build', animation:'pipeline-progress' }
+      ]}
+    ];
+
+    const selectorEl = document.getElementById('industrySelector');
+    const toolsGridEl = document.getElementById('industryToolsGrid');
+    let activeIndustry = industryData[0]?.id;
+
+    const previewByType = (type) => {
+        if (type === 'form-submit' || type === 'dropdown-select') {
+            return `<div class="preview-shell"><div class="h-4 w-20 bg-slate-300 rounded preview-fade mb-2"></div><div class="h-8 border border-slate-300 rounded-lg bg-white preview-glow mb-2"></div><div class="h-8 border border-slate-300 rounded-lg bg-white preview-fade mb-3" style="animation-delay:.4s"></div><div class="h-8 bg-blue-600 rounded-lg text-white text-[11px] font-semibold flex items-center justify-center preview-pulse">Submit</div><div class="tool-anim-item preview-slide bg-emerald-100 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="right:10px; bottom:10px;">New lead added</div></div>`;
+        }
+        if (type === 'calendar-booking') {
+            return `<div class="preview-shell"><div class="grid grid-cols-4 gap-1.5 mb-2">${Array.from({length:12}).map((_,i)=>`<div class="h-5 rounded ${i===6?'bg-blue-600/90 preview-pulse':'bg-slate-200'}"></div>`).join('')}</div><div class="h-6 rounded-lg bg-emerald-100 border border-emerald-300 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Appointment confirmed</div></div>`;
+        }
+        if (type === 'dashboard-status') {
+            return `<div class="preview-shell"><div class="space-y-2"><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-16 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-blue-50 text-blue-700 preview-fade">New</span></div><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-20 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700 preview-slide">Contacted</span></div><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-12 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-violet-50 text-violet-700 preview-fade" style="animation-delay:.3s">Booked</span></div></div></div>`;
+        }
+        if (type === 'text-reply' || type === 'notification-toast') {
+            return `<div class="preview-shell"><div class="tool-anim-item preview-slide bg-white border border-slate-300 text-[10px] text-slate-600 px-2 py-1.5" style="left:10px; top:20px; max-width:150px;">Missed call detected</div><div class="tool-anim-item preview-slide bg-blue-600 text-white text-[10px] px-2 py-1.5" style="right:10px; top:72px; animation-delay:.6s; max-width:145px;">Thanks for calling — how can we help?</div><div class="tool-anim-item preview-fade bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="left:10px; bottom:10px;">Automated follow-up sent</div></div>`;
+        }
+        if (type === 'quiz-flow' || type === 'checklist-flow') {
+            return `<div class="preview-shell"><div class="space-y-2"><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center"><span class="h-2 w-3/5 bg-slate-300 rounded"></span></div><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center"><span class="h-2 w-2/5 bg-slate-300 rounded"></span></div><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center justify-between preview-glow"><span class="h-2 w-1/2 bg-slate-300 rounded"></span><span class="text-emerald-600 text-[11px] font-bold">✓</span></div></div><div class="tool-anim-item h-1.5 bg-blue-600 rounded-full preview-fill" style="left:10px; bottom:10px;"></div></div>`;
+        }
+        if (type === 'estimate-calc') {
+            return `<div class="preview-shell"><div class="h-7 bg-white border border-slate-300 rounded-lg mb-2 px-2 flex items-center"><span class="h-2 w-12 bg-slate-300 rounded"></span></div><div class="h-2 bg-slate-200 rounded-full mb-3"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div><div class="h-10 bg-white border border-blue-200 rounded-lg px-3 flex items-center justify-between preview-glow"><span class="text-[10px] text-slate-500">Estimated range</span><span class="text-[11px] text-blue-700 font-bold preview-shift">$4.5k–$6.8k</span></div></div>`;
+        }
+        return `<div class="preview-shell"><div class="h-full w-full bg-white border border-slate-200 rounded-lg"></div></div>`;
+    };
+
+    const toolCard = (tool, index) => `
+      <article class="industry-card industry-tools-fade" style="transition-delay:${index * 60}ms;" tabindex="0">
+        <div>
+          <span class="type-pill">${tool.type}</span>
+          <h3 class="mt-3 text-[24px] leading-tight font-bold text-brand-dark">${tool.name}</h3>
+          <p class="mt-2 text-[15px] font-semibold text-slate-800">${tool.benefit}</p>
+          <p class="mt-2 text-[14px] text-slate-500 leading-relaxed">${tool.description}</p>
+        </div>
+        ${previewByType(tool.animation)}
+      </article>`;
+
+    const renderIndustryTabs = () => {
+        if (!selectorEl) return;
+        selectorEl.innerHTML = industryData.map((industry, idx) => `
+          <button class="industry-tab" role="tab" id="tab-${industry.id}" aria-selected="${industry.id === activeIndustry}" aria-controls="panel-${industry.id}" tabindex="${industry.id === activeIndustry ? 0 : -1}" data-industry-id="${industry.id}">${industry.label}</button>
+        `).join('');
+
+        selectorEl.querySelectorAll('[role="tab"]').forEach((tab, idx, arr) => {
+            tab.addEventListener('click', () => switchIndustry(tab.dataset.industryId));
+            tab.addEventListener('keydown', (e) => {
+                const key = e.key;
+                if (!['ArrowLeft','ArrowRight','Home','End'].includes(key)) return;
+                e.preventDefault();
+                let next = idx;
+                if (key === 'ArrowRight') next = (idx + 1) % arr.length;
+                if (key === 'ArrowLeft') next = (idx - 1 + arr.length) % arr.length;
+                if (key === 'Home') next = 0;
+                if (key === 'End') next = arr.length - 1;
+                arr[next].focus();
+                switchIndustry(arr[next].dataset.industryId);
+            });
+        });
+    };
+
+    const renderTools = () => {
+        if (!toolsGridEl) return;
+        const industry = industryData.find(i => i.id === activeIndustry) || industryData[0];
+        toolsGridEl.style.opacity = '0';
+        toolsGridEl.style.transform = 'translateY(8px)';
+        setTimeout(() => {
+            toolsGridEl.innerHTML = industry.tools.map(toolCard).join('');
+            toolsGridEl.setAttribute('id', `panel-${industry.id}`);
+            toolsGridEl.setAttribute('role', 'tabpanel');
+            toolsGridEl.setAttribute('aria-labelledby', `tab-${industry.id}`);
+            toolsGridEl.setAttribute('aria-label', `${industry.label} tools`);
+            requestAnimationFrame(() => {
+                toolsGridEl.style.transition = 'opacity 260ms ease, transform 260ms ease';
+                toolsGridEl.style.opacity = '1';
+                toolsGridEl.style.transform = 'translateY(0)';
+            });
+        }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
+    };
+
+    const switchIndustry = (industryId) => {
+        activeIndustry = industryId;
+        renderIndustryTabs();
+        renderTools();
+    };
+
+    if (selectorEl && toolsGridEl) {
+        renderIndustryTabs();
+        renderTools();
+    }
 
     // Mobile menu
     const btn = document.getElementById('mobileMenuBtn');
