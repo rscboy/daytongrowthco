@@ -357,6 +357,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 1rem;
+            align-items: stretch;
             transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
         }
         .industry-card:hover,
@@ -366,20 +367,35 @@
             box-shadow: 0 16px 36px rgba(15,23,42,0.09);
         }
         @media (min-width: 900px) {
-            .industry-card { grid-template-columns: minmax(0,1fr) 220px; align-items: center; min-height: 220px; }
+            .industry-card { grid-template-columns: minmax(0,1fr) minmax(220px, 236px); min-height: 244px; }
         }
         .type-pill { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 9999px; display: inline-flex; width: fit-content; border: 1px solid #dbeafe; color: #1d4ed8; background: #eff6ff; }
         .preview-shell {
             border: 1px solid #dbe4f1;
             border-radius: 16px;
             background: #f8fafc;
-            height: 150px;
+            height: 160px;
             position: relative;
             overflow: hidden;
-            padding: 0.75rem;
+            padding: 0.7rem;
+            isolation: isolate;
+        }
+        .preview-safe-area {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            overflow: hidden;
         }
         .tool-anim-item { position: absolute; border-radius: 8px; }
         .tool-anim-pill { border-radius: 9999px; padding: 3px 8px; font-size: 10px; font-weight: 700; }
+        .preview-row { height: 30px; border: 1px solid #dbe4f1; border-radius: 10px; background: #fff; padding: 0 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .preview-label { font-size: 10px; line-height: 1; color: #64748b; font-weight: 600; letter-spacing: 0.01em; }
+        .preview-field-line { height: 7px; border-radius: 9999px; background: #cbd5e1; }
+        .preview-action-btn { height: 30px; border-radius: 10px; background: #2563eb; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
         
         @keyframes previewFadeIn { 0%,100% { opacity:.35; transform: translateY(3px);} 35%,75% {opacity:1; transform: translateY(0);} }
@@ -388,12 +404,32 @@
         @keyframes previewPulse { 0%,100% { transform: scale(1); opacity:.55; } 50% { transform: scale(1.06); opacity:1; } }
         @keyframes previewFill { 0%,100% { width: 16%; } 55% { width: 100%; } }
         @keyframes previewShift { 0%,100% { transform: translateX(0);} 50% { transform: translateX(14px);} }
+        @keyframes previewBubbleIn {
+            0%, 12%, 100% { opacity: 0; transform: translateY(6px); }
+            18%, 82% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes previewSlotPulse {
+            0%, 100% { background-color: #f1f5f9; border-color: #dbe4f1; }
+            45%, 70% { background-color: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.36); }
+        }
+        @keyframes previewSwap {
+            0%, 40% { opacity: 1; transform: translateY(0); }
+            50%, 100% { opacity: 0; transform: translateY(-5px); }
+        }
+        @keyframes previewReveal {
+            0%, 42% { opacity: 0; transform: translateY(5px); }
+            52%, 100% { opacity: 1; transform: translateY(0); }
+        }
         .preview-fade { animation: previewFadeIn 3.8s ease-in-out infinite; }
         .preview-glow { animation: previewGlow 3.6s ease-in-out infinite; }
         .preview-slide { animation: previewSlideIn 4s cubic-bezier(0.16,1,0.3,1) infinite; }
         .preview-pulse { animation: previewPulse 2.8s ease-in-out infinite; }
         .preview-fill { animation: previewFill 4s ease-in-out infinite; }
         .preview-shift { animation: previewShift 3.2s ease-in-out infinite; }
+        .preview-bubble { animation: previewBubbleIn 4.8s cubic-bezier(0.16,1,0.3,1) infinite; }
+        .preview-slot { animation: previewSlotPulse 4.2s ease-in-out infinite; }
+        .preview-swap { animation: previewSwap 4.4s ease-in-out infinite; }
+        .preview-reveal { animation: previewReveal 4.4s ease-in-out infinite; }
 
         @media (prefers-reduced-motion: reduce) {
             .industry-card,
@@ -1370,22 +1406,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const previewByType = (type) => {
         if (type === 'form-submit' || type === 'dropdown-select') {
-            return `<div class="preview-shell"><div class="h-4 w-20 bg-slate-300 rounded preview-fade mb-2"></div><div class="h-8 border border-slate-300 rounded-lg bg-white preview-glow mb-2"></div><div class="h-8 border border-slate-300 rounded-lg bg-white preview-fade mb-3" style="animation-delay:.4s"></div><div class="h-8 bg-blue-600 rounded-lg text-white text-[11px] font-semibold flex items-center justify-center preview-pulse">Submit</div><div class="tool-anim-item preview-slide bg-emerald-100 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="right:10px; bottom:10px;">New lead added</div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-1.5">
+                    <div class="preview-label">Intake form</div>
+                    <div class="preview-row preview-glow"><span class="preview-field-line w-[58%]"></span><span class="h-2 w-8 rounded-full bg-blue-100"></span></div>
+                    <div class="preview-row preview-fade" style="animation-delay:.2s"><span class="preview-field-line w-[66%]"></span><span class="h-2 w-7 rounded-full bg-slate-200"></span></div>
+                    <div class="preview-row preview-fade" style="animation-delay:.35s"><span class="preview-field-line w-[48%]"></span><span class="h-2 w-9 rounded-full bg-slate-200"></span></div>
+                    <div class="preview-action-btn preview-pulse">Submit request</div>
+                    <div class="tool-anim-item preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="right:8px; bottom:8px;">Saved successfully</div>
+                </div>
+            </div>`;
         }
         if (type === 'calendar-booking') {
-            return `<div class="preview-shell"><div class="grid grid-cols-4 gap-1.5 mb-2">${Array.from({length:12}).map((_,i)=>`<div class="h-5 rounded ${i===6?'bg-blue-600/90 preview-pulse':'bg-slate-200'}"></div>`).join('')}</div><div class="h-6 rounded-lg bg-emerald-100 border border-emerald-300 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Appointment confirmed</div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-2">
+                    <div class="grid grid-cols-3 gap-1.5">${Array.from({length:9}).map((_,i)=>`<div class="h-5 rounded-md border ${i===4?'border-blue-300 bg-blue-50 preview-slot':'border-slate-200 bg-slate-100'}"></div>`).join('')}</div>
+                    <div class="space-y-1.5">
+                        <div class="h-6 rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between">
+                            <span class="preview-label text-[10px]">Thu 2:30 PM</span><span class="h-2 w-8 bg-slate-200 rounded-full"></span>
+                        </div>
+                        <div class="h-6 rounded-lg border border-emerald-300 bg-emerald-50 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Booking confirmed</div>
+                    </div>
+                </div>
+            </div>`;
         }
         if (type === 'dashboard-status') {
-            return `<div class="preview-shell"><div class="space-y-2"><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-16 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-blue-50 text-blue-700 preview-fade">New</span></div><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-20 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700 preview-slide">Contacted</span></div><div class="h-8 bg-white border border-slate-200 rounded-lg px-2 flex items-center justify-between"><span class="h-2 w-12 bg-slate-300 rounded"></span><span class="tool-anim-pill bg-violet-50 text-violet-700 preview-fade" style="animation-delay:.3s">Booked</span></div></div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-1.5">
+                    <div class="preview-row"><span class="preview-field-line w-[52%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">New</span></div>
+                    <div class="preview-row preview-fade"><span class="preview-field-line w-[64%]"></span><span class="tool-anim-pill bg-amber-50 text-amber-700">Reviewing</span></div>
+                    <div class="preview-row preview-slide"><span class="preview-field-line w-[44%]"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Contacted</span></div>
+                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="preview-field-line w-[38%]"></span><span class="tool-anim-pill bg-violet-50 text-violet-700">Booked</span></div>
+                </div>
+            </div>`;
         }
         if (type === 'text-reply' || type === 'notification-toast') {
-            return `<div class="preview-shell"><div class="tool-anim-item preview-slide bg-white border border-slate-300 text-[10px] text-slate-600 px-2 py-1.5" style="left:10px; top:20px; max-width:150px;">Missed call detected</div><div class="tool-anim-item preview-slide bg-blue-600 text-white text-[10px] px-2 py-1.5" style="right:10px; top:72px; animation-delay:.6s; max-width:145px;">Thanks for calling — how can we help?</div><div class="tool-anim-item preview-fade bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="left:10px; bottom:10px;">Automated follow-up sent</div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area relative">
+                    <div class="absolute left-2 top-2 max-w-[128px] rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call from website lead</div>
+                    <div class="absolute right-2 top-[56px] max-w-[126px] rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Thanks for calling — we can help.</div>
+                    <div class="absolute left-2 bottom-2 right-2 h-7 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
+                        <span>Automation triggered</span><span class="opacity-80">Sent</span>
+                    </div>
+                </div>
+            </div>`;
         }
         if (type === 'quiz-flow' || type === 'checklist-flow') {
-            return `<div class="preview-shell"><div class="space-y-2"><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center"><span class="h-2 w-3/5 bg-slate-300 rounded"></span></div><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center"><span class="h-2 w-2/5 bg-slate-300 rounded"></span></div><div class="h-7 bg-white border border-slate-300 rounded-lg px-2 flex items-center justify-between preview-glow"><span class="h-2 w-1/2 bg-slate-300 rounded"></span><span class="text-emerald-600 text-[11px] font-bold">✓</span></div></div><div class="tool-anim-item h-1.5 bg-blue-600 rounded-full preview-fill" style="left:10px; bottom:10px;"></div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-2">
+                    <div class="flex items-center gap-1.5">${Array.from({length:4}).map((_,i)=>`<span class="h-1.5 w-1.5 rounded-full ${i < 3 ? 'bg-blue-500' : 'bg-slate-300'} ${i===2 ? 'preview-pulse' : ''}"></span>`).join('')}<span class="ml-1 text-[10px] text-slate-500 font-semibold">Step 3/4</span></div>
+                    <div class="preview-row"><span class="preview-field-line w-[68%]"></span><span class="h-3 w-3 rounded-full border border-slate-300"></span></div>
+                    <div class="preview-row preview-glow"><span class="preview-field-line w-[54%]"></span><span class="h-3 w-3 rounded-full bg-emerald-500"></span></div>
+                    <div class="relative overflow-hidden h-6 rounded-lg border border-blue-200 bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">
+                        <span class="preview-swap absolute">Evaluating answer…</span>
+                        <span class="preview-reveal">Matched next step</span>
+                    </div>
+                </div>
+            </div>`;
         }
         if (type === 'estimate-calc') {
-            return `<div class="preview-shell"><div class="h-7 bg-white border border-slate-300 rounded-lg mb-2 px-2 flex items-center"><span class="h-2 w-12 bg-slate-300 rounded"></span></div><div class="h-2 bg-slate-200 rounded-full mb-3"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div><div class="h-10 bg-white border border-blue-200 rounded-lg px-3 flex items-center justify-between preview-glow"><span class="text-[10px] text-slate-500">Estimated range</span><span class="text-[11px] text-blue-700 font-bold preview-shift">$4.5k–$6.8k</span></div></div>`;
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-2">
+                    <div class="preview-row"><span class="preview-label">Property size</span><span class="preview-field-line w-10"></span></div>
+                    <div class="preview-row"><span class="preview-label">Service type</span><span class="h-2 w-8 rounded-full bg-slate-200"></span></div>
+                    <div class="h-2 bg-slate-200 rounded-full"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div>
+                    <div class="h-9 rounded-lg border border-blue-200 bg-blue-50 px-2.5 flex items-center justify-between preview-glow">
+                        <span class="text-[10px] text-slate-600">Estimated range</span>
+                        <span class="text-[11px] text-blue-700 font-bold preview-shift">$4.5k–$6.8k</span>
+                    </div>
+                </div>
+            </div>`;
         }
         return `<div class="preview-shell"><div class="h-full w-full bg-white border border-slate-200 rounded-lg"></div></div>`;
     };
