@@ -1672,13 +1672,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const activePathRoute = routeConfig[normalizedPath] || routeConfig['/'];
 
+    const protectedSections = [
+        document.querySelector('#view-home > section:first-of-type'),
+        document.getElementById('industry-tools'),
+        viewProcess
+    ].filter(Boolean);
+
     const updateMobileStickyCta = () => {
         if (!mobileStickyCta) return;
-        const protectedSections = [
-            document.querySelector('#view-home > section:first-of-type'),
-            document.getElementById('industry-tools'),
-            viewProcess
-        ].filter(Boolean);
+
         const hash = window.location.hash;
         const isAnimationRoute = hash === '#industry-tools' || hash === '#process' || activePathRoute.view === 'process';
         const isHeroZone = window.scrollY < window.innerHeight * 0.85;
@@ -1687,11 +1689,22 @@ document.addEventListener('DOMContentLoaded', () => {
             return rect.height > 0 && rect.top < window.innerHeight - 24 && rect.bottom > 96;
         });
         const shouldHide = isAnimationRoute || isHeroZone || isAnimationSectionVisible;
+
         mobileStickyCta.classList.toggle('is-hidden', shouldHide);
     };
 
-    window.addEventListener('scroll', updateMobileStickyCta, { passive: true });
-    window.addEventListener('resize', updateMobileStickyCta);
+    let stickyCtaRafPending = false;
+    const queueMobileStickyCtaUpdate = () => {
+        if (stickyCtaRafPending) return;
+        stickyCtaRafPending = true;
+        window.requestAnimationFrame(() => {
+            stickyCtaRafPending = false;
+            updateMobileStickyCta();
+        });
+    };
+
+    window.addEventListener('scroll', queueMobileStickyCtaUpdate, { passive: true });
+    window.addEventListener('resize', queueMobileStickyCtaUpdate);
 
     const typeHeroHeadline = () => {
         const heading = document.querySelector('.hero-h1');
@@ -2448,12 +2461,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', closeModal);
 
+    const getSectionOffset = hash => {
+        const nav = document.querySelector('header');
+        const navHeight = nav ? nav.offsetHeight : 0;
+        if (hash === '#pricing') return Math.max(8, navHeight - 8);
+        return Math.max(16, navHeight + 8);
+    };
+
     const scrollToHashTarget = (hash, behavior = 'smooth') => {
         const el = document.querySelector(hash);
         if (!el) return;
-        const headerOffset = 80;
-        const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = Math.max(0, elementPosition - getSectionOffset(hash));
+
         window.scrollTo({
             top: offsetPosition,
             behavior
@@ -2498,6 +2519,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activePathRoute.section) {
                 setTimeout(() => {
                     scrollToHashTarget(activePathRoute.section, 'auto');
+                    window.requestAnimationFrame(() => scrollToHashTarget(activePathRoute.section, 'auto'));
+                    setTimeout(() => scrollToHashTarget(activePathRoute.section, 'auto'), 180);
                 }, 50);
             } else if (hash && hash !== '#' && hash !== '#home') {
                 setTimeout(() => {
