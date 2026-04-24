@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DaytonGrowthCo. | Websites + Automation for Dayton Businesses</title>
+    <title>DaytonGrowthCo. | Websites + Lead Systems for Dayton Businesses</title>
     
     <link rel="icon" href="https://www.daytongrowth.co/favicon.png?v=2" type="image/png">
     <link rel="shortcut icon" href="https://www.daytongrowth.co/favicon.png?v=2" type="image/png">
@@ -45,6 +45,9 @@
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@latest"></script>
     
     <script>
         tailwind.config = {
@@ -72,6 +75,77 @@
     <style>
         * { box-sizing: border-box; }
         html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow-anchor: none; }
+
+        .splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 45% 38%, rgba(37,99,235,0.22), transparent 34%),
+                radial-gradient(circle at 62% 42%, rgba(168,85,247,0.18), transparent 32%),
+                #050505;
+            color: #fff;
+            overflow: hidden;
+            transition: opacity 420ms ease, visibility 420ms ease;
+        }
+        .splash-screen::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: radial-gradient(circle at center, #000 0%, transparent 72%);
+            pointer-events: none;
+        }
+        .splash-screen.is-done {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-lock { overflow: hidden; }
+        .splash-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            transform: translateY(8px);
+            animation: splashLift 900ms cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        .splash-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: block;
+            object-fit: contain;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 18px 44px rgba(37,99,235,0.26);
+            transform: scale(0.82);
+            opacity: 0;
+            animation: splashMark 520ms cubic-bezier(0.16,1,0.3,1) 120ms forwards;
+        }
+        .splash-wordmark {
+            font-size: clamp(1.45rem, 5vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            opacity: 0;
+            transform: translateX(-8px);
+            animation: splashWordmark 520ms cubic-bezier(0.16,1,0.3,1) 430ms forwards;
+        }
+        .splash-wordmark span { color: rgba(203,213,225,0.82); font-weight: 400; }
+        .splash-wordmark b { color: #60A5FA; font-weight: 900; }
+        @keyframes splashMark {
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes splashWordmark {
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes splashLift {
+            to { transform: translateY(0); }
+        }
 
         /* ── SWEEPS & STAGGERS ── */
         .reveal-sweep {
@@ -119,7 +193,6 @@
         @keyframes heroCursorBlink {
             50% { opacity: 0; }
         }
-
         .hover-underline { position: relative; }
         .hover-underline::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
@@ -559,7 +632,9 @@
                 letter-spacing: -0.045em !important;
                 text-align: left !important;
                 margin-bottom: 1.15rem !important;
-                max-width: 9.8ch;
+                max-width: 100%;
+                word-break: normal;
+                overflow-wrap: normal;
             }
             p.hero-sub.hidden { display: block !important; }
             .hero-sub {
@@ -717,6 +792,14 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
+            .splash-screen,
+            .splash-inner,
+            .splash-logo,
+            .splash-wordmark,
+            .hero-type-cursor {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
             .industry-card,
             .industry-tab,
             .industry-tools-fade,
@@ -727,6 +810,13 @@
 </head>
 
 <body class="bg-brand-light text-brand-dark antialiased">
+
+<div id="splashScreen" class="splash-screen" aria-hidden="true">
+    <div class="splash-inner">
+        <img class="splash-logo" src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="56" height="56">
+        <div class="splash-wordmark">Dayton<span>Growth</span><b>Co.</b></div>
+    </div>
+</div>
 
 <!-- ═══════════════════════ NAV ═══════════════════════ -->
 <nav id="navbar" class="sticky top-0 z-50 transition-all duration-300" style="background: rgba(248,250,252,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10,14,26,0.06); transform: translateZ(0);">
@@ -783,7 +873,7 @@
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 mb-12 md:mb-16 lg:mb-20">
             
             <!-- Headline -->
-            <h1 class="hero-h1 is-typing text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Turn Your Website" data-type-line-two="Into a " data-type-highlight="Tool">
+            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Turn Your Website" data-type-line-two="Into a " data-type-highlight="Tool">
                 Turn Your Website<br>
                 Into a <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Tool</span>
             </h1>
@@ -1649,6 +1739,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     const mobileStickyCta = document.getElementById('mobileStickyCta');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let splashComplete = false;
+    let heroTypingStarted = false;
+
+    const initSplashScreen = () => {
+        return new Promise(resolve => {
+            const splash = document.getElementById('splashScreen');
+            if (!splash) {
+                splashComplete = true;
+                resolve();
+                return;
+            }
+            document.body.classList.add('splash-lock');
+            const showFor = reduceMotion ? 320 : 1350;
+            window.setTimeout(() => {
+                splash.classList.add('is-done');
+                document.body.classList.remove('splash-lock');
+                splashComplete = true;
+                resolve();
+            }, showFor);
+            window.setTimeout(() => splash.remove(), showFor + 520);
+        });
+    };
+
+    const initVendorEnhancements = () => {
+        if (window.lucide?.createIcons) window.lucide.createIcons();
+        if (!reduceMotion && window.Lenis) {
+            const lenis = new window.Lenis({
+                duration: 1.05,
+                smoothWheel: true,
+                wheelMultiplier: 0.9
+            });
+            const raf = time => {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            };
+            requestAnimationFrame(raf);
+        }
+    };
+
+    const splashReady = initSplashScreen();
+    initVendorEnhancements();
 
     const updateMobileStickyCta = () => {
         if (!mobileStickyCta) return;
@@ -1677,8 +1809,6 @@ document.addEventListener('DOMContentLoaded', () => {
         heading.classList.remove('is-typing');
         heading.classList.add('typing-active');
 
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
         const lineOne = heading.dataset.typeLineOne || 'Turn Your Website';
         const lineTwo = heading.dataset.typeLineTwo || 'Into a ';
         const highlight = heading.dataset.typeHighlight || 'Tool';
@@ -1696,6 +1826,16 @@ document.addEventListener('DOMContentLoaded', () => {
             heading.innerHTML = `${firstLine}<br>${beforeHighlight}<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">${highlightText}</span>${cursor}`;
         };
 
+        const renderFinal = () => {
+            heading.setAttribute('aria-label', fullText.replace('\n', ' '));
+            render(fullText, false);
+        };
+
+        if (reduceMotion) {
+            renderFinal();
+            return;
+        }
+
         render('');
         const tick = () => {
             index += 1;
@@ -1703,14 +1843,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (index < fullText.length) {
                 window.setTimeout(tick, typeSpeed);
             } else {
-                window.setTimeout(() => render(fullText, false), 1300);
+                window.setTimeout(renderFinal, 1300);
             }
         };
 
         window.setTimeout(tick, 260);
     };
 
-    typeHeroHeadline();
+    const isPlainHomeRoute = () => {
+        const hash = window.location.hash;
+        return !hash || hash === '#' || hash === '#home';
+    };
+
+    const startHeroTypingIfReady = () => {
+        if (!splashComplete || heroTypingStarted || !isPlainHomeRoute()) return;
+        heroTypingStarted = true;
+        typeHeroHeadline();
+    };
+
+    splashReady.then(startHeroTypingIfReady);
 
     // ── STAGGERED GSAP/FRAMER STYLE REVEAL ANIMATIONS ──
     const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -2481,6 +2632,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initReveal();
         updatePricing();
         setTimeout(updateMobileStickyCta, 80);
+        setTimeout(startHeroTypingIfReady, 90);
     };
 
     window.addEventListener('hashchange', handleRoute);
