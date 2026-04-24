@@ -65,6 +65,9 @@
             }
         }
     </script>
+    <script>
+        document.documentElement.classList.add('js-enabled');
+    </script>
     
     <style>
         * { box-sizing: border-box; }
@@ -101,6 +104,21 @@
         .hero-ctas { animation: fadeSlideUpScale 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
         .hero-trust { animation: fadeIn 1s ease 0.5s both; }
         .mockup-wrapper { animation: fadeSlideUpScale 1s cubic-bezier(0.16,1,0.3,1) 0.4s both; }
+        .js-enabled .hero-h1.is-typing { visibility: hidden; }
+        .hero-h1.typing-active { visibility: visible; }
+        .hero-type-cursor {
+            display: inline-block;
+            width: 0.08em;
+            height: 0.84em;
+            margin-left: 0.08em;
+            border-radius: 9999px;
+            background: linear-gradient(180deg, #60A5FA 0%, #C084FC 100%);
+            vertical-align: -0.08em;
+            animation: heroCursorBlink 0.85s step-end infinite;
+        }
+        @keyframes heroCursorBlink {
+            50% { opacity: 0; }
+        }
 
         .hover-underline { position: relative; }
         .hover-underline::after {
@@ -444,7 +462,7 @@
             border: 1px solid #dbe4f1;
             border-radius: 16px;
             background: #f8fafc;
-            height: 160px;
+            height: 184px;
             position: relative;
             overflow: hidden;
             padding: 0.7rem;
@@ -461,76 +479,152 @@
             overflow: hidden;
         }
         .tool-anim-item { position: absolute; border-radius: 8px; }
+        .preview-save-badge {
+            position: relative !important;
+            right: auto !important;
+            bottom: auto !important;
+            align-self: flex-end;
+            width: fit-content;
+            padding: 2px 6px !important;
+            font-size: 9px !important;
+            line-height: 1.15;
+            z-index: 2;
+        }
+        .notification-preview {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 0.45rem;
+        }
+        .preview-bubble-card {
+            position: relative;
+            max-width: 72%;
+            min-height: 36px;
+            z-index: 1;
+        }
+        .preview-bubble-card.is-inbound { justify-self: start; }
+        .preview-bubble-card.is-outbound { justify-self: end; }
+        .preview-trigger-row {
+            align-self: end;
+            min-height: 30px;
+            width: 100%;
+        }
         .tool-anim-pill { border-radius: 9999px; padding: 3px 8px; font-size: 10px; font-weight: 700; }
         .preview-row { height: 30px; border: 1px solid #dbe4f1; border-radius: 10px; background: #fff; padding: 0 0.5rem; display: flex; align-items: center; justify-content: space-between; }
         .preview-label { font-size: 10px; line-height: 1; color: #64748b; font-weight: 600; letter-spacing: 0.01em; }
         .preview-field-line { height: 7px; border-radius: 9999px; background: #cbd5e1; }
         .preview-action-btn { height: 30px; border-radius: 10px; background: #2563eb; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .form-preview { gap: 0.28rem; }
+        .form-preview .preview-row { height: 20px; }
+        .form-preview .preview-action-btn { height: 24px; }
 
         
         /* ── MOBILE RE-OPTIMIZATION (mobile only) ── */
         @media (max-width: 767px) {
-            html, body { font-size: 15px; }
+            html, body { font-size: 15px; overflow-x: hidden; }
             main { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
 
             #navbar .max-w-7xl { min-height: 64px; }
             #mobileMenu { top: 64px; }
 
             #view-home > section:first-of-type {
-                min-height: 82vh;
-                max-height: 92vh;
-                padding-top: 5rem;
-                padding-bottom: 2.25rem;
+                min-height: calc(100svh - 64px);
+                max-height: none;
+                justify-content: flex-start;
+                padding-top: clamp(4.25rem, 12vh, 6.25rem);
+                padding-bottom: 3.25rem;
+                background:
+                    radial-gradient(circle at 18% 18%, rgba(37,99,235,0.36) 0, rgba(37,99,235,0.14) 28%, transparent 56%),
+                    radial-gradient(circle at 86% 12%, rgba(168,85,247,0.28) 0, transparent 42%),
+                    linear-gradient(180deg, #050505 0%, #080b16 48%, #10113d 100%);
+            }
+            #view-home > section:first-of-type > .absolute:not(.bg-grid) {
+                opacity: 0.65;
+                transform: translateX(-50%) scale(0.72);
+            }
+            #view-home > section:first-of-type .bg-grid {
+                opacity: 0.5;
+                mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.74) 62%, transparent 100%);
+            }
+            #view-home > section:first-of-type > .relative.max-w-4xl {
+                width: 100%;
+                max-width: none;
+                margin: 0 !important;
+                padding-left: 1.25rem !important;
+                padding-right: 1.25rem !important;
+                text-align: left !important;
             }
             .hero-h1 {
-                font-size: clamp(2.15rem, 9vw, 2.85rem) !important;
-                line-height: 1.08 !important;
-                margin-bottom: 0.65rem !important;
+                font-size: clamp(3rem, 13vw, 4.6rem) !important;
+                line-height: 0.94 !important;
+                letter-spacing: -0.045em !important;
+                text-align: left !important;
+                margin-bottom: 1.15rem !important;
+                max-width: 9.8ch;
             }
             p.hero-sub.hidden { display: block !important; }
             .hero-sub {
-                font-size: 15px !important;
-                line-height: 1.45 !important;
-                margin-bottom: 0.75rem !important;
-                max-width: 32ch !important;
+                text-align: left !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            p.hero-sub.hidden {
+                color: rgba(226,232,240,0.88) !important;
+                font-size: 16px !important;
+                line-height: 1.55 !important;
+                font-weight: 400 !important;
+                margin-bottom: 1rem !important;
+                max-width: 33ch !important;
+            }
+            .hero-sub:not(.hidden) {
+                display: block !important;
+                width: 100%;
+                max-width: 22rem !important;
+                margin-bottom: 1.4rem !important;
+                padding: 0.48rem 0.72rem;
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 12px;
+                background: rgba(255,255,255,0.06);
+                color: rgba(203,213,225,0.9) !important;
+                font-size: 12px !important;
+                line-height: 1.35 !important;
+                font-weight: 600 !important;
+                text-align: center !important;
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
             }
             .hero-ctas {
-                margin-bottom: 0.8rem !important;
-                gap: 0.55rem !important;
+                align-items: stretch !important;
+                margin-top: 0 !important;
+                margin-bottom: 1.35rem !important;
+                gap: 0.75rem !important;
             }
             .hero-ctas a {
                 width: 100% !important;
-                padding-top: 0.75rem !important;
-                padding-bottom: 0.75rem !important;
-                border-radius: 14px !important;
+                max-width: 22rem;
+                min-height: 54px;
+                padding-top: 0.95rem !important;
+                padding-bottom: 0.95rem !important;
+                border-radius: 16px !important;
+                font-size: 15px !important;
+            }
+            .hero-ctas a:first-child {
+                background: #fff !important;
+                color: #0f172a !important;
+                box-shadow: 0 18px 48px rgba(37,99,235,0.32) !important;
+            }
+            .hero-ctas a:first-child svg { color: #2563EB; }
+            .hero-ctas a:nth-child(2) {
+                min-height: 44px;
+                padding-top: 0.55rem !important;
+                padding-bottom: 0.55rem !important;
+                border: 0 !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                color: rgba(226,232,240,0.82) !important;
+                justify-content: flex-start !important;
             }
             .hero-trust {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                justify-content: center !important;
-                align-items: center !important;
-                gap: 0.35rem 0.7rem !important;
-                font-size: 12px !important;
-                line-height: 1.3 !important;
-                margin-top: 0.35rem !important;
-            }
-            .hero-trust > .w-px { display: none !important; }
-            .hero-trust > div:nth-child(3),
-            .hero-trust > div:nth-child(5) {
-                position: relative;
-                padding-left: 0.6rem;
-            }
-            .hero-trust > div:nth-child(3)::before,
-            .hero-trust > div:nth-child(5)::before {
-                content: "•";
-                position: absolute;
-                left: 0;
-                color: currentColor;
-                opacity: 0.7;
-            }
-            .hero-trust svg {
-                width: 0.75rem !important;
-                height: 0.75rem !important;
+                display: none !important;
             }
             .mockup-wrapper { display: none !important; }
 
@@ -561,7 +655,9 @@
                 border-radius: 18px !important;
                 padding: 1rem !important;
             }
-            #industry-tools .preview-shell { height: 132px; }
+            #industry-tools .preview-shell { height: 176px; }
+            #industry-tools .preview-safe-area { padding: 0.6rem; }
+            #industry-tools .preview-bubble-card { max-width: 76%; }
             #industry-tools .industry-card:hover,
             #industry-tools .industry-card:focus-within { transform: none; box-shadow: none; }
 
@@ -585,6 +681,38 @@
                 backdrop-filter: blur(16px);
                 -webkit-backdrop-filter: blur(16px);
                 box-shadow: 0 14px 34px rgba(37, 99, 235, 0.35);
+                transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+            }
+            #mobileStickyCta.is-hidden {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transform: translateY(calc(100% + 1.25rem));
+            }
+
+            @media (max-height: 720px) {
+                #view-home > section:first-of-type {
+                    min-height: auto;
+                    padding-top: 3.75rem;
+                    padding-bottom: 2.75rem;
+                }
+                .hero-h1 {
+                    font-size: clamp(2.55rem, 12vw, 3.45rem) !important;
+                    margin-bottom: 1rem !important;
+                }
+                p.hero-sub.hidden {
+                    display: block !important;
+                    font-size: 14px !important;
+                    line-height: 1.45 !important;
+                    margin-bottom: 0.85rem !important;
+                    max-width: 31ch !important;
+                }
+                .hero-sub:not(.hidden) {
+                    margin-bottom: 1rem !important;
+                }
+                .hero-ctas {
+                    margin-bottom: 1rem !important;
+                }
             }
         }
 
@@ -655,7 +783,7 @@
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 mb-12 md:mb-16 lg:mb-20">
             
             <!-- Headline -->
-            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center">
+            <h1 class="hero-h1 is-typing text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Turn Your Website" data-type-line-two="Into a " data-type-highlight="Tool">
                 Turn Your Website<br>
                 Into a <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Tool</span>
             </h1>
@@ -1009,7 +1137,7 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">1</div>
                         <div class="w-full md:w-1/2 md:pl-12 flex justify-center md:justify-start">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[280px]">
+                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px]">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="h-1.5 w-20 bg-white/20 rounded-full"></div>
                                     <div class="text-[9px] uppercase tracking-[0.14em] font-semibold text-emerald-300/90 bg-emerald-500/15 border border-emerald-400/20 px-2 py-1 rounded-full" style="animation: hiwReveal 5.5s cubic-bezier(.16,1,.3,1) infinite; opacity:0;">Captured</div>
@@ -1050,7 +1178,7 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">2</div>
                         <div class="w-full md:w-1/2 md:pr-12 flex justify-center md:justify-end">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-4 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[280px] flex items-center gap-3 overflow-hidden">
+                            <div class="bg-[#0A0E1A] p-4 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px] flex items-center gap-2 overflow-hidden">
                                 <div class="flex-1 bg-white/5 border border-white/10 rounded-lg p-2.5 space-y-1.5">
                                     <div class="h-1.5 w-12 bg-white/25 rounded-full"></div>
                                     <div class="h-2 w-full bg-white/15 rounded-full anim-hiw-row-focus"></div>
@@ -1085,7 +1213,7 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">3</div>
                         <div class="w-full md:w-1/2 md:pl-12 flex justify-center md:justify-start">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] rounded-2xl border border-slate-200 shadow-xl w-full max-w-[280px] overflow-hidden">
+                            <div class="bg-[#0A0E1A] rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px] overflow-hidden">
                                 <div class="h-6 bg-[#161B22] border-b border-white/10 flex items-center px-3 gap-2">
                                     <div class="flex-1 h-1 bg-white/10 rounded overflow-hidden">
                                         <div class="h-full bg-blue-500 anim-hiw-launch-progress"></div>
@@ -1121,7 +1249,7 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">4</div>
                         <div class="w-full md:w-1/2 md:pr-12 flex justify-center md:justify-end">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[280px]">
+                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px]">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Monthly Lift</div>
                                     <div class="text-[8px] text-emerald-300 uppercase tracking-[0.12em] font-semibold bg-emerald-500/15 border border-emerald-500/25 px-2 py-1 rounded-full anim-hiw-reveal" style="animation-delay: 2.3s">Optimized</div>
@@ -1520,6 +1648,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaDescription = document.querySelector('meta[name="description"]');
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     const canonicalLink = document.querySelector('link[rel="canonical"]');
+    const mobileStickyCta = document.getElementById('mobileStickyCta');
+
+    const updateMobileStickyCta = () => {
+        if (!mobileStickyCta) return;
+        const protectedSections = [
+            document.querySelector('#view-home > section:first-of-type'),
+            document.getElementById('industry-tools'),
+            viewProcess
+        ].filter(Boolean);
+        const hash = window.location.hash;
+        const isAnimationRoute = hash === '#industry-tools' || hash === '#process';
+        const isHeroZone = window.scrollY < window.innerHeight * 0.85;
+        const isAnimationSectionVisible = protectedSections.some(section => {
+            const rect = section.getBoundingClientRect();
+            return rect.height > 0 && rect.top < window.innerHeight - 24 && rect.bottom > 96;
+        });
+        const shouldHide = isAnimationRoute || isHeroZone || isAnimationSectionVisible;
+        mobileStickyCta.classList.toggle('is-hidden', shouldHide);
+    };
+
+    window.addEventListener('scroll', updateMobileStickyCta, { passive: true });
+    window.addEventListener('resize', updateMobileStickyCta);
+
+    const typeHeroHeadline = () => {
+        const heading = document.querySelector('.hero-h1');
+        if (!heading) return;
+        heading.classList.remove('is-typing');
+        heading.classList.add('typing-active');
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const lineOne = heading.dataset.typeLineOne || 'Turn Your Website';
+        const lineTwo = heading.dataset.typeLineTwo || 'Into a ';
+        const highlight = heading.dataset.typeHighlight || 'Tool';
+        const fullText = `${lineOne}\n${lineTwo}${highlight}`;
+        const typeSpeed = 42;
+        let index = 0;
+
+        const render = (text, showCursor = true) => {
+            const [firstLine = '', secondLine = ''] = text.split('\n');
+            const highlightStart = lineTwo.length;
+            const beforeHighlight = secondLine.slice(0, highlightStart);
+            const highlightText = secondLine.slice(highlightStart);
+            const cursor = showCursor ? '<span class="hero-type-cursor" aria-hidden="true"></span>' : '';
+
+            heading.innerHTML = `${firstLine}<br>${beforeHighlight}<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">${highlightText}</span>${cursor}`;
+        };
+
+        render('');
+        const tick = () => {
+            index += 1;
+            render(fullText.slice(0, index));
+            if (index < fullText.length) {
+                window.setTimeout(tick, typeSpeed);
+            } else {
+                window.setTimeout(() => render(fullText, false), 1300);
+            }
+        };
+
+        window.setTimeout(tick, 260);
+    };
+
+    typeHeroHeadline();
 
     // ── STAGGERED GSAP/FRAMER STYLE REVEAL ANIMATIONS ──
     const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -1630,13 +1821,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewByType = (type) => {
         if (type === 'form-submit' || type === 'dropdown-select') {
             return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-1.5">
+                <div class="preview-safe-area form-preview flex flex-col gap-1.5">
                     <div class="preview-label">Intake form</div>
                     <div class="preview-row preview-glow"><span class="preview-field-line w-[58%]"></span><span class="h-2 w-8 rounded-full bg-blue-100"></span></div>
                     <div class="preview-row preview-fade" style="animation-delay:.2s"><span class="preview-field-line w-[66%]"></span><span class="h-2 w-7 rounded-full bg-slate-200"></span></div>
                     <div class="preview-row preview-fade" style="animation-delay:.35s"><span class="preview-field-line w-[48%]"></span><span class="h-2 w-9 rounded-full bg-slate-200"></span></div>
                     <div class="preview-action-btn preview-pulse">Submit request</div>
-                    <div class="tool-anim-item preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1" style="right:8px; bottom:8px;">Saved successfully</div>
+                    <div class="tool-anim-item preview-save-badge preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1">Saved successfully</div>
                 </div>
             </div>`;
         }
@@ -1665,10 +1856,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (type === 'text-reply' || type === 'notification-toast') {
             return `<div class="preview-shell">
-                <div class="preview-safe-area relative">
-                    <div class="absolute left-2 top-2 max-w-[128px] rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call from website lead</div>
-                    <div class="absolute right-2 top-[56px] max-w-[126px] rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Thanks for calling — we can help.</div>
-                    <div class="absolute left-2 bottom-2 right-2 h-7 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
+                <div class="preview-safe-area notification-preview">
+                    <div class="preview-bubble-card is-inbound rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call from website lead</div>
+                    <div class="preview-bubble-card is-outbound rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Thanks for calling — we can help.</div>
+                    <div class="preview-trigger-row rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
                         <span>Automation triggered</span><span class="opacity-80">Sent</span>
                     </div>
                 </div>
@@ -2289,10 +2480,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         initReveal();
         updatePricing();
+        setTimeout(updateMobileStickyCta, 80);
     };
 
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
+    updateMobileStickyCta();
     
     document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', e => {
