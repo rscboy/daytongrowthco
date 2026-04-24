@@ -11,8 +11,15 @@
     
     <!-- Preconnect & High Priority Fetches -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://i.postimg.cc">
+    <link rel="preconnect" href="https://i.ibb.co">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://i.ibb.co">
+    <link rel="preload" as="image" href="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" fetchpriority="high">
     <link rel="preload" as="image" href="data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E" fetchpriority="high">
 
     <!-- SEO & Open Graph Framework -->
@@ -75,6 +82,17 @@
     <style>
         * { box-sizing: border-box; }
         html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow-anchor: none; }
+        #services,
+        #industry-tools,
+        #pricing,
+        #view-home > section:not(:first-of-type),
+        #view-process > section,
+        #view-about > section,
+        #form,
+        body > footer {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 900px;
+        }
 
         .splash-screen {
             position: fixed;
@@ -154,7 +172,7 @@
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
-        .reveal-sweep.visible { opacity: 1; transform: translateY(0) scale(1); }
+        .reveal-sweep.visible { opacity: 1; transform: translateY(0) scale(1); will-change: auto; }
 
         .stagger-item {
             opacity: 0;
@@ -162,7 +180,7 @@
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
-        .stagger-item.visible { opacity: 1; transform: translateY(0) scale(1); }
+        .stagger-item.visible { opacity: 1; transform: translateY(0) scale(1); will-change: auto; }
 
         @keyframes fadeSlideUpScale {
             from { opacity: 0; transform: translateY(40px) scale(0.96); }
@@ -813,7 +831,7 @@
 
 <div id="splashScreen" class="splash-screen" aria-hidden="true">
     <div class="splash-inner">
-        <img class="splash-logo" src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="56" height="56">
+        <img class="splash-logo" src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="56" height="56" decoding="async" fetchpriority="high">
         <div class="splash-wordmark">Dayton<span>Growth</span><b>Co.</b></div>
     </div>
 </div>
@@ -1186,7 +1204,7 @@
     <section class="py-20 lg:py-28 bg-[#050505] text-white border-t border-white/[0.04] mobile-hidden-short">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal-sweep">
             <div class="flex items-center justify-center gap-4 mb-8">
-                <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="64" height="64" loading="lazy" class="w-16 h-16 rounded-full object-cover ring-2 ring-white/10 shadow-xl" />
+                <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="64" height="64" loading="lazy" decoding="async" class="w-16 h-16 rounded-full object-cover ring-2 ring-white/10 shadow-xl" />
             </div>
             <h2 class="text-[28px] md:text-[36px] font-bold tracking-tight leading-snug mb-6">
                 Built for Local Businesses
@@ -1436,7 +1454,7 @@
         <div class="flex flex-col md:flex-row gap-12 lg:gap-16 items-center md:items-start stagger-item">
             <div class="relative w-full max-w-[280px] shrink-0 mx-auto md:mx-0 anim-float">
                 <div class="absolute -inset-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-[20px] blur-[24px]"></div>
-                <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="320" height="400" loading="lazy" class="relative w-full aspect-[4/5] object-cover rounded-[16px] border-4 border-white shadow-xl z-10" />
+                <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="320" height="400" loading="lazy" decoding="async" class="relative w-full aspect-[4/5] object-cover rounded-[16px] border-4 border-white shadow-xl z-10" />
                 
                 <!-- Mini SaaS Widget -->
                 <div class="absolute -bottom-4 -right-6 bg-white border border-slate-100 rounded-xl p-3 shadow-xl flex items-center gap-3 z-20 hidden md:flex">
@@ -1654,7 +1672,7 @@
         <div class="grid md:grid-cols-3 gap-12 mb-14">
             <div>
                 <div class="flex items-center gap-3 mb-6">
-                    <img src="https://www.daytongrowth.co/favicon.png?v=2" alt="DaytonGrowthCo. logo" width="28" height="28" loading="lazy" class="h-7 w-auto rounded" />
+                    <img src="https://www.daytongrowth.co/favicon.png?v=2" alt="DaytonGrowthCo. logo" width="28" height="28" loading="lazy" decoding="async" class="h-7 w-auto rounded" />
                     <span class="text-[20px] font-bold tracking-tight text-white">
                         Dayton<span class="font-normal text-slate-500">Growth</span><span class="text-brand-blue">Co.</span>
                     </span>
@@ -1740,6 +1758,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     const mobileStickyCta = document.getElementById('mobileStickyCta');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const runWhenIdle = callback => {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(callback, { timeout: 1600 });
+            return;
+        }
+        window.setTimeout(callback, 800);
+    };
     let splashComplete = false;
     let heroTypingStarted = false;
 
@@ -1765,7 +1790,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initVendorEnhancements = () => {
         if (window.lucide?.createIcons) window.lucide.createIcons();
-        if (!reduceMotion && window.Lenis) {
+        const canUseSmoothScroll = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
+        if (!reduceMotion && canUseSmoothScroll && window.Lenis) {
             const lenis = new window.Lenis({
                 duration: 1.05,
                 smoothWheel: true,
@@ -1780,7 +1806,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const splashReady = initSplashScreen();
-    initVendorEnhancements();
+    runWhenIdle(initVendorEnhancements);
 
     const updateMobileStickyCta = () => {
         if (!mobileStickyCta) return;
@@ -2688,10 +2714,16 @@ document.addEventListener('DOMContentLoaded', () => {
         nameContainers: document.querySelectorAll('.mockup-name-container'),
         svcContainers: document.querySelectorAll('.mockup-svc-container')
     };
+    const mockupWrapper = document.querySelector('.mockup-wrapper');
+    const canAnimateMockup = () => {
+        if (!mockupWrapper || document.hidden || reduceMotion) return false;
+        if (!window.matchMedia('(min-width: 768px)').matches) return false;
+        return window.getComputedStyle(mockupWrapper).display !== 'none';
+    };
 
     const runMockupAnim = async () => {
         const { nameEls, svcEls, cursorNames, cursorSvcs, btns, toasts, rows, oldStatuses, nameContainers, svcContainers } = mockupEls;
-        if (!nameEls.length || document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!nameEls.length || !canAnimateMockup()) return;
 
         // Reset state
         nameEls.forEach(el => el.textContent = '');
@@ -2766,18 +2798,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const startMockupLoop = async () => {
         while (true) {
             await runMockupAnim();
-            await sleep(document.hidden ? 2000 : 500);
+            await sleep(canAnimateMockup() ? 500 : 2000);
         }
     };
 
     let mockupLoopStarted = false;
     const startMockupIfNeeded = () => {
-        if (mockupLoopStarted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (mockupLoopStarted || !canAnimateMockup()) return;
         mockupLoopStarted = true;
         setTimeout(startMockupLoop, 500);
     };
 
-    startMockupIfNeeded();
+    if (mockupWrapper && 'IntersectionObserver' in window) {
+        const mockupObserver = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) startMockupIfNeeded();
+        }, { rootMargin: '160px 0px', threshold: 0.05 });
+        mockupObserver.observe(mockupWrapper);
+    } else {
+        startMockupIfNeeded();
+    }
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) startMockupIfNeeded();
     });
