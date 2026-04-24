@@ -2595,24 +2595,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── ASYNC/AWAIT HERO MOCKUP ANIMATION LOGIC ──
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    const mockupEls = {
-        nameEls: document.querySelectorAll('.mockup-name'),
-        svcEls: document.querySelectorAll('.mockup-service'),
-        cursorNames: document.querySelectorAll('.mockup-name-cursor'),
-        cursorSvcs: document.querySelectorAll('.mockup-svc-cursor'),
-        btns: document.querySelectorAll('.mockup-submit'),
-        toasts: document.querySelectorAll('.mockup-toast'),
-        rows: document.querySelectorAll('.mockup-row'),
-        oldStatuses: document.querySelectorAll('.mockup-status-old'),
-        nameContainers: document.querySelectorAll('.mockup-name-container'),
-        svcContainers: document.querySelectorAll('.mockup-svc-container')
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mockupRoots = Array.from(document.querySelectorAll('.mockup-wrapper'));
+    let isMockupInViewport = true;
+
+    const getVisibleNodeList = selector => {
+        const list = [];
+        mockupRoots.forEach(root => {
+            if (root.offsetParent === null) return;
+            list.push(...root.querySelectorAll(selector));
+        });
+        return list;
     };
 
-    const runMockupAnim = async () => {
-        const { nameEls, svcEls, cursorNames, cursorSvcs, btns, toasts, rows, oldStatuses, nameContainers, svcContainers } = mockupEls;
-        if (!nameEls.length || document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const getActiveMockupEls = () => ({
+        nameEls: getVisibleNodeList('.mockup-name'),
+        svcEls: getVisibleNodeList('.mockup-service'),
+        cursorNames: getVisibleNodeList('.mockup-name-cursor'),
+        cursorSvcs: getVisibleNodeList('.mockup-svc-cursor'),
+        btns: getVisibleNodeList('.mockup-submit'),
+        toasts: getVisibleNodeList('.mockup-toast'),
+        rows: getVisibleNodeList('.mockup-row'),
+        oldStatuses: getVisibleNodeList('.mockup-status-old'),
+        nameContainers: getVisibleNodeList('.mockup-name-container'),
+        svcContainers: getVisibleNodeList('.mockup-svc-container')
+    });
 
-        // Reset state
+    const mockupViewportObserver = new IntersectionObserver(entries => {
+        isMockupInViewport = entries.some(entry => entry.isIntersecting);
+    }, { threshold: 0.15 });
+    mockupRoots.forEach(root => mockupViewportObserver.observe(root));
+
+    const runMockupAnim = async () => {
+        if (document.hidden || prefersReducedMotion.matches || !isMockupInViewport) return;
+        const { nameEls, svcEls, cursorNames, cursorSvcs, btns, toasts, rows, oldStatuses, nameContainers, svcContainers } = getActiveMockupEls();
+        if (!nameEls.length) return;
+
         nameEls.forEach(el => el.textContent = '');
         svcEls.forEach(el => el.textContent = '');
         cursorNames.forEach(el => el.style.display = 'inline-block');
@@ -2627,30 +2645,36 @@ document.addEventListener('DOMContentLoaded', () => {
             el.textContent = 'Contacted';
         });
 
-        // Helper for typing
         const typeText = async (text, els) => {
-            for(let i=0; i < text.length; i++) {
-                els.forEach(el => { if(el) el.textContent += text.charAt(i); });
+            for (let i = 0; i < text.length; i++) {
+                if (document.hidden || prefersReducedMotion.matches || !isMockupInViewport) return false;
+                const nextChar = text.charAt(i);
+                els.forEach(el => { if (el) el.textContent += nextChar; });
                 await sleep(50 + Math.random() * 30);
             }
+            return true;
         };
 
         await sleep(1000);
+        if (document.hidden || !isMockupInViewport) return;
         nameContainers.forEach(el => el.classList.add('mockup-focus-glow'));
         cursorNames.forEach(el => el.style.display = 'inline-block');
         await sleep(400);
 
-        await typeText('John Smith', nameEls);
+        const firstLineTyped = await typeText('John Smith', nameEls);
+        if (!firstLineTyped) return;
         await sleep(300);
         nameContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
         cursorNames.forEach(el => el.style.display = 'none');
 
         await sleep(400);
+        if (document.hidden || !isMockupInViewport) return;
         svcContainers.forEach(el => el.classList.add('mockup-focus-glow'));
         cursorSvcs.forEach(el => el.style.display = 'inline-block');
         await sleep(300);
 
-        await typeText('Roof Repair', svcEls);
+        const secondLineTyped = await typeText('Roof Repair', svcEls);
+        if (!secondLineTyped) return;
         await sleep(300);
         svcContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
         cursorSvcs.forEach(el => el.style.display = 'none');
@@ -2662,10 +2686,10 @@ document.addEventListener('DOMContentLoaded', () => {
             el.classList.remove('mockup-btn-hover');
             el.classList.add('mockup-btn-click');
         });
-        
+
         await sleep(150);
         btns.forEach(el => el.classList.remove('mockup-btn-click'));
-        
+
         await sleep(600);
         toasts.forEach(el => el.classList.add('active'));
         await sleep(800);
@@ -2678,20 +2702,23 @@ document.addEventListener('DOMContentLoaded', () => {
             el.textContent = 'Booked';
         });
 
-        // Restart Loop
         await sleep(4000);
     };
 
     const startMockupLoop = async () => {
         while (true) {
-            await runMockupAnim();
-            await sleep(document.hidden ? 2000 : 500);
+            if (!document.hidden && !prefersReducedMotion.matches && isMockupInViewport) {
+                await runMockupAnim();
+                await sleep(500);
+            } else {
+                await sleep(1200);
+            }
         }
     };
 
     let mockupLoopStarted = false;
     const startMockupIfNeeded = () => {
-        if (mockupLoopStarted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (mockupLoopStarted || prefersReducedMotion.matches || !mockupRoots.length) return;
         mockupLoopStarted = true;
         setTimeout(startMockupLoop, 500);
     };
