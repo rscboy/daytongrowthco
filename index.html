@@ -82,18 +82,6 @@
     <style>
         * { box-sizing: border-box; }
         html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow-anchor: none; }
-        #services,
-        #industry-tools,
-        #pricing,
-        #view-home > section:not(:first-of-type),
-        #view-process > section,
-        #view-about > section,
-        #form,
-        body > footer {
-            content-visibility: auto;
-            contain-intrinsic-size: 1px 900px;
-        }
-
         .splash-screen {
             position: fixed;
             inset: 0;
@@ -615,14 +603,49 @@
             main { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
 
             #navbar .max-w-7xl { min-height: 64px; }
+            #navbar {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 80;
+                background: rgba(248,250,252,0.94) !important;
+                border-bottom: 1px solid rgba(10,14,26,0.07) !important;
+                box-shadow: 0 1px 0 rgba(15,23,42,0.03);
+            }
+            #navbar.is-scrolled,
+            #navbar.menu-open {
+                background: rgba(248,250,252,0.98) !important;
+                box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+            }
+            #navbar > .max-w-7xl > .flex {
+                height: 64px !important;
+            }
+            #mobileMenuBtn {
+                min-width: 44px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 9999px;
+                transition: background-color 180ms ease, color 180ms ease;
+            }
+            #mobileMenuBtn:active,
+            #mobileMenuBtn:focus-visible {
+                background: rgba(37,99,235,0.08);
+                outline: none;
+            }
             #mobileMenu { top: 64px; }
+            #app {
+                padding-top: 64px;
+            }
 
             #view-home > section:first-of-type {
-                min-height: calc(100svh - 64px);
+                min-height: auto;
                 max-height: none;
                 justify-content: flex-start;
-                padding-top: clamp(4.25rem, 12vh, 6.25rem);
-                padding-bottom: 3.25rem;
+                padding-top: clamp(3.6rem, 9vh, 4.8rem);
+                padding-bottom: 3.6rem;
                 background:
                     radial-gradient(circle at 18% 18%, rgba(37,99,235,0.36) 0, rgba(37,99,235,0.14) 28%, transparent 56%),
                     radial-gradient(circle at 86% 12%, rgba(168,85,247,0.28) 0, transparent 42%),
@@ -645,50 +668,38 @@
                 text-align: left !important;
             }
             .hero-h1 {
-                font-size: clamp(3rem, 13vw, 4.6rem) !important;
-                line-height: 0.94 !important;
+                font-size: clamp(2.95rem, 12.4vw, 4.1rem) !important;
+                line-height: 0.96 !important;
                 letter-spacing: -0.045em !important;
                 text-align: left !important;
-                margin-bottom: 1.15rem !important;
-                max-width: 100%;
+                margin-bottom: 1rem !important;
+                max-width: 8.5ch;
                 word-break: normal;
                 overflow-wrap: normal;
             }
-            p.hero-sub.hidden { display: block !important; }
+            p.hero-sub.hidden { display: none !important; }
             .hero-sub {
                 text-align: left !important;
                 margin-left: 0 !important;
                 margin-right: 0 !important;
             }
-            p.hero-sub.hidden {
+            .hero-sub-mobile {
+                display: block !important;
                 color: rgba(226,232,240,0.88) !important;
-                font-size: 16px !important;
-                line-height: 1.55 !important;
+                font-size: 15px !important;
+                line-height: 1.5 !important;
                 font-weight: 400 !important;
-                margin-bottom: 1rem !important;
-                max-width: 33ch !important;
+                margin: 0 0 1.15rem 0 !important;
+                max-width: 29ch !important;
+                text-align: left !important;
             }
             .hero-sub:not(.hidden) {
-                display: block !important;
-                width: 100%;
-                max-width: 22rem !important;
-                margin-bottom: 1.4rem !important;
-                padding: 0.48rem 0.72rem;
-                border: 1px solid rgba(255,255,255,0.1);
-                border-radius: 12px;
-                background: rgba(255,255,255,0.06);
-                color: rgba(203,213,225,0.9) !important;
-                font-size: 12px !important;
-                line-height: 1.35 !important;
-                font-weight: 600 !important;
-                text-align: center !important;
-                backdrop-filter: blur(14px);
-                -webkit-backdrop-filter: blur(14px);
+                display: none !important;
             }
             .hero-ctas {
                 align-items: stretch !important;
                 margin-top: 0 !important;
-                margin-bottom: 1.35rem !important;
+                margin-bottom: 0 !important;
                 gap: 0.75rem !important;
             }
             .hero-ctas a {
@@ -725,10 +736,16 @@
             #industry-tools,
             #pricing,
             #form,
+            #view-home > section:not(:first-of-type),
+            #view-process > section,
+            #view-about > section,
             #view-process > section:first-of-type,
             #process {
-                padding-top: 2.5rem !important;
-                padding-bottom: 3rem !important;
+                padding-top: 3.75rem !important;
+                padding-bottom: 4.25rem !important;
+            }
+            #services {
+                padding-top: 2.75rem !important;
             }
 
             #services h2,
@@ -755,57 +772,58 @@
             #industry-tools .industry-card:focus-within { transform: none; box-shadow: none; }
 
             .mobile-hidden-short { display: none !important; }
-
-            #mobileStickyCta {
-                position: fixed;
-                left: 0.75rem;
-                right: 0.75rem;
-                bottom: calc(env(safe-area-inset-bottom, 0px) + 0.65rem);
-                z-index: 60;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-radius: 9999px;
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                font-weight: 700;
-                color: #fff;
-                background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                box-shadow: 0 14px 34px rgba(37, 99, 235, 0.35);
-                transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
-            }
-            #mobileStickyCta.is-hidden {
-                opacity: 0;
-                visibility: hidden;
-                pointer-events: none;
-                transform: translateY(calc(100% + 1.25rem));
+            section.mobile-hidden-short {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                border: 0 !important;
             }
 
             @media (max-height: 720px) {
                 #view-home > section:first-of-type {
                     min-height: auto;
-                    padding-top: 3.75rem;
-                    padding-bottom: 2.75rem;
+                    padding-top: 3.35rem;
+                    padding-bottom: 3.1rem;
                 }
                 .hero-h1 {
                     font-size: clamp(2.55rem, 12vw, 3.45rem) !important;
-                    margin-bottom: 1rem !important;
+                    margin-bottom: 0.85rem !important;
                 }
-                p.hero-sub.hidden {
-                    display: block !important;
+                .hero-sub-mobile {
                     font-size: 14px !important;
                     line-height: 1.45 !important;
-                    margin-bottom: 0.85rem !important;
-                    max-width: 31ch !important;
-                }
-                .hero-sub:not(.hidden) {
                     margin-bottom: 1rem !important;
+                    max-width: 28ch !important;
                 }
                 .hero-ctas {
-                    margin-bottom: 1rem !important;
+                    margin-bottom: 0 !important;
                 }
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            #services,
+            #industry-tools,
+            #pricing,
+            #form,
+            #view-home > section:not(:first-of-type),
+            #view-process > section,
+            #view-process > section:first-of-type,
+            #view-about > section {
+                padding-top: 4.5rem !important;
+                padding-bottom: 5rem !important;
+            }
+            #services {
+                padding-top: 3.5rem !important;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .reveal-sweep,
+            .stagger-item {
+                opacity: 1 !important;
+                transform: none !important;
+                transition-delay: 0ms !important;
+                will-change: auto !important;
             }
         }
 
@@ -871,8 +889,6 @@
     </div>
 </nav>
 
-<a id="mobileStickyCta" href="#form" class="md:hidden" aria-label="Jump to free audit form">Get Free Audit</a>
-
 <!-- ═══════════════════════ VIEWS ═══════════════════════ -->
 <main id="app">
 
@@ -898,6 +914,10 @@
 
             <p class="hero-sub hidden md:block text-[18px] md:text-[21px] text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed font-light text-center">
                 We help Dayton businesses get more customers and run more efficiently by turning their website into a simple system that captures leads, automates follow-ups, and keeps everything organized.
+            </p>
+
+            <p class="hero-sub-mobile hidden md:hidden">
+                A cleaner website system for capturing leads, following up faster, and staying organized.
             </p>
 
             <p class="hero-sub text-sm md:text-[15px] text-slate-500 mb-6 md:mb-10 leading-snug font-medium text-center">
@@ -1705,7 +1725,7 @@
                 <ul class="space-y-4 text-[14px]">
                     <li class="flex items-center gap-3"><svg class="w-4 h-4 text-blue-500/60 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/></svg> Dayton, OH</li>
                     <li class="flex items-center gap-3"><svg class="w-4 h-4 text-blue-500/60 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg><a href="tel:+19373677089" class="hover:text-blue-400 transition-colors">(937) 367-7089</a></li>
-                    <li class="flex items-center gap-3"><svg class="w-4 h-4 text-blue-500/60 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><a href="/cdn-cgi/l/email-protection#741c1118181b3410150d001b1a13061b03001c5a171b" class="hover:text-blue-400 transition-colors"><span class="__cf_email__" data-cfemail="a8c0cdc4c4c7e8ccc9d1dcc7c6cfdac7dfdcc086cbc7">[email&#160;protected]</span></a></li>
+                    <li class="flex items-center gap-3"><svg class="w-4 h-4 text-blue-500/60 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><a href="mailto:help@daytongrowth.co" class="hover:text-blue-400 transition-colors">help@daytongrowth.co</a></li>
                 </ul>
             </div>
             <div>
@@ -1744,7 +1764,6 @@
 </div>
 
 <!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('currentYear');
@@ -1756,7 +1775,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaDescription = document.querySelector('meta[name="description"]');
     const metaKeywords = document.querySelector('meta[name="keywords"]');
     const canonicalLink = document.querySelector('link[rel="canonical"]');
-    const mobileStickyCta = document.getElementById('mobileStickyCta');
+    const navbar = document.getElementById('navbar');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const runWhenIdle = callback => {
         if ('requestIdleCallback' in window) {
@@ -1808,26 +1827,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const splashReady = initSplashScreen();
     runWhenIdle(initVendorEnhancements);
 
-    const updateMobileStickyCta = () => {
-        if (!mobileStickyCta) return;
-        const protectedSections = [
-            document.querySelector('#view-home > section:first-of-type'),
-            document.getElementById('industry-tools'),
-            viewProcess
-        ].filter(Boolean);
-        const hash = window.location.hash;
-        const isAnimationRoute = hash === '#industry-tools' || hash === '#process';
-        const isHeroZone = window.scrollY < window.innerHeight * 0.85;
-        const isAnimationSectionVisible = protectedSections.some(section => {
-            const rect = section.getBoundingClientRect();
-            return rect.height > 0 && rect.top < window.innerHeight - 24 && rect.bottom > 96;
-        });
-        const shouldHide = isAnimationRoute || isHeroZone || isAnimationSectionVisible;
-        mobileStickyCta.classList.toggle('is-hidden', shouldHide);
+    const updateNavbarState = () => {
+        if (!navbar) return;
+        navbar.classList.toggle('is-scrolled', window.scrollY > 12);
     };
 
-    window.addEventListener('scroll', updateMobileStickyCta, { passive: true });
-    window.addEventListener('resize', updateMobileStickyCta);
+    window.addEventListener('scroll', updateNavbarState, { passive: true });
+    updateNavbarState();
 
     const typeHeroHeadline = () => {
         const heading = document.querySelector('.hero-h1');
@@ -2021,6 +2027,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>`;
         }
+        if (type === 'pipeline-progress') {
+            return `<div class="preview-shell">
+                <div class="preview-safe-area flex flex-col gap-1.5">
+                    <div class="preview-row"><span class="preview-field-line w-[50%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">New</span></div>
+                    <div class="preview-row preview-fade"><span class="preview-field-line w-[58%]"></span><span class="tool-anim-pill bg-amber-50 text-amber-700">Contacted</span></div>
+                    <div class="preview-row preview-slide"><span class="preview-field-line w-[42%]"></span><span class="tool-anim-pill bg-violet-50 text-violet-700">Trial Booked</span></div>
+                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="preview-field-line w-[46%]"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Joined</span></div>
+                </div>
+            </div>`;
+        }
         if (type === 'dashboard-status') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area flex flex-col gap-1.5">
@@ -2148,10 +2164,12 @@ document.addEventListener('DOMContentLoaded', () => {
             isMobileMenuOpen = !isMobileMenuOpen;
             if (isMobileMenuOpen) {
                 menu.classList.add('open');
+                navbar?.classList.add('menu-open');
                 iconOpen.classList.add('hidden');
                 iconClose.classList.remove('hidden');
             } else {
                 menu.classList.remove('open');
+                navbar?.classList.remove('menu-open');
                 iconOpen.classList.remove('hidden');
                 iconClose.classList.add('hidden');
             }
@@ -2161,6 +2179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeMobileMenu = () => {
         isMobileMenuOpen = false;
         if (menu) menu.classList.remove('open');
+        navbar?.classList.remove('menu-open');
         if (iconOpen) iconOpen.classList.remove('hidden');
         if (iconClose) iconClose.classList.add('hidden');
     };
@@ -2350,7 +2369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-4">
                     <p class="font-bold text-slate-900 text-[14px] mb-3">Questions about these Terms?</p>
                     <div class="space-y-1.5 text-[14px]">
-                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> hello@daytongrowth.co</p>
+                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> help@daytongrowth.co</p>
                         <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> (937) 367-7089</p>
                     </div>
                 </div>
@@ -2448,7 +2467,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li class="flex items-start gap-2.5"><svg class="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong class="text-slate-800">Deletion:</strong> Request deletion of your personal information.</span></li>
                         <li class="flex items-start gap-2.5"><svg class="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span><strong class="text-slate-800">Opt-Out:</strong> Unsubscribe from marketing communications at any time.</span></li>
                     </ul>
-                    <p class="mt-3">To exercise any of these rights, contact us at hello@daytongrowth.co.</p>
+                    <p class="mt-3">To exercise any of these rights, contact us at help@daytongrowth.co.</p>
                 </section>
                 <hr class="border-slate-100"/>
                 <section>
@@ -2477,7 +2496,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-4">
                     <p class="font-bold text-slate-900 text-[14px] mb-3">Questions about your data?</p>
                     <div class="space-y-1.5 text-[14px]">
-                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> hello@daytongrowth.co</p>
+                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> help@daytongrowth.co</p>
                         <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> (937) 367-7089</p>
                     </div>
                 </div>
@@ -2569,7 +2588,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="font-bold text-slate-900 text-[14px] mb-1">Encountered a barrier?</p>
                     <p class="text-[14px] text-slate-600 mb-3">We welcome your feedback. If you encounter an accessibility issue on our site, please contact us and we will evaluate and resolve it promptly.</p>
                     <div class="space-y-1.5 text-[14px]">
-                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> hello@daytongrowth.co</p>
+                        <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> help@daytongrowth.co</p>
                         <p class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> (937) 367-7089</p>
                     </div>
                 </div>
@@ -2657,7 +2676,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         initReveal();
         updatePricing();
-        setTimeout(updateMobileStickyCta, 80);
         setTimeout(startHeroTypingIfReady, 90);
     };
 
