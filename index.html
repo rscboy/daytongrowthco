@@ -13,14 +13,14 @@
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://i.postimg.cc">
     <link rel="preconnect" href="https://i.ibb.co">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.clarity.ms">
+    <link rel="dns-prefetch" href="https://i.postimg.cc">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://i.ibb.co">
     <link rel="preload" as="image" href="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" fetchpriority="high">
-    <link rel="preload" as="image" href="data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E" fetchpriority="high">
 
     <!-- SEO & Open Graph Framework -->
     <meta name="description" content="We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.">
@@ -43,20 +43,41 @@
     <meta name="twitter:description" content="We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.">
     <meta name="twitter:image" content="https://www.daytongrowth.co/thumbnail.jpeg">
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5844NWC2PD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5844NWC2PD');
+      window.addEventListener('load', function () {
+        var loadAnalytics = function () {
+          var gtagScript = document.createElement('script');
+          gtagScript.async = true;
+          gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-5844NWC2PD';
+          document.head.appendChild(gtagScript);
+          gtag('js', new Date());
+          gtag('config', 'G-5844NWC2PD');
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadAnalytics, { timeout: 2600 });
+        } else {
+          setTimeout(loadAnalytics, 1400);
+        }
+      });
     </script>
     
     <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "wix3m0k0lr");
+        window.addEventListener('load', function () {
+            var loadClarity = function () {
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "wix3m0k0lr");
+            };
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(loadClarity, { timeout: 3200 });
+            } else {
+                setTimeout(loadClarity, 1800);
+            }
+        });
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1804,7 +1825,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             document.body.classList.add('splash-lock');
-            const showFor = reduceMotion ? 320 : 1350;
+            const showFor = reduceMotion ? 220 : 760;
             window.setTimeout(() => {
                 splash.classList.add('is-done');
                 document.body.classList.remove('splash-lock');
@@ -1820,9 +1841,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const canUseSmoothScroll = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
         if (!reduceMotion && canUseSmoothScroll && window.Lenis) {
             const lenis = new window.Lenis({
-                duration: 1.05,
+                duration: 0.55,
                 smoothWheel: true,
-                wheelMultiplier: 0.9
+                wheelMultiplier: 1.2
             });
             const raf = time => {
                 lenis.raf(time);
@@ -2741,9 +2762,17 @@ document.addEventListener('DOMContentLoaded', () => {
         svcContainers: document.querySelectorAll('.mockup-svc-container')
     };
     const mockupWrapper = document.querySelector('.mockup-wrapper');
+    let mockupInView = false;
+    const isMockupActuallyInView = () => {
+        if (!mockupWrapper) return false;
+        const rect = mockupWrapper.getBoundingClientRect();
+        return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1;
+    };
     const canAnimateMockup = () => {
         if (!mockupWrapper || document.hidden || reduceMotion) return false;
         if (!window.matchMedia('(min-width: 768px)').matches) return false;
+        if (!mockupWrapper.getClientRects().length) return false;
+        if (!mockupInView) return false;
         return window.getComputedStyle(mockupWrapper).display !== 'none';
     };
 
@@ -2837,14 +2866,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mockupWrapper && 'IntersectionObserver' in window) {
         const mockupObserver = new IntersectionObserver(entries => {
-            if (entries.some(entry => entry.isIntersecting)) startMockupIfNeeded();
-        }, { rootMargin: '160px 0px', threshold: 0.05 });
+            mockupInView = entries.some(entry => entry.isIntersecting);
+            if (mockupInView) startMockupIfNeeded();
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
         mockupObserver.observe(mockupWrapper);
     } else {
+        mockupInView = isMockupActuallyInView();
         startMockupIfNeeded();
     }
-    window.setTimeout(startMockupIfNeeded, 1200);
+    window.addEventListener('scroll', () => {
+        if (mockupLoopStarted || !mockupWrapper || 'IntersectionObserver' in window) return;
+        mockupInView = isMockupActuallyInView();
+        startMockupIfNeeded();
+    }, { passive: true });
+    window.setTimeout(() => {
+        mockupInView = mockupInView || isMockupActuallyInView();
+        startMockupIfNeeded();
+    }, 1200);
     document.addEventListener('visibilitychange', () => {
+        mockupInView = mockupInView || isMockupActuallyInView();
         if (!document.hidden) startMockupIfNeeded();
     });
 });
