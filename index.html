@@ -2689,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
-    updateMobileStickyCta();
+    if (typeof updateMobileStickyCta === 'function') updateMobileStickyCta();
     
     document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', e => {
@@ -2843,6 +2843,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         startMockupIfNeeded();
     }
+    window.setTimeout(startMockupIfNeeded, 1200);
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) startMockupIfNeeded();
     });
