@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DaytonGrowthCo. | Websites + Lead Systems for Dayton Businesses</title>
+    <title>DaytonGrowthCo. | One-Time Website + Lead System Setup for Dayton Businesses</title>
     
     <link rel="icon" href="https://www.daytongrowth.co/favicon.png?v=2" type="image/png">
     <link rel="shortcut icon" href="https://www.daytongrowth.co/favicon.png?v=2" type="image/png">
@@ -23,24 +23,24 @@
     <link rel="preload" as="image" href="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" fetchpriority="high">
 
     <!-- SEO & Open Graph Framework -->
-    <meta name="description" content="We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.">
-    <meta name="keywords" content="Dayton Ohio website design, local SEO Dayton OH, Google Business Profile management Dayton, small business website Dayton, website maintenance Dayton Ohio, Miami Valley SEO">
+    <meta name="description" content="DaytonGrowthCo. helps local businesses capture more leads, respond faster, and stay organized with one-time website, form, booking, and follow-up setup packages.">
+    <meta name="keywords" content="Dayton Ohio website setup, lead capture setup Dayton OH, Google Business Profile cleanup Dayton, small business website Dayton, booking setup Dayton Ohio, local business lead system">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://www.daytongrowth.co/">
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.daytongrowth.co/">
     <meta property="og:site_name" content="DaytonGrowthCo.">
-    <meta property="og:title" content="DaytonGrowthCo. | Turn Your Website Into a Lead System">
-    <meta property="og:description" content="We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.">
+    <meta property="og:title" content="DaytonGrowthCo. | Stop Missing Leads From Your Website">
+    <meta property="og:description" content="One-time setup packages for better websites, forms, booking, follow-up, and lead organization.">
     <meta property="og:image" content="https://www.daytongrowth.co/thumbnail.jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="DaytonGrowthCo. | Turn Your Website Into a Lead System">
-    <meta name="twitter:description" content="We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.">
+    <meta name="twitter:title" content="DaytonGrowthCo. | Stop Missing Leads From Your Website">
+    <meta name="twitter:description" content="One-time setup packages for better websites, forms, booking, follow-up, and lead organization.">
     <meta name="twitter:image" content="https://www.daytongrowth.co/thumbnail.jpeg">
     
     <script>
@@ -516,6 +516,7 @@
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
         .modal-inner { animation: modalIn 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+        #mobileMenuBtn { display: none; }
     
 
         /* ── INDUSTRY TOOLS SECTION ── */
@@ -631,42 +632,164 @@
             html, body { font-size: 15px; overflow-x: hidden; }
             main { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
 
-            #navbar .max-w-7xl { min-height: 64px; }
+            #navbar .max-w-7xl {
+                min-height: 64px;
+                max-width: none;
+                padding-left: 1.15rem;
+                padding-right: 1.15rem;
+            }
             #navbar {
-                position: fixed !important;
+                position: absolute !important;
                 top: 0;
                 left: 0;
                 right: 0;
+                width: 100% !important;
+                max-width: none;
                 z-index: 80;
-                background: rgba(248,250,252,0.94) !important;
-                border-bottom: 1px solid rgba(10,14,26,0.07) !important;
-                box-shadow: 0 1px 0 rgba(15,23,42,0.03);
+                background: #ffffff !important;
+                border: 0 !important;
+                border-bottom: 1px solid rgba(15,23,42,0.08) !important;
+                border-radius: 0 !important;
+                box-shadow: none;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                transform: none !important;
+                overflow: visible;
             }
             #navbar.is-scrolled,
             #navbar.menu-open {
-                background: rgba(248,250,252,0.98) !important;
-                box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+                background: #ffffff !important;
+                box-shadow: none;
+            }
+            #navbar.menu-open {
+                border-radius: 0 !important;
             }
             #navbar > .max-w-7xl > .flex {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
                 height: 64px !important;
+                padding-left: 0.15rem;
+                padding-right: 0.15rem;
             }
-            #mobileMenuBtn {
-                min-width: 44px;
-                min-height: 44px;
+            #navbar > .max-w-7xl > .flex > div {
+                display: none !important;
+            }
+            #navbar a.group {
                 display: inline-flex;
                 align-items: center;
+                height: 100%;
+                min-width: 0;
+            }
+            #navbar a.group span {
+                display: inline-flex;
+                align-items: center;
+                max-width: calc(100vw - 104px);
+                white-space: nowrap;
+                font-size: 20px !important;
+                line-height: 1 !important;
+                letter-spacing: -0.045em !important;
+            }
+            #mobileMenuBtn {
+                position: fixed !important;
+                left: 50% !important;
+                right: auto !important;
+                bottom: 18px !important;
+                z-index: 999 !important;
+                width: auto !important;
+                height: 54px !important;
+                min-width: 92px;
+                min-height: 54px;
+                padding: 0 16px;
+                display: inline-flex !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                align-items: center;
                 justify-content: center;
+                gap: 9px;
+                color: #ffffff;
+                background: rgba(15,23,42,0.94);
+                border: 1px solid rgba(255,255,255,0.14);
                 border-radius: 9999px;
-                transition: background-color 180ms ease, color 180ms ease;
+                box-shadow: 0 14px 34px rgba(15,23,42,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
+                backdrop-filter: blur(16px) saturate(1.2);
+                -webkit-backdrop-filter: blur(16px) saturate(1.2);
+                transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+                transform: translateX(-50%);
+            }
+            #mobileMenuBtn svg {
+                display: none !important;
+            }
+            .mobile-menu-glyph {
+                position: relative;
+                display: inline-block;
+                width: 17px;
+                height: 2px;
+                border-radius: 9999px;
+                background: currentColor;
+                transition: background-color 180ms ease;
+            }
+            .mobile-menu-glyph::before,
+            .mobile-menu-glyph::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                width: 17px;
+                height: 2px;
+                border-radius: 9999px;
+                background: currentColor;
+                transition: transform 180ms ease;
+            }
+            .mobile-menu-glyph::before {
+                transform: translateY(-5px);
+            }
+            .mobile-menu-glyph::after {
+                transform: translateY(5px);
+            }
+            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph {
+                background: transparent;
+            }
+            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph::before {
+                transform: rotate(45deg);
+            }
+            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph::after {
+                transform: rotate(-45deg);
+            }
+            .mobile-menu-label {
+                display: inline-block;
+                min-width: 35px;
+                font-size: 13px;
+                font-weight: 800;
+                line-height: 1;
+                letter-spacing: 0.01em;
             }
             #mobileMenuBtn:active,
             #mobileMenuBtn:focus-visible {
-                background: rgba(37,99,235,0.08);
+                background: rgba(37,99,235,0.96);
+                border-color: rgba(255,255,255,0.24);
+                transform: translateX(-50%) scale(0.96);
                 outline: none;
             }
-            #mobileMenu { top: 64px; }
+            #mobileMenu {
+                position: fixed;
+                top: auto;
+                bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+                left: 14px;
+                right: 14px;
+                width: auto;
+                border: 1px solid rgba(15,23,42,0.08);
+                border-radius: 24px;
+                box-shadow: 0 24px 60px rgba(15,23,42,0.18);
+                overflow: hidden;
+                z-index: 85;
+                transform: translateY(12px) scale(0.98);
+                transform-origin: bottom center;
+            }
+            #mobileMenu.open {
+                transform: translateY(0) scale(1);
+            }
             #app {
-                padding-top: 64px;
+                padding-top: calc(64px + env(safe-area-inset-top, 0px));
             }
 
             #view-home > section:first-of-type {
@@ -898,13 +1021,9 @@
                 <a href="#pricing" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">Pricing</a>
                 <a href="#about" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">About</a>
                 <a href="#form" class="bg-brand-blue hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_4px_14px_rgba(37,99,235,0.3)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.45)] hover:-translate-y-0.5">
-                    Get Free Audit
+                    Get a Quick Recommendation
                 </a>
             </div>
-            <button id="mobileMenuBtn" class="md:hidden p-2 text-brand-dark">
-                <svg id="menuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
         </div>
     </div>
     <div id="mobileMenu" style="background: rgba(248,250,252,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10,14,26,0.06);">
@@ -913,10 +1032,16 @@
             <a href="#process" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">How It Works</a>
             <a href="#pricing" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">Pricing</a>
             <a href="#about" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">About</a>
-            <a href="#form" class="mobile-nav-link w-full text-center bg-brand-blue text-white px-8 py-3.5 rounded-full font-semibold text-[15px]">Get Your Free Audit</a>
+            <a href="#form" class="mobile-nav-link w-full text-center bg-brand-blue text-white px-8 py-3.5 rounded-full font-semibold text-[15px]">Get a Quick Recommendation</a>
         </div>
     </div>
 </nav>
+<button id="mobileMenuBtn" class="p-2 text-brand-dark">
+    <svg id="menuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    <span class="mobile-menu-glyph" aria-hidden="true"></span>
+    <span id="mobileMenuBtnLabel" class="mobile-menu-label">Menu</span>
+</button>
 
 <!-- ═══════════════════════ VIEWS ═══════════════════════ -->
 <main id="app">
@@ -936,30 +1061,30 @@
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 mb-12 md:mb-16 lg:mb-20">
             
             <!-- Headline -->
-            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Turn Your Website" data-type-line-two="Into a " data-type-highlight="Tool">
-                Turn Your Website<br>
-                Into a <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Tool</span>
+            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Stop Missing Leads" data-type-line-two="From Your " data-type-highlight="Website">
+                Stop Missing Leads<br>
+                From Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Website</span>
             </h1>
 
             <p class="hero-sub hidden md:block text-[18px] md:text-[21px] text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed font-light text-center">
-                We help Dayton businesses get more customers and run more efficiently by turning their website into a simple system that captures leads, automates follow-ups, and keeps everything organized.
+                DaytonGrowthCo. helps local businesses improve their website, forms, booking, and follow-up process so more customer inquiries turn into real conversations.
             </p>
 
             <p class="hero-sub-mobile hidden md:hidden">
-                A cleaner website system for capturing leads, following up faster, and staying organized.
+                DaytonGrowthCo. helps local businesses improve their website, forms, booking, and follow-up process so more customer inquiries turn into real conversations.
             </p>
 
             <p class="hero-sub text-sm md:text-[15px] text-slate-500 mb-6 md:mb-10 leading-snug font-medium text-center">
-                One flat monthly rate. No surprise invoices. Cancel anytime.
+                One-time setup packages. Ongoing support is optional if you need it.
             </p>
 
             <div class="hero-ctas flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-4 md:mb-16">
                 <a href="#form" class="inline-flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-blue-500 text-white px-8 py-3.5 md:py-4 rounded-full font-semibold text-[15px] transition-all shadow-[0_0_30px_rgba(37,99,235,0.3)]">
-                    Get My Free Audit
+                    Get a Quick Recommendation
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
-                <a href="#process" class="inline-flex items-center justify-center gap-2 bg-[#161B22] border border-white/10 hover:bg-[#1f2633] text-white px-8 py-3.5 md:py-4 rounded-full font-medium text-[15px] transition-all">
-                    See How It Works
+                <a href="#pricing" class="inline-flex items-center justify-center gap-2 bg-[#161B22] border border-white/10 hover:bg-[#1f2633] text-white px-8 py-3.5 md:py-4 rounded-full font-medium text-[15px] transition-all">
+                    View One-Time Packages
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
             </div>
@@ -968,7 +1093,7 @@
             <div class="hero-trust grid grid-cols-1 sm:flex sm:flex-wrap items-center justify-center gap-y-2 gap-x-5 text-slate-400 text-xs md:text-[13px] font-medium mt-4 md:mt-0">
                 <div class="flex items-center justify-center gap-1.5 md:gap-2">
                     <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    No long-term contracts
+                    No monthly contract required
                 </div>
                 <div class="w-px h-4 bg-slate-700 hidden sm:block"></div>
                 <div class="flex items-center justify-center gap-1.5 md:gap-2">
@@ -978,7 +1103,7 @@
                 <div class="w-px h-4 bg-slate-700 hidden lg:block"></div>
                 <div class="flex items-center justify-center gap-1.5 md:gap-2">
                     <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    Free audit, no pressure
+                    Practical setup help
                 </div>
             </div>
         </div>
@@ -1072,9 +1197,9 @@
     <section id="services" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white relative z-20 border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center mb-10 md:mb-12 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-2.5">The Problem & The Solution</div>
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-3.5">Most websites just sit there.<br>We build systems that work.</h2>
-                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">Stop losing customers to outdated digital brochures. It's time to upgrade to a tool that actively grows your business.</p>
+                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-2.5">Website + Lead Setup</div>
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-3.5">Better ways to capture leads,<br>follow up, and stay organized.</h2>
+                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">We connect the important pieces around your website so customers know what to do and new inquiries do not get lost.</p>
             </div>
             
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
@@ -1085,18 +1210,18 @@
                             <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-slate-400">Missed Leads</h3>
+                            <h3 class="text-[18px] font-bold text-slate-400">Confusing Website</h3>
                         </div>
-                        <p class="text-slate-500 text-[14px] leading-relaxed">People visit your site and leave without contacting you because it's too hard to take action.</p>
+                        <p class="text-slate-500 text-[14px] leading-relaxed">Customers cannot quickly tell what you offer, where you serve, or how to reach you.</p>
                     </div>
                     <div>
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 shadow-sm">
                                 <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-brand-dark">Capture More Leads</h3>
+                            <h3 class="text-[18px] font-bold text-brand-dark">Website Setup</h3>
                         </div>
-                        <p class="text-brand-muted text-[15px] leading-relaxed">Smart forms and interactive tools that turn passive website visitors into real opportunities.</p>
+                        <p class="text-brand-muted text-[15px] leading-relaxed">A clean, mobile-friendly website built to help customers call, request a quote, or contact you without confusion.</p>
                     </div>
                 </div>
 
@@ -1107,18 +1232,18 @@
                             <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-slate-400">Too Many Calls</h3>
+                            <h3 class="text-[18px] font-bold text-slate-400">Leads Get Lost</h3>
                         </div>
-                        <p class="text-slate-500 text-[14px] leading-relaxed">You waste time answering the exact same basic questions over the phone instead of working.</p>
+                        <p class="text-slate-500 text-[14px] leading-relaxed">Form submissions, calls, and booking requests arrive in different places with no simple tracking.</p>
                     </div>
                     <div>
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center shrink-0 shadow-sm">
                                 <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-brand-dark">Automate Busy Work</h3>
+                            <h3 class="text-[18px] font-bold text-brand-dark">Lead Capture Setup</h3>
                         </div>
-                        <p class="text-brand-muted text-[15px] leading-relaxed">Follow-ups, scheduling, and initial responses handled automatically so you never miss a lead.</p>
+                        <p class="text-brand-muted text-[15px] leading-relaxed">Forms, notifications, booking links, and simple tracking so new leads do not get lost.</p>
                     </div>
                 </div>
 
@@ -1129,18 +1254,18 @@
                             <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-slate-400">No System</h3>
+                            <h3 class="text-[18px] font-bold text-slate-400">Manual Follow-Up</h3>
                         </div>
-                        <p class="text-slate-500 text-[14px] leading-relaxed">Leads come in randomly through different channels and get lost without a clear process.</p>
+                        <p class="text-slate-500 text-[14px] leading-relaxed">Responding, reminding, and handing off customer details takes too much time.</p>
                     </div>
                     <div>
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 shadow-sm">
                                 <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012-2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                             </div>
-                            <h3 class="text-[18px] font-bold text-brand-dark">Stay Organized</h3>
+                            <h3 class="text-[18px] font-bold text-brand-dark">Workflow Improvements</h3>
                         </div>
-                        <p class="text-brand-muted text-[15px] leading-relaxed">Know exactly who contacted you, what they need, and what happens next in one place.</p>
+                        <p class="text-brand-muted text-[15px] leading-relaxed">Simple follow-ups, reminders, and automations that reduce manual work and help you respond faster.</p>
                     </div>
                 </div>
             </div>
@@ -1164,7 +1289,7 @@
 
             <div class="mt-10 md:mt-12 rounded-[24px] border border-slate-200 bg-slate-50 px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4 reveal-sweep">
                 <p class="text-[15px] md:text-[16px] text-brand-dark">Need something specific? We can recommend the right setup or build it from scratch.</p>
-                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Get My Free Audit</a>
+                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Get a Quick Recommendation</a>
             </div>
         </div>
     </section>
@@ -1172,78 +1297,122 @@
     <!-- 5. PRICING SECTION -->
     <section id="pricing" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
-            <div class="text-center max-w-2xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Plans Built for Growth</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed mb-6 md:mb-7">You're not paying for a static website. You're paying for a system that brings in customers and improves over time.</p>
-                
-                <div class="inline-flex items-center bg-slate-100 p-1.5 rounded-full">
-                    <button id="toggleMonthly" class="px-7 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-400 bg-white shadow-sm text-brand-dark">Monthly</button>
-                    <button id="toggleAnnual" class="px-7 py-2.5 rounded-full text-[13px] font-medium transition-all duration-400 text-brand-muted hover:text-brand-dark flex items-center gap-2">Annually</button>
+            <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
+                <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Simple One-Time Setup Packages</h2>
+                <p class="text-[18px] text-brand-muted leading-relaxed">No monthly contract required. Get a better website, better lead capture, or a simple system that helps you stop missing opportunities.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
+                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">More calls</span>
+                    </div>
+                    <h3 class="text-[24px] font-bold text-brand-dark mb-2">Website Setup</h3>
+                    <div class="mb-5 flex items-baseline gap-2">
+                        <span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$599</span>
+                        <span class="text-brand-muted font-semibold text-[14px]">one-time</span>
+                    </div>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that need a clean, professional website that makes it easy for customers to call, request a quote, or get in touch.</p>
+                    <ul class="space-y-3.5 mb-8 flex-1">
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple mobile-friendly website</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Clear call-to-action buttons</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Contact or quote form</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Click-to-call phone setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Basic local SEO setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Google Maps embed</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Launch support</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Start With a Website</a>
+                </div>
+
+                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">Fewer missed leads</span>
+                    </div>
+                    <h3 class="text-[24px] font-bold text-brand-dark mb-2">Lead System Setup</h3>
+                    <div class="mb-5 flex items-baseline gap-2">
+                        <span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$399</span>
+                        <span class="text-brand-muted font-semibold text-[14px]">one-time</span>
+                    </div>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that already have a website but need a better way to capture, track, and respond to leads.</p>
+                    <ul class="space-y-3.5 mb-8 flex-1">
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Improved contact or quote form</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Lead notifications</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer auto-response</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple lead tracker</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Booking link setup if needed</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Full lead flow testing</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Fix My Lead Flow</a>
+                </div>
+
+                <div class="bg-brand-dark rounded-[28px] p-7 lg:p-8 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_70px_rgba(37,99,235,0.2)] md:-translate-y-4 stagger-item pricing-card">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/12 to-purple-600/6 pointer-events-none"></div>
+                    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent"></div>
+                    <div class="relative z-10 flex flex-wrap gap-2 mb-5">
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-white bg-blue-600 px-3 py-1.5 rounded-full">Best Starter Option</span>
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-200 bg-blue-500/15 border border-blue-400/20 px-3 py-1.5 rounded-full">Less manual work</span>
+                    </div>
+                    <h3 class="text-[24px] font-bold text-white mb-2 relative z-10">Website + Lead System</h3>
+                    <div class="mb-5 flex items-baseline gap-2 relative z-10">
+                        <span class="text-[48px] font-extrabold text-white tracking-tight">$999</span>
+                        <span class="text-slate-400 font-semibold text-[14px]">one-time</span>
+                    </div>
+                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For businesses that want a better website and a simple system for handling new customer inquiries.</p>
+                    <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Website Setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Lead System Setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Better quote/request flow</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Basic follow-up setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Lead capture testing</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple customer handoff process</li>
+                    </ul>
+                    <a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-bold text-[14px] py-3.5 rounded-full transition-colors duration-300 shadow-lg shadow-blue-500/30 relative z-10">Build My Lead System</a>
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-5xl mx-auto items-stretch">
-                <!-- Tier 1 -->
-                <div class="bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
-                    <h3 class="text-[24px] font-bold text-brand-dark mb-2">Foundations</h3>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">A simple, professional starting point for local businesses.</p>
-                    <div class="mb-2 flex items-baseline gap-1">
-                        <span class="text-[52px] font-extrabold text-brand-dark tracking-tight">$<span class="price-val" data-monthly="99" data-annual="990">99</span></span>
-                        <span class="text-brand-muted font-medium text-[15px]">/<span class="price-term">mo</span></span>
-                    </div>
-                    <div class="text-[13px] font-medium text-brand-muted bg-white inline-flex px-3 py-1.5 rounded-full mb-7 w-fit border border-slate-200 shadow-sm">$499 Initial Setup</div>
-                    <ul class="space-y-3.5 mb-8 flex-1">
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Professional Website</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Basic Lead Form</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Mobile Responsive</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Ongoing Support</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/dRmcN40vg3bm9fwdZaaMU06" id="btn-starter" target="_blank" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Get Started</a>
-                </div>
+            <p class="max-w-4xl mx-auto mt-8 text-center text-[14px] md:text-[15px] text-slate-500 leading-relaxed reveal-sweep">These are early-client one-time setup prices while DaytonGrowthCo. builds its first local case studies. Ongoing support and improvements are available separately if needed.</p>
 
-                <!-- Tier 2 -->
-                <div class="bg-brand-dark rounded-[32px] p-8 lg:p-10 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_60px_rgba(37,99,235,0.18)] md:-translate-y-4 stagger-item pricing-card">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 pointer-events-none"></div>
-                    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
-                    <h3 class="text-[24px] font-bold text-white mb-2 relative z-10">Professional</h3>
-                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">A complete lead-generation system for your business.</p>
-                    <div class="mb-2 flex items-baseline gap-1 relative z-10">
-                        <span class="text-[52px] font-extrabold text-white tracking-tight">$<span class="price-val" data-monthly="249" data-annual="2,490">249</span></span>
-                        <span class="text-slate-400 font-medium text-[15px]">/<span class="price-term">mo</span></span>
-                    </div>
-                    <div class="flex flex-col gap-2 mb-7 relative z-10">
-                        <div class="text-[13px] font-medium text-blue-300/80 bg-blue-900/30 inline-flex px-3 py-1.5 rounded-full w-fit border border-blue-500/20">$1,499 Initial Setup</div>
-                        <div class="text-[12px] font-bold text-emerald-400 flex items-start gap-1.5 pl-1 flex-wrap">
-                            <svg class="w-3.5 h-3.5 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
-                            <span>Loyalty drop: $<span class="loyalty-val" data-monthly="179" data-annual="1,790">179</span>/<span class="price-term">mo</span> after 12 months</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
-                        <li class="flex items-center gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Foundations</li>
-                        <li class="flex items-center gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Smart Lead Tools</li>
-                        <li class="flex items-center gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Automated Follow-Ups</li>
-                        <li class="flex items-center gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Local SEO & GBP Sync</li>
-                        <li class="flex items-center gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Monthly Updates</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/dRm3cua5QbHS9fw1coaMU0a" id="btn-growth" target="_blank" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-bold text-[14px] py-3.5 rounded-full transition-colors duration-300 shadow-lg shadow-blue-500/30 relative z-10">Get Started</a>
+            <div class="mt-14 md:mt-16 max-w-5xl mx-auto reveal-sweep">
+                <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark text-center mb-6">Optional Add-Ons</h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Extra website page</span><span class="text-[14px] font-bold text-brand-blue">$100+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Service page</span><span class="text-[14px] font-bold text-brand-blue">$150+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Google Business Profile cleanup</span><span class="text-[14px] font-bold text-brand-blue">$200+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Email setup</span><span class="text-[14px] font-bold text-brand-blue">$199+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Review request setup</span><span class="text-[14px] font-bold text-brand-blue">$250+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Booking system setup</span><span class="text-[14px] font-bold text-brand-blue">$250+</span></div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4 sm:col-span-2 lg:col-span-1"><span class="text-[14px] font-medium text-brand-dark">Simple automation setup</span><span class="text-[14px] font-bold text-brand-blue">$300+</span></div>
                 </div>
+            </div>
 
-                <!-- Tier 3 -->
-                <div class="bg-brand-light rounded-[32px] p-8 lg:p-10 border border-slate-100 hover:border-blue-100 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
-                    <h3 class="text-[24px] font-bold text-brand-dark mb-2">Growth & Leads</h3>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">Advanced tools, automation, and custom systems to scale.</p>
-                    <div class="mb-2 flex items-baseline gap-1">
-                        <span class="text-[52px] font-extrabold text-brand-dark tracking-tight">$<span class="price-val" data-monthly="899" data-annual="8,990">899</span></span>
-                        <span class="text-brand-muted font-medium text-[15px]">/<span class="price-term">mo</span></span>
+            <div class="mt-14 md:mt-16 rounded-[28px] border border-blue-100 bg-blue-50/70 px-6 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center md:justify-between gap-6 max-w-5xl mx-auto reveal-sweep">
+                <div>
+                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not Sure What You Need?</h3>
+                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Most businesses do not need a complicated marketing plan. They need a clear way for customers to reach out, a system that keeps leads organized, and fewer things falling through the cracks.</p>
+                </div>
+                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3.5 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)] shrink-0">Get a Quick Recommendation</a>
+            </div>
+
+            <div class="mt-14 md:mt-16 max-w-4xl mx-auto reveal-sweep">
+                <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark text-center mb-7">FAQ</h3>
+                <div class="grid gap-4">
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
+                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">Do I have to pay monthly?</h4>
+                        <p class="text-[14px] text-brand-muted leading-relaxed">No. These starter packages are one-time setup prices. Ongoing support is available separately if you want help with updates, improvements, or management.</p>
                     </div>
-                    <div class="text-[13px] font-medium text-brand-muted bg-white inline-flex px-3 py-1.5 rounded-full mb-7 w-fit border border-slate-200 shadow-sm">$3,499 Initial Setup</div>
-                    <ul class="space-y-3.5 mb-8 flex-1">
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Professional</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Advanced Automations</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Custom Tools & Integrations</li>
-                        <li class="flex items-center gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Active GBP Management</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/9B64gydi213efDU3kwaMU08" id="btn-pro" target="_blank" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Get Started</a>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
+                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">What if I already have a website?</h4>
+                        <p class="text-[14px] text-brand-muted leading-relaxed">You may only need the Lead System Setup. That helps improve your forms, notifications, booking flow, and lead tracking without rebuilding everything.</p>
+                    </div>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
+                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">What happens after setup?</h4>
+                        <p class="text-[14px] text-brand-muted leading-relaxed">You will have a cleaner way to capture customer inquiries and a simple process for handling new leads. If you want continued help, support can be added later.</p>
+                    </div>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
+                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">Who is this best for?</h4>
+                        <p class="text-[14px] text-brand-muted leading-relaxed">Local service businesses like contractors, auto shops, landscapers, med spas, gyms, churches, nonprofits, and small businesses that want more organized customer inquiries.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1400,15 +1569,15 @@
                     <!-- Step 4 -->
                     <div class="relative flex flex-col md:flex-row-reverse items-center gap-10 stagger-item">
                         <div class="md:w-1/2 md:pl-12 text-center md:text-left">
-                            <h3 class="text-[22px] font-bold text-brand-dark mb-3">4. Improve Every Month</h3>
-                            <p class="text-slate-500 text-[15px] leading-relaxed">We continuously update your site, monitor performance, and improve your local SEO so you keep growing.</p>
+                            <h3 class="text-[22px] font-bold text-brand-dark mb-3">4. Use It With Confidence</h3>
+                            <p class="text-slate-500 text-[15px] leading-relaxed">You leave with a cleaner way to capture inquiries, respond faster, and keep new leads organized. Optional support can be added later.</p>
                         </div>
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">4</div>
                         <div class="w-full md:w-1/2 md:pr-12 flex justify-center md:justify-end">
                             <!-- Micro-Animation UI -->
                             <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px]">
                                 <div class="flex items-center justify-between mb-3">
-                                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Monthly Lift</div>
+                                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Lead Lift</div>
                                     <div class="text-[8px] text-emerald-300 uppercase tracking-[0.12em] font-semibold bg-emerald-500/15 border border-emerald-500/25 px-2 py-1 rounded-full anim-hiw-reveal" style="animation-delay: 2.3s">Optimized</div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 mb-3">
@@ -1580,18 +1749,18 @@
         <div class="grid md:grid-cols-3 gap-8">
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-blue-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Ongoing Management</h3>
-                <p class="text-[14px] text-brand-muted leading-relaxed">All software updates, security patches, and backups handled so your site never goes down.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">One-Time Setup Packages</h3>
+                <p class="text-[14px] text-brand-muted leading-relaxed">Clear website, form, booking, and lead tracking improvements set up for your business without a required monthly contract.</p>
             </div>
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-purple-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Local SEO</h3>
-                <p class="text-[14px] text-brand-muted leading-relaxed">Your Google Business Profile and local keywords kept current so nearby customers find you first.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Local Visibility</h3>
+                <p class="text-[14px] text-brand-muted leading-relaxed">Basic local SEO, Google Maps, and Google Business Profile cleanup options help nearby customers understand and contact you.</p>
             </div>
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-emerald-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Performance Upgrades</h3>
-                <p class="text-[14px] text-brand-muted leading-relaxed">Continuous monitoring and improvement of site speed to keep your visitors engaged.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Lead Flow Improvements</h3>
+                <p class="text-[14px] text-brand-muted leading-relaxed">Practical follow-up, reminder, and handoff improvements help your team respond faster with less manual work.</p>
             </div>
         </div>
     </div>
@@ -1622,8 +1791,8 @@
     </div>
     <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 z-10 stagger-group">
         <div class="text-center mb-8 md:mb-10 reveal-sweep">
-            <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Ready to Turn Your Website<br>Into a Growth Machine?</h2>
-            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">Let's take a look at your current setup and show you exactly how to improve it. No sales pitch, just real feedback.</p>
+            <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Get a Quick Recommendation</h2>
+            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">Tell us what is happening with your website and leads. We will point you toward the simplest setup that makes sense.</p>
         </div>
 
         <div class="bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
@@ -1670,27 +1839,27 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4">Service tier *</label>
+                    <label class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4">Setup package *</label>
                     <div class="space-y-3">
                         <label class="flex items-start p-5 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-300">
-                            <input type="radio" name="serviceTier" value="Foundations - $99/mo" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" required />
+                            <input type="radio" name="serviceTier" value="Website Setup - $599 one-time" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" required />
                             <div class="ml-4">
-                                <span class="block text-[14px] font-semibold text-slate-200">Foundations - $99/mo + $499 setup</span>
-                                <span class="block text-[13px] text-slate-500 mt-1">1-3 sections, managed hosting, security patching</span>
+                                <span class="block text-[14px] font-semibold text-slate-200">Website Setup - $599 one-time</span>
+                                <span class="block text-[13px] text-slate-500 mt-1">A clean website with clear calls, contact/quote form, local basics, and launch support</span>
                             </div>
                         </label>
                         <label class="flex items-start p-5 border border-blue-500/40 bg-blue-900/10 rounded-[20px] cursor-pointer relative transition-all duration-300">
-                            <input type="radio" name="serviceTier" value="Professional - $249/mo" checked class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
+                            <input type="radio" name="serviceTier" value="Website + Lead System - $999 one-time" checked class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
                             <div class="ml-4 pr-24">
-                                <span class="block text-[14px] font-semibold text-white">Professional - $249/mo + $1,499 setup</span>
-                                <span class="block text-[13px] text-blue-300/70 mt-1">Up to 10 pages, Google Business Profile, reviews widget</span>
+                                <span class="block text-[14px] font-semibold text-white">Website + Lead System - $999 one-time</span>
+                                <span class="block text-[13px] text-blue-300/70 mt-1">Best starter option for a better website and a simple lead handling process</span>
                             </div>
                         </label>
                         <label class="flex items-start p-6 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-300">
-                            <input type="radio" name="serviceTier" value="Growth & Leads - $899/mo" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
+                            <input type="radio" name="serviceTier" value="Lead System Setup - $399 one-time" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
                             <div class="ml-4">
-                                <span class="block text-[14px] font-semibold text-slate-200">Growth & Leads - $899/mo + $3,499 setup</span>
-                                <span class="block text-[13px] text-slate-500 mt-1">Unlimited pages, Stripe payments, active GBP management</span>
+                                <span class="block text-[14px] font-semibold text-slate-200">Lead System Setup - $399 one-time</span>
+                                <span class="block text-[13px] text-slate-500 mt-1">Improve forms, notifications, auto-response, booking links, and simple lead tracking</span>
                             </div>
                         </label>
                     </div>
@@ -1703,7 +1872,7 @@
 
                 <div>
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-[15px] py-4.5 rounded-full transition-all duration-300 flex justify-center items-center gap-2.5 shadow-[0_0_40px_rgba(37,99,235,0.35)] hover:shadow-[0_0_60px_rgba(37,99,235,0.5)]" style="padding-top: 18px; padding-bottom: 18px;">
-                        Get Your Free Growth Audit <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        Get a Quick Recommendation <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                     <div id="auditStatus" aria-live="polite" class="text-center text-slate-300 text-[14px] mt-4 min-h-[20px]"></div>
                     <p class="text-center text-slate-600 text-[12px] mt-2 uppercase tracking-widest font-semibold">Response guaranteed within 24 hours</p>
@@ -1760,9 +1929,9 @@
             <div>
                 <h4 class="text-white font-bold mb-6 text-[12px] uppercase tracking-widest">Services</h4>
                 <ul class="space-y-4 text-[14px]">
-                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Website Design</a></li>
-                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Local SEO</a></li>
-                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Ongoing Maintenance</a></li>
+                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Website Setup</a></li>
+                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Lead Capture Setup</a></li>
+                    <li><a href="#services" class="hover:text-blue-400 transition-colors">Workflow Improvements</a></li>
                     <li><a href="#process" class="hover:text-blue-400 transition-colors">How It Works</a></li>
                 </ul>
             </div>
@@ -1870,9 +2039,9 @@ document.addEventListener('DOMContentLoaded', () => {
         heading.classList.remove('is-typing');
         heading.classList.add('typing-active');
 
-        const lineOne = heading.dataset.typeLineOne || 'Turn Your Website';
-        const lineTwo = heading.dataset.typeLineTwo || 'Into a ';
-        const highlight = heading.dataset.typeHighlight || 'Tool';
+        const lineOne = heading.dataset.typeLineOne || 'Stop Missing Leads';
+        const lineTwo = heading.dataset.typeLineTwo || 'From Your ';
+        const highlight = heading.dataset.typeHighlight || 'Website';
         const fullText = `${lineOne}\n${lineTwo}${highlight}`;
         const typeSpeed = 42;
         let index = 0;
@@ -2003,7 +2172,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { id:'cleaning-services', label:'Cleaning Services', tools:[
         { name:'Cleaning Quote Calculator', benefit:'Make quote requests easier and faster', description:'A calculator that estimates pricing based on home size, frequency, and service type.', type:'Custom build', animation:'estimate-calc' },
         { name:'Booking Request Form', benefit:'Collect service details before follow-up', description:'A form that captures square footage, service type, recurring vs one-time, and preferred schedule.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Recurring Service Signup Flow', benefit:'Encourage long-term recurring clients', description:'A cleaner signup process for weekly, biweekly, or monthly plans.', type:'Custom build', animation:'checklist-flow' },
+        { name:'Recurring Service Signup Flow', benefit:'Encourage long-term recurring clients', description:'A cleaner signup process for repeat service plans and seasonal work.', type:'Custom build', animation:'checklist-flow' },
         { name:'Lead Follow-Up Automation', benefit:'Keep quote requests from going cold', description:'A simple message sequence that follows up on new inquiries if the customer does not respond right away.', type:'Best with existing tools', animation:'notification-toast' }
       ]},
       { id:'real-estate', label:'Real Estate', tools:[
@@ -2185,12 +2354,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const menu = document.getElementById('mobileMenu');
     const iconOpen = document.getElementById('menuIconOpen');
     const iconClose = document.getElementById('menuIconClose');
+    const btnLabel = document.getElementById('mobileMenuBtnLabel');
     let isMobileMenuOpen = false;
 
     if (btn && menu && iconOpen && iconClose) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', 'Open menu');
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             isMobileMenuOpen = !isMobileMenuOpen;
+            btn.setAttribute('aria-expanded', String(isMobileMenuOpen));
+            btn.setAttribute('aria-label', isMobileMenuOpen ? 'Close menu' : 'Open menu');
+            if (btnLabel) btnLabel.textContent = isMobileMenuOpen ? 'Close' : 'Menu';
             if (isMobileMenuOpen) {
                 menu.classList.add('open');
                 navbar?.classList.add('menu-open');
@@ -2207,6 +2382,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const closeMobileMenu = () => {
         isMobileMenuOpen = false;
+        if (btn) {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
+        }
+        if (btnLabel) btnLabel.textContent = 'Menu';
         if (menu) menu.classList.remove('open');
         navbar?.classList.remove('menu-open');
         if (iconOpen) iconOpen.classList.remove('hidden');
@@ -2214,47 +2394,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', closeMobileMenu));
-
-    // Pricing toggle
-    let isAnnual = false;
-
-    const updatePricing = () => {
-        const toggleM = document.getElementById('toggleMonthly');
-        const toggleA = document.getElementById('toggleAnnual');
-        
-        if (!toggleM) return;
-
-        if (isAnnual) {
-            toggleM.className = 'px-7 py-2.5 rounded-full text-[13px] font-medium transition-all duration-400 text-brand-muted hover:text-brand-dark';
-            toggleA.className = 'px-7 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-400 bg-white shadow-sm text-brand-dark flex items-center gap-2';
-            document.querySelectorAll('.price-val').forEach(el => el.textContent = el.dataset.annual);
-            document.querySelectorAll('.loyalty-val').forEach(el => el.textContent = el.dataset.annual);
-            document.querySelectorAll('.price-term').forEach(el => el.textContent = 'yr');
-        } else {
-            toggleM.className = 'px-7 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-400 bg-white shadow-sm text-brand-dark';
-            toggleA.className = 'px-7 py-2.5 rounded-full text-[13px] font-medium transition-all duration-400 text-brand-muted hover:text-brand-dark flex items-center gap-2';
-            document.querySelectorAll('.price-val').forEach(el => el.textContent = el.dataset.monthly);
-            document.querySelectorAll('.loyalty-val').forEach(el => el.textContent = el.dataset.monthly);
-            document.querySelectorAll('.price-term').forEach(el => el.textContent = 'mo');
-        }
-
-        const starterLinks = { monthly: 'https://buy.stripe.com/dRmcN40vg3bm9fwdZaaMU06', annual: 'https://buy.stripe.com/6oU9AScdY5ju63kcV6aMU0b' };
-        const growthLinks = { monthly: 'https://buy.stripe.com/dRm3cua5QbHS9fw1coaMU0a', annual: 'https://buy.stripe.com/eVq3cu3HsaDO63kg7iaMU0c' };
-        const proLinks = { monthly: 'https://buy.stripe.com/9B64gydi213efDU3kwaMU08', annual: 'https://buy.stripe.com/5kQdR87XIbHS3Vc9IUaMU0d' };
-
-        const setLink = (id, links) => {
-            const el = document.getElementById(id);
-            if (el) { el.href = isAnnual ? links.annual : links.monthly; }
-        };
-        setLink('btn-starter', starterLinks);
-        setLink('btn-growth', growthLinks);
-        setLink('btn-pro', proLinks);
-    };
-
-    document.body.addEventListener('click', e => {
-        if (e.target.closest('#toggleMonthly')) { isAnnual = false; updatePricing(); }
-        if (e.target.closest('#toggleAnnual')) { isAnnual = true; updatePricing(); }
-    });
 
     // Legal modal
     const legalContent = {
@@ -2279,7 +2418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0">2</span>
                         Scope of Services
                     </h3>
-                    <p class="mb-3">DaytonGrowthCo. provides website design, local SEO improvements, Google Business Profile management, and related digital growth services as described in your selected plan. Specific deliverables, timelines, and pricing are outlined in your plan agreement.</p>
+                    <p class="mb-3">DaytonGrowthCo. provides website setup, lead capture setup, booking setup, follow-up improvements, Google Business Profile cleanup, and related digital setup services as described in your selected plan. Specific deliverables, timelines, and pricing are outlined in your project agreement.</p>
                     <p>We do not guarantee specific search rankings, traffic levels, or a fixed number of new customers. Search engine algorithms are outside our control and change frequently.</p>
                 </section>
                 <hr class="border-slate-100"/>
@@ -2301,10 +2440,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <section>
                     <h3 class="text-[15px] font-bold text-slate-900 mb-2 flex items-center gap-2">
                         <span class="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0">4</span>
-                        Subscription and Billing
+                        Pricing and Billing
                     </h3>
-                    <p class="mb-3">Services are billed on a recurring monthly or annual subscription basis. Subscriptions automatically renew unless canceled with a minimum of 30 days written notice.</p>
-                    <p class="mb-3">We accept payment via bank transfer, credit card, or other mutually agreed methods. All prices are in USD. We reserve the right to update pricing with 30 days notice for ongoing services.</p>
+                    <p class="mb-3">Starter packages are billed as one-time setup projects unless a separate support agreement is added later.</p>
+                    <p class="mb-3">We accept payment via bank transfer, credit card, or other mutually agreed methods. All prices are in USD. We reserve the right to update pricing for future projects or optional ongoing services.</p>
                     <p>If payment becomes more than 7 days overdue, DaytonGrowthCo. reserves the right to pause services until the account is brought current. A late fee of 1.5% per month (or the maximum allowed by law) may be applied to outstanding balances beyond 15 days past due.</p>
                 </section>
                 <hr class="border-slate-100"/>
@@ -2314,16 +2453,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         Intellectual Property Rights
                     </h3>
                     <p class="mb-3"><strong class="text-slate-800">Client-Owned Content:</strong> You retain ownership of all content, materials, trademarks, and intellectual property you provide to us. By providing content, you grant us a limited license to use it solely for delivering your services.</p>
-                    <p class="mb-3"><strong class="text-slate-800">Website Ownership:</strong> DaytonGrowthCo. retains ownership of the website design, architecture, and code for the first twelve (12) months of an active subscription. If the subscription is canceled before 12 months, the client may retain the website by paying the remaining portion of the initial setup cost.</p>
+                    <p class="mb-3"><strong class="text-slate-800">Website Ownership:</strong> Ownership details are outlined in the project agreement. In general, client-provided content remains yours, and any hosting, platform, or third-party account access will be documented before launch.</p>
                     <p><strong class="text-slate-800">Company Property:</strong> Our proprietary tools, processes, and methodologies remain our exclusive property. The site and its content are protected by copyright, trademark, and other intellectual property laws.</p>
                 </section>
                 <hr class="border-slate-100"/>
                 <section>
                     <h3 class="text-[15px] font-bold text-slate-900 mb-2 flex items-center gap-2">
                         <span class="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0">6</span>
-                        Website Hosting and Management
+                        Hosting and Optional Support
                     </h3>
-                    <p>While your subscription is active, DaytonGrowthCo. manages website hosting, maintenance, security, and technical updates. If the subscription ends, hosting and management services may be discontinued. The client is responsible for all domain registration and renewal fees, which are not included in any plan pricing.</p>
+                    <p>One-time setup packages do not require ongoing support. If you want DaytonGrowthCo. to help with updates, improvements, hosting coordination, or management after launch, those services can be added separately. The client is responsible for all domain registration and renewal fees unless otherwise agreed.</p>
                 </section>
                 <hr class="border-slate-100"/>
                 <section>
@@ -2426,7 +2565,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0">2</span>
                         Information We Collect
                     </h3>
-                    <p class="mb-3"><strong class="text-slate-800">Information You Provide:</strong> When you fill out a contact form or request an audit, we collect your name, email address, phone number (if provided), business name, and any notes you submit.</p>
+                    <p class="mb-3"><strong class="text-slate-800">Information You Provide:</strong> When you fill out a contact form or request a recommendation, we collect your name, email address, phone number (if provided), business name, and any notes you submit.</p>
                     <p><strong class="text-slate-800">Automatically Collected Information:</strong> When you visit our website, we may automatically collect certain information about your device, including your IP address, browser type, operating system, pages visited, time spent on pages, and the referring website that directed you to us.</p>
                 </section>
                 <hr class="border-slate-100"/>
@@ -2442,11 +2581,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="bg-slate-50 rounded-xl p-3.5">
                             <p class="font-semibold text-slate-800 text-[13px] mb-1">Provide Services</p>
-                            <p class="text-[13px]">Deliver and improve our website design and local SEO services.</p>
+                            <p class="text-[13px]">Deliver and improve our website, lead capture, booking, and follow-up setup services.</p>
                         </div>
                         <div class="bg-slate-50 rounded-xl p-3.5">
                             <p class="font-semibold text-slate-800 text-[13px] mb-1">Process Payments</p>
-                            <p class="text-[13px]">Facilitate billing and subscription management securely.</p>
+                            <p class="text-[13px]">Facilitate billing and project payments securely.</p>
                         </div>
                         <div class="bg-slate-50 rounded-xl p-3.5">
                             <p class="font-semibold text-slate-800 text-[13px] mb-1">Improve Our Website</p>
@@ -2704,7 +2843,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         initReveal();
-        updatePricing();
         setTimeout(startHeroTypingIfReady, 90);
     };
 
@@ -2733,10 +2871,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateMeta = () => {
         const currentHash = window.location.hash || '#';
         const meta = {
-            '#about': { title: 'About DaytonGrowthCo. | Your Local Digital Growth Partner in Dayton, OH', desc: 'Meet DaytonGrowthCo., a Dayton-based partner helping local small businesses get more customers through ongoing website management, local SEO, and Google Business Profile optimization.', canonical: 'https://www.daytongrowth.co/#about', keywords: 'about DaytonGrowthCo, Dayton Ohio web design company, local SEO agency Dayton OH, Samuel Caruso' },
-            '#process': { title: 'How It Works | DaytonGrowthCo.', desc: 'See our proven 4-step process for growing local businesses in Dayton, Ohio. We handle website design, local SEO, and monthly management.', canonical: 'https://www.daytongrowth.co/#process', keywords: 'Dayton SEO process, website management, Dayton Ohio digital marketing' }
+            '#about': { title: 'About DaytonGrowthCo. | Your Local Digital Setup Partner in Dayton, OH', desc: 'Meet DaytonGrowthCo., a Dayton-based partner helping local businesses improve websites, forms, booking, follow-up, and lead organization.', canonical: 'https://www.daytongrowth.co/#about', keywords: 'about DaytonGrowthCo, Dayton Ohio website setup, lead capture setup Dayton OH, Samuel Caruso' },
+            '#process': { title: 'How It Works | DaytonGrowthCo.', desc: 'See the simple process for setting up a better website, better lead capture, and a clearer follow-up flow for local businesses.', canonical: 'https://www.daytongrowth.co/#process', keywords: 'Dayton lead system setup, website setup process, Dayton Ohio digital setup' }
         };
-        const cfg = meta[currentHash] || { title: 'DaytonGrowthCo. | Websites + Lead Systems for Dayton Businesses', desc: 'We help local businesses get more customers by turning their website into a simple system for lead capture, follow-up, and growth.', canonical: 'https://www.daytongrowth.co/', keywords: 'Dayton Ohio website design, local SEO Dayton OH, Google Business Profile management Dayton, small business website Dayton, website maintenance Dayton Ohio, Miami Valley SEO' };
+        const cfg = meta[currentHash] || { title: 'DaytonGrowthCo. | One-Time Website + Lead System Setup for Dayton Businesses', desc: 'DaytonGrowthCo. helps local businesses capture more leads, respond faster, and stay organized with one-time website, form, booking, and follow-up setup packages.', canonical: 'https://www.daytongrowth.co/', keywords: 'Dayton Ohio website setup, lead capture setup Dayton OH, Google Business Profile cleanup Dayton, small business website Dayton, booking setup Dayton Ohio, local business lead system' };
         
         document.title = cfg.title;
         metaDescription?.setAttribute('content', cfg.desc);
