@@ -118,20 +118,21 @@
             display: grid;
             place-items: center;
             background:
-                radial-gradient(circle at 45% 38%, rgba(37,99,235,0.22), transparent 34%),
-                radial-gradient(circle at 62% 42%, rgba(168,85,247,0.18), transparent 32%),
-                #050505;
+                radial-gradient(circle at 50% 38%, rgba(37,99,235,0.16), transparent 34%),
+                radial-gradient(circle at 55% 58%, rgba(168,85,247,0.10), transparent 36%),
+                linear-gradient(180deg, #05070d 0%, #070a12 52%, #050505 100%);
             color: #fff;
             overflow: hidden;
-            transition: opacity 420ms ease, visibility 420ms ease;
+            opacity: 1;
+            transition: opacity 440ms cubic-bezier(0.22, 1, 0.36, 1), visibility 440ms step-end;
+            will-change: opacity;
         }
         .splash-screen::after {
             content: '';
             position: absolute;
             inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-            background-size: 42px 42px;
-            mask-image: radial-gradient(circle at center, #000 0%, transparent 72%);
+            background: radial-gradient(circle at center, rgba(255,255,255,0.045), transparent 48%);
+            opacity: 0.55;
             pointer-events: none;
         }
         .splash-screen.is-done {
@@ -144,42 +145,145 @@
             position: relative;
             z-index: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 0.9rem;
-            transform: translateY(8px);
-            animation: splashLift 900ms cubic-bezier(0.16,1,0.3,1) forwards;
+            justify-content: center;
+            gap: 1.05rem;
+            width: min(280px, 78vw);
+            min-height: 148px;
+            opacity: 1;
+            transform: translate3d(0,0,0);
+            transition: opacity 420ms ease, transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
+        }
+        .splash-screen.is-done .splash-inner {
+            opacity: 0;
+            transform: translate3d(0,-6px,0) scale(0.985);
+        }
+        .splash-line {
+            position: absolute;
+            top: 52px;
+            left: 50%;
+            width: min(168px, 58vw);
+            height: 1px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, transparent, rgba(219,234,254,0.82), transparent);
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            opacity: 0;
+            animation:
+                splashLineDraw 440ms cubic-bezier(0.22, 1, 0.36, 1) 340ms forwards,
+                splashLineExit 240ms ease 900ms forwards;
+        }
+        .splash-mark {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            display: grid;
+            place-items: center;
+            margin-top: 4px;
+        }
+        .splash-segments {
+            position: absolute;
+            inset: 0;
+        }
+        .splash-segment {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: var(--w);
+            height: var(--h);
+            border-radius: 2px;
+            background: rgba(219,234,254,0.88);
+            box-shadow: 0 0 18px rgba(96,165,250,0.12);
+            opacity: 0;
+            transform-origin: center;
+            animation:
+                splashSegmentBuild 520ms cubic-bezier(0.22, 1, 0.36, 1) var(--d) forwards,
+                splashSegmentResolve 260ms ease 1320ms forwards;
         }
         .splash-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+            width: 58px;
+            height: 58px;
+            border-radius: 15px;
             display: block;
             object-fit: contain;
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.72);
-            box-shadow: 0 18px 44px rgba(37,99,235,0.26);
-            transform: scale(0.82);
+            border: 0;
+            box-shadow: none;
+            transform: scale(0.992);
             opacity: 0;
-            animation: splashMark 520ms cubic-bezier(0.16,1,0.3,1) 120ms forwards;
+            filter: blur(1.5px);
+            animation: splashLogoSettle 320ms cubic-bezier(0.22, 1, 0.36, 1) 1380ms forwards;
+            will-change: opacity, transform, filter;
         }
         .splash-wordmark {
+            position: relative;
+            display: inline-flex;
+            align-items: baseline;
             font-size: clamp(1.45rem, 5vw, 2rem);
             font-weight: 800;
             letter-spacing: -0.04em;
+            color: #ffffff;
+            line-height: 1;
+            white-space: nowrap;
             opacity: 0;
-            transform: translateX(-8px);
-            animation: splashWordmark 520ms cubic-bezier(0.16,1,0.3,1) 430ms forwards;
+            transform: translate3d(0,5px,0);
+            filter: blur(3px);
+            animation:
+                splashWordmarkIn 380ms cubic-bezier(0.22, 1, 0.36, 1) 1620ms forwards,
+                splashLetterTighten 420ms cubic-bezier(0.22, 1, 0.36, 1) 1840ms forwards;
+            will-change: opacity, transform, filter, letter-spacing;
         }
-        .splash-wordmark span { color: rgba(203,213,225,0.82); font-weight: 400; }
-        .splash-wordmark b { color: #60A5FA; font-weight: 900; }
-        @keyframes splashMark {
-            to { opacity: 1; transform: scale(1); }
+        .splash-wordmark .splash-growth { color: rgba(203,213,225,0.82); font-weight: 400; }
+        .splash-wordmark .splash-co { color: #60A5FA; font-weight: 900; }
+        .splash-wordmark::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -12px;
+            width: 74%;
+            height: 1px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, transparent, rgba(96,165,250,0.52), transparent);
+            transform: translateX(-50%) scaleX(0);
+            opacity: 0;
+            animation: splashUnderline 320ms cubic-bezier(0.22, 1, 0.36, 1) 1900ms forwards;
         }
-        @keyframes splashWordmark {
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes splashLineDraw {
+            0% { opacity: 0; transform: translateX(-50%) scaleX(0); }
+            18% { opacity: 1; }
+            100% { opacity: 1; transform: translateX(-50%) scaleX(1); }
         }
-        @keyframes splashLift {
-            to { transform: translateY(0); }
+        @keyframes splashLineExit {
+            to { opacity: 0; transform: translateX(-50%) scaleX(0.78); }
+        }
+        @keyframes splashSegmentBuild {
+            0% {
+                opacity: 0;
+                transform: translate3d(var(--from-x), var(--from-y), 0) rotate(var(--r)) scaleX(0.24);
+            }
+            28% { opacity: 1; }
+            100% {
+                opacity: 1;
+                transform: translate3d(var(--to-x), var(--to-y), 0) rotate(var(--r)) scaleX(1);
+            }
+        }
+        @keyframes splashSegmentResolve {
+            to { opacity: 0.18; filter: blur(0.5px); }
+        }
+        @keyframes splashLogoSettle {
+            to { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        @keyframes splashWordmarkIn {
+            to { opacity: 1; transform: translate3d(0,0,0); filter: blur(0); }
+        }
+        @keyframes splashLetterTighten {
+            to { letter-spacing: -0.035em; }
+        }
+        @keyframes splashUnderline {
+            to { opacity: 1; transform: translateX(-50%) scaleX(1); }
         }
 
         /* ── SWEEPS & STAGGERS ── */
@@ -249,6 +353,43 @@
             background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
+        }
+        .stats-section {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(37,99,235,0.18), transparent 34%),
+                linear-gradient(180deg, #05070d 0%, #0a0e1a 48%, #050505 100%);
+        }
+        .stats-grid-soft {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 56px 56px;
+            mask-image: radial-gradient(circle at center, #000 0%, transparent 72%);
+        }
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.09);
+            background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 22px 60px rgba(0,0,0,0.22);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(96,165,250,0.14), transparent 48%);
+            pointer-events: none;
+        }
+        .stat-number {
+            color: #fff;
+            text-shadow: 0 10px 34px rgba(37,99,235,0.18);
+        }
+        .stat-rule {
+            width: 42px;
+            height: 2px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #60a5fa, rgba(192,132,252,0.8));
+            margin: 0.95rem auto 1rem;
         }
 
         /* ── MICRO-ANIMATIONS ── */
@@ -564,14 +705,14 @@
             box-shadow: 0 16px 36px rgba(15,23,42,0.09);
         }
         @media (min-width: 900px) {
-            .industry-card { grid-template-columns: minmax(0,1fr) minmax(220px, 236px); min-height: 244px; }
+            .industry-card { grid-template-columns: minmax(0,1fr) minmax(220px, 236px); min-height: 274px; }
         }
         .type-pill { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 9999px; display: inline-flex; width: fit-content; border: 1px solid #dbeafe; color: #1d4ed8; background: #eff6ff; }
         .preview-shell {
             border: 1px solid #dbe4f1;
             border-radius: 16px;
             background: #f8fafc;
-            height: 184px;
+            height: 214px;
             position: relative;
             overflow: hidden;
             padding: 0.7rem;
@@ -625,12 +766,237 @@
         .form-preview { gap: 0.28rem; }
         .form-preview .preview-row { height: 20px; }
         .form-preview .preview-action-btn { height: 24px; }
+        .preview-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem;
+            margin-bottom: 0.45rem;
+        }
+        .preview-dots { display: inline-flex; gap: 3px; }
+        .preview-dots span { width: 5px; height: 5px; border-radius: 9999px; background: #cbd5e1; }
+        .preview-title { font-size: 10px; font-weight: 800; color: #0f172a; letter-spacing: 0.01em; }
+        .preview-mini-pill {
+            border-radius: 9999px;
+            padding: 2px 6px;
+            font-size: 9px;
+            line-height: 1;
+            font-weight: 800;
+            border: 1px solid #dbeafe;
+            background: #eff6ff;
+            color: #1d4ed8;
+            white-space: nowrap;
+        }
+        .preview-input-line {
+            height: 24px;
+            border-radius: 9px;
+            border: 1px solid #dbe4f1;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem;
+            padding: 0 0.45rem;
+        }
+        .preview-tiny-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; }
+        .preview-check {
+            width: 13px;
+            height: 13px;
+            border-radius: 9999px;
+            background: #22c55e;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            line-height: 1;
+        }
+        .preview-kanban {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.35rem;
+            height: calc(100% - 28px);
+        }
+        .preview-column {
+            border-radius: 10px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 0.35rem;
+            min-width: 0;
+        }
+        .preview-column-title { font-size: 8px; font-weight: 800; color: #64748b; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .preview-lead-card {
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #dbe4f1;
+            padding: 0.35rem;
+            box-shadow: 0 4px 10px rgba(15,23,42,0.04);
+        }
+        .preview-map {
+            position: relative;
+            border-radius: 10px;
+            border: 1px solid #dbe4f1;
+            background:
+                linear-gradient(90deg, rgba(148,163,184,0.12) 1px, transparent 1px),
+                linear-gradient(rgba(148,163,184,0.12) 1px, transparent 1px),
+                #f8fafc;
+            background-size: 22px 22px;
+            min-height: 54px;
+            overflow: hidden;
+        }
+        .preview-map-pin {
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            border-radius: 9999px;
+            background: #2563eb;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 6px rgba(37,99,235,0.13);
+        }
+        .preview-map-pin:nth-child(1) { left: 24%; top: 34%; }
+        .preview-map-pin:nth-child(2) { left: 58%; top: 48%; animation-delay: .2s; }
+        .preview-map-pin:nth-child(3) { left: 74%; top: 22%; animation-delay: .4s; }
+        .preview-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.35rem;
+        }
+        .preview-stat-box {
+            border-radius: 9px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            padding: 0.4rem;
+            min-width: 0;
+        }
+        .demo-card {
+            border-radius: 20px;
+            background: linear-gradient(180deg, #101827 0%, #0A0E1A 100%);
+            border: 1px solid rgba(148,163,184,0.2);
+            box-shadow: 0 20px 46px rgba(15,23,42,0.22);
+            overflow: hidden;
+        }
+        .demo-chrome {
+            height: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.035);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0 0.8rem;
+        }
+        .demo-window-dots { display: flex; gap: 4px; }
+        .demo-window-dots span { width: 6px; height: 6px; border-radius: 9999px; background: rgba(148,163,184,0.5); }
+        .demo-title { color: #cbd5e1; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; }
+        .demo-body { padding: 0.95rem; }
+        .demo-row {
+            min-height: 32px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.55rem;
+            padding: 0.45rem 0.55rem;
+        }
+        .demo-copy { height: 6px; border-radius: 9999px; background: rgba(203,213,225,0.28); }
+        .demo-label { color: #94a3b8; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+        .demo-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 9999px;
+            border: 1px solid rgba(96,165,250,0.24);
+            background: rgba(37,99,235,0.12);
+            color: #93c5fd;
+            padding: 3px 7px;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .demo-chip.success {
+            border-color: rgba(52,211,153,0.28);
+            background: rgba(16,185,129,0.13);
+            color: #6ee7b7;
+        }
+        .demo-check {
+            width: 15px;
+            height: 15px;
+            border-radius: 9999px;
+            background: rgba(16,185,129,0.18);
+            border: 1px solid rgba(52,211,153,0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #6ee7b7;
+            font-size: 10px;
+            flex: 0 0 auto;
+        }
+        .demo-metric {
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.045);
+            padding: 0.55rem;
+        }
+        .demo-bar-track { height: 5px; border-radius: 9999px; background: rgba(148,163,184,0.16); overflow: hidden; }
+        .demo-bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2563eb, #60a5fa); }
+        .demo-flow {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 34px 1fr;
+            gap: 0.55rem;
+            align-items: center;
+        }
+        .demo-flow-line {
+            height: 2px;
+            border-radius: 9999px;
+            background: rgba(96,165,250,0.2);
+            overflow: hidden;
+        }
+        .demo-flow-line::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            background: #60a5fa;
+            transform-origin: left center;
+            animation: demoFlowLine 5.8s ease-in-out infinite;
+        }
+        .demo-flow-dot {
+            position: absolute;
+            left: calc(50% - 17px);
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            margin-top: -4px;
+            border-radius: 9999px;
+            background: #bfdbfe;
+            box-shadow: 0 0 0 5px rgba(96,165,250,0.14);
+            animation: demoFlowDot 5.8s cubic-bezier(.16,1,.3,1) infinite;
+        }
+        @keyframes demoFlowLine {
+            0%, 22%, 100% { transform: scaleX(0.12); opacity: 0.25; }
+            38%, 78% { transform: scaleX(1); opacity: 1; }
+        }
+        @keyframes demoFlowDot {
+            0%, 30% { opacity: 0; transform: translateX(-14px); }
+            46%, 68% { opacity: 1; transform: translateX(18px); }
+            82%, 100% { opacity: 0; transform: translateX(18px); }
+        }
 
         
         /* ── MOBILE RE-OPTIMIZATION (mobile only) ── */
         @media (max-width: 767px) {
+            html {
+                scroll-behavior: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
             html, body { font-size: 15px; overflow-x: hidden; }
-            main { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+            body { padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px)); }
+            main { padding-bottom: 0; }
 
             #navbar .max-w-7xl {
                 min-height: 64px;
@@ -711,11 +1077,13 @@
                 background: rgba(15,23,42,0.94);
                 border: 1px solid rgba(255,255,255,0.14);
                 border-radius: 9999px;
-                box-shadow: 0 14px 34px rgba(15,23,42,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
-                backdrop-filter: blur(16px) saturate(1.2);
-                -webkit-backdrop-filter: blur(16px) saturate(1.2);
+                box-shadow: 0 10px 26px rgba(15,23,42,0.24), inset 0 1px 0 rgba(255,255,255,0.14);
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
                 transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
                 transform: translateX(-50%);
+                contain: layout paint;
+                backface-visibility: hidden;
             }
             #mobileMenuBtn svg {
                 display: none !important;
@@ -777,13 +1145,17 @@
                 left: 14px;
                 right: 14px;
                 width: auto;
+                background: #ffffff !important;
                 border: 1px solid rgba(15,23,42,0.08);
                 border-radius: 24px;
-                box-shadow: 0 24px 60px rgba(15,23,42,0.18);
+                box-shadow: 0 18px 42px rgba(15,23,42,0.16);
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
                 overflow: hidden;
                 z-index: 85;
                 transform: translateY(12px) scale(0.98);
                 transform-origin: bottom center;
+                contain: layout paint;
             }
             #mobileMenu.open {
                 transform: translateY(0) scale(1);
@@ -900,6 +1272,99 @@
                 padding-top: 2.75rem !important;
             }
 
+            #form {
+                padding-top: 3.5rem !important;
+            }
+            #form > .absolute {
+                display: none !important;
+            }
+            #form .max-w-3xl {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            #form .form-card {
+                background: #0d1117 !important;
+                border-radius: 22px !important;
+                padding: 1.15rem !important;
+                box-shadow: 0 18px 46px rgba(0,0,0,0.38) !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            #auditForm {
+                gap: 1.55rem !important;
+            }
+            #auditForm .grid {
+                gap: 1.05rem !important;
+            }
+            #auditForm .relative.group {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0.45rem;
+                padding-top: 0 !important;
+            }
+            #auditForm .relative.group label {
+                position: static !important;
+                transform: none !important;
+                font-size: 11px !important;
+                line-height: 1.2 !important;
+                color: #94a3b8 !important;
+                font-weight: 800 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.08em !important;
+                pointer-events: none;
+            }
+            #auditForm input[type="text"],
+            #auditForm input[type="email"],
+            #auditForm textarea {
+                -webkit-appearance: none;
+                appearance: none;
+                min-height: 48px;
+                width: 100%;
+                border: 1px solid rgba(148,163,184,0.26) !important;
+                border-radius: 14px !important;
+                background: rgba(255,255,255,0.045) !important;
+                padding: 0.78rem 0.9rem !important;
+                color: #ffffff !important;
+                font-size: 16px !important;
+                line-height: 1.35 !important;
+            }
+            #auditForm textarea {
+                min-height: 96px;
+                resize: vertical;
+            }
+            #auditForm input[type="text"]:focus,
+            #auditForm input[type="email"]:focus,
+            #auditForm textarea:focus {
+                border-color: rgba(59,130,246,0.78) !important;
+                box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+            }
+            #auditForm input[type="radio"] {
+                flex: 0 0 auto;
+                margin-top: 0.12rem;
+            }
+            #auditForm label:has(input[type="radio"]) {
+                align-items: flex-start;
+                padding: 0.95rem !important;
+                border-radius: 16px !important;
+                min-height: auto;
+            }
+            #auditForm .pr-24 {
+                padding-right: 0 !important;
+            }
+            #auditForm button[type="submit"] {
+                min-height: 54px;
+                padding: 0.95rem 1.1rem !important;
+                border-radius: 9999px !important;
+                font-size: 15px !important;
+                line-height: 1.15 !important;
+                text-align: center;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+            #auditForm button[type="submit"] svg {
+                flex: 0 0 auto;
+            }
+
             #services h2,
             #industry-tools h2,
             #pricing h2,
@@ -917,8 +1382,8 @@
                 border-radius: 18px !important;
                 padding: 1rem !important;
             }
-            #industry-tools .preview-shell { height: 176px; }
-            #industry-tools .preview-safe-area { padding: 0.6rem; }
+            #industry-tools .preview-shell { height: 214px; }
+            #industry-tools .preview-safe-area { padding: 0.55rem; }
             #industry-tools .preview-bubble-card { max-width: 76%; }
             #industry-tools .industry-card:hover,
             #industry-tools .industry-card:focus-within { transform: none; box-shadow: none; }
@@ -982,11 +1447,23 @@
         @media (prefers-reduced-motion: reduce) {
             .splash-screen,
             .splash-inner,
+            .splash-line,
+            .splash-segment,
             .splash-logo,
             .splash-wordmark,
             .hero-type-cursor {
                 animation: none !important;
                 transition-duration: 0.01ms !important;
+            }
+            .splash-line,
+            .splash-segment {
+                display: none !important;
+            }
+            .splash-logo,
+            .splash-wordmark {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
             }
             .industry-card,
             .industry-tab,
@@ -1001,8 +1478,16 @@
 
 <div id="splashScreen" class="splash-screen" aria-hidden="true">
     <div class="splash-inner">
-        <img class="splash-logo" src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="56" height="56" decoding="async" fetchpriority="high">
-        <div class="splash-wordmark">Dayton<span>Growth</span><b>Co.</b></div>
+        <div class="splash-line"></div>
+        <div class="splash-mark">
+            <div class="splash-segments">
+                <span class="splash-segment" style="--w:34px;--h:2px;--from-x:-17px;--from-y:0;--to-x:-17px;--to-y:-16px;--r:0deg;--d:900ms;"></span>
+                <span class="splash-segment" style="--w:34px;--h:2px;--from-x:-17px;--from-y:0;--to-x:-17px;--to-y:14px;--r:0deg;--d:960ms;"></span>
+                <span class="splash-segment" style="--w:34px;--h:2px;--from-x:-17px;--from-y:0;--to-x:2px;--to-y:-1px;--r:90deg;--d:1020ms;"></span>
+            </div>
+            <img class="splash-logo" src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="58" height="58" decoding="async" fetchpriority="high">
+        </div>
+        <div class="splash-wordmark">Dayton<span class="splash-growth">Growth</span><span class="splash-co">Co.</span></div>
     </div>
 </div>
 
@@ -1463,33 +1948,33 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">1</div>
                         <div class="w-full md:w-1/2 md:pl-12 flex justify-center md:justify-start">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px]">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="h-1.5 w-20 bg-white/20 rounded-full"></div>
-                                    <div class="text-[9px] uppercase tracking-[0.14em] font-semibold text-emerald-300/90 bg-emerald-500/15 border border-emerald-400/20 px-2 py-1 rounded-full" style="animation: hiwReveal 5.5s cubic-bezier(.16,1,.3,1) infinite; opacity:0;">Captured</div>
+                            <div class="demo-card w-full max-w-[320px]">
+                                <div class="demo-chrome">
+                                    <div class="demo-window-dots"><span></span><span></span><span></span></div>
+                                    <div class="demo-title">Lead audit</div>
                                 </div>
-                                <div class="space-y-2.5">
-                                    <div class="flex items-center gap-2.5 border border-white/10 rounded-lg px-2.5 py-2 bg-white/[0.03]">
-                                        <div class="w-4 h-4 rounded border border-emerald-400/50 flex items-center justify-center bg-emerald-500/20">
-                                            <svg class="w-3 h-3 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        </div>
-                                        <div class="h-1.5 w-28 bg-white/25 rounded-full"></div>
+                                <div class="demo-body space-y-2.5">
+                                    <div class="demo-row">
+                                        <span class="demo-label">Current source</span>
+                                        <span class="demo-chip">Website form</span>
                                     </div>
-                                    <div class="flex items-center gap-2.5 border rounded-lg px-2.5 py-2 anim-hiw-row-focus">
-                                        <div class="w-4 h-4 rounded border flex items-center justify-center shrink-0 anim-hiw-check">
-                                            <svg class="w-3 h-3 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        </div>
-                                        <div class="h-1.5 w-20 bg-white/25 rounded-full"></div>
+                                    <div class="demo-row anim-hiw-row-focus">
+                                        <span class="demo-label">Bottleneck</span>
+                                        <span class="demo-chip">Slow response</span>
                                     </div>
-                                    <div class="flex items-center gap-2.5 border border-white/10 rounded-lg px-2.5 py-2 bg-white/[0.03]">
-                                        <div class="w-4 h-4 rounded border border-blue-500/50 flex items-center justify-center bg-blue-500/20 shrink-0 anim-hiw-check" style="animation-delay: 1.4s">
-                                            <svg class="w-3 h-3 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        </div>
-                                        <div class="h-1.5 w-24 bg-white/25 rounded-full"></div>
+                                    <div class="demo-row">
+                                        <span class="demo-label">Goal</span>
+                                        <span class="demo-chip success">More calls</span>
                                     </div>
-                                </div>
-                                <div class="mt-3 h-7 rounded-lg border border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-300 font-semibold flex items-center justify-between px-2.5" style="animation: hiwReveal 5.5s cubic-bezier(.16,1,.3,1) 2s infinite; opacity:0;">
-                                    <span>Discovery complete</span><span>✓</span>
+                                    <div class="grid grid-cols-3 gap-2 pt-1">
+                                        <div class="demo-metric"><div class="demo-label mb-1">Forms</div><div class="text-white text-[16px] font-extrabold leading-none">18</div></div>
+                                        <div class="demo-metric anim-hiw-metric"><div class="demo-label mb-1">Missed</div><div class="text-amber-300 text-[16px] font-extrabold leading-none">6</div></div>
+                                        <div class="demo-metric"><div class="demo-label mb-1">Fix</div><div class="text-emerald-300 text-[16px] font-extrabold leading-none">3</div></div>
+                                    </div>
+                                    <div class="demo-row border-emerald-400/25 bg-emerald-500/10">
+                                        <span class="text-[10px] text-emerald-300 font-bold">Workflow map ready</span>
+                                        <span class="demo-check">✓</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1504,27 +1989,34 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">2</div>
                         <div class="w-full md:w-1/2 md:pr-12 flex justify-center md:justify-end">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-4 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px] flex items-center gap-2 overflow-hidden">
-                                <div class="flex-1 bg-white/5 border border-white/10 rounded-lg p-2.5 space-y-1.5">
-                                    <div class="h-1.5 w-12 bg-white/25 rounded-full"></div>
-                                    <div class="h-2 w-full bg-white/15 rounded-full anim-hiw-row-focus"></div>
-                                    <div class="h-2 w-4/5 bg-white/15 rounded-full"></div>
-                                    <div class="h-5 rounded-md bg-blue-500/85 text-[9px] text-white font-semibold flex items-center justify-center">Create system</div>
+                            <div class="demo-card w-full max-w-[320px]">
+                                <div class="demo-chrome">
+                                    <div class="demo-window-dots"><span></span><span></span><span></span></div>
+                                    <div class="demo-title">System builder</div>
                                 </div>
-                                <div class="w-12 relative shrink-0 flex items-center justify-center">
-                                    <div class="h-1 w-10 rounded-full bg-blue-500/20 overflow-hidden">
-                                        <div class="h-full w-full bg-blue-400/80 anim-hiw-flow"></div>
+                                <div class="demo-body space-y-3">
+                                    <div class="demo-flow">
+                                        <div class="rounded-xl border border-white/10 bg-white/[0.04] p-2.5">
+                                            <div class="demo-label mb-2">Website</div>
+                                            <div class="demo-copy w-full mb-1.5"></div>
+                                            <div class="demo-copy w-3/4"></div>
+                                        </div>
+                                        <div class="demo-flow-line"></div>
+                                        <div class="rounded-xl border border-white/10 bg-white/[0.04] p-2.5">
+                                            <div class="flex items-center justify-between mb-2"><span class="demo-label">Leads</span><span class="demo-chip success">On</span></div>
+                                            <div class="demo-copy w-5/6 mb-1.5 bg-emerald-300/50"></div>
+                                            <div class="demo-copy w-2/3"></div>
+                                        </div>
+                                        <span class="demo-flow-dot"></span>
                                     </div>
-                                    <div class="absolute w-2 h-2 rounded-full bg-blue-300 anim-hiw-dot"></div>
-                                </div>
-                                <div class="flex-1 bg-white/5 border border-white/10 rounded-lg p-2.5 space-y-1.5 relative">
-                                    <div class="flex items-center justify-between">
-                                        <div class="h-1.5 w-10 bg-white/25 rounded-full"></div>
-                                        <div class="text-[8px] text-emerald-300 uppercase tracking-[0.12em] font-semibold anim-hiw-reveal">Connected</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="demo-row"><span class="demo-label">Form</span><span class="demo-check">✓</span></div>
+                                        <div class="demo-row"><span class="demo-label">Notify</span><span class="demo-check">✓</span></div>
                                     </div>
-                                    <div class="h-2 w-5/6 bg-emerald-400/75 rounded-full anim-hiw-reveal"></div>
-                                    <div class="h-2 w-full bg-white/20 rounded-full"></div>
-                                    <div class="h-2 w-3/4 bg-white/20 rounded-full"></div>
+                                    <div class="demo-row anim-hiw-row-focus">
+                                        <span class="text-[10px] text-blue-200 font-bold">Quote request routed to dashboard</span>
+                                        <span class="demo-chip">Live test</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1539,28 +2031,23 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">3</div>
                         <div class="w-full md:w-1/2 md:pl-12 flex justify-center md:justify-start">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px] overflow-hidden">
-                                <div class="h-6 bg-[#161B22] border-b border-white/10 flex items-center px-3 gap-2">
-                                    <div class="flex-1 h-1 bg-white/10 rounded overflow-hidden">
-                                        <div class="h-full bg-blue-500 anim-hiw-launch-progress"></div>
-                                    </div>
-                                    <div class="text-[9px] text-blue-300 font-semibold uppercase tracking-[0.11em] whitespace-nowrap relative min-w-[64px] h-[10px]">
-                                        <span class="anim-hiw-status-launch absolute left-0 top-0">Launching</span>
-                                        <span class="anim-hiw-status-live absolute left-0 top-0 text-emerald-300">Live</span>
-                                    </div>
+                            <div class="demo-card w-full max-w-[320px]">
+                                <div class="demo-chrome">
+                                    <div class="demo-window-dots"><span></span><span></span><span></span></div>
+                                    <div class="demo-title">Launch checks</div>
                                 </div>
-                                <div class="p-4 h-24 relative">
-                                    <div class="h-full border border-white/10 rounded-lg bg-white/[0.03] p-2.5 flex flex-col justify-between">
-                                        <div class="flex items-center justify-between">
-                                            <div class="h-1.5 w-14 bg-white/20 rounded-full"></div>
-                                            <div class="h-4 px-2 rounded-full border border-emerald-400/40 bg-emerald-500/15 text-[8px] text-emerald-300 font-semibold uppercase tracking-[0.12em] flex items-center anim-hiw-status-live">Synced</div>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <div class="h-1.5 w-full bg-white/15 rounded-full"></div>
-                                            <div class="h-1.5 w-4/5 bg-white/15 rounded-full"></div>
-                                        </div>
+                                <div class="demo-body space-y-2.5">
+                                    <div class="demo-row">
+                                        <span class="demo-label">Publish</span>
+                                        <div class="demo-bar-track w-28"><div class="demo-bar-fill anim-hiw-launch-progress"></div></div>
                                     </div>
-                                    <div class="absolute right-4 bottom-4 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] rounded-full anim-hiw-reveal" style="animation-delay: 2.8s">Launch complete</div>
+                                    <div class="demo-row"><span class="demo-label">Mobile form</span><span class="demo-check anim-hiw-status-live">✓</span></div>
+                                    <div class="demo-row"><span class="demo-label">Email alert</span><span class="demo-check anim-hiw-status-live" style="animation-delay:.35s">✓</span></div>
+                                    <div class="demo-row"><span class="demo-label">Google profile</span><span class="demo-chip success anim-hiw-reveal">Synced</span></div>
+                                    <div class="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-3 py-2 flex items-center justify-between">
+                                        <span class="text-[10px] text-emerald-300 font-bold">Launch complete</span>
+                                        <span class="text-[9px] text-emerald-200/80 font-semibold">All tests passed</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1575,31 +2062,25 @@
                         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-lg z-10 hidden md:flex border-4 border-white">4</div>
                         <div class="w-full md:w-1/2 md:pr-12 flex justify-center md:justify-end">
                             <!-- Micro-Animation UI -->
-                            <div class="bg-[#0A0E1A] p-5 rounded-2xl border border-slate-200 shadow-xl w-full max-w-[320px]">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Lead Lift</div>
-                                    <div class="text-[8px] text-emerald-300 uppercase tracking-[0.12em] font-semibold bg-emerald-500/15 border border-emerald-500/25 px-2 py-1 rounded-full anim-hiw-reveal" style="animation-delay: 2.3s">Optimized</div>
+                            <div class="demo-card w-full max-w-[320px]">
+                                <div class="demo-chrome">
+                                    <div class="demo-window-dots"><span></span><span></span><span></span></div>
+                                    <div class="demo-title">Lead control room</div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 mb-3">
-                                    <div class="border border-white/10 rounded-lg bg-white/[0.03] p-2 anim-hiw-metric">
-                                        <div class="text-[8px] text-slate-400 uppercase tracking-[0.12em] mb-1">Leads</div>
-                                        <div class="text-[13px] text-white font-semibold">42 <span class="text-emerald-300 anim-hiw-metric-value">+11%</span></div>
+                                <div class="demo-body space-y-2.5">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="demo-metric anim-hiw-metric"><div class="demo-label mb-1">New leads</div><div class="text-white text-[18px] font-extrabold leading-none">42 <span class="text-[10px] text-emerald-300 anim-hiw-metric-value">+11%</span></div></div>
+                                        <div class="demo-metric anim-hiw-metric" style="animation-delay:.25s"><div class="demo-label mb-1">Avg reply</div><div class="text-white text-[18px] font-extrabold leading-none">8m</div></div>
                                     </div>
-                                    <div class="border border-white/10 rounded-lg bg-white/[0.03] p-2 anim-hiw-metric" style="animation-delay: .4s">
-                                        <div class="text-[8px] text-slate-400 uppercase tracking-[0.12em] mb-1">Calls</div>
-                                        <div class="text-[13px] text-white font-semibold">29 <span class="text-emerald-300 anim-hiw-metric-value" style="animation-delay: .4s">+7%</span></div>
+                                    <div class="flex items-end gap-1.5 h-12 border-b border-white/10 pb-1">
+                                        <div class="w-full bg-blue-500/20 rounded-t-sm anim-hiw-bar" style="--h: 38%;"></div>
+                                        <div class="w-full bg-blue-500/35 rounded-t-sm anim-hiw-bar" style="--h: 54%; animation-delay: 0.15s"></div>
+                                        <div class="w-full bg-blue-500/50 rounded-t-sm anim-hiw-bar" style="--h: 68%; animation-delay: 0.3s"></div>
+                                        <div class="w-full bg-blue-500/75 rounded-t-sm anim-hiw-bar" style="--h: 86%; animation-delay: 0.45s"></div>
+                                        <div class="w-full bg-blue-400 rounded-t-sm anim-hiw-bar" style="--h: 100%; animation-delay: 0.6s"></div>
                                     </div>
-                                </div>
-                                <div class="flex items-end gap-1.5 h-11 border-b border-white/10 pb-1 mb-2.5">
-                                    <div class="w-full bg-blue-500/20 rounded-t-sm anim-hiw-bar" style="--h: 44%;"></div>
-                                    <div class="w-full bg-blue-500/40 rounded-t-sm anim-hiw-bar" style="--h: 58%; animation-delay: 0.15s"></div>
-                                    <div class="w-full bg-blue-500/60 rounded-t-sm anim-hiw-bar" style="--h: 72%; animation-delay: 0.3s"></div>
-                                    <div class="w-full bg-blue-500/80 rounded-t-sm anim-hiw-bar" style="--h: 88%; animation-delay: 0.45s"></div>
-                                    <div class="w-full bg-blue-500 rounded-t-sm anim-hiw-bar" style="--h: 100%; animation-delay: 0.6s"></div>
-                                </div>
-                                <div class="h-6 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 flex items-center justify-between text-[9px] text-slate-300">
-                                    <span>GBP update</span>
-                                    <span class="text-emerald-300 anim-hiw-reveal" style="animation-delay: 2.9s">Completed</span>
+                                    <div class="demo-row"><span class="text-[10px] text-slate-300 font-bold">Sarah Johnson</span><span class="demo-chip success">Booked</span></div>
+                                    <div class="demo-row anim-hiw-row-focus"><span class="text-[10px] text-slate-300 font-bold">Follow-up reminder</span><span class="demo-chip">Queued</span></div>
                                 </div>
                             </div>
                         </div>
@@ -1611,45 +2092,59 @@
     </section>
 
     <!-- STAT INTERRUPT -->
-    <section id="process" class="pt-32 pb-20 relative bg-[#050505] text-white overflow-hidden noise min-h-[40vh] flex flex-col justify-center">
-        <div class="absolute inset-0 pointer-events-none bg-grid"></div>
-        <div class="absolute top-[10%] left-1/4 w-[600px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-[-10%] right-1/4 w-[500px] h-[400px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
+    <section id="process" class="stats-section pt-24 pb-24 lg:pt-28 lg:pb-28 relative text-white overflow-hidden noise">
+        <div class="absolute inset-0 pointer-events-none stats-grid-soft"></div>
+        <div class="absolute top-[-18%] left-1/2 -translate-x-1/2 w-[760px] h-[420px] bg-blue-600/16 rounded-full blur-[130px] pointer-events-none"></div>
+        <div class="absolute bottom-[-26%] right-[-8%] w-[560px] h-[420px] bg-purple-600/12 rounded-full blur-[120px] pointer-events-none"></div>
         
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 w-full stagger-group">
-            <div class="text-center mb-12 lg:mb-16 reveal-sweep">
-                <h1 class="text-[44px] md:text-[56px] lg:text-[64px] font-bold text-white tracking-[-0.02em] leading-[1.1]">
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 w-full stagger-group">
+            <div class="text-center mb-10 lg:mb-12 reveal-sweep">
+                <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-200 mb-5">
+                    <span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span>
+                    Why it matters
+                </div>
+                <h1 class="text-[38px] md:text-[54px] lg:text-[62px] font-bold text-white tracking-[-0.02em] leading-[1.05]">
                     The Numbers <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Don't Lie.</span>
                 </h1>
+                <p class="mt-5 max-w-2xl mx-auto text-[15px] md:text-[17px] leading-relaxed text-slate-400">Customers decide quickly. A cleaner website and lead flow make it easier for them to trust you, contact you, and keep moving.</p>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <div class="grid md:grid-cols-3 gap-4 lg:gap-5">
                 <!-- Stat 1 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-1 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">76%</span>
+                <div class="stat-card rounded-[24px] p-7 lg:p-8 text-center stagger-item">
+                    <div class="relative z-10">
+                    <div class="flex items-baseline justify-center gap-1">
+                        <span class="stat-number stat-count text-[54px] md:text-[62px] font-extrabold leading-none tracking-tight" data-count-to="76" data-count-suffix="%">0%</span>
                     </div>
-                    <div class="text-white font-bold text-[18px] mb-2">More Likely to Buy</div>
+                    <div class="stat-rule"></div>
+                    <div class="text-white font-bold text-[17px] mb-2">More Likely to Buy</div>
                     <p class="text-slate-400 text-[14px] leading-relaxed">Customers are 76% more likely to contact a business that has a professional, well-maintained website.</p>
+                    </div>
                 </div>
                 <!-- Stat 2 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-2 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">9</span>
-                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold">in</span>
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">10</span>
+                <div class="stat-card rounded-[24px] p-7 lg:p-8 text-center stagger-item">
+                    <div class="relative z-10">
+                    <div class="flex items-baseline justify-center gap-2">
+                        <span class="stat-number stat-count text-[54px] md:text-[62px] font-extrabold leading-none tracking-tight" data-count-to="9">0</span>
+                        <span class="text-[24px] md:text-[30px] text-slate-400 font-semibold">in</span>
+                        <span class="stat-number stat-count text-[54px] md:text-[62px] font-extrabold leading-none tracking-tight" data-count-to="10">0</span>
                     </div>
-                    <div class="text-white font-bold text-[18px] mb-2">Check Before They Call</div>
+                    <div class="stat-rule"></div>
+                    <div class="text-white font-bold text-[17px] mb-2">Check Before They Call</div>
                     <p class="text-slate-400 text-[14px] leading-relaxed">Nine out of ten customers look a business up online before making contact with them.</p>
+                    </div>
                 </div>
                 <!-- Stat 3 -->
-                <div class="bg-white/[0.03] rounded-[24px] p-8 text-center border border-white/[0.08] stagger-item">
-                    <div class="flex items-baseline justify-center gap-2 mb-3">
-                        <span class="text-[56px] md:text-[64px] font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-200/80 leading-none tracking-tight">3</span>
-                        <span class="text-[28px] md:text-[32px] text-slate-400 font-semibold ml-1">sec</span>
+                <div class="stat-card rounded-[24px] p-7 lg:p-8 text-center stagger-item">
+                    <div class="relative z-10">
+                    <div class="flex items-baseline justify-center gap-2">
+                        <span class="stat-number stat-count text-[54px] md:text-[62px] font-extrabold leading-none tracking-tight" data-count-to="3">0</span>
+                        <span class="text-[24px] md:text-[30px] text-slate-400 font-semibold ml-1">sec</span>
                     </div>
-                    <div class="text-white font-bold text-[18px] mb-2">Before They're Gone</div>
+                    <div class="stat-rule"></div>
+                    <div class="text-white font-bold text-[17px] mb-2">Before They're Gone</div>
                     <p class="text-slate-400 text-[14px] leading-relaxed">If your site takes more than 3 seconds to load, over half of visitors abandon it immediately.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1766,19 +2261,6 @@
     </div>
 </section>
 
-<!-- Section 4: Local Trust -->
-<section class="py-16 bg-slate-50 border-b border-slate-100">
-    <div class="max-w-3xl mx-auto px-4 text-center reveal-sweep">
-        <div class="flex items-center justify-center gap-3">
-            <div class="relative flex h-4 w-4">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
-            </div>
-            <span class="text-[18px] font-bold text-brand-dark tracking-tight">Based in Dayton, OH</span>
-        </div>
-    </div>
-</section>
-
 </div>
 
 </main>
@@ -1795,7 +2277,7 @@
             <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">Tell us what is happening with your website and leads. We will point you toward the simplest setup that makes sense.</p>
         </div>
 
-        <div class="bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
+        <div class="form-card bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
             <form id="auditForm" method="POST" action="https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec" target="hidden_iframe" class="space-y-8 md:space-y-9">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="relative group">
@@ -1975,6 +2457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     const navbar = document.getElementById('navbar');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouchScrollDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
     const runWhenIdle = callback => {
         if ('requestIdleCallback' in window) {
             window.requestIdleCallback(callback, { timeout: 1600 });
@@ -1994,7 +2477,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             document.body.classList.add('splash-lock');
-            const showFor = reduceMotion ? 220 : 760;
+            const showFor = reduceMotion ? 220 : 2200;
             window.setTimeout(() => {
                 splash.classList.add('is-done');
                 document.body.classList.remove('splash-lock');
@@ -2007,7 +2490,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initVendorEnhancements = () => {
         if (window.lucide?.createIcons) window.lucide.createIcons();
-        const canUseSmoothScroll = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
+        const canUseSmoothScroll = !isTouchScrollDevice && window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
         if (!reduceMotion && canUseSmoothScroll && window.Lenis) {
             const lenis = new window.Lenis({
                 duration: 0.55,
@@ -2025,12 +2508,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const splashReady = initSplashScreen();
     runWhenIdle(initVendorEnhancements);
 
+    let navbarIsScrolled = false;
+    let navbarScrollTicking = false;
     const updateNavbarState = () => {
         if (!navbar) return;
-        navbar.classList.toggle('is-scrolled', window.scrollY > 12);
+        const shouldBeScrolled = window.scrollY > 12;
+        if (shouldBeScrolled === navbarIsScrolled) return;
+        navbarIsScrolled = shouldBeScrolled;
+        navbar.classList.toggle('is-scrolled', shouldBeScrolled);
     };
 
-    window.addEventListener('scroll', updateNavbarState, { passive: true });
+    window.addEventListener('scroll', () => {
+        if (navbarScrollTicking) return;
+        navbarScrollTicking = true;
+        requestAnimationFrame(() => {
+            updateNavbarState();
+            navbarScrollTicking = false;
+        });
+    }, { passive: true });
     updateNavbarState();
 
     const typeHeroHeadline = () => {
@@ -2202,56 +2697,95 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewByType = (type) => {
         if (type === 'form-submit' || type === 'dropdown-select') {
             return `<div class="preview-shell">
-                <div class="preview-safe-area form-preview flex flex-col gap-1.5">
-                    <div class="preview-label">Intake form</div>
-                    <div class="preview-row preview-glow"><span class="preview-field-line w-[58%]"></span><span class="h-2 w-8 rounded-full bg-blue-100"></span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.2s"><span class="preview-field-line w-[66%]"></span><span class="h-2 w-7 rounded-full bg-slate-200"></span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.35s"><span class="preview-field-line w-[48%]"></span><span class="h-2 w-9 rounded-full bg-slate-200"></span></div>
-                    <div class="preview-action-btn preview-pulse">Submit request</div>
-                    <div class="tool-anim-item preview-save-badge preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700 text-[10px] px-2 py-1">Saved successfully</div>
+                <div class="preview-safe-area form-preview flex flex-col">
+                    <div class="preview-topbar">
+                        <div><div class="preview-title">Request intake</div><div class="preview-tiny-label">3 fields completed</div></div>
+                        <span class="preview-mini-pill">Live</span>
+                    </div>
+                    <div class="preview-input-line preview-glow">
+                        <span class="preview-tiny-label">Name</span><span class="text-[10px] font-bold text-slate-700">John S.</span><span class="preview-check">✓</span>
+                    </div>
+                    <div class="preview-input-line preview-fade" style="animation-delay:.15s">
+                        <span class="preview-tiny-label">Service</span><span class="text-[10px] font-bold text-slate-700">${type === 'dropdown-select' ? 'Repair' : 'Quote'}</span><span class="preview-check">✓</span>
+                    </div>
+                    <div class="preview-input-line preview-fade" style="animation-delay:.3s">
+                        <span class="preview-tiny-label">Urgency</span><span class="tool-anim-pill bg-amber-50 text-amber-700">This week</span>
+                    </div>
+                    <div class="preview-detail-grid mt-1">
+                        <div class="preview-stat-box"><div class="preview-tiny-label">Source</div><div class="text-[10px] font-bold text-slate-800 mt-1">Website</div></div>
+                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">Route</div><div class="text-[10px] font-bold text-blue-700 mt-1">Sales</div></div>
+                    </div>
+                    <div class="preview-action-btn preview-pulse mt-auto">Route + notify owner</div>
+                    <div class="tool-anim-item preview-save-badge preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700">Saved + notified</div>
                 </div>
             </div>`;
         }
         if (type === 'calendar-booking') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="grid grid-cols-3 gap-1.5">${Array.from({length:9}).map((_,i)=>`<div class="h-5 rounded-md border ${i===4?'border-blue-300 bg-blue-50 preview-slot':'border-slate-200 bg-slate-100'}"></div>`).join('')}</div>
-                    <div class="space-y-1.5">
-                        <div class="h-6 rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between">
-                            <span class="preview-label text-[10px]">Thu 2:30 PM</span><span class="h-2 w-8 bg-slate-200 rounded-full"></span>
-                        </div>
-                        <div class="h-6 rounded-lg border border-emerald-300 bg-emerald-50 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Booking confirmed</div>
+                    <div class="preview-topbar">
+                        <div><div class="preview-title">Booking calendar</div><div class="preview-tiny-label">Available times</div></div>
+                        <span class="preview-mini-pill">Today</span>
                     </div>
+                    <div class="grid grid-cols-5 gap-1">${Array.from({length:15}).map((_,i)=>`<div class="h-4 rounded-md border ${[7,8,12].includes(i)?'border-blue-300 bg-blue-50 preview-slot':'border-slate-200 bg-slate-100'}"></div>`).join('')}</div>
+                    <div class="preview-row">
+                        <span class="preview-label">Service</span><span class="tool-anim-pill bg-blue-50 text-blue-700">Consult</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <div class="h-7 rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between">
+                            <span class="preview-label text-[10px]">2:30 PM</span><span class="h-2 w-5 bg-slate-200 rounded-full"></span>
+                        </div>
+                        <div class="h-7 rounded-lg border border-blue-300 bg-blue-50 px-2 flex items-center justify-between preview-glow">
+                            <span class="preview-label text-[10px] text-blue-700">3:15 PM</span><span class="preview-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="h-7 rounded-lg border border-emerald-300 bg-emerald-50 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Booking confirmed + reminder queued</div>
                 </div>
             </div>`;
         }
         if (type === 'pipeline-progress') {
             return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-1.5">
-                    <div class="preview-row"><span class="preview-field-line w-[50%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">New</span></div>
-                    <div class="preview-row preview-fade"><span class="preview-field-line w-[58%]"></span><span class="tool-anim-pill bg-amber-50 text-amber-700">Contacted</span></div>
-                    <div class="preview-row preview-slide"><span class="preview-field-line w-[42%]"></span><span class="tool-anim-pill bg-violet-50 text-violet-700">Trial Booked</span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="preview-field-line w-[46%]"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Joined</span></div>
+                <div class="preview-safe-area">
+                    <div class="preview-topbar">
+                        <div class="preview-title">Lead pipeline</div>
+                        <span class="preview-mini-pill">4 active</span>
+                    </div>
+                    <div class="preview-kanban">
+                        <div class="preview-column"><div class="preview-column-title">New</div><div class="preview-lead-card"><div class="text-[9px] font-bold text-slate-700 mb-1">John S.</div><div class="preview-field-line w-[45%]"></div></div></div>
+                        <div class="preview-column preview-glow"><div class="preview-column-title">Contacted</div><div class="preview-lead-card preview-slide"><div class="text-[9px] font-bold text-slate-700 mb-1">Maria K.</div><span class="tool-anim-pill bg-amber-50 text-amber-700">Follow-up</span></div></div>
+                        <div class="preview-column"><div class="preview-column-title">Booked</div><div class="preview-lead-card preview-fade"><div class="text-[9px] font-bold text-slate-700 mb-1">Lee Auto</div><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Ready</span></div></div>
+                    </div>
                 </div>
             </div>`;
         }
         if (type === 'dashboard-status') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area flex flex-col gap-1.5">
-                    <div class="preview-row"><span class="preview-field-line w-[52%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">New</span></div>
-                    <div class="preview-row preview-fade"><span class="preview-field-line w-[64%]"></span><span class="tool-anim-pill bg-amber-50 text-amber-700">Reviewing</span></div>
-                    <div class="preview-row preview-slide"><span class="preview-field-line w-[44%]"></span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Contacted</span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="preview-field-line w-[38%]"></span><span class="tool-anim-pill bg-violet-50 text-violet-700">Booked</span></div>
+                    <div class="preview-topbar">
+                        <div><div class="preview-title">Operations dashboard</div><div class="preview-tiny-label">Updated now</div></div>
+                        <span class="preview-mini-pill">Synced</span>
+                    </div>
+                    <div class="preview-detail-grid">
+                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">New</div><div class="text-[16px] font-extrabold text-slate-900 leading-none mt-1">12</div></div>
+                        <div class="preview-stat-box"><div class="preview-tiny-label">Booked</div><div class="text-[16px] font-extrabold text-emerald-600 leading-none mt-1">5</div></div>
+                    </div>
+                    <div class="preview-row preview-slide"><span class="text-[10px] font-bold text-slate-700">Sarah Johnson</span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Contacted</span></div>
+                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="text-[10px] font-bold text-slate-700">Quote follow-up</span><span class="tool-anim-pill bg-violet-50 text-violet-700">Queued</span></div>
                 </div>
             </div>`;
         }
         if (type === 'text-reply' || type === 'notification-toast') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area notification-preview">
-                    <div class="preview-bubble-card is-inbound rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call from website lead</div>
-                    <div class="preview-bubble-card is-outbound rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Thanks for calling — we can help.</div>
+                    <div class="preview-topbar mb-0">
+                        <div class="preview-title">${type === 'text-reply' ? 'Missed call text-back' : 'Follow-up automation'}</div>
+                        <span class="preview-mini-pill">Auto</span>
+                    </div>
+                    <div class="preview-bubble-card is-inbound rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call: new website lead</div>
+                    <div class="preview-bubble-card is-outbound rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Hi, we saw your request. Want the next available time?</div>
+                    <div class="preview-bubble-card is-inbound rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] text-emerald-700 leading-snug preview-bubble" style="animation-delay:.9s">Customer replied: Yes</div>
                     <div class="preview-trigger-row rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
-                        <span>Automation triggered</span><span class="opacity-80">Sent</span>
+                        <span>Lead marked warm</span><span class="opacity-80">Notified</span>
                     </div>
                 </div>
             </div>`;
@@ -2259,9 +2793,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'quiz-flow' || type === 'checklist-flow') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="flex items-center gap-1.5">${Array.from({length:4}).map((_,i)=>`<span class="h-1.5 w-1.5 rounded-full ${i < 3 ? 'bg-blue-500' : 'bg-slate-300'} ${i===2 ? 'preview-pulse' : ''}"></span>`).join('')}<span class="ml-1 text-[10px] text-slate-500 font-semibold">Step 3/4</span></div>
+                    <div class="preview-topbar mb-0">
+                        <div><div class="preview-title">${type === 'quiz-flow' ? 'Fit finder' : 'Signup checklist'}</div><div class="preview-tiny-label">Step 3 of 4</div></div>
+                        <span class="preview-mini-pill">Routing</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">${Array.from({length:4}).map((_,i)=>`<span class="h-1.5 flex-1 rounded-full ${i < 3 ? 'bg-blue-500' : 'bg-slate-300'} ${i===2 ? 'preview-pulse' : ''}"></span>`).join('')}</div>
                     <div class="preview-row"><span class="preview-field-line w-[68%]"></span><span class="h-3 w-3 rounded-full border border-slate-300"></span></div>
-                    <div class="preview-row preview-glow"><span class="preview-field-line w-[54%]"></span><span class="h-3 w-3 rounded-full bg-emerald-500"></span></div>
+                    <div class="preview-row preview-glow"><span class="preview-field-line w-[54%]"></span><span class="preview-check">✓</span></div>
+                    <div class="preview-row preview-fade"><span class="preview-field-line w-[48%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">Best fit</span></div>
                     <div class="relative overflow-hidden h-6 rounded-lg border border-blue-200 bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">
                         <span class="preview-swap absolute">Evaluating answer…</span>
                         <span class="preview-reveal">Matched next step</span>
@@ -2272,8 +2811,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'estimate-calc') {
             return `<div class="preview-shell">
                 <div class="preview-safe-area flex flex-col gap-2">
+                    <div class="preview-topbar mb-0">
+                        <div class="preview-title">Instant estimate</div>
+                        <span class="preview-mini-pill">Qualified</span>
+                    </div>
+                    <div class="preview-map">
+                        <span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span>
+                    </div>
                     <div class="preview-row"><span class="preview-label">Property size</span><span class="preview-field-line w-10"></span></div>
-                    <div class="preview-row"><span class="preview-label">Service type</span><span class="h-2 w-8 rounded-full bg-slate-200"></span></div>
+                    <div class="preview-row"><span class="preview-label">Service type</span><span class="tool-anim-pill bg-slate-100 text-slate-600">Selected</span></div>
                     <div class="h-2 bg-slate-200 rounded-full"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div>
                     <div class="h-9 rounded-lg border border-blue-200 bg-blue-50 px-2.5 flex items-center justify-between preview-glow">
                         <span class="text-[10px] text-slate-600">Estimated range</span>
@@ -2793,12 +3339,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollToHashTarget = (hash, behavior = 'smooth') => {
         const el = document.querySelector(hash);
         if (!el) return;
-        const headerOffset = 80;
+        const headerOffset = window.matchMedia('(max-width: 767px)').matches ? 68 : 80;
         const elementPosition = el.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({
             top: offsetPosition,
-            behavior
+            behavior: isTouchScrollDevice ? 'auto' : behavior
         });
     };
 
@@ -2806,7 +3352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const forceScrollTop = () => {
         rootEl.classList.remove('scroll-smooth');
         setTimeout(() => {
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'auto' });
             setTimeout(() => rootEl.classList.add('scroll-smooth'), 50);
         }, 10);
     };
@@ -2884,6 +3430,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('hashchange', updateMeta);
     updateMeta();
+
+    const statsSection = document.getElementById('process');
+    const statCounts = document.querySelectorAll('.stat-count');
+    let statsHaveAnimated = false;
+
+    const setFinalStatCounts = () => {
+        statCounts.forEach(el => {
+            const target = Number(el.dataset.countTo || 0);
+            el.textContent = `${target}${el.dataset.countSuffix || ''}`;
+        });
+    };
+
+    const animateStatCounts = () => {
+        if (statsHaveAnimated || !statCounts.length) return;
+        statsHaveAnimated = true;
+        if (reduceMotion) {
+            setFinalStatCounts();
+            return;
+        }
+
+        const startTime = performance.now();
+        const duration = 1100;
+        const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+        const tick = now => {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = easeOut(progress);
+
+            statCounts.forEach(el => {
+                const target = Number(el.dataset.countTo || 0);
+                const current = Math.round(target * eased);
+                el.textContent = `${current}${el.dataset.countSuffix || ''}`;
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                setFinalStatCounts();
+            }
+        };
+
+        requestAnimationFrame(tick);
+    };
+
+    if (statsSection && statCounts.length) {
+        if ('IntersectionObserver' in window) {
+            const statsObserver = new IntersectionObserver((entries, obs) => {
+                if (entries.some(entry => entry.isIntersecting)) {
+                    animateStatCounts();
+                    obs.disconnect();
+                }
+            }, { rootMargin: '0px 0px -18% 0px', threshold: 0.25 });
+            statsObserver.observe(statsSection);
+        } else {
+            setFinalStatCounts();
+        }
+    }
 
     // ── ASYNC/AWAIT HERO MOCKUP ANIMATION LOGIC ──
     const sleep = ms => new Promise(r => setTimeout(r, ms));
