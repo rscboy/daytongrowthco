@@ -2029,6 +2029,29 @@
             .preview-shell * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
         }
 
+
+        .live-demo-shell .demo-input { width:100%; border:1px solid #dbe2ea; border-radius:12px; padding:0.7rem 0.85rem; font-size:14px; color:#0f172a; background:#fff; }
+        .live-demo-shell .demo-input:focus { outline:none; border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,0.16); }
+        .demo-action-btn,.demo-secondary-btn{ border-radius:9999px; padding:0.65rem 1rem; font-weight:600; font-size:14px; transition:all .2s ease; }
+        .demo-action-btn{ background:#2563eb; color:#fff; }
+        .demo-action-btn:hover{ background:#1d4ed8; }
+        .demo-secondary-btn{ background:#eef2f7; color:#1f2937; border:1px solid #dbe2ea; }
+        .before-after-toggle{ display:inline-flex; border:1px solid #dbe2ea; border-radius:9999px; padding:3px; background:#fff; }
+        .before-after-btn{ border-radius:9999px; padding:.35rem .8rem; font-size:12px; font-weight:600; color:#64748b; }
+        .before-after-btn[aria-selected="true"]{ background:#2563eb; color:#fff; }
+        .dashboard-tabs{ display:flex; flex-wrap:wrap; gap:.45rem; }
+        .dashboard-tab{ border:1px solid #dbe2ea; border-radius:9999px; padding:.35rem .7rem; font-size:12px; color:#475569; }
+        .dashboard-tab.active{ background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; }
+        .lead-row{ display:flex; justify-content:space-between; gap:.5rem; border:1px solid #e2e8f0; border-radius:12px; padding:.7rem; background:#fff; }
+        .lead-new{ animation: slideIn .3s ease; box-shadow:0 0 0 2px rgba(37,99,235,.15); }
+        .messy-board{ border:1px dashed #fda4af; background:#fff1f2; border-radius:14px; padding:1rem; }
+        .flow-chain{ border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; border-radius:12px; padding:.7rem; font-size:13px; font-weight:600; }
+        .msg{ border-radius:12px; padding:.6rem .7rem; font-size:13px; line-height:1.35; position:relative; padding-right:3.6rem; }
+        .msg.in{ background:#f1f5f9; color:#1e293b; }
+        .msg.out{ background:#dbeafe; color:#1e3a8a; }
+        .msg .time{ position:absolute; right:.6rem; bottom:.35rem; font-size:10px; color:#64748b; }
+        @keyframes slideIn { from { opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+
     </style>
 </head>
 
@@ -2374,24 +2397,58 @@
         </div>
     </section>
 
-    <!-- 3. INDUSTRY TOOLS SECTION -->
+    <!-- 3. LIVE DEMO SECTION -->
     <section id="industry-tools" class="py-20 md:py-24 lg:py-28 bg-white border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
-            <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">EXAMPLES BY INDUSTRY</div>
-                <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Types of Tools</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Every business has different bottlenecks. Explore examples of simple tools, automations, and custom systems that help capture leads, save time, and keep fewer things held together by memory.</p>
-                <p class="mt-4 text-[13px] md:text-[14px] text-slate-500">These are examples, not fixed packages. We use the best existing tools when they fit, and build custom solutions when they do not.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto text-center mb-10 md:mb-12">
+                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">LIVE DEMO</div>
+                <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">See How This Would Work In Your Business</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Most businesses miss leads, respond too slowly, and manage everything manually. This interactive demo shows how that gets fixed in real time.</p>
             </div>
 
-            <div id="industrySelector" class="reveal-sweep" role="tablist" aria-label="Industry examples"></div>
-            <div class="mt-8 md:mt-10">
-                <div id="industryToolsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6" aria-live="polite"></div>
+            <div id="industrySelector" class="mb-6" role="tablist" aria-label="Industry selector"></div>
+
+            <div class="live-demo-shell rounded-[24px] border border-slate-200 bg-slate-50 p-4 md:p-6 lg:p-7 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+                    <h3 id="demoIndustryLabel" class="text-[18px] md:text-[20px] font-bold text-brand-dark"></h3>
+                    <div class="before-after-toggle" role="tablist" aria-label="Before and after mode">
+                        <button class="before-after-btn" data-mode="before" aria-selected="false">Before</button>
+                        <button class="before-after-btn" data-mode="after" aria-selected="true">After</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                    <article class="rounded-2xl border border-slate-200 bg-white p-4 md:p-5">
+                        <h4 class="text-[16px] font-semibold text-brand-dark mb-3">Customer Experience</h4>
+                        <form id="liveLeadForm" class="space-y-3">
+                            <input id="leadName" required placeholder="Customer name" class="demo-input" />
+                            <input id="leadPhone" required placeholder="Phone number" class="demo-input" />
+                            <input id="leadService" required placeholder="Service needed" class="demo-input" />
+                            <select id="leadTime" class="demo-input">
+                                <option value="This morning">Preferred time: This morning</option>
+                                <option value="This afternoon">Preferred time: This afternoon</option>
+                                <option value="Tomorrow">Preferred time: Tomorrow</option>
+                            </select>
+                            <button type="submit" class="demo-action-btn w-full">Submit Lead Request</button>
+                        </form>
+                        <button id="simulateCallBtn" type="button" class="demo-secondary-btn mt-3 w-full">Simulate Missed Call</button>
+                        <div id="customerFeedback" class="mt-3 text-[13px] text-slate-500">Submit the form or trigger a missed call to watch the system react instantly.</div>
+                    </article>
+
+                    <article class="rounded-2xl border border-slate-200 bg-white p-4 md:p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-[16px] font-semibold text-brand-dark">Business System Dashboard</h4>
+                            <span class="text-[12px] text-slate-500">Live updates</span>
+                        </div>
+                        <div id="dashboardTabs" class="dashboard-tabs mb-4"></div>
+                        <div id="dashboardPanel" class="min-h-[260px]"></div>
+                    </article>
+                </div>
             </div>
 
-            <div class="mt-10 md:mt-12 rounded-[24px] border border-slate-200 bg-slate-50 px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4 reveal-sweep">
-                <p class="text-[15px] md:text-[16px] text-brand-dark">Need something specific? We can recommend the right setup or build it from scratch.</p>
-                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Get a Quick Recommendation</a>
+            <div class="mt-10 md:mt-12 rounded-[24px] border border-slate-200 bg-white px-6 py-7 md:px-8 md:py-8 text-center">
+                <h3 class="text-[28px] md:text-[34px] font-bold text-brand-dark tracking-[-0.02em] mb-3">Want This Set Up For Your Business?</h3>
+                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-7 py-3 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Get Started</a>
             </div>
         </div>
     </section>
@@ -3280,273 +3337,53 @@ document.addEventListener('DOMContentLoaded', () => {
     initReveal();
 
     // Industry tools interactive section
-    const industryData = [
-      { id:'contractors', label:'Contractors', tools:[
-        { name:'Smart Quote Request Form', benefit:'Get better leads before the phone rings', description:'A custom form that asks the right questions about project type, location, urgency, and budget so contractors get better-qualified inquiries.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Service Area Estimator', benefit:'Help customers self-qualify instantly', description:'A simple tool that lets customers enter zip code, project type, or square footage to estimate if the company serves them and what the project range might be.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Missed Call Text-Back System', benefit:'Capture leads even when the crew is busy', description:'Automatically text customers back when a call is missed so no lead disappears after hours or during jobs.', type:'Best with existing tools', animation:'text-reply' },
-        { name:'Lead Dashboard for Jobs', benefit:'Keep new requests organized', description:'A lightweight dashboard showing new inquiries, contacted leads, estimates sent, and booked jobs.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'auto-repair', label:'Auto Repair', tools:[
-        { name:'Repair Request Intake Form', benefit:'Pre-qualify service requests online', description:'A guided form that collects vehicle info, symptoms, urgency, and preferred appointment timing before the shop has to answer the phone.', type:'Hybrid setup', animation:'dropdown-select' },
-        { name:'Appointment Booking Tool', benefit:'Let customers request service after hours', description:'A scheduling interface for oil changes, inspections, diagnostics, and other common shop appointments.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Repair Status Tracker', benefit:'Reduce “is my car ready?” calls', description:'A simple customer-facing status tracker that shows progress like Received, Diagnosing, In Progress, Ready for Pickup.', type:'Custom build', animation:'pipeline-progress' },
-        { name:'Missed Call Follow-Up System', benefit:'Recover lost jobs automatically', description:'When the shop misses a call, the system immediately texts the customer and starts a simple intake flow.', type:'Best with existing tools', animation:'text-reply' }
-      ]},
-      { id:'dentists-ortho', label:'Dentists & Ortho', tools:[
-        { name:'New Patient Intake Flow', benefit:'Collect better patient info before scheduling', description:'A modern intake flow that gathers treatment interest, insurance status, and contact details before the office has to follow up.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Consultation Booking System', benefit:'Make it easier to book consultations', description:'A simple booking workflow for whitening consults, orthodontic consults, or cosmetic dentistry inquiries.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Treatment Interest Quiz', benefit:'Guide visitors to the right service', description:'A short guided quiz that helps visitors identify which service fits their needs and routes them to the correct next step.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Lead Follow-Up Dashboard', benefit:'Track inquiries that haven’t booked yet', description:'A simple internal view showing new leads, contacted leads, and consultations booked.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'law-firms', label:'Law Firms', tools:[
-        { name:'Case Intake Form', benefit:'Filter and organize leads faster', description:'A structured intake form for injury, family law, or criminal defense leads that captures the right details up front.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Consultation Request Tool', benefit:'Make contacting the firm easier', description:'A modern consultation request flow that feels more professional than a basic contact form.', type:'Best with existing tools', animation:'notification-toast' },
-        { name:'Lead Qualification Workflow', benefit:'Reduce time spent on low-fit leads', description:'A logic-based workflow that routes inquiries based on location, case type, or urgency.', type:'Custom build', animation:'pipeline-progress' },
-        { name:'Simple Intake Dashboard', benefit:'Keep inquiries organized by stage', description:'A clean dashboard that tracks inquiry received, contacted, consult scheduled, and retained.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'med-spas', label:'Med Spas', tools:[
-        { name:'Treatment Consultation Quiz', benefit:'Guide prospects toward the right service', description:'A branded quiz helping visitors choose the most relevant service before booking.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Booking System for Consults', benefit:'Make consultation scheduling frictionless', description:'A clean, premium booking experience for consultations and service requests.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Lead Nurture Follow-Up Flow', benefit:'Stay in front of warm prospects', description:'An automated follow-up sequence for consultation requests that have not booked yet.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Offer Landing Page Tool', benefit:'Promote seasonal campaigns more effectively', description:'A focused page and lead form setup for treatments, promos, and limited-time campaigns.', type:'Custom build', animation:'notification-toast' }
-      ]},
-      { id:'landscapers', label:'Landscapers', tools:[
-        { name:'Yard Quote Form', benefit:'Get clearer quote requests', description:'A service form that collects yard size, job type, timeline, and address before contact.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Seasonal Service Signup Tool', benefit:'Make recurring services easier to sell', description:'A simple signup interface for mowing, mulch, cleanup, snow removal, or maintenance plans.', type:'Custom build', animation:'checklist-flow' },
-        { name:'Service Area Checker', benefit:'Instantly confirm if they serve the customer', description:'A lightweight area checker using zip code or address to confirm service coverage.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Missed Call Auto Reply', benefit:'Capture landscaping leads after hours', description:'Automatically respond when calls are missed and direct customers into the right inquiry flow.', type:'Best with existing tools', animation:'text-reply' }
-      ]},
-      { id:'cleaning-services', label:'Cleaning Services', tools:[
-        { name:'Cleaning Quote Calculator', benefit:'Make quote requests easier and faster', description:'A calculator that estimates pricing based on home size, frequency, and service type.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Booking Request Form', benefit:'Collect service details before follow-up', description:'A form that captures square footage, service type, recurring vs one-time, and preferred schedule.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Recurring Service Signup Flow', benefit:'Encourage long-term recurring clients', description:'A cleaner signup process for repeat service plans and seasonal work.', type:'Custom build', animation:'checklist-flow' },
-        { name:'Lead Follow-Up Automation', benefit:'Keep quote requests from going cold', description:'A simple message sequence that follows up on new inquiries if the customer does not respond right away.', type:'Best with existing tools', animation:'notification-toast' }
-      ]},
-      { id:'real-estate', label:'Real Estate', tools:[
-        { name:'Buyer Intake Form', benefit:'Pre-qualify leads before the call', description:'A form that collects timeline, price range, financing status, and target area.', type:'Hybrid setup', animation:'dropdown-select' },
-        { name:'Home Valuation Request Tool', benefit:'Generate seller leads more effectively', description:'A custom landing experience for homeowners requesting a valuation.', type:'Custom build', animation:'form-submit' },
-        { name:'Open House Follow-Up Flow', benefit:'Capture and nurture event leads', description:'A system that follows up with open house visitors automatically after they sign in.', type:'Best with existing tools', animation:'notification-toast' },
-        { name:'Lead Tracking Dashboard', benefit:'See exactly where each prospect stands', description:'A simple internal dashboard for New, Contacted, Viewing Scheduled, Offer Stage, Closed.', type:'Custom build', animation:'pipeline-progress' }
-      ]},
-      { id:'nonprofits', label:'Nonprofits', tools:[
-        { name:'Volunteer Signup System', benefit:'Make volunteering easier to manage', description:'A modern form and workflow for volunteer interest, availability, and role matching.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Donation Campaign Landing Tool', benefit:'Increase campaign clarity and conversions', description:'A focused landing page experience for a specific fundraising campaign.', type:'Best with existing tools', animation:'estimate-calc' },
-        { name:'Event Response Tracker', benefit:'Organize event signups more clearly', description:'A dashboard for RSVPs, follow-ups, attendance status, and reminders.', type:'Custom build', animation:'dashboard-status' },
-        { name:'Constituent Intake Workflow', benefit:'Keep outreach and responses organized', description:'A simple internal system for tracking inquiries, requests, and follow-up actions.', type:'Custom build', animation:'pipeline-progress' }
-      ]},
-      { id:'gyms-fitness', label:'Gyms & Fitness', tools:[
-        { name:'Trial Class Signup Tool', benefit:'Capture more trial leads', description:'A simple signup flow for trial classes, intro sessions, or personal training consultations.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Membership Interest Quiz', benefit:'Help visitors choose the right membership', description:'A short quiz that routes prospects toward the best plan based on goals and preferences.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Consultation Booking Flow', benefit:'Make joining the gym easier', description:'A booking tool for tours, intro calls, and personal training consultations.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Lead Nurture Dashboard', benefit:'Track prospects who have not joined yet', description:'A lightweight lead board showing New, Contacted, Trial Booked, Joined.', type:'Custom build', animation:'pipeline-progress' }
-      ]}
-    ];
-
-    const selectorEl = document.getElementById('industrySelector');
-    const toolsGridEl = document.getElementById('industryToolsGrid');
-    let activeIndustry = industryData[0]?.id;
-
-    const previewByType = (type) => {
-        if (type === 'form-submit' || type === 'dropdown-select') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area form-preview flex flex-col">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Request intake</div><div class="preview-tiny-label">3 fields completed</div></div>
-                        <span class="preview-mini-pill">Live</span>
-                    </div>
-                    <div class="preview-input-line preview-glow">
-                        <span class="preview-tiny-label">Name</span><span class="text-[10px] font-bold text-slate-700">John S.</span><span class="preview-check">✓</span>
-                    </div>
-                    <div class="preview-input-line preview-fade" style="animation-delay:.15s">
-                        <span class="preview-tiny-label">Service</span><span class="text-[10px] font-bold text-slate-700">${type === 'dropdown-select' ? 'Repair' : 'Quote'}</span><span class="preview-check">✓</span>
-                    </div>
-                    <div class="preview-input-line preview-fade" style="animation-delay:.3s">
-                        <span class="preview-tiny-label">Urgency</span><span class="tool-anim-pill bg-amber-50 text-amber-700">This week</span>
-                    </div>
-                    <div class="preview-detail-grid mt-1">
-                        <div class="preview-stat-box"><div class="preview-tiny-label">Source</div><div class="text-[10px] font-bold text-slate-800 mt-1">Website</div></div>
-                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">Route</div><div class="text-[10px] font-bold text-blue-700 mt-1">Sales</div></div>
-                    </div>
-                    <div class="preview-action-btn preview-pulse mt-auto">Route + notify owner</div>
-                    <div class="tool-anim-item preview-save-badge preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700">Saved + notified</div>
-                </div>
-            </div>`;
-        }
-        if (type === 'calendar-booking') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Booking calendar</div><div class="preview-tiny-label">Available times</div></div>
-                        <span class="preview-mini-pill">Today</span>
-                    </div>
-                    <div class="grid grid-cols-5 gap-1">${Array.from({length:15}).map((_,i)=>`<div class="h-4 rounded-md border ${[7,8,12].includes(i)?'border-blue-300 bg-blue-50 preview-slot':'border-slate-200 bg-slate-100'}"></div>`).join('')}</div>
-                    <div class="preview-row">
-                        <span class="preview-label">Service</span><span class="tool-anim-pill bg-blue-50 text-blue-700">Consult</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1.5">
-                        <div class="h-7 rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between">
-                            <span class="preview-label text-[10px]">2:30 PM</span><span class="h-2 w-5 bg-slate-200 rounded-full"></span>
-                        </div>
-                        <div class="h-7 rounded-lg border border-blue-300 bg-blue-50 px-2 flex items-center justify-between preview-glow">
-                            <span class="preview-label text-[10px] text-blue-700">3:15 PM</span><span class="preview-check">✓</span>
-                        </div>
-                    </div>
-                    <div class="h-7 rounded-lg border border-emerald-300 bg-emerald-50 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Booking confirmed + reminder queued</div>
-                </div>
-            </div>`;
-        }
-        if (type === 'pipeline-progress') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area">
-                    <div class="preview-topbar">
-                        <div class="preview-title">Lead pipeline</div>
-                        <span class="preview-mini-pill">4 active</span>
-                    </div>
-                    <div class="preview-kanban">
-                        <div class="preview-column"><div class="preview-column-title">New</div><div class="preview-lead-card"><div class="text-[9px] font-bold text-slate-700 mb-1">John S.</div><div class="preview-field-line w-[45%]"></div></div></div>
-                        <div class="preview-column preview-glow"><div class="preview-column-title">Contacted</div><div class="preview-lead-card preview-slide"><div class="text-[9px] font-bold text-slate-700 mb-1">Maria K.</div><span class="tool-anim-pill bg-amber-50 text-amber-700">Follow-up</span></div></div>
-                        <div class="preview-column"><div class="preview-column-title">Booked</div><div class="preview-lead-card preview-fade"><div class="text-[9px] font-bold text-slate-700 mb-1">Lee Auto</div><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Ready</span></div></div>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'dashboard-status') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-1.5">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Operations dashboard</div><div class="preview-tiny-label">Updated now</div></div>
-                        <span class="preview-mini-pill">Synced</span>
-                    </div>
-                    <div class="preview-detail-grid">
-                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">New</div><div class="text-[16px] font-extrabold text-slate-900 leading-none mt-1">12</div></div>
-                        <div class="preview-stat-box"><div class="preview-tiny-label">Booked</div><div class="text-[16px] font-extrabold text-emerald-600 leading-none mt-1">5</div></div>
-                    </div>
-                    <div class="preview-row preview-slide"><span class="text-[10px] font-bold text-slate-700">Sarah Johnson</span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Contacted</span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="text-[10px] font-bold text-slate-700">Quote follow-up</span><span class="tool-anim-pill bg-violet-50 text-violet-700">Queued</span></div>
-                </div>
-            </div>`;
-        }
-        if (type === 'text-reply' || type === 'notification-toast') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area notification-preview">
-                    <div class="preview-topbar mb-0">
-                        <div class="preview-title">${type === 'text-reply' ? 'Missed call text-back' : 'Follow-up automation'}</div>
-                        <span class="preview-mini-pill">Auto</span>
-                    </div>
-                    <div class="preview-bubble-card is-inbound rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call: new website lead</div>
-                    <div class="preview-bubble-card is-outbound rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Hi, we saw your request. Want the next available time?</div>
-                    <div class="preview-bubble-card is-inbound rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] text-emerald-700 leading-snug preview-bubble" style="animation-delay:.9s">Customer replied: Yes</div>
-                    <div class="preview-trigger-row rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
-                        <span>Lead marked warm</span><span class="opacity-80">Notified</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'quiz-flow' || type === 'checklist-flow') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar mb-0">
-                        <div><div class="preview-title">${type === 'quiz-flow' ? 'Fit finder' : 'Signup checklist'}</div><div class="preview-tiny-label">Step 3 of 4</div></div>
-                        <span class="preview-mini-pill">Routing</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">${Array.from({length:4}).map((_,i)=>`<span class="h-1.5 flex-1 rounded-full ${i < 3 ? 'bg-blue-500' : 'bg-slate-300'} ${i===2 ? 'preview-pulse' : ''}"></span>`).join('')}</div>
-                    <div class="preview-row"><span class="preview-field-line w-[68%]"></span><span class="h-3 w-3 rounded-full border border-slate-300"></span></div>
-                    <div class="preview-row preview-glow"><span class="preview-field-line w-[54%]"></span><span class="preview-check">✓</span></div>
-                    <div class="preview-row preview-fade"><span class="preview-field-line w-[48%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">Best fit</span></div>
-                    <div class="relative overflow-hidden h-6 rounded-lg border border-blue-200 bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">
-                        <span class="preview-swap absolute">Evaluating answer…</span>
-                        <span class="preview-reveal">Matched next step</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'estimate-calc') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar mb-0">
-                        <div class="preview-title">Instant estimate</div>
-                        <span class="preview-mini-pill">Qualified</span>
-                    </div>
-                    <div class="preview-map">
-                        <span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span>
-                    </div>
-                    <div class="preview-row"><span class="preview-label">Property size</span><span class="preview-field-line w-10"></span></div>
-                    <div class="preview-row"><span class="preview-label">Service type</span><span class="tool-anim-pill bg-slate-100 text-slate-600">Selected</span></div>
-                    <div class="h-2 bg-slate-200 rounded-full"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div>
-                    <div class="h-9 rounded-lg border border-blue-200 bg-blue-50 px-2.5 flex items-center justify-between preview-glow">
-                        <span class="text-[10px] text-slate-600">Estimated range</span>
-                        <span class="text-[11px] text-blue-700 font-bold preview-shift">$4.5k–$6.8k</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        return `<div class="preview-shell"><div class="h-full w-full bg-white border border-slate-200 rounded-lg"></div></div>`;
+    const liveIndustryData = {
+      hvac:{label:'HVAC', service:'AC Repair'}, plumbing:{label:'Plumbing', service:'Pipe Leak Repair'}, roofing:{label:'Roofing', service:'Roof Inspection'}, auto:{label:'Auto Repair', service:'Brake Service'}, dentist:{label:'Dentist', service:'Teeth Cleaning'}, law:{label:'Law Firm', service:'Case Review Call'}, medspa:{label:'Med Spa', service:'Skin Consultation'}, other:{label:'Other', service:'General Inquiry'}
     };
+    const dashboardTabs = ['Leads','Automations','Messages','Settings'];
+    const selectorEl = document.getElementById('industrySelector');
+    const industryLabelEl = document.getElementById('demoIndustryLabel');
+    const tabsEl = document.getElementById('dashboardTabs');
+    const panelEl = document.getElementById('dashboardPanel');
+    const leadForm = document.getElementById('liveLeadForm');
+    const feedbackEl = document.getElementById('customerFeedback');
+    let activeIndustry = 'hvac';
+    let activeTab = 'Leads';
+    let mode = 'after';
+    const leads = [];
+    const messages = [];
+    const nowStamp = () => new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
 
-    const toolCard = (tool, index) => `
-      <article class="industry-card industry-tools-fade" style="transition-delay:${index * 60}ms;" tabindex="0">
-        <div>
-          <span class="type-pill">${tool.type}</span>
-          <h3 class="mt-3 text-[24px] leading-tight font-bold text-brand-dark">${tool.name}</h3>
-          <p class="mt-2 text-[15px] font-semibold text-slate-800">${tool.benefit}</p>
-          <p class="mt-2 text-[14px] text-slate-500 leading-relaxed">${tool.description}</p>
-        </div>
-        ${previewByType(tool.animation)}
-      </article>`;
+    const addLead = (lead) => { leads.unshift({...lead, timestamp: nowStamp(), isNew:true}); if (leads.length > 6) leads.pop(); setTimeout(()=>{if(leads[0]) leads[0].isNew=false; renderPanel();}, 1300); };
+    const addMessage = (text, outbound=true) => messages.unshift({text, outbound, timestamp: nowStamp()});
 
     const renderIndustryTabs = () => {
-        if (!selectorEl) return;
-        selectorEl.innerHTML = industryData.map((industry, idx) => `
-          <button class="industry-tab" role="tab" id="tab-${industry.id}" aria-selected="${industry.id === activeIndustry}" aria-controls="panel-${industry.id}" tabindex="${industry.id === activeIndustry ? 0 : -1}" data-industry-id="${industry.id}">${industry.label}</button>
-        `).join('');
-
-        selectorEl.querySelectorAll('[role="tab"]').forEach((tab, idx, arr) => {
-            tab.addEventListener('click', () => switchIndustry(tab.dataset.industryId));
-            tab.addEventListener('keydown', (e) => {
-                const key = e.key;
-                if (!['ArrowLeft','ArrowRight','Home','End'].includes(key)) return;
-                e.preventDefault();
-                let next = idx;
-                if (key === 'ArrowRight') next = (idx + 1) % arr.length;
-                if (key === 'ArrowLeft') next = (idx - 1 + arr.length) % arr.length;
-                if (key === 'Home') next = 0;
-                if (key === 'End') next = arr.length - 1;
-                arr[next].focus();
-                switchIndustry(arr[next].dataset.industryId);
-            });
-        });
+      selectorEl.innerHTML = Object.entries(liveIndustryData).map(([id, industry]) => `<button class="industry-tab" data-industry-id="${id}" aria-selected="${id===activeIndustry}">${industry.label}</button>`).join('');
+      selectorEl.querySelectorAll('.industry-tab').forEach((btn)=>btn.addEventListener('click', ()=>{ activeIndustry = btn.dataset.industryId; industryLabelEl.textContent = `${liveIndustryData[activeIndustry].label} System Preview`; renderIndustryTabs(); renderPanel(); }));
     };
-
-    const renderTools = () => {
-        if (!toolsGridEl) return;
-        const industry = industryData.find(i => i.id === activeIndustry) || industryData[0];
-        toolsGridEl.style.opacity = '0';
-        toolsGridEl.style.transform = 'translateY(8px)';
-        setTimeout(() => {
-            toolsGridEl.innerHTML = industry.tools.map(toolCard).join('');
-            toolsGridEl.setAttribute('id', `panel-${industry.id}`);
-            toolsGridEl.setAttribute('role', 'tabpanel');
-            toolsGridEl.setAttribute('aria-labelledby', `tab-${industry.id}`);
-            toolsGridEl.setAttribute('aria-label', `${industry.label} tools`);
-            requestAnimationFrame(() => {
-                toolsGridEl.style.transition = 'opacity 260ms ease, transform 260ms ease';
-                toolsGridEl.style.opacity = '1';
-                toolsGridEl.style.transform = 'translateY(0)';
-            });
-        }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
+    const renderTabs = () => {
+      tabsEl.innerHTML = dashboardTabs.map(tab => `<button class="dashboard-tab ${tab===activeTab?'active':''}" data-tab="${tab}">${tab}</button>`).join('');
+      tabsEl.querySelectorAll('.dashboard-tab').forEach(btn => btn.addEventListener('click',()=>{activeTab=btn.dataset.tab; renderTabs(); renderPanel();}));
     };
-
-    const switchIndustry = (industryId) => {
-        activeIndustry = industryId;
-        renderIndustryTabs();
-        renderTools();
+    const renderPanel = () => {
+      if (mode === 'before') {
+        panelEl.innerHTML = `<div class="messy-board"><p class="text-[13px] text-rose-600 font-semibold mb-3">Before: missed calls, delayed responses, scattered notes.</p><ul class="space-y-2 text-[13px] text-slate-600"><li>• 5 missed calls with no text-back</li><li>• Sticky notes: "+1 roof quote?"</li><li>• Lead spreadsheet not updated today</li><li>• No clear status for incoming requests</li></ul></div>`;
+        return;
+      }
+      if (activeTab === 'Leads') {
+        panelEl.innerHTML = `<div class="space-y-2">${leads.length ? leads.map(lead=>`<div class="lead-row ${lead.isNew?'lead-new':''}"><div><div class="font-semibold text-[13px] text-slate-800">${lead.name} · ${lead.service}</div><div class="text-[12px] text-slate-500">${lead.phone} · ${lead.time}</div></div><div class="text-right"><span class="demo-chip success">${lead.status}</span><div class="text-[11px] text-slate-400 mt-1">${lead.timestamp}</div></div></div>`).join('') : '<p class="text-[13px] text-slate-500">No leads yet. Submit the form to generate one.</p>'}</div>`;
+      } else if (activeTab === 'Automations') {
+        panelEl.innerHTML = `<div class="flow-chain">New Lead → Instant Text Response → Follow-Up Reminder → Notification Sent</div><div class="mt-3 text-[13px] text-emerald-700">Auto-response sent · Follow-up scheduled · Lead assigned</div>`;
+      } else if (activeTab === 'Messages') {
+        panelEl.innerHTML = `<div class="space-y-2">${messages.length ? messages.map(m=>`<div class="msg ${m.outbound?'out':'in'}">${m.text}<span class="time">${m.timestamp}</span></div>`).join('') : '<p class="text-[13px] text-slate-500">No conversations yet. Trigger a lead or missed call.</p>'}</div>`;
+      } else {
+        panelEl.innerHTML = `<div class="text-[13px] text-slate-600 space-y-2"><p><strong>Industry:</strong> ${liveIndustryData[activeIndustry].label}</p><p><strong>Response window:</strong> Instant text-back enabled</p><p><strong>Lead owner:</strong> Front desk + owner notification</p></div>`;
+      }
     };
-
-    if (selectorEl && toolsGridEl) {
-        renderIndustryTabs();
-        renderTools();
-    }
+    document.querySelectorAll('.before-after-btn').forEach(btn=>btn.addEventListener('click',()=>{mode=btn.dataset.mode; document.querySelectorAll('.before-after-btn').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.mode===mode))); renderPanel();}));
+    leadForm?.addEventListener('submit', (e)=>{e.preventDefault(); const name=document.getElementById('leadName').value; const phone=document.getElementById('leadPhone').value; const service=document.getElementById('leadService').value; const time=document.getElementById('leadTime').value; addLead({name, phone, service, time, status:'New lead'}); addMessage(`Thanks ${name}, we got your ${service.toLowerCase()} request. We can help ${time.toLowerCase()}.`, true); feedbackEl.textContent='Lead captured. Auto-response sent immediately.'; activeTab='Leads'; mode='after'; renderTabs(); renderPanel(); leadForm.reset(); document.querySelectorAll('.before-after-btn').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.mode===mode))); });
+    document.getElementById('simulateCallBtn')?.addEventListener('click', ()=>{ const service = liveIndustryData[activeIndustry].service; addLead({name:'Missed Caller', phone:'(555) 012-8891', service, time:'ASAP', status:'Contacted'}); addMessage(`Missed call received. Auto-text sent: "Thanks for calling ${liveIndustryData[activeIndustry].label}. We can text or call you back now."`, false); addMessage('Auto-response delivered. Follow-up reminder set for 15 minutes.', true); feedbackEl.textContent='Missed call detected. Text-back sent and follow-up scheduled.'; activeTab='Messages'; mode='after'; renderTabs(); renderPanel(); document.querySelectorAll('.before-after-btn').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.mode===mode))); });
+    if (selectorEl && tabsEl && panelEl) { industryLabelEl.textContent = `${liveIndustryData[activeIndustry].label} System Preview`; renderIndustryTabs(); renderTabs(); renderPanel(); }
 
     // Mobile menu
     const btn = document.getElementById('mobileMenuBtn');
