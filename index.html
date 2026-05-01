@@ -13,6 +13,8 @@
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://i.ibb.co">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.clarity.ms">
@@ -21,6 +23,7 @@
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://i.ibb.co">
     <link rel="preload" as="image" href="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" fetchpriority="high">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <!-- SEO & Open Graph Framework -->
     <meta name="description" content="DaytonGrowthCo. helps local businesses capture more leads, respond faster, and stay organized with one-time website, form, booking, and follow-up setup packages.">
@@ -162,19 +165,7 @@
             transform: translate3d(0,-6px,0) scale(0.985);
         }
         .splash-line {
-            position: absolute;
-            top: 52px;
-            left: 50%;
-            width: min(168px, 58vw);
-            height: 1px;
-            border-radius: 9999px;
-            background: linear-gradient(90deg, transparent, rgba(219,234,254,0.82), transparent);
-            transform: translateX(-50%) scaleX(0);
-            transform-origin: center;
-            opacity: 0;
-            animation:
-                splashLineDraw 440ms cubic-bezier(0.22, 1, 0.36, 1) 340ms forwards,
-                splashLineExit 240ms ease 900ms forwards;
+            display: none;
         }
         .splash-mark {
             position: relative;
@@ -185,23 +176,10 @@
             margin-top: 4px;
         }
         .splash-segments {
-            position: absolute;
-            inset: 0;
+            display: none;
         }
         .splash-segment {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: var(--w);
-            height: var(--h);
-            border-radius: 2px;
-            background: rgba(219,234,254,0.88);
-            box-shadow: 0 0 18px rgba(96,165,250,0.12);
-            opacity: 0;
-            transform-origin: center;
-            animation:
-                splashSegmentBuild 520ms cubic-bezier(0.22, 1, 0.36, 1) var(--d) forwards,
-                splashSegmentResolve 260ms ease 1320ms forwards;
+            display: none;
         }
         .splash-logo {
             width: 58px;
@@ -215,7 +193,7 @@
             transform: scale(0.992);
             opacity: 0;
             filter: blur(1.5px);
-            animation: splashLogoSettle 320ms cubic-bezier(0.22, 1, 0.36, 1) 1380ms forwards;
+            animation: splashLogoSettle 520ms cubic-bezier(0.22, 1, 0.36, 1) 420ms forwards;
             will-change: opacity, transform, filter;
         }
         .splash-wordmark {
@@ -232,8 +210,8 @@
             transform: translate3d(0,5px,0);
             filter: blur(3px);
             animation:
-                splashWordmarkIn 380ms cubic-bezier(0.22, 1, 0.36, 1) 1620ms forwards,
-                splashLetterTighten 420ms cubic-bezier(0.22, 1, 0.36, 1) 1840ms forwards;
+                splashWordmarkIn 420ms cubic-bezier(0.22, 1, 0.36, 1) 900ms forwards,
+                splashLetterTighten 420ms cubic-bezier(0.22, 1, 0.36, 1) 1160ms forwards;
             will-change: opacity, transform, filter, letter-spacing;
         }
         .splash-wordmark .splash-growth { color: rgba(203,213,225,0.82); font-weight: 400; }
@@ -249,7 +227,7 @@
             background: linear-gradient(90deg, transparent, rgba(96,165,250,0.52), transparent);
             transform: translateX(-50%) scaleX(0);
             opacity: 0;
-            animation: splashUnderline 320ms cubic-bezier(0.22, 1, 0.36, 1) 1900ms forwards;
+            animation: splashUnderline 320ms cubic-bezier(0.22, 1, 0.36, 1) 1260ms forwards;
         }
         @keyframes splashLineDraw {
             0% { opacity: 0; transform: translateX(-50%) scaleX(0); }
@@ -271,7 +249,7 @@
             }
         }
         @keyframes splashSegmentResolve {
-            to { opacity: 0.18; filter: blur(0.5px); }
+            to { opacity: 0; filter: blur(1px); }
         }
         @keyframes splashLogoSettle {
             to { opacity: 1; transform: scale(1); filter: blur(0); }
@@ -316,6 +294,13 @@
         .hero-sub { animation: fadeSlideUpScale 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
         .hero-ctas { animation: fadeSlideUpScale 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
         .hero-trust { animation: fadeIn 1s ease 0.5s both; }
+        .mobile-hero-premium,
+        .mobile-hero-orb,
+        .mobile-hero-marquee,
+        .desktop-hero-kicker,
+        .desktop-hero-rule,
+        .desktop-hero-orb-three,
+        .desktop-hero-marquee { display: none; }
         .mockup-wrapper { animation: fadeSlideUpScale 1s cubic-bezier(0.16,1,0.3,1) 0.4s both; }
         .js-enabled .hero-h1.is-typing { visibility: hidden; }
         .hero-h1.typing-active { visibility: visible; }
@@ -331,6 +316,50 @@
         }
         @keyframes heroCursorBlink {
             50% { opacity: 0; }
+        }
+        @keyframes mobileFadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes mobileMarquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        @keyframes mobileOrbOne {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to { transform: translate3d(18px,22px,0) scale(1.08); }
+        }
+        @keyframes mobileOrbTwo {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to { transform: translate3d(-20px,14px,0) scale(1.06); }
+        }
+        @keyframes mobileOrbThree {
+            from { transform: translate3d(0,0,0) scale(1); }
+            to { transform: translate3d(12px,-18px,0) scale(1.1); }
+        }
+        @keyframes desktopFadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes desktopHeroOrbOne {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(-26px,22px,0) scale(1.06); }
+        }
+        @keyframes desktopHeroOrbTwo {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(24px,-20px,0) scale(1.08); }
+        }
+        @keyframes desktopHeroOrbThree {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(18px,26px,0) scale(1.05); }
+        }
+        @keyframes desktopHeroMarquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        @keyframes heroTypeCursorBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
         }
         .hover-underline { position: relative; }
         .hover-underline::after {
@@ -358,6 +387,279 @@
             background:
                 radial-gradient(circle at 50% 0%, rgba(37,99,235,0.18), transparent 34%),
                 linear-gradient(180deg, #05070d 0%, #0a0e1a 48%, #050505 100%);
+        }
+
+        @media (min-width: 768px) {
+            #view-home > section:first-of-type {
+                background: #0a0c1a !important;
+                isolation: isolate;
+            }
+            #view-home > section:first-of-type .bg-grid {
+                opacity: 1;
+                background-image:
+                    linear-gradient(rgba(100,80,255,0.06) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(100,80,255,0.06) 1px, transparent 1px);
+            }
+            #view-home > section:first-of-type > .relative.max-w-4xl {
+                max-width: 1180px;
+            }
+            .desktop-hero-orb {
+                position: absolute !important;
+                z-index: 0;
+                border-radius: 9999px;
+                pointer-events: none;
+                opacity: 1;
+                filter: blur(74px);
+                will-change: transform;
+            }
+            .desktop-hero-orb-one {
+                display: block !important;
+                width: 600px !important;
+                height: 600px !important;
+                top: -150px !important;
+                right: -110px !important;
+                left: auto !important;
+                background: radial-gradient(circle, rgba(80,50,200,0.38) 0%, rgba(80,50,200,0.2) 34%, transparent 68%) !important;
+                animation: desktopHeroOrbOne 13s ease-in-out infinite;
+            }
+            .desktop-hero-orb-two {
+                display: block !important;
+                width: 380px !important;
+                height: 380px !important;
+                left: -90px !important;
+                bottom: 120px !important;
+                top: auto !important;
+                background: radial-gradient(circle, rgba(140,60,220,0.22) 0%, rgba(140,60,220,0.13) 38%, transparent 70%) !important;
+                animation: desktopHeroOrbTwo 15s ease-in-out infinite;
+            }
+            .desktop-hero-orb-three {
+                display: block;
+                width: 260px;
+                height: 260px;
+                left: 18%;
+                top: 42%;
+                background: radial-gradient(circle, rgba(60,130,255,0.18) 0%, rgba(60,130,255,0.1) 38%, transparent 72%);
+                animation: desktopHeroOrbThree 12s ease-in-out infinite;
+            }
+            .desktop-hero-kicker {
+                display: block;
+                margin-bottom: 1rem;
+                color: rgba(255,255,255,0.38);
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 12px;
+                font-weight: 300;
+                line-height: 1;
+                letter-spacing: 2.5px;
+                text-transform: uppercase;
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.08s both;
+            }
+            .hero-h1 {
+                margin-bottom: 0 !important;
+                color: #ffffff;
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: 76px !important;
+                font-weight: 700 !important;
+                line-height: 1 !important;
+                letter-spacing: -3px !important;
+                text-align: center !important;
+                animation: desktopFadeUp 760ms cubic-bezier(0.16,1,0.3,1) 0.18s both;
+            }
+            .hero-h1 .hero-line-italic {
+                display: block;
+                font-style: italic;
+                color: transparent;
+                background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+            .hero-type-word {
+                display: inline;
+                color: transparent;
+                background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+            .hero-type-cursor {
+                display: inline-block;
+                width: 3px;
+                height: 0.8em;
+                margin-left: 0.08em;
+                border-radius: 9999px;
+                background: #9b8cff;
+                vertical-align: -0.05em;
+                animation: heroTypeCursorBlink 0.85s step-end infinite;
+            }
+            .desktop-hero-rule {
+                display: block;
+                width: 48px;
+                height: 1px;
+                margin: 1.55rem auto 1.35rem;
+                background: linear-gradient(90deg, rgba(124,109,250,0.8), transparent);
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.28s both;
+            }
+            .hero-copy {
+                max-width: 520px !important;
+                margin: 0 auto 2rem !important;
+                color: rgba(255,255,255,0.48) !important;
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 16px !important;
+                font-weight: 300 !important;
+                line-height: 1.75 !important;
+                text-align: center !important;
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.38s both;
+            }
+            .hero-copy strong {
+                color: rgba(255,255,255,0.72);
+                font-weight: 500;
+            }
+            .hero-ctas {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: 0.85rem !important;
+                margin-bottom: 2rem !important;
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.48s both;
+            }
+            .hero-cta-primary,
+            .hero-cta-secondary {
+                width: 255px;
+                min-height: 68px;
+                border-radius: 14px !important;
+                padding: 0 18px !important;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: space-between;
+                text-decoration: none;
+                transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+            }
+            .hero-cta-primary {
+                color: #0a0c1a !important;
+                background: #ffffff !important;
+                box-shadow: 0 20px 56px rgba(0,0,0,0.24) !important;
+            }
+            .hero-cta-primary small {
+                display: block;
+                color: rgba(10,12,26,0.46);
+                font-size: 10px;
+                font-weight: 700;
+                line-height: 1.1;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+            }
+            .hero-cta-primary strong {
+                display: block;
+                margin-top: 0.28rem;
+                color: #0a0c1a;
+                font-size: 15px;
+                font-weight: 800;
+                line-height: 1.1;
+            }
+            .hero-cta-arrow {
+                width: 34px;
+                height: 34px;
+                border-radius: 9999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                background: #0a0c1a;
+                font-size: 22px;
+                line-height: 1;
+                flex: 0 0 auto;
+            }
+            .hero-cta-secondary {
+                color: rgba(255,255,255,0.68) !important;
+                background: rgba(255,255,255,0.06) !important;
+                border: 0.5px solid rgba(255,255,255,0.13) !important;
+                box-shadow: none !important;
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 15px;
+                font-weight: 500;
+            }
+            .hero-cta-primary:hover,
+            .hero-cta-secondary:hover {
+                transform: translateY(-1px);
+            }
+            .hero-cta-secondary span:last-child {
+                color: rgba(255,255,255,0.48);
+                font-size: 24px;
+                line-height: 1;
+            }
+            .hero-trust {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: 0 !important;
+                margin-top: 0 !important;
+                color: rgba(255,255,255,0.42) !important;
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 13px !important;
+                font-weight: 300 !important;
+                line-height: 1;
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.58s both;
+            }
+            .hero-trust-item {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.55rem;
+                padding: 0 28px;
+                color: inherit;
+                white-space: nowrap;
+            }
+            .hero-trust-item svg {
+                width: 17px;
+                height: 17px;
+                color: rgba(124,109,250,0.6);
+                stroke: currentColor;
+            }
+            .hero-trust-divider {
+                width: 1px;
+                height: 18px;
+                background: rgba(255,255,255,0.1);
+                transform: scaleX(0.5);
+            }
+            .mockup-wrapper {
+                animation: desktopFadeUp 780ms cubic-bezier(0.16,1,0.3,1) 0.68s both;
+            }
+            .desktop-hero-marquee {
+                display: block;
+                position: relative;
+                z-index: 6;
+                width: 100%;
+                margin-top: 2.3rem;
+                overflow: hidden;
+                border-top: 0.5px solid rgba(255,255,255,0.06);
+                animation: desktopFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 0.78s both;
+            }
+            .desktop-hero-marquee-track {
+                display: flex;
+                align-items: center;
+                width: max-content;
+                padding: 1rem 0;
+                animation: desktopHeroMarquee 24s linear infinite;
+            }
+            .desktop-hero-marquee span {
+                display: inline-flex;
+                align-items: center;
+                color: rgba(255,255,255,0.2);
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1;
+                letter-spacing: 1.6px;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+            .desktop-hero-marquee span::after {
+                content: '';
+                width: 5px;
+                height: 5px;
+                margin: 0 18px;
+                border-radius: 9999px;
+                background: rgba(124,109,250,0.5);
+            }
         }
         .stats-grid-soft {
             background-image:
@@ -995,7 +1297,7 @@
                 -webkit-overflow-scrolling: touch;
             }
             html, body { font-size: 15px; overflow-x: hidden; }
-            body { padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px)); }
+            body { padding-bottom: 0; }
             main { padding-bottom: 0; }
 
             #navbar .max-w-7xl {
@@ -1063,23 +1365,23 @@
                 bottom: 18px !important;
                 z-index: 999 !important;
                 width: auto !important;
-                height: 54px !important;
-                min-width: 92px;
-                min-height: 54px;
-                padding: 0 16px;
+                height: 48px !important;
+                min-width: 96px;
+                min-height: 48px;
+                padding: 0 17px;
                 display: inline-flex !important;
                 opacity: 1 !important;
                 visibility: visible !important;
                 align-items: center;
                 justify-content: center;
-                gap: 9px;
-                color: #ffffff;
-                background: rgba(15,23,42,0.94);
-                border: 1px solid rgba(255,255,255,0.14);
+                gap: 8px;
+                color: rgba(255,255,255,0.82);
+                background: rgba(255,255,255,0.08);
+                border: 0.5px solid rgba(255,255,255,0.18);
                 border-radius: 9999px;
-                box-shadow: 0 10px 26px rgba(15,23,42,0.24), inset 0 1px 0 rgba(255,255,255,0.14);
-                backdrop-filter: none;
-                -webkit-backdrop-filter: none;
+                box-shadow: 0 14px 34px rgba(5,7,18,0.28), inset 0 1px 0 rgba(255,255,255,0.16);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
                 transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
                 transform: translateX(-50%);
                 contain: layout paint;
@@ -1091,49 +1393,31 @@
             .mobile-menu-glyph {
                 position: relative;
                 display: inline-block;
-                width: 17px;
-                height: 2px;
+                width: 7px;
+                height: 7px;
                 border-radius: 9999px;
-                background: currentColor;
-                transition: background-color 180ms ease;
+                background: #7c6dfa;
+                box-shadow: 0 0 14px rgba(124,109,250,0.75);
+                transition: transform 180ms ease, opacity 180ms ease;
             }
             .mobile-menu-glyph::before,
             .mobile-menu-glyph::after {
-                content: '';
-                position: absolute;
-                left: 0;
-                width: 17px;
-                height: 2px;
-                border-radius: 9999px;
-                background: currentColor;
-                transition: transform 180ms ease;
-            }
-            .mobile-menu-glyph::before {
-                transform: translateY(-5px);
-            }
-            .mobile-menu-glyph::after {
-                transform: translateY(5px);
+                display: none;
             }
             #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph {
-                background: transparent;
-            }
-            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph::before {
-                transform: rotate(45deg);
-            }
-            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph::after {
-                transform: rotate(-45deg);
+                transform: scale(1.18);
             }
             .mobile-menu-label {
                 display: inline-block;
                 min-width: 35px;
                 font-size: 13px;
-                font-weight: 800;
+                font-weight: 600;
                 line-height: 1;
                 letter-spacing: 0.01em;
             }
             #mobileMenuBtn:active,
             #mobileMenuBtn:focus-visible {
-                background: rgba(37,99,235,0.96);
+                background: rgba(255,255,255,0.12);
                 border-color: rgba(255,255,255,0.24);
                 transform: translateX(-50%) scale(0.96);
                 outline: none;
@@ -1168,20 +1452,71 @@
                 min-height: auto;
                 max-height: none;
                 justify-content: flex-start;
-                padding-top: clamp(3.6rem, 9vh, 4.8rem);
-                padding-bottom: 3.6rem;
-                background:
-                    radial-gradient(circle at 18% 18%, rgba(37,99,235,0.36) 0, rgba(37,99,235,0.14) 28%, transparent 56%),
-                    radial-gradient(circle at 86% 12%, rgba(168,85,247,0.28) 0, transparent 42%),
-                    linear-gradient(180deg, #050505 0%, #080b16 48%, #10113d 100%);
+                padding-top: clamp(4.8rem, 11vh, 6.2rem);
+                padding-bottom: 0;
+                background: #0a0c1a !important;
+                isolation: isolate;
             }
-            #view-home > section:first-of-type > .absolute:not(.bg-grid) {
-                opacity: 0.65;
-                transform: translateX(-50%) scale(0.72);
+            #view-home > section:first-of-type::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                opacity: 0.34;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
+                mix-blend-mode: soft-light;
+                z-index: 1;
+            }
+            #view-home > section:first-of-type > .absolute:not(.bg-grid):nth-of-type(1) {
+                width: 19rem;
+                height: 19rem;
+                left: -5rem;
+                top: 6.8rem;
+                background: radial-gradient(circle, rgba(78,42,132,0.64) 0%, rgba(78,42,132,0.26) 38%, transparent 70%) !important;
+                border-radius: 9999px;
+                filter: blur(18px);
+                transform: none;
+                opacity: 0.9;
+                animation: mobileOrbOne 11s ease-in-out infinite alternate;
+                z-index: 0;
+            }
+            #view-home > section:first-of-type > .absolute:not(.bg-grid):nth-of-type(2) {
+                width: 17rem;
+                height: 17rem;
+                left: auto;
+                right: -5.5rem;
+                top: 11.5rem;
+                background: radial-gradient(circle, rgba(124,109,250,0.58) 0%, rgba(124,109,250,0.22) 36%, transparent 72%) !important;
+                border-radius: 9999px;
+                filter: blur(16px);
+                transform: none;
+                opacity: 0.82;
+                animation: mobileOrbTwo 12s ease-in-out infinite alternate;
+                z-index: 0;
+            }
+            #view-home > section:first-of-type .mobile-hero-orb {
+                display: block;
+                position: absolute;
+                width: 15rem;
+                height: 15rem;
+                left: 27%;
+                bottom: 2.5rem;
+                border-radius: 9999px;
+                background: radial-gradient(circle, rgba(96,165,250,0.44) 0%, rgba(96,165,250,0.16) 38%, transparent 72%);
+                filter: blur(18px);
+                opacity: 0.78;
+                pointer-events: none;
+                animation: mobileOrbThree 13s ease-in-out infinite alternate;
+                z-index: 0;
             }
             #view-home > section:first-of-type .bg-grid {
-                opacity: 0.5;
-                mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.74) 62%, transparent 100%);
+                opacity: 0.16;
+                background-size: 34px 34px;
+                background-image:
+                    linear-gradient(to right, rgba(255,255,255,0.11) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.11) 1px, transparent 1px);
+                mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+                z-index: 0;
             }
             #view-home > section:first-of-type > .relative.max-w-4xl {
                 width: 100%;
@@ -1191,68 +1526,292 @@
                 padding-right: 1.25rem !important;
                 text-align: left !important;
             }
-            .hero-h1 {
-                font-size: clamp(2.95rem, 12.4vw, 4.1rem) !important;
-                line-height: 0.96 !important;
-                letter-spacing: -0.045em !important;
-                text-align: left !important;
-                margin-bottom: 1rem !important;
-                max-width: 8.5ch;
-                word-break: normal;
-                overflow-wrap: normal;
-            }
-            p.hero-sub.hidden { display: none !important; }
-            .hero-sub {
-                text-align: left !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-            .hero-sub-mobile {
-                display: block !important;
-                color: rgba(226,232,240,0.88) !important;
-                font-size: 15px !important;
-                line-height: 1.5 !important;
-                font-weight: 400 !important;
-                margin: 0 0 1.15rem 0 !important;
-                max-width: 29ch !important;
-                text-align: left !important;
-            }
-            .hero-sub:not(.hidden) {
-                display: none !important;
-            }
-            .hero-ctas {
-                align-items: stretch !important;
-                margin-top: 0 !important;
-                margin-bottom: 0 !important;
-                gap: 0.75rem !important;
-            }
-            .hero-ctas a {
-                width: 100% !important;
-                max-width: 22rem;
-                min-height: 54px;
-                padding-top: 0.95rem !important;
-                padding-bottom: 0.95rem !important;
-                border-radius: 16px !important;
-                font-size: 15px !important;
-            }
-            .hero-ctas a:first-child {
-                background: #fff !important;
-                color: #0f172a !important;
-                box-shadow: 0 18px 48px rgba(37,99,235,0.32) !important;
-            }
-            .hero-ctas a:first-child svg { color: #2563EB; }
-            .hero-ctas a:nth-child(2) {
-                min-height: 44px;
-                padding-top: 0.55rem !important;
-                padding-bottom: 0.55rem !important;
-                border: 0 !important;
-                border-radius: 0 !important;
-                background: transparent !important;
-                color: rgba(226,232,240,0.82) !important;
-                justify-content: flex-start !important;
-            }
+            .hero-h1,
+            .hero-sub,
+            .hero-sub-mobile,
+            .hero-ctas,
             .hero-trust {
                 display: none !important;
+            }
+            .mobile-hero-premium {
+                display: block !important;
+                position: relative;
+                z-index: 5;
+                padding-bottom: 1.6rem;
+            }
+            .mobile-hero-kicker,
+            .mobile-hero-body,
+            .mobile-hero-swap,
+            .mobile-hero-proof-copy,
+            .mobile-hero-marquee {
+                font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+            .mobile-hero-kicker {
+                margin-bottom: 1.05rem;
+                color: rgba(255,255,255,0.45);
+                font-size: 13px;
+                font-weight: 300;
+                line-height: 1;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 80ms both;
+            }
+            .mobile-hero-title {
+                font-family: 'Playfair Display', Georgia, serif;
+                max-width: 9.4ch;
+                margin: 0;
+                color: #ffffff;
+                font-size: 54px;
+                font-weight: 700;
+                line-height: 1;
+                letter-spacing: -2px;
+                text-align: left !important;
+                animation: mobileFadeUp 720ms cubic-bezier(0.16,1,0.3,1) 160ms both;
+            }
+            .mobile-hero-title em {
+                display: block;
+                font-style: italic;
+                color: transparent;
+                background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+            .mobile-hero-title-swap {
+                position: relative;
+                display: block !important;
+                height: 1.02em;
+                min-width: 0;
+                overflow: visible;
+                transition: min-width 0.45s ease;
+            }
+            .mobile-hero-title-swap span {
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                transform: translateY(6px);
+                color: transparent;
+                background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
+                -webkit-background-clip: text;
+                background-clip: text;
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: inherit;
+                font-style: italic;
+                font-weight: 700;
+                line-height: 1;
+                white-space: nowrap;
+                transition: opacity 0.45s ease, transform 0.45s ease;
+            }
+            .mobile-hero-title-swap span.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .mobile-hero-rule {
+                width: 40px;
+                height: 1px;
+                margin: 1.35rem 0 1.2rem;
+                background: linear-gradient(90deg, rgba(124,109,250,0.8), transparent);
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 240ms both;
+            }
+            .mobile-hero-body {
+                max-width: 31ch;
+                margin: 0 0 1.45rem;
+                color: rgba(255,255,255,0.5);
+                font-size: 14.5px;
+                font-weight: 300;
+                line-height: 1.7;
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 320ms both;
+            }
+            .mobile-hero-body strong {
+                color: rgba(255,255,255,0.75);
+                font-weight: 500;
+            }
+            .mobile-hero-swap {
+                display: none;
+                align-items: baseline;
+                gap: 0.24rem;
+                margin: -0.45rem 0 1.25rem;
+                color: rgba(255,255,255,0.38);
+                font-size: 13px;
+                font-weight: 300;
+                line-height: 1.4;
+                white-space: nowrap;
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 370ms both;
+            }
+            .mobile-hero-swap-words {
+                position: relative;
+                display: inline-block;
+                min-width: 0;
+                height: 1.4em;
+                overflow: hidden;
+                vertical-align: middle;
+                transition: min-width 0.45s ease;
+                transform: translateY(3px);
+            }
+            .mobile-hero-swap-words span {
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                transform: translateY(6px);
+                color: transparent;
+                background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
+                -webkit-background-clip: text;
+                background-clip: text;
+                font-family: 'Playfair Display', Georgia, serif;
+                font-size: 13px;
+                font-style: italic;
+                font-weight: 500;
+                line-height: 1.4;
+                white-space: nowrap;
+                transition: opacity 0.45s ease, transform 0.45s ease;
+            }
+            .mobile-hero-swap-words span.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .mobile-hero-actions {
+                display: grid;
+                gap: 0.72rem;
+                max-width: 22rem;
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 430ms both;
+            }
+            .mobile-hero-primary,
+            .mobile-hero-secondary {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-decoration: none;
+            }
+            .mobile-hero-primary {
+                min-height: 68px;
+                padding: 17px 20px;
+                border-radius: 12px;
+                color: #0a0c1a;
+                background: #ffffff;
+                box-shadow: 0 22px 55px rgba(0,0,0,0.26);
+            }
+            .mobile-hero-primary small {
+                display: block;
+                color: rgba(10,12,26,0.48);
+                font-size: 10px;
+                font-weight: 700;
+                line-height: 1.1;
+                letter-spacing: 1.3px;
+                text-transform: uppercase;
+            }
+            .mobile-hero-primary strong {
+                display: block;
+                margin-top: 0.28rem;
+                color: #0a0c1a;
+                font-size: 15px;
+                font-weight: 800;
+                line-height: 1.1;
+            }
+            .mobile-hero-primary .mobile-hero-arrow {
+                width: 34px;
+                height: 34px;
+                border-radius: 9999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                background: #0a0c1a;
+                font-size: 20px;
+                line-height: 1;
+                flex: 0 0 auto;
+            }
+            .mobile-hero-secondary {
+                min-height: 54px;
+                padding: 0 18px;
+                border-radius: 12px;
+                color: rgba(255,255,255,0.7);
+                background: rgba(255,255,255,0.05);
+                border: 0.5px solid rgba(255,255,255,0.12);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                font-size: 14px;
+                font-weight: 500;
+            }
+            .mobile-hero-secondary span:last-child {
+                color: rgba(255,255,255,0.48);
+                font-size: 22px;
+                line-height: 1;
+            }
+            .mobile-hero-proof {
+                display: flex;
+                align-items: center;
+                gap: 0.78rem;
+                margin-top: 1.25rem;
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 480ms both;
+            }
+            .mobile-hero-avatars {
+                display: flex;
+                flex: 0 0 auto;
+                padding-left: 2px;
+            }
+            .mobile-hero-avatar {
+                width: 28px;
+                height: 28px;
+                border-radius: 9999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: rgba(255,255,255,0.9);
+                border: 1px solid rgba(10,12,26,0.82);
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: -0.01em;
+            }
+            .mobile-hero-avatar + .mobile-hero-avatar {
+                margin-left: -8px;
+            }
+            .mobile-hero-proof-copy {
+                max-width: 20ch;
+                color: rgba(255,255,255,0.45);
+                font-size: 12px;
+                font-weight: 300;
+                line-height: 1.35;
+            }
+            .mobile-hero-proof-copy strong {
+                color: rgba(255,255,255,0.72);
+                font-weight: 700;
+            }
+            .mobile-hero-marquee {
+                display: block !important;
+                position: relative;
+                z-index: 4;
+                width: 100%;
+                margin-top: 2rem;
+                overflow: hidden;
+                border-top: 0.5px solid rgba(255,255,255,0.07);
+                animation: mobileFadeUp 680ms cubic-bezier(0.16,1,0.3,1) 560ms both;
+            }
+            .mobile-hero-marquee-track {
+                display: flex;
+                align-items: center;
+                width: max-content;
+                padding: 0.95rem 0;
+                animation: mobileMarquee 22s linear infinite;
+            }
+            .mobile-hero-marquee span {
+                display: inline-flex;
+                align-items: center;
+                color: rgba(255,255,255,0.2);
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1;
+                letter-spacing: 1.6px;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+            .mobile-hero-marquee span::after {
+                content: '';
+                width: 5px;
+                height: 5px;
+                margin: 0 18px;
+                border-radius: 9999px;
+                background: rgba(124,109,250,0.5);
             }
             .mockup-wrapper { display: none !important; }
 
@@ -1274,6 +1833,9 @@
 
             #form {
                 padding-top: 3.5rem !important;
+            }
+            footer {
+                padding-bottom: calc(5rem + 82px + env(safe-area-inset-bottom, 0px)) !important;
             }
             #form > .absolute {
                 display: none !important;
@@ -1398,21 +1960,17 @@
             @media (max-height: 720px) {
                 #view-home > section:first-of-type {
                     min-height: auto;
-                    padding-top: 3.35rem;
-                    padding-bottom: 3.1rem;
+                    padding-top: 4.35rem;
+                    padding-bottom: 0;
                 }
-                .hero-h1 {
-                    font-size: clamp(2.55rem, 12vw, 3.45rem) !important;
+                .mobile-hero-title {
+                    font-size: 48px;
                     margin-bottom: 0.85rem !important;
                 }
-                .hero-sub-mobile {
-                    font-size: 14px !important;
-                    line-height: 1.45 !important;
-                    margin-bottom: 1rem !important;
-                    max-width: 28ch !important;
-                }
-                .hero-ctas {
-                    margin-bottom: 0 !important;
+                .mobile-hero-body {
+                    font-size: 14px;
+                    line-height: 1.55;
+                    margin-bottom: 1rem;
                 }
             }
         }
@@ -1537,59 +2095,112 @@
     <!-- 1. HERO SECTION -->
     <section class="relative bg-[#050505] text-white overflow-hidden noise min-h-[85vh] flex flex-col justify-center pt-16 pb-16 md:pt-24 md:pb-20 lg:pt-32 lg:pb-24">
         <!-- Glows -->
-        <div class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute top-[30%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute desktop-hero-orb desktop-hero-orb-one top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute desktop-hero-orb desktop-hero-orb-two top-[30%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="desktop-hero-orb desktop-hero-orb-three" aria-hidden="true"></div>
         
         <!-- Grid -->
         <div class="absolute inset-0 bg-grid pointer-events-none"></div>
+        <div class="mobile-hero-orb" aria-hidden="true"></div>
 
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 mb-12 md:mb-16 lg:mb-20">
+            <div class="mobile-hero-premium" aria-label="Mobile hero">
+                <div class="mobile-hero-kicker">Built for local business</div>
+                <h1 class="mobile-hero-title">
+                    Built for<br>Dayton's
+                    <em class="mobile-hero-title-swap" data-mobile-hero-swap aria-live="polite">
+                        <span>roofers.</span>
+                        <span>auto shops.</span>
+                        <span>law firms.</span>
+                        <span>med spas.</span>
+                        <span>landscapers.</span>
+                        <span>contractors.</span>
+                        <span>salons.</span>
+                        <span>gyms.</span>
+                    </em>
+                </h1>
+                <div class="mobile-hero-rule" aria-hidden="true"></div>
+                <p class="mobile-hero-body">
+                    Custom <strong>booking flows, smart forms, and follow-up tools</strong> for local businesses that have better things to do than babysit inboxes.
+                </p>
+                <div class="mobile-hero-actions">
+                    <a href="#form" class="mobile-hero-primary">
+                        <span>
+                            <small>Free &middot; 5 minutes</small>
+                            <strong>Get a quick recommendation</strong>
+                        </span>
+                        <span class="mobile-hero-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="#pricing" class="mobile-hero-secondary">
+                        <span>View one-time packages</span>
+                        <span aria-hidden="true">›</span>
+                    </a>
+                </div>
+                <div class="mobile-hero-proof">
+                    <div class="mobile-hero-avatars" aria-hidden="true">
+                        <span class="mobile-hero-avatar" style="background:#4338ca;">JD</span>
+                        <span class="mobile-hero-avatar" style="background:#7c3aed;">MS</span>
+                        <span class="mobile-hero-avatar" style="background:#2563eb;">AK</span>
+                        <span class="mobile-hero-avatar" style="background:#0f766e;">RL</span>
+                    </div>
+                    <p class="mobile-hero-proof-copy"><strong>12 local businesses</strong> already replaced their spreadsheets.</p>
+                </div>
+            </div>
             
+            <div class="desktop-hero-kicker">Built for local business</div>
+
             <!-- Headline -->
-            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center" data-type-line-one="Stop Missing Leads" data-type-line-two="From Your " data-type-highlight="Website">
-                Stop Missing Leads<br>
-                From Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Website</span>
+            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center">
+                Stop losing leads
+                <span class="hero-line-italic">we built this for your <span class="hero-type-word" data-hero-type-word></span><span class="hero-type-cursor" aria-hidden="true"></span></span>
             </h1>
 
-            <p class="hero-sub hidden md:block text-[18px] md:text-[21px] text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed font-light text-center">
-                DaytonGrowthCo. helps local businesses improve their website, forms, booking, and follow-up process so more customer inquiries turn into real conversations.
-            </p>
+            <div class="desktop-hero-rule" aria-hidden="true"></div>
 
             <p class="hero-sub-mobile hidden md:hidden">
-                DaytonGrowthCo. helps local businesses improve their website, forms, booking, and follow-up process so more customer inquiries turn into real conversations.
+                Practical websites, forms, booking flows, and follow-up tools for local businesses that would rather not lose leads to a heroic spreadsheet.
             </p>
 
-            <p class="hero-sub text-sm md:text-[15px] text-slate-500 mb-6 md:mb-10 leading-snug font-medium text-center">
-                One-time setup packages. Ongoing support is optional if you need it.
+            <p class="hero-sub hero-copy text-sm md:text-[15px] text-slate-500 mb-6 md:mb-10 leading-snug font-medium text-center">
+                We build <strong>booking flows, smart forms, and follow-up tools</strong> so your business runs — even when you're not watching.
             </p>
 
             <div class="hero-ctas flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-4 md:mb-16">
-                <a href="#form" class="inline-flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-blue-500 text-white px-8 py-3.5 md:py-4 rounded-full font-semibold text-[15px] transition-all shadow-[0_0_30px_rgba(37,99,235,0.3)]">
-                    Get a Quick Recommendation
-                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <a href="#form" class="hero-cta-primary inline-flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-blue-500 text-white px-8 py-3.5 md:py-4 rounded-full font-semibold text-[15px] transition-all shadow-[0_0_30px_rgba(37,99,235,0.3)]">
+                    <span>
+                        <small>Free &middot; 5 minutes</small>
+                        <strong>Get a quick recommendation</strong>
+                    </span>
+                    <span class="hero-cta-arrow" aria-hidden="true">›</span>
                 </a>
-                <a href="#pricing" class="inline-flex items-center justify-center gap-2 bg-[#161B22] border border-white/10 hover:bg-[#1f2633] text-white px-8 py-3.5 md:py-4 rounded-full font-medium text-[15px] transition-all">
-                    View One-Time Packages
-                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <a href="#pricing" class="hero-cta-secondary inline-flex items-center justify-center gap-2 bg-[#161B22] border border-white/10 hover:bg-[#1f2633] text-white px-8 py-3.5 md:py-4 rounded-full font-medium text-[15px] transition-all">
+                    <span>View one-time packages</span>
+                    <span aria-hidden="true">›</span>
                 </a>
             </div>
 
             <!-- Trust line -->
             <div class="hero-trust grid grid-cols-1 sm:flex sm:flex-wrap items-center justify-center gap-y-2 gap-x-5 text-slate-400 text-xs md:text-[13px] font-medium mt-4 md:mt-0">
-                <div class="flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3.5l7 2.7v5.2c0 4.2-2.8 7.9-7 9.1-4.2-1.2-7-4.9-7-9.1V6.2l7-2.7z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.9 12.1l2.1 2.1 4.3-4.6"/></svg>
                     No monthly contract required
                 </div>
-                <div class="w-px h-4 bg-slate-700 hidden sm:block"></div>
-                <div class="flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden sm:block"></div>
+                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3"/></svg>
                     Built for Dayton businesses
                 </div>
-                <div class="w-px h-4 bg-slate-700 hidden lg:block"></div>
-                <div class="flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden lg:block"></div>
+                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.9" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12.4l4.2 4.2L19 6.8"/></svg>
                     Practical setup help
                 </div>
+            </div>
+        </div>
+        <div class="mobile-hero-marquee" aria-hidden="true">
+            <div class="mobile-hero-marquee-track">
+                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
+                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
             </div>
         </div>
 
@@ -1676,6 +2287,12 @@
                 </div>
             </div>
         </div>
+        <div class="desktop-hero-marquee" aria-hidden="true">
+            <div class="desktop-hero-marquee-track">
+                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
+                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
+            </div>
+        </div>
     </section>
 
     <!-- 2. COMBINED PROBLEM & SOLUTION SECTION -->
@@ -1683,8 +2300,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center mb-10 md:mb-12 reveal-sweep">
                 <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-2.5">Website + Lead Setup</div>
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-3.5">Better ways to capture leads,<br>follow up, and stay organized.</h2>
-                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">We connect the important pieces around your website so customers know what to do and new inquiries do not get lost.</p>
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-3.5">Updated systems.<br>More customers.</h2>
+                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">We connect the important pieces around your website so customers know what to do and new inquiries do not vanish into the usual business fog.</p>
             </div>
             
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
@@ -1762,8 +2379,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">EXAMPLES BY INDUSTRY</div>
-                <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">See the Kinds of Tools We Can Build for Your Business</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Every business has different bottlenecks. Explore your industry to see examples of simple tools, automations, and custom systems that can help you capture more leads, save time, and stay organized.</p>
+                <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Types of Tools</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Every business has different bottlenecks. Explore examples of simple tools, automations, and custom systems that help capture leads, save time, and keep fewer things held together by memory.</p>
                 <p class="mt-4 text-[13px] md:text-[14px] text-slate-500">These are examples, not fixed packages. We use the best existing tools when they fit, and build custom solutions when they do not.</p>
             </div>
 
@@ -2466,7 +3083,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.setTimeout(callback, 800);
     };
     let splashComplete = false;
-    let heroTypingStarted = false;
+    let heroTypewriterStarted = false;
 
     const initSplashScreen = () => {
         return new Promise(resolve => {
@@ -2477,7 +3094,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             document.body.classList.add('splash-lock');
-            const showFor = reduceMotion ? 220 : 2200;
+            const showFor = reduceMotion ? 220 : 1650;
             window.setTimeout(() => {
                 splash.classList.add('is-done');
                 document.body.classList.remove('splash-lock');
@@ -2528,51 +3145,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
     updateNavbarState();
 
-    const typeHeroHeadline = () => {
-        const heading = document.querySelector('.hero-h1');
-        if (!heading) return;
-        heading.classList.remove('is-typing');
-        heading.classList.add('typing-active');
+    const initDesktopHeroTypewriter = () => {
+        if (heroTypewriterStarted) return;
+        const wordEl = document.querySelector('[data-hero-type-word]');
+        if (!wordEl) return;
+        if (!window.matchMedia('(min-width: 768px)').matches) return;
+        heroTypewriterStarted = true;
 
-        const lineOne = heading.dataset.typeLineOne || 'Stop Missing Leads';
-        const lineTwo = heading.dataset.typeLineTwo || 'From Your ';
-        const highlight = heading.dataset.typeHighlight || 'Website';
-        const fullText = `${lineOne}\n${lineTwo}${highlight}`;
-        const typeSpeed = 42;
-        let index = 0;
-
-        const render = (text, showCursor = true) => {
-            const [firstLine = '', secondLine = ''] = text.split('\n');
-            const highlightStart = lineTwo.length;
-            const beforeHighlight = secondLine.slice(0, highlightStart);
-            const highlightText = secondLine.slice(highlightStart);
-            const cursor = showCursor ? '<span class="hero-type-cursor" aria-hidden="true"></span>' : '';
-
-            heading.innerHTML = `${firstLine}<br>${beforeHighlight}<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">${highlightText}</span>${cursor}`;
-        };
-
-        const renderFinal = () => {
-            heading.setAttribute('aria-label', fullText.replace('\n', ' '));
-            render(fullText, false);
-        };
+        const words = [
+            'roofing company.',
+            'auto shop.',
+            'law firm.',
+            'med spa.',
+            'landscaper.',
+            'contractor.',
+            'salon.',
+            'gym.'
+        ];
 
         if (reduceMotion) {
-            renderFinal();
+            wordEl.textContent = words[0];
             return;
         }
 
-        render('');
+        let wordIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        const schedule = delay => window.setTimeout(tick, delay);
         const tick = () => {
-            index += 1;
-            render(fullText.slice(0, index));
-            if (index < fullText.length) {
-                window.setTimeout(tick, typeSpeed);
-            } else {
-                window.setTimeout(renderFinal, 1300);
+            const word = words[wordIndex];
+
+            if (!deleting) {
+                charIndex += 1;
+                wordEl.textContent = word.slice(0, charIndex);
+                if (charIndex === word.length) {
+                    deleting = true;
+                    schedule(1800);
+                    return;
+                }
+                schedule(72);
+                return;
             }
+
+            charIndex -= 1;
+            wordEl.textContent = word.slice(0, charIndex);
+            if (charIndex === 0) {
+                deleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                schedule(300);
+                return;
+            }
+            schedule(38);
         };
 
-        window.setTimeout(tick, 260);
+        schedule(300);
+    };
+
+    const initMobileHeroSwap = () => {
+        const container = document.querySelector('[data-mobile-hero-swap]');
+        if (!container) return;
+        const spans = Array.from(container.querySelectorAll('span'));
+        if (!spans.length) return;
+        let index = spans.findIndex(span => span.classList.contains('visible'));
+        if (index < 0) index = 0;
+
+        const setWidth = span => {
+            container.style.minWidth = `${Math.ceil(span.scrollWidth)}px`;
+        };
+
+        spans.forEach(span => span.classList.remove('visible'));
+        spans[index].classList.add('visible');
+        requestAnimationFrame(() => setWidth(spans[index]));
+
+        if (reduceMotion || window.matchMedia('(min-width: 768px)').matches) return;
+
+        window.setInterval(() => {
+            spans[index].classList.remove('visible');
+            index = (index + 1) % spans.length;
+            spans[index].classList.add('visible');
+            setWidth(spans[index]);
+        }, 2400);
     };
 
     const isPlainHomeRoute = () => {
@@ -2581,12 +3234,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const startHeroTypingIfReady = () => {
-        if (!splashComplete || heroTypingStarted || !isPlainHomeRoute()) return;
-        heroTypingStarted = true;
-        typeHeroHeadline();
+        if (!splashComplete || !isPlainHomeRoute()) return;
+        initDesktopHeroTypewriter();
     };
 
     splashReady.then(startHeroTypingIfReady);
+    initMobileHeroSwap();
 
     // ── STAGGERED GSAP/FRAMER STYLE REVEAL ANIMATIONS ──
     const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -2911,7 +3564,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isMobileMenuOpen = !isMobileMenuOpen;
             btn.setAttribute('aria-expanded', String(isMobileMenuOpen));
             btn.setAttribute('aria-label', isMobileMenuOpen ? 'Close menu' : 'Open menu');
-            if (btnLabel) btnLabel.textContent = isMobileMenuOpen ? 'Close' : 'Menu';
+            if (btnLabel) btnLabel.textContent = 'Menu';
             if (isMobileMenuOpen) {
                 menu.classList.add('open');
                 navbar?.classList.add('menu-open');
@@ -3389,7 +4042,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         initReveal();
-        setTimeout(startHeroTypingIfReady, 90);
     };
 
     window.addEventListener('hashchange', handleRoute);
