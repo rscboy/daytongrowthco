@@ -11,7 +11,6 @@
     
     <!-- Preconnect & High Priority Fetches -->
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +18,6 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.clarity.ms">
     <link rel="dns-prefetch" href="https://i.postimg.cc">
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://i.ibb.co">
     <link rel="preload" as="image" href="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" fetchpriority="high">
@@ -84,8 +82,6 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
     <script defer src="https://unpkg.com/lucide@latest"></script>
     
     <script>
@@ -2193,6 +2189,79 @@
             }
         }
 
+        /* Scroll performance pass: keep the design, but avoid expensive paint work during fast section changes. */
+        #services,
+        #industry-tools,
+        #pricing,
+        #process,
+        #form,
+        #view-process > section,
+        #view-about > section,
+        footer {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 860px;
+        }
+        .service-card,
+        .pricing-card,
+        .industry-card,
+        .preview-shell,
+        .form-card,
+        .stat-card {
+            contain: layout paint style;
+        }
+        @media (min-width: 768px) {
+            .desktop-hero-orb {
+                animation: none !important;
+                filter: blur(52px);
+                will-change: auto;
+            }
+        }
+        @media (max-width: 767px) {
+            #view-home > section:first-of-type > .absolute:not(.bg-grid):nth-of-type(1),
+            #view-home > section:first-of-type > .absolute:not(.bg-grid):nth-of-type(2),
+            #view-home > section:first-of-type .mobile-hero-orb {
+                animation: none !important;
+                will-change: auto;
+            }
+            #mobileMenuBtn {
+                backdrop-filter: blur(8px) !important;
+                -webkit-backdrop-filter: blur(8px) !important;
+            }
+        }
+        .is-fast-scrolling .desktop-hero-marquee-track,
+        .is-fast-scrolling .mobile-hero-marquee-track,
+        .is-fast-scrolling .preview-fade,
+        .is-fast-scrolling .preview-glow,
+        .is-fast-scrolling .preview-slide,
+        .is-fast-scrolling .preview-pulse,
+        .is-fast-scrolling .preview-fill,
+        .is-fast-scrolling .preview-shift,
+        .is-fast-scrolling .preview-slot,
+        .is-fast-scrolling .preview-swap,
+        .is-fast-scrolling .preview-reveal,
+        .is-fast-scrolling .preview-bubble,
+        .is-fast-scrolling .anim-hiw-row-focus,
+        .is-fast-scrolling .anim-hiw-check,
+        .is-fast-scrolling .anim-hiw-reveal,
+        .is-fast-scrolling .anim-hiw-flow,
+        .is-fast-scrolling .anim-hiw-dot,
+        .is-fast-scrolling .anim-hiw-launch-progress,
+        .is-fast-scrolling .anim-hiw-status-launch,
+        .is-fast-scrolling .anim-hiw-status-live,
+        .is-fast-scrolling .anim-hiw-metric,
+        .is-fast-scrolling .anim-hiw-metric-value,
+        .is-fast-scrolling .anim-hiw-bar,
+        .is-fast-scrolling .demo-flow-line::after,
+        .is-fast-scrolling .demo-flow-dot,
+        .is-fast-scrolling .pulse-dot,
+        .is-fast-scrolling .pulse-step-1,
+        .is-fast-scrolling .pulse-step-2,
+        .is-fast-scrolling .pulse-step-3,
+        .is-fast-scrolling .pulse-step-4,
+        .is-fast-scrolling .anim-float {
+            animation-play-state: paused !important;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .splash-screen,
             .splash-inner,
@@ -3298,19 +3367,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initVendorEnhancements = () => {
         if (window.lucide?.createIcons) window.lucide.createIcons();
-        const canUseSmoothScroll = !isTouchScrollDevice && window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
-        if (!reduceMotion && canUseSmoothScroll && window.Lenis) {
-            const lenis = new window.Lenis({
-                duration: 0.55,
-                smoothWheel: true,
-                wheelMultiplier: 1.2
-            });
-            const raf = time => {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            };
-            requestAnimationFrame(raf);
-        }
     };
 
     const splashReady = initSplashScreen();
@@ -3318,6 +3374,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let navbarIsScrolled = false;
     let navbarScrollTicking = false;
+    let lastScrollY = window.scrollY;
+    let lastScrollTime = performance.now();
+    let fastScrollTimer = 0;
     const updateNavbarState = () => {
         if (!navbar) return;
         const shouldBeScrolled = window.scrollY > 12;
@@ -3325,8 +3384,24 @@ document.addEventListener('DOMContentLoaded', () => {
         navbarIsScrolled = shouldBeScrolled;
         navbar.classList.toggle('is-scrolled', shouldBeScrolled);
     };
+    const updateFastScrollState = () => {
+        const now = performance.now();
+        const y = window.scrollY;
+        const elapsed = Math.max(now - lastScrollTime, 16);
+        const velocity = Math.abs(y - lastScrollY) / elapsed;
+        lastScrollY = y;
+        lastScrollTime = now;
+
+        if (velocity < 1.15) return;
+        rootEl.classList.add('is-fast-scrolling');
+        window.clearTimeout(fastScrollTimer);
+        fastScrollTimer = window.setTimeout(() => {
+            rootEl.classList.remove('is-fast-scrolling');
+        }, 180);
+    };
 
     window.addEventListener('scroll', () => {
+        updateFastScrollState();
         if (navbarScrollTicking) return;
         navbarScrollTicking = true;
         requestAnimationFrame(() => {
@@ -3440,20 +3515,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 obs.unobserve(e.target);
             }
         });
-    }, { rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
+    }, { rootMargin: '160px 0px 120px 0px', threshold: 0.01 });
 
     const staggerObserver = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const items = entry.target.querySelectorAll('.stagger-item');
                 items.forEach((item, index) => {
-                    item.style.transitionDelay = `${index * 120}ms`;
+                    item.style.transitionDelay = `${index * 55}ms`;
                     item.classList.add('visible');
                 });
                 obs.unobserve(entry.target);
             }
         });
-    }, { rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
+    }, { rootMargin: '160px 0px 120px 0px', threshold: 0.01 });
 
     const initReveal = () => {
         document.querySelectorAll('.reveal, .reveal-sweep').forEach(el => {
@@ -4354,6 +4429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const canAnimateMockup = () => {
         if (!mockupWrapper || document.hidden || reduceMotion) return false;
+        if (rootEl.classList.contains('is-fast-scrolling')) return false;
         if (!window.matchMedia('(min-width: 768px)').matches) return false;
         if (!mockupWrapper.getClientRects().length) return false;
         if (!mockupInView) return false;
@@ -4382,48 +4458,62 @@ document.addEventListener('DOMContentLoaded', () => {
         // Helper for typing
         const typeText = async (text, els) => {
             for(let i=0; i < text.length; i++) {
+                if (!canAnimateMockup()) return false;
                 els.forEach(el => { if(el) el.textContent += text.charAt(i); });
                 await sleep(50 + Math.random() * 30);
             }
+            return true;
         };
 
         await sleep(1000);
+        if (!canAnimateMockup()) return;
         nameContainers.forEach(el => el.classList.add('mockup-focus-glow'));
         cursorNames.forEach(el => el.style.display = 'inline-block');
         await sleep(400);
+        if (!canAnimateMockup()) return;
 
-        await typeText('John Smith', nameEls);
+        if (!(await typeText('John Smith', nameEls))) return;
         await sleep(300);
+        if (!canAnimateMockup()) return;
         nameContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
         cursorNames.forEach(el => el.style.display = 'none');
 
         await sleep(400);
+        if (!canAnimateMockup()) return;
         svcContainers.forEach(el => el.classList.add('mockup-focus-glow'));
         cursorSvcs.forEach(el => el.style.display = 'inline-block');
         await sleep(300);
+        if (!canAnimateMockup()) return;
 
-        await typeText('Roof Repair', svcEls);
+        if (!(await typeText('Roof Repair', svcEls))) return;
         await sleep(300);
+        if (!canAnimateMockup()) return;
         svcContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
         cursorSvcs.forEach(el => el.style.display = 'none');
 
         await sleep(400);
+        if (!canAnimateMockup()) return;
         btns.forEach(el => el.classList.add('mockup-btn-hover'));
         await sleep(200);
+        if (!canAnimateMockup()) return;
         btns.forEach(el => {
             el.classList.remove('mockup-btn-hover');
             el.classList.add('mockup-btn-click');
         });
         
         await sleep(150);
+        if (!canAnimateMockup()) return;
         btns.forEach(el => el.classList.remove('mockup-btn-click'));
         
         await sleep(600);
+        if (!canAnimateMockup()) return;
         toasts.forEach(el => el.classList.add('active'));
         await sleep(800);
+        if (!canAnimateMockup()) return;
 
         rows.forEach(el => el.classList.add('active'));
         await sleep(1000);
+        if (!canAnimateMockup()) return;
 
         oldStatuses.forEach(el => {
             el.classList.add('mockup-status-booked');
