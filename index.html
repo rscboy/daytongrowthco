@@ -2006,48 +2006,6 @@
         body {
             background: #f5f5f7;
         }
-        .desktop-section-nav {
-            display: none;
-        }
-        @media (min-width: 768px) {
-            .desktop-section-nav {
-                position: sticky;
-                top: 72px;
-                z-index: 45;
-                display: block;
-                background: rgba(255,255,255,0.86);
-                border-bottom: 1px solid rgba(226,232,240,0.82);
-                backdrop-filter: blur(18px);
-                -webkit-backdrop-filter: blur(18px);
-            }
-            .desktop-section-nav-inner {
-                max-width: 1200px;
-                height: 52px;
-                margin: 0 auto;
-                padding: 0 24px;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 28px;
-            }
-            .desktop-section-nav a {
-                color: #334155;
-                font-size: 13px;
-                font-weight: 500;
-                line-height: 1;
-                text-decoration: none;
-                transition: color 160ms ease;
-            }
-            .desktop-section-nav a:hover {
-                color: #2563EB;
-            }
-            .desktop-section-nav-cta {
-                padding: 8px 16px;
-                color: #ffffff !important;
-                background: #2563EB;
-                border-radius: 9999px;
-            }
-        }
         #services,
         #pricing {
             background: #ffffff !important;
@@ -2168,7 +2126,6 @@
             filter: none !important;
         }
         a.bg-brand-blue,
-        .desktop-section-nav-cta,
         #auditForm button[type="submit"],
         .pricing-card.bg-brand-dark a[href="#form"],
         .hero-cta-primary,
@@ -2311,14 +2268,6 @@
             <a href="#about" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">About</a>
             <a href="#form" class="mobile-nav-link w-full text-center bg-brand-blue text-white px-8 py-3.5 rounded-full font-semibold text-[15px]">Get a Quick Recommendation</a>
         </div>
-    </div>
-</nav>
-<nav class="desktop-section-nav" aria-label="Page sections">
-    <div class="desktop-section-nav-inner">
-        <a href="#services">Services</a>
-        <a href="#industry-tools">Tool Examples</a>
-        <a href="#pricing">Packages</a>
-        <a href="#form" class="desktop-section-nav-cta">Recommendation</a>
     </div>
 </nav>
 <button id="mobileMenuBtn" class="p-2 text-brand-dark">
