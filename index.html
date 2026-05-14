@@ -1378,7 +1378,7 @@
                 box-shadow: 0 14px 34px rgba(5,7,18,0.28), inset 0 1px 0 rgba(255,255,255,0.16);
                 backdrop-filter: blur(18px);
                 -webkit-backdrop-filter: blur(18px);
-                transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+                transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
                 transform: translateX(-50%);
                 contain: layout paint;
                 backface-visibility: hidden;
@@ -1439,6 +1439,16 @@
             }
             #mobileMenu.open {
                 transform: translateY(0) scale(1);
+            }
+            .is-near-page-bottom #mobileMenuBtn {
+                opacity: 0 !important;
+                pointer-events: none;
+                transform: translateX(-50%) translateY(12px) scale(0.98) !important;
+            }
+            .is-near-page-bottom #mobileMenu {
+                opacity: 0 !important;
+                pointer-events: none;
+                transform: translateY(16px) scale(0.98) !important;
             }
             #app {
                 padding-top: calc(64px + env(safe-area-inset-top, 0px));
@@ -1945,6 +1955,14 @@
             #industry-tools .preview-bubble-card { max-width: 76%; }
             #industry-tools .industry-card:hover,
             #industry-tools .industry-card:focus-within { transform: none; box-shadow: none; }
+            #industrySelector {
+                scrollbar-width: none;
+                -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+                mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 42px), transparent 100%);
+            }
+            #industrySelector::-webkit-scrollbar {
+                display: none;
+            }
 
             .mobile-hidden-short { display: none !important; }
             section.mobile-hidden-short {
@@ -2189,6 +2207,125 @@
             }
         }
 
+        .cinematic-scroll-scene {
+            display: none;
+            position: relative;
+            height: 420vh;
+            min-height: 2600px;
+            background: #05070d;
+            color: #ffffff;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .has-cinematic-scene .cinematic-scroll-scene {
+            display: block;
+        }
+        .cinematic-stage {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 620px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 24% 28%, rgba(37,99,235,0.2), transparent 32%),
+                radial-gradient(circle at 76% 44%, rgba(124,58,237,0.2), transparent 34%),
+                linear-gradient(180deg, #05070d 0%, #07111f 52%, #05070d 100%);
+        }
+        .cinematic-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: pan-y;
+        }
+        .cinematic-vignette {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at center, transparent 38%, rgba(5,7,13,0.5) 100%),
+                linear-gradient(180deg, rgba(5,7,13,0.48), transparent 28%, transparent 72%, rgba(5,7,13,0.62));
+        }
+        .cinematic-copy {
+            position: absolute;
+            left: clamp(1.25rem, 5vw, 5rem);
+            bottom: clamp(2rem, 8vh, 5.5rem);
+            z-index: 3;
+            max-width: 560px;
+            pointer-events: none;
+        }
+        .cinematic-kicker {
+            margin-bottom: 0.85rem;
+            color: rgba(147,197,253,0.82);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+        .cinematic-copy h2 {
+            margin: 0;
+            color: #ffffff;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(3rem, 8vw, 6.8rem);
+            line-height: 0.94;
+            letter-spacing: -0.045em;
+        }
+        .cinematic-copy p {
+            max-width: 36rem;
+            margin: 1.1rem 0 0;
+            color: rgba(226,232,240,0.72);
+            font-size: clamp(0.95rem, 1.7vw, 1.15rem);
+            line-height: 1.55;
+        }
+        .cinematic-depth-meter {
+            position: absolute;
+            right: clamp(1.25rem, 4vw, 4rem);
+            bottom: clamp(1.6rem, 7vh, 4.8rem);
+            z-index: 3;
+            display: grid;
+            gap: 8px;
+            color: rgba(226,232,240,0.62);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+        .cinematic-depth-meter span {
+            display: block;
+            width: 72px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(96,165,250,0.8), transparent);
+        }
+        @media (max-width: 767px) {
+            .cinematic-scroll-scene {
+                height: 330vh;
+                min-height: 2100px;
+            }
+            .cinematic-stage {
+                min-height: 100svh;
+            }
+            .cinematic-copy {
+                left: 1.25rem;
+                right: 1.25rem;
+                bottom: 5.25rem;
+                max-width: none;
+            }
+            .cinematic-copy h2 {
+                max-width: 8ch;
+                font-size: clamp(3.6rem, 18vw, 5rem);
+            }
+            .cinematic-copy p {
+                max-width: 29ch;
+                font-size: 0.95rem;
+            }
+            .cinematic-depth-meter {
+                display: none;
+            }
+        }
+
         /* Scroll performance pass: keep the design, but avoid expensive paint work during fast section changes. */
         #services,
         #industry-tools,
@@ -2200,6 +2337,22 @@
         footer {
             content-visibility: auto;
             contain-intrinsic-size: auto 860px;
+        }
+        #services { contain-intrinsic-size: auto 720px; }
+        #industry-tools { contain-intrinsic-size: auto 1180px; }
+        #pricing { contain-intrinsic-size: auto 1420px; }
+        #form { contain-intrinsic-size: auto 900px; }
+        footer { contain-intrinsic-size: auto 620px; }
+        #view-process > section { contain-intrinsic-size: auto 940px; }
+        #view-about > section { contain-intrinsic-size: auto 820px; }
+        @media (max-width: 767px) {
+            #services { contain-intrinsic-size: auto 980px; }
+            #industry-tools { contain-intrinsic-size: auto 1720px; }
+            #pricing { contain-intrinsic-size: auto 2380px; }
+            #form { contain-intrinsic-size: auto 1120px; }
+            footer { contain-intrinsic-size: auto 980px; }
+            #view-process > section { contain-intrinsic-size: auto 1380px; }
+            #view-about > section { contain-intrinsic-size: auto 1180px; }
         }
         .service-card,
         .pricing-card,
@@ -2222,6 +2375,10 @@
             #view-home > section:first-of-type .mobile-hero-orb {
                 animation: none !important;
                 will-change: auto;
+            }
+            .cinematic-scroll-scene {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
             }
             #mobileMenuBtn {
                 backdrop-filter: blur(8px) !important;
@@ -2411,8 +2568,8 @@
 
             <!-- Headline -->
             <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center">
-                Stop losing leads
-                <span class="hero-line-italic">we built this for your <span class="hero-type-word" data-hero-type-word></span><span class="hero-type-cursor" aria-hidden="true"></span></span>
+                Built for Dayton's
+                <span class="hero-line-italic"><span class="hero-type-word" data-hero-type-word></span><span class="hero-type-cursor" aria-hidden="true"></span></span>
             </h1>
 
             <div class="desktop-hero-rule" aria-hidden="true"></div>
@@ -2454,6 +2611,11 @@
                 <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.9" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12.4l4.2 4.2L19 6.8"/></svg>
                     Practical setup help
+                </div>
+                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden lg:block"></div>
+                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 19.5v-1.4a3.4 3.4 0 00-3.4-3.4H7.4A3.4 3.4 0 004 18.1v1.4"/><circle cx="10.25" cy="7.5" r="3.25"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.8 8.2v5.4M17.1 10.9h5.4"/></svg>
+                    12 local businesses upgraded their lead flow
                 </div>
             </div>
         </div>
@@ -2667,45 +2829,42 @@
             <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
                 <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
                     <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">More calls</span>
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">Starter Offer</span>
                     </div>
                     <h3 class="text-[24px] font-bold text-brand-dark mb-2">Website Setup</h3>
-                    <div class="mb-5 flex items-baseline gap-2">
+                    <div class="flex items-baseline gap-2 mb-5">
                         <span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$599</span>
-                        <span class="text-brand-muted font-semibold text-[14px]">one-time</span>
+                        <span class="text-brand-muted font-semibold text-[15px]">one-time</span>
                     </div>
                     <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that need a clean, professional website that makes it easy for customers to call, request a quote, or get in touch.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple mobile-friendly website</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Clear call-to-action buttons</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Contact or quote form</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Click-to-call phone setup</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Basic local SEO setup</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Google Maps embed</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Launch support</li>
                     </ul>
                     <a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Start With a Website</a>
                 </div>
 
-                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
+                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-purple-200 hover:shadow-[0_12px_40px_rgba(147,51,234,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card">
                     <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="text-[11px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">Fewer missed leads</span>
+                        <span class="text-[11px] uppercase tracking-widest font-bold text-purple-700 bg-purple-50 border border-purple-100 px-3 py-1.5 rounded-full">Lead Flow</span>
                     </div>
                     <h3 class="text-[24px] font-bold text-brand-dark mb-2">Lead System Setup</h3>
-                    <div class="mb-5 flex items-baseline gap-2">
+                    <div class="flex items-baseline gap-2 mb-5">
                         <span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$399</span>
-                        <span class="text-brand-muted font-semibold text-[14px]">one-time</span>
+                        <span class="text-brand-muted font-semibold text-[15px]">one-time</span>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that already have a website but need a better way to capture, track, and respond to leads.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that already have a website but need a cleaner way to capture, receive, and follow up with new leads.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Improved contact or quote form</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Lead notifications</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer auto-response</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple lead tracker</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Booking link setup if needed</li>
-                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Full lead flow testing</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Improved forms or intake flow</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Email or SMS lead alerts</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Auto-response setup</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Booking link or calendar connection</li>
+                        <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple lead tracking sheet or dashboard</li>
                     </ul>
-                    <a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Fix My Lead Flow</a>
+                    <a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-purple-500 hover:text-purple-600 text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Fix My Lead Flow</a>
                 </div>
 
                 <div class="bg-brand-dark rounded-[28px] p-7 lg:p-8 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_70px_rgba(37,99,235,0.2)] md:-translate-y-4 stagger-item pricing-card">
@@ -2716,15 +2875,14 @@
                         <span class="text-[11px] uppercase tracking-widest font-bold text-blue-200 bg-blue-500/15 border border-blue-400/20 px-3 py-1.5 rounded-full">Less manual work</span>
                     </div>
                     <h3 class="text-[24px] font-bold text-white mb-2 relative z-10">Website + Lead System</h3>
-                    <div class="mb-5 flex items-baseline gap-2 relative z-10">
+                    <div class="flex items-baseline gap-2 mb-5 relative z-10">
                         <span class="text-[48px] font-extrabold text-white tracking-tight">$999</span>
-                        <span class="text-slate-400 font-semibold text-[14px]">one-time</span>
+                        <span class="text-slate-400 font-semibold text-[15px]">one-time</span>
                     </div>
                     <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For businesses that want a better website and a simple system for handling new customer inquiries.</p>
                     <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Website Setup</li>
-                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Everything in Lead System Setup</li>
-                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Better quote/request flow</li>
+                        <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Improved lead capture</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Basic follow-up setup</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Lead capture testing</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Simple customer handoff process</li>
@@ -2733,18 +2891,20 @@
                 </div>
             </div>
 
-            <p class="max-w-4xl mx-auto mt-8 text-center text-[14px] md:text-[15px] text-slate-500 leading-relaxed reveal-sweep">These are early-client one-time setup prices while DaytonGrowthCo. builds its first local case studies. Ongoing support and improvements are available separately if needed.</p>
+            <p class="text-center text-[13px] text-slate-500 mt-8 max-w-3xl mx-auto reveal-sweep">Introductory setup pricing for Dayton-area businesses. Optional ongoing support can be added later if you want help with updates, improvements, or maintenance.</p>
 
-            <div class="mt-14 md:mt-16 max-w-5xl mx-auto reveal-sweep">
-                <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark text-center mb-6">Optional Add-Ons</h3>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Extra website page</span><span class="text-[14px] font-bold text-brand-blue">$100+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Service page</span><span class="text-[14px] font-bold text-brand-blue">$150+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Google Business Profile cleanup</span><span class="text-[14px] font-bold text-brand-blue">$200+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Email setup</span><span class="text-[14px] font-bold text-brand-blue">$199+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Review request setup</span><span class="text-[14px] font-bold text-brand-blue">$250+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4"><span class="text-[14px] font-medium text-brand-dark">Booking system setup</span><span class="text-[14px] font-bold text-brand-blue">$250+</span></div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between gap-4 sm:col-span-2 lg:col-span-1"><span class="text-[14px] font-medium text-brand-dark">Simple automation setup</span><span class="text-[14px] font-bold text-brand-blue">$300+</span></div>
+            <div class="mt-14 md:mt-16 max-w-6xl mx-auto reveal-sweep">
+                <div class="text-center mb-7">
+                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-2">Optional Add-Ons</h3>
+                    <p class="text-[15px] text-brand-muted">Add only what your business actually needs.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Google Business Profile Cleanup</div><p class="text-[13px] text-slate-500 leading-relaxed">Profile edits, service updates, photos, and core local listing cleanup.</p></div>
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Booking Setup</div><p class="text-[13px] text-slate-500 leading-relaxed">Connect calendar tools, booking links, or request forms for smoother scheduling.</p></div>
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Review Request Flow</div><p class="text-[13px] text-slate-500 leading-relaxed">A simple follow-up system for asking happy customers to leave reviews.</p></div>
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Landing Page</div><p class="text-[13px] text-slate-500 leading-relaxed">A focused page for a service, promotion, or campaign.</p></div>
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Lead Dashboard</div><p class="text-[13px] text-slate-500 leading-relaxed">A lightweight dashboard or sheet to keep inquiries organized.</p></div>
+                    <div class="rounded-[20px] border border-slate-200 bg-slate-50 p-5"><div class="text-[15px] font-bold text-brand-dark mb-1">Ongoing Support</div><p class="text-[13px] text-slate-500 leading-relaxed">Optional help with edits, improvements, and maintenance after launch.</p></div>
                 </div>
             </div>
 
@@ -2757,23 +2917,25 @@
             </div>
 
             <div class="mt-14 md:mt-16 max-w-4xl mx-auto reveal-sweep">
-                <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark text-center mb-7">FAQ</h3>
-                <div class="grid gap-4">
-                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
-                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">Do I have to pay monthly?</h4>
-                        <p class="text-[14px] text-brand-muted leading-relaxed">No. These starter packages are one-time setup prices. Ongoing support is available separately if you want help with updates, improvements, or management.</p>
+                <div class="text-center mb-8">
+                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-2">Frequently Asked Questions</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-5">
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-6">
+                        <h4 class="font-bold text-brand-dark mb-2">Is this a monthly service?</h4>
+                        <p class="text-[14px] text-slate-500 leading-relaxed">No. These are one-time setup packages. Optional support can be added later if you want help after launch.</p>
                     </div>
-                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
-                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">What if I already have a website?</h4>
-                        <p class="text-[14px] text-brand-muted leading-relaxed">You may only need the Lead System Setup. That helps improve your forms, notifications, booking flow, and lead tracking without rebuilding everything.</p>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-6">
+                        <h4 class="font-bold text-brand-dark mb-2">Do I need a new website?</h4>
+                        <p class="text-[14px] text-slate-500 leading-relaxed">Not always. If your current site is usable, we may recommend improving forms, booking, notifications, and follow-up first.</p>
                     </div>
-                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
-                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">What happens after setup?</h4>
-                        <p class="text-[14px] text-brand-muted leading-relaxed">You will have a cleaner way to capture customer inquiries and a simple process for handling new leads. If you want continued help, support can be added later.</p>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-6">
+                        <h4 class="font-bold text-brand-dark mb-2">How long does setup take?</h4>
+                        <p class="text-[14px] text-slate-500 leading-relaxed">Most starter projects can be scoped quickly and completed on a short timeline once content and access are ready.</p>
                     </div>
-                    <div class="rounded-[20px] border border-slate-200 bg-white p-5">
-                        <h4 class="text-[16px] font-bold text-brand-dark mb-2">Who is this best for?</h4>
-                        <p class="text-[14px] text-brand-muted leading-relaxed">Local service businesses like contractors, auto shops, landscapers, med spas, gyms, churches, nonprofits, and small businesses that want more organized customer inquiries.</p>
+                    <div class="rounded-[20px] border border-slate-200 bg-white p-6">
+                        <h4 class="font-bold text-brand-dark mb-2">Can you work with my existing tools?</h4>
+                        <p class="text-[14px] text-slate-500 leading-relaxed">Yes. We use the best existing tools when they fit and build custom solutions only when they make sense.</p>
                     </div>
                 </div>
             </div>
@@ -2781,7 +2943,7 @@
     </section>
 
     <!-- 6. TRUST / FOUNDER SECTION -->
-    <section class="py-20 lg:py-28 bg-[#050505] text-white border-t border-white/[0.04] mobile-hidden-short">
+    <section class="py-20 lg:py-28 bg-[#050505] text-white border-t border-white/[0.04]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal-sweep">
             <div class="flex items-center justify-center gap-4 mb-8">
                 <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="64" height="64" loading="lazy" decoding="async" class="w-16 h-16 rounded-full object-cover ring-2 ring-white/10 shadow-xl" />
@@ -3024,6 +3186,7 @@
                     </div>
                 </div>
             </div>
+            <p class="mt-6 text-[11px] md:text-[12px] text-slate-500">Sources: BrightLocal consumer review research and Google/Ipsos mobile speed research.</p>
         </div>
     </section>
 
@@ -3187,8 +3350,8 @@
                             <span class="ml-3 text-[14px] text-slate-200">Update my website</span>
                         </label>
                         <label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-300">
-                            <input type="radio" name="mainGoal" value="Dominate local search" class="w-4 h-4 accent-blue-500" />
-                            <span class="ml-3 text-[14px] text-slate-200">Dominate local search</span>
+                            <input type="radio" name="mainGoal" value="Improve local search visibility" class="w-4 h-4 accent-blue-500" />
+                            <span class="ml-3 text-[14px] text-slate-200">Improve local search visibility</span>
                         </label>
                         <label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-300">
                             <input type="radio" name="mainGoal" value="Complete fresh start" class="w-4 h-4 accent-blue-500" />
@@ -3392,7 +3555,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lastScrollY = y;
         lastScrollTime = now;
 
-        if (velocity < 1.15) return;
+        if (velocity < 3.5) return;
         rootEl.classList.add('is-fast-scrolling');
         window.clearTimeout(fastScrollTimer);
         fastScrollTimer = window.setTimeout(() => {
@@ -3419,14 +3582,14 @@ document.addEventListener('DOMContentLoaded', () => {
         heroTypewriterStarted = true;
 
         const words = [
-            'roofing company.',
-            'auto shop.',
-            'law firm.',
-            'med spa.',
-            'landscaper.',
-            'contractor.',
-            'salon.',
-            'gym.'
+            'roofers.',
+            'auto shops.',
+            'law firms.',
+            'med spas.',
+            'landscapers.',
+            'contractors.',
+            'salons.',
+            'clinics.'
         ];
 
         if (reduceMotion) {
@@ -3858,7 +4021,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iconClose) iconClose.classList.add('hidden');
     };
 
+    const updateMobileMenuBottomState = () => {
+        if (!btn || !window.matchMedia('(max-width: 767px)').matches) {
+            rootEl.classList.remove('is-near-page-bottom');
+            return;
+        }
+        const remaining = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+        const nearBottom = remaining < 180;
+        rootEl.classList.toggle('is-near-page-bottom', nearBottom);
+        if (nearBottom && isMobileMenuOpen) closeMobileMenu();
+    };
+
     document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', closeMobileMenu));
+    window.addEventListener('scroll', updateMobileMenuBottomState, { passive: true });
+    window.addEventListener('resize', updateMobileMenuBottomState);
+    updateMobileMenuBottomState();
 
     // Legal modal
     const legalContent = {
