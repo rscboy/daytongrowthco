@@ -1239,14 +1239,12 @@
             color: #64748b;
         }
         .product-preview-chip {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 9999px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            padding: 3px 7px;
-            font-size: 9px;
-            font-weight: 900;
+            display: inline;
+            background: transparent;
+            color: #64748b;
+            padding: 0;
+            font-size: inherit;
+            font-weight: inherit;
             white-space: nowrap;
         }
         .product-demo-shell {
@@ -1903,7 +1901,7 @@
                 left: 0;
                 top: 0;
                 opacity: 0;
-                transform: translateY(6px);
+                transform: none;
                 color: transparent;
                 background: linear-gradient(135deg, #9b8cff, #c084fc, #7c6dfa);
                 -webkit-background-clip: text;
@@ -1914,11 +1912,11 @@
                 font-weight: 700;
                 line-height: 1.02;
                 white-space: nowrap;
-                transition: opacity 0.45s ease, transform 0.45s ease;
+                transition: none;
             }
             .mobile-hero-title-swap span.visible {
                 opacity: 1;
-                transform: translateY(0);
+                transform: none;
             }
             .mobile-hero-rule {
                 width: 40px;
@@ -2733,6 +2731,237 @@
                 -webkit-backdrop-filter: blur(8px) !important;
             }
         }
+
+        /* Mobile polish pass: keep the screen calmer and prevent fixed controls from covering content. */
+        @media (max-width: 767px) {
+            #mobileMenuBtn {
+                top: calc(10px + env(safe-area-inset-top, 0px)) !important;
+                right: 1rem !important;
+                bottom: auto !important;
+                left: auto !important;
+                width: 44px !important;
+                min-width: 44px !important;
+                height: 44px !important;
+                min-height: 44px !important;
+                padding: 0 !important;
+                color: #0A0E1A !important;
+                background: rgba(255,255,255,0.92) !important;
+                border: 1px solid rgba(15,23,42,0.1) !important;
+                box-shadow: 0 10px 28px rgba(15,23,42,0.1) !important;
+                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+                transform: none !important;
+            }
+            #mobileMenuBtn:active,
+            #mobileMenuBtn:focus-visible {
+                transform: scale(0.96) !important;
+                background: #ffffff !important;
+                border-color: rgba(37,99,235,0.24) !important;
+            }
+            .mobile-menu-label {
+                display: none !important;
+            }
+            .mobile-menu-glyph {
+                width: 18px !important;
+                height: 2px !important;
+                border-radius: 9999px;
+                background: #0A0E1A !important;
+                box-shadow: 0 -6px 0 #0A0E1A, 0 6px 0 #0A0E1A !important;
+            }
+            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph {
+                transform: rotate(45deg) !important;
+                box-shadow: none !important;
+            }
+            #mobileMenuBtn[aria-expanded="true"] .mobile-menu-glyph::after {
+                content: '';
+                position: absolute;
+                display: block;
+                inset: 0;
+                border-radius: inherit;
+                background: #0A0E1A;
+                transform: rotate(90deg);
+            }
+            #mobileMenu {
+                top: calc(66px + env(safe-area-inset-top, 0px)) !important;
+                bottom: auto !important;
+                left: 12px !important;
+                right: 12px !important;
+                border-radius: 20px !important;
+                transform: translateY(-10px) scale(0.98) !important;
+                transform-origin: top center !important;
+                z-index: 90 !important;
+            }
+            #mobileMenu.open {
+                transform: translateY(0) scale(1) !important;
+            }
+            .is-near-page-bottom #mobileMenuBtn,
+            .is-near-page-bottom #mobileMenu {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
+            .is-near-page-bottom #mobileMenuBtn {
+                transform: none !important;
+            }
+
+            #navbar a.group span {
+                max-width: calc(100vw - 92px) !important;
+                font-size: 19px !important;
+            }
+            .mobile-hero-premium {
+                padding-bottom: 1.25rem !important;
+            }
+            .mobile-hero-marquee {
+                margin-top: 1.35rem !important;
+            }
+
+            #services,
+            #products,
+            #work,
+            #industry-tools,
+            #pricing,
+            #process,
+            #form {
+                padding-top: 54px !important;
+                padding-bottom: 60px !important;
+            }
+            #services {
+                padding-top: 42px !important;
+            }
+            #services .text-center,
+            #products .text-center,
+            #work .text-center,
+            #industry-tools .text-center,
+            #pricing .text-center,
+            #form .text-center {
+                margin-bottom: 28px !important;
+            }
+            #services h2,
+            #products h2,
+            #work h2,
+            #industry-tools h2,
+            #pricing h2,
+            #process h2,
+            #form h2 {
+                font-size: clamp(2rem, 8.4vw, 2.35rem) !important;
+                line-height: 1.08 !important;
+            }
+            #services h2 + p,
+            #products h2 + p,
+            #work h2 + p,
+            #industry-tools h2 + p,
+            #pricing h2 + p,
+            #form h2 + p {
+                font-size: 15px !important;
+                line-height: 1.55 !important;
+            }
+
+            #services .rounded-\[28px\] {
+                padding: 18px !important;
+                border-radius: 24px !important;
+            }
+            #services .rounded-\[28px\] .rounded-2xl {
+                min-height: 44px;
+                padding: 0.78rem 1rem !important;
+                border-radius: 14px !important;
+                font-size: 15px !important;
+            }
+            #services .service-card,
+            #work .work-card {
+                padding: 18px !important;
+                border-radius: 20px !important;
+            }
+            #services .service-card .text-\[32px\] {
+                margin-bottom: 0.75rem !important;
+                font-size: 26px !important;
+            }
+            #services .service-card h4,
+            #work .work-card h3 {
+                font-size: 18px !important;
+                line-height: 1.2 !important;
+            }
+            #services .service-card p,
+            #work .work-card p {
+                font-size: 14px !important;
+                line-height: 1.5 !important;
+            }
+            #services .rounded-\[28px\] {
+                padding: 18px !important;
+                border-radius: 22px !important;
+            }
+            #services .rounded-\[28px\] .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+                margin-bottom: 18px !important;
+            }
+            #services .rounded-\[28px\] .grid > div {
+                border-radius: 14px !important;
+                padding: 12px !important;
+                font-size: 13px !important;
+                line-height: 1.16 !important;
+            }
+
+            .product-card {
+                padding: 23px !important;
+                border-radius: 22px !important;
+            }
+            .product-preview {
+                display: none !important;
+            }
+            .product-preview-row {
+                min-height: 26px !important;
+                font-size: 9.5px !important;
+                padding: 0 0.58rem !important;
+            }
+            .product-card h3 {
+                font-size: 22px !important;
+                line-height: 1.14 !important;
+                margin-top: 0 !important;
+                margin-bottom: 0.55rem !important;
+            }
+            .product-card p {
+                font-size: 14px !important;
+                line-height: 1.58 !important;
+            }
+            .product-card.bg-brand-dark h3 {
+                font-size: 24px !important;
+            }
+            .product-card.bg-brand-dark a[href="#form"] {
+                margin-top: 1.25rem !important;
+                min-height: 46px;
+            }
+            #products .mt-12.rounded-\[30px\] {
+                margin-top: 1.6rem !important;
+                padding: 22px !important;
+                border-radius: 24px !important;
+            }
+            #products .mt-12.rounded-\[30px\] h3 {
+                font-size: 29px !important;
+                line-height: 1.08 !important;
+            }
+            footer {
+                padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)) !important;
+            }
+        }
+
+        /* Quiet professional pass: remove decorative badges, faux proof strips, and ticker-style clutter. */
+        .type-pill,
+        .mobile-hero-kicker,
+        .desktop-hero-kicker,
+        .mobile-hero-proof,
+        .mobile-hero-marquee,
+        .desktop-hero-marquee,
+        .hero-cta-primary small,
+        .mobile-hero-primary small {
+            display: none !important;
+        }
+        .hero-cta-primary strong,
+        .mobile-hero-primary strong {
+            margin-top: 0 !important;
+        }
+        .product-card h3 {
+            margin-top: 0 !important;
+        }
+
         .is-fast-scrolling .desktop-hero-marquee-track,
         .is-fast-scrolling .mobile-hero-marquee-track,
         .is-fast-scrolling .preview-fade,
@@ -2795,6 +3024,1604 @@
         }
 
     </style>
+    <style>
+        .section-rule {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #e2e8f0 12%, #e2e8f0 88%, transparent 100%);
+            margin: 0;
+            pointer-events: none;
+        }
+        .section-rule.section-rule-dark {
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.07) 12%, rgba(255,255,255,0.07) 88%, transparent 100%);
+        }
+        #services,
+        #products,
+        #work,
+        #industry-tools,
+        #pricing,
+        #process,
+        #form,
+        footer {
+            border-top: none !important;
+        }
+        .word-reveal-wrap {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: bottom;
+            margin-right: 0.26em;
+        }
+        .word-reveal-wrap:last-child {
+            margin-right: 0;
+        }
+        .word-reveal-inner {
+            display: inline-block;
+            transform: translateY(105%);
+            opacity: 0;
+            transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.42s ease;
+            will-change: transform, opacity;
+        }
+        .word-reveal-inner.word-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .service-card,
+        .product-card,
+        .work-card,
+        .pricing-card:not(.bg-brand-dark),
+        .industry-card {
+            --glow-x: 50%;
+            --glow-y: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::after,
+        .product-card::after,
+        .work-card::after,
+        .pricing-card:not(.bg-brand-dark)::after,
+        .industry-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(
+                260px circle at var(--glow-x) var(--glow-y),
+                rgba(37, 99, 235, 0.055),
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .service-card:hover::after,
+        .product-card:hover::after,
+        .work-card:hover::after,
+        .pricing-card:not(.bg-brand-dark):hover::after,
+        .industry-card:hover::after {
+            opacity: 1;
+        }
+        .pricing-card.bg-brand-dark {
+            --glow-x: 50%;
+            --glow-y: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-card.bg-brand-dark::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(
+                260px circle at var(--glow-x) var(--glow-y),
+                rgba(96, 165, 250, 0.08),
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .pricing-card.bg-brand-dark:hover::after {
+            opacity: 1;
+        }
+        .service-card > *,
+        .product-card > *,
+        .work-card > *,
+        .pricing-card > *,
+        .industry-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        #scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0%;
+            background: linear-gradient(90deg, #2563EB, #818CF8);
+            z-index: 999;
+            pointer-events: none;
+            transform-origin: left center;
+            transition: width 0.08s linear;
+        }
+        #auditForm .relative.group {
+            position: relative;
+        }
+        .field-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .field-line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: #3B82F6;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .field-line.is-focused::after {
+            transform: scaleX(1);
+        }
+        #auditForm .relative.group input:focus + .field-line::after,
+        #auditForm .relative.group textarea:focus + .field-line::after {
+            transform: scaleX(1);
+        }
+        .grid-pulse-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(
+                ellipse 60% 40% at 50% 50%,
+                rgba(37, 99, 235, 0.07) 0%,
+                transparent 70%
+            );
+            animation: gridPulse 7s ease-in-out infinite;
+            will-change: opacity;
+        }
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+        #navbar a.nav-active {
+            color: #2563EB !important;
+            font-weight: 600 !important;
+        }
+        #navbar a.nav-active.hover-underline::after {
+            width: 100%;
+        }
+        #work h2 .work-highlight-word {
+            color: rgba(10,14,26,0.28);
+            transition: color 0.4s ease;
+        }
+        #work h2 .work-highlight-word.work-highlight-active {
+            color: #0A0E1A;
+        }
+        @media (max-width: 767px) {
+            #scroll-progress-bar {
+                height: 1.5px;
+            }
+            .grid-pulse-overlay {
+                opacity: 0.5;
+                animation-duration: 9s;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #scroll-progress-bar {
+                display: none;
+            }
+            .word-reveal-inner {
+                transform: none;
+                opacity: 1;
+                transition: none;
+            }
+            .grid-pulse-overlay {
+                display: none;
+                animation: none;
+            }
+            .field-line::after {
+                transition: none;
+            }
+        }
+    </style>
+    <style>
+        .hero-system-map {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px;
+            background: rgba(10,14,26,0.76);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.26);
+            padding: 22px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        .system-map-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 18px;
+            color: rgba(255,255,255,0.66);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .system-map-header p {
+            margin: 0;
+            color: #fff;
+        }
+        .system-map-header span {
+            color: rgba(148,163,184,0.82);
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 600;
+        }
+        .system-map-grid {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);
+            gap: 12px;
+            align-items: center;
+        }
+        .system-node {
+            min-height: 94px;
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.045);
+            padding: 14px;
+        }
+        .system-node span {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(96,165,250,0.9);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .system-node strong {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+        .system-node-accent {
+            border-color: rgba(96,165,250,0.34);
+            background: rgba(37,99,235,0.12);
+        }
+        .system-node-owner {
+            border-color: rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.07);
+        }
+        .system-arrow {
+            color: rgba(96,165,250,0.52);
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .system-arrow-down {
+            display: none;
+        }
+        .hero-type-line {
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .hero-h1 {
+                font-size: 68px !important;
+                line-height: 0.98 !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-h1 {
+                font-size: 72px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            .mobile-hero-title {
+                max-width: 21.5rem !important;
+                font-size: clamp(34px, 9.7vw, 40px) !important;
+                line-height: 1.01 !important;
+                letter-spacing: -1.15px !important;
+            }
+            .mobile-hero-title-line,
+            .mobile-hero-title em {
+                display: block;
+                white-space: nowrap;
+            }
+            .mobile-hero-title-swap {
+                display: inline-block !important;
+                height: 1.04em;
+                min-width: 0;
+                overflow: hidden;
+                vertical-align: -0.04em;
+            }
+            .mobile-hero-title-swap span {
+                line-height: 1.04;
+                white-space: nowrap;
+            }
+            .mobile-hero-body {
+                max-width: 32ch !important;
+            }
+            .mobile-hero-actions {
+                max-width: 21.5rem !important;
+            }
+            .hero-system-map-wrap {
+                margin-top: -0.3rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .hero-system-map {
+                border-radius: 22px;
+                padding: 16px;
+                box-shadow: none;
+                background: rgba(10,14,26,0.58);
+            }
+            .system-map-header {
+                display: block;
+                padding-bottom: 12px;
+                margin-bottom: 12px;
+                font-size: 10px;
+            }
+            .system-map-header span {
+                display: block;
+                margin-top: 4px;
+                font-size: 12px;
+                line-height: 1.35;
+            }
+            .system-map-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .system-node {
+                min-height: auto;
+                padding: 12px;
+                border-radius: 15px;
+            }
+            .system-node span {
+                margin-bottom: 4px;
+                font-size: 9.5px;
+            }
+            .system-node strong {
+                font-size: 12.5px;
+            }
+            .system-arrow {
+                display: none;
+            }
+        }
+    </style>
+    <style>
+        .problem-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+            z-index: 22;
+        }
+        #services,
+        #products,
+        #work,
+        #industry-tools,
+        #pricing,
+        #process,
+        #form {
+            content-visibility: visible !important;
+            contain-intrinsic-size: auto !important;
+        }
+        .problem-strip-item {
+            padding: 22px 24px;
+            border-right: 1px solid #e5e7eb;
+        }
+        .problem-strip-item:last-child {
+            border-right: 0;
+        }
+        .problem-strip-item span,
+        .install-card-topline,
+        .audit-kicker {
+            display: block;
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .problem-strip-item p {
+            margin: 8px 0 0;
+            color: #0a0e1a;
+            font-size: 15px;
+            font-weight: 650;
+            line-height: 1.45;
+        }
+        .installation-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+        .install-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            background: #ffffff;
+            padding: 28px;
+            box-shadow: 0 18px 46px rgba(15, 23, 42, 0.055);
+        }
+        .install-card-featured {
+            grid-row: span 2;
+            border-color: rgba(37, 99, 235, 0.16);
+            background: linear-gradient(180deg, #0f172a 0%, #0a0e1a 100%);
+            color: #ffffff;
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
+        }
+        .install-card h3 {
+            margin: 14px 0 14px;
+            color: #0a0e1a;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+        }
+        .install-card-featured h3 {
+            color: #ffffff;
+            font-size: 31px;
+        }
+        .install-card p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.65;
+        }
+        .install-card-featured p {
+            color: rgba(226, 232, 240, 0.76);
+        }
+        .install-card p strong {
+            color: #334155;
+        }
+        .install-card-featured p strong {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .install-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .install-list span {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.25;
+            padding: 10px 12px;
+        }
+        .install-card-featured .install-list span {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.055);
+            color: rgba(255, 255, 255, 0.86);
+        }
+        .install-outcome {
+            margin-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+            color: #0a0e1a;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+        .install-card-featured .install-outcome {
+            border-top-color: rgba(255, 255, 255, 0.12);
+            color: #bfdbfe;
+        }
+        .workflow-map-card {
+            display: grid;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            background: #f8fafc;
+            padding: 18px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.86), 0 18px 50px rgba(15, 23, 42, 0.06);
+        }
+        .workflow-node {
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            background: #ffffff;
+            padding: 16px;
+        }
+        .workflow-node span {
+            display: inline-flex;
+            width: 28px;
+            height: 28px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        .workflow-node strong {
+            display: block;
+            color: #0a0e1a;
+            font-size: 17px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .workflow-node p {
+            margin: 6px 0 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .workflow-node-accent {
+            border-color: rgba(37, 99, 235, 0.28);
+            background: #eff6ff;
+        }
+        .interruption-audit {
+            display: grid;
+            grid-template-columns: minmax(240px, 0.45fr) minmax(0, 0.55fr);
+            gap: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 20px 56px rgba(15, 23, 42, 0.06);
+        }
+        .audit-options {
+            display: grid;
+            gap: 10px;
+        }
+        .audit-option {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: #f8fafc;
+            color: #334155;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.25;
+            padding: 14px 15px;
+            text-align: left;
+            transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+        }
+        .audit-option.is-active,
+        .audit-option[aria-selected="true"] {
+            border-color: rgba(37, 99, 235, 0.42);
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+        .audit-result {
+            border-radius: 22px;
+            background: #0a0e1a;
+            color: #ffffff;
+            padding: 24px;
+        }
+        .audit-result h3 {
+            margin: 10px 0 10px;
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 850;
+            letter-spacing: -0.02em;
+            line-height: 1.08;
+        }
+        .audit-result p:not(.audit-kicker) {
+            color: rgba(226, 232, 240, 0.76);
+            font-size: 15px;
+            line-height: 1.55;
+        }
+        .audit-result ul {
+            display: grid;
+            gap: 8px;
+            margin: 18px 0;
+            padding: 0;
+            list-style: none;
+        }
+        .audit-result li {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.055);
+            color: rgba(255,255,255,0.86);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 11px;
+        }
+        .audit-result a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            border-radius: 9999px;
+            background: #ffffff;
+            color: #0a0e1a;
+            font-size: 14px;
+            font-weight: 850;
+            padding: 0 18px;
+            text-decoration: none;
+        }
+        @media (max-width: 767px) {
+            .problem-strip {
+                grid-template-columns: 1fr;
+            }
+            .problem-strip-item {
+                padding: 18px 20px;
+                border-right: 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .problem-strip-item:last-child {
+                border-bottom: 0;
+            }
+            .installation-grid,
+            .interruption-audit {
+                grid-template-columns: 1fr;
+            }
+            .install-card {
+                border-radius: 22px;
+                padding: 22px;
+            }
+            .install-card-featured {
+                grid-row: auto;
+            }
+            .install-card h3,
+            .install-card-featured h3 {
+                font-size: 23px;
+                line-height: 1.12;
+            }
+            .workflow-map-card,
+            .interruption-audit {
+                border-radius: 22px;
+                padding: 14px;
+            }
+            .audit-result {
+                border-radius: 18px;
+                padding: 20px;
+            }
+            .audit-result h3 {
+                font-size: 23px;
+            }
+        }
+    </style>
+    <style>
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+        .site-nav {
+            height: 80px;
+            background: transparent !important;
+            border-bottom: 0 !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            transform: translateZ(0);
+            pointer-events: none;
+        }
+        .site-nav-inner {
+            width: min(1180px, calc(100% - 32px));
+            height: 64px;
+            margin: 14px auto 0;
+            padding: 0 12px 0 16px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 24px;
+            border: 1px solid rgba(226,232,240,0.9);
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 18px 48px rgba(15,23,42,0.11);
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
+            pointer-events: auto;
+        }
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #0a0e1a;
+            border: 0;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+        .brand-mark-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.08);
+            overflow: hidden;
+            padding: 3px;
+        }
+        .brand-mark-icon svg {
+            width: 21px;
+            height: 21px;
+        }
+        .brand-mark-icon img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+        .brand-wordmark {
+            color: #0a0e1a;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .brand-wordmark span {
+            color: #64748b;
+            font-weight: 500;
+        }
+        .site-nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 34px;
+        }
+        .site-nav-links a,
+        .site-nav-cta {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1;
+            text-decoration: none;
+            transition: color 180ms ease, transform 180ms ease, background 180ms ease;
+        }
+        .site-nav-links a:hover {
+            color: #2563eb;
+        }
+        .site-nav-cta {
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(37,99,235,0.18);
+            border-radius: 9999px;
+            padding: 0 18px;
+            color: #ffffff;
+            background: #2563eb;
+            box-shadow: 0 10px 22px rgba(37,99,235,0.22);
+        }
+        .site-nav-cta:hover {
+            transform: translateY(-1px);
+            background: #1d4ed8;
+        }
+        .site-menu-button {
+            display: none;
+            position: static;
+            justify-self: end;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 9999px;
+            color: #ffffff;
+            background: #0a0e1a;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.16);
+        }
+        .site-menu-button svg {
+            display: block !important;
+        }
+        .site-mobile-overlay {
+            display: none;
+        }
+        .hero-product {
+            min-height: 100vh;
+            background: #050505;
+            padding-bottom: clamp(64px, 8vw, 120px);
+            isolation: isolate;
+        }
+        .hero-product-video,
+        .hero-product-video-mask,
+        .grain-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .hero-product-video {
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.72;
+        }
+        .hero-product-video-mask {
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(5,5,5,0.25) 0%, rgba(5,5,5,0.2) 42%, rgba(5,5,5,0.82) 70%, #050505 85%, #050505 100%),
+                radial-gradient(circle at 50% 18%, rgba(255,255,255,0.16), transparent 28%);
+        }
+        .grain-overlay {
+            z-index: 2;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        }
+        .hero-product-content {
+            position: relative;
+            z-index: 3;
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding-top: 180px;
+            text-align: center;
+        }
+        .hero-product-title {
+            width: min(930px, 100%);
+            margin: 0 auto 24px;
+            color: #ffffff;
+            font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: clamp(3rem, 6.2vw, 6rem);
+            font-weight: 850;
+            letter-spacing: -0.055em;
+            line-height: 0.96;
+        }
+        .hero-product-subtitle {
+            width: min(650px, 100%);
+            margin: 0 auto 24px;
+            color: rgba(209, 213, 219, 0.86);
+            font-size: clamp(1rem, 1.45vw, 1.18rem);
+            font-weight: 450;
+            line-height: 1.65;
+        }
+        .hero-reveal-word {
+            display: inline-block;
+            opacity: 0;
+            filter: blur(12px);
+            transform: translateY(12px);
+            animation: heroWordReveal 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: opacity, filter, transform;
+        }
+        @keyframes heroWordReveal {
+            to {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
+            }
+        }
+        .hero-product-line {
+            display: block;
+        }
+        .hero-type-word {
+            display: inline-block;
+            color: #60A5FA;
+            white-space: nowrap;
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+            transition: opacity 260ms ease, filter 260ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, filter, transform;
+            vertical-align: baseline;
+        }
+        .hero-type-word.is-word-exiting {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(-0.16em);
+        }
+        .hero-type-word.is-word-entering {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(0.18em);
+        }
+        .hero-product-mobile-swap {
+            display: none;
+        }
+        .hero-product-actions {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-product-cta {
+            min-height: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: #ffffff;
+            color: #050505;
+            font-size: 15px;
+            font-weight: 850;
+            line-height: 1;
+            padding: 0 28px;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            animation: heroButtonIn 620ms cubic-bezier(0.16, 1, 0.3, 1) 3.5s forwards;
+            transition: color 220ms ease, transform 220ms ease, background 220ms ease, box-shadow 220ms ease;
+        }
+        .hero-product-secondary {
+            min-height: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.88);
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            padding: 0 24px;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            animation: heroButtonIn 620ms cubic-bezier(0.16, 1, 0.3, 1) 3.5s forwards;
+            transition: border-color 220ms ease, color 220ms ease, transform 220ms ease, background 220ms ease;
+        }
+        .hero-product-cta:hover,
+        .hero-product-cta:active {
+            color: #ffffff;
+            background: linear-gradient(90deg, #F97316, #EF4444);
+            transform: scale(1.05);
+            box-shadow: 0 18px 48px rgba(239, 68, 68, 0.22);
+        }
+        .hero-product-secondary:hover,
+        .hero-product-secondary:active {
+            color: #ffffff;
+            border-color: rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-1px);
+        }
+        @keyframes heroButtonIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .hero-dashboard-wrap {
+            width: min(1040px, 100%);
+            margin: clamp(46px, 6vw, 76px) auto 0;
+            opacity: 0;
+            transform: translateY(26px) scale(0.985);
+            animation: heroDashboardIn 780ms cubic-bezier(0.16, 1, 0.3, 1) 4s forwards;
+        }
+        .hero-dashboard-image {
+            width: 100%;
+            display: block;
+            border-radius: clamp(18px, 2vw, 30px);
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 34px 110px rgba(0,0,0,0.42);
+        }
+        @keyframes heroDashboardIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @media (max-width: 1023px) {
+            .site-nav-links,
+            .site-nav-cta {
+                display: none;
+            }
+            .site-nav-inner {
+                width: calc(100% - 32px);
+                grid-template-columns: auto 1fr;
+            }
+            .site-menu-button {
+                display: inline-flex !important;
+                gap: 7px;
+            }
+            #mobileMenuBtnLabel {
+                position: static !important;
+                width: auto !important;
+                height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: visible !important;
+                clip: auto !important;
+                white-space: nowrap !important;
+                border: 0 !important;
+                color: currentColor;
+                font-size: 12px;
+                font-weight: 850;
+                line-height: 1;
+                letter-spacing: 0.01em;
+            }
+            .site-mobile-overlay {
+                position: fixed !important;
+                inset: 0 !important;
+                z-index: 90 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+                height: 100vh !important;
+                padding: 104px 24px 32px !important;
+                background: rgba(5,5,5,0.94) !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
+                transform: none !important;
+                border: 0 !important;
+                border-radius: 0 !important;
+                transition: opacity 220ms ease, visibility 220ms step-end !important;
+                backdrop-filter: blur(22px) saturate(130%) !important;
+                -webkit-backdrop-filter: blur(22px) saturate(130%) !important;
+            }
+            .site-mobile-overlay.open {
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+                transition: opacity 220ms ease, visibility 0ms step-start !important;
+            }
+            .site-mobile-panel {
+                display: grid;
+                gap: 22px;
+                text-align: center;
+            }
+            .site-mobile-panel a {
+                color: #ffffff !important;
+                font-size: clamp(2rem, 9vw, 4.4rem) !important;
+                font-weight: 850 !important;
+                letter-spacing: -0.055em !important;
+                line-height: 0.95 !important;
+                text-decoration: none !important;
+            }
+            .site-mobile-panel .site-mobile-cta {
+                width: fit-content !important;
+                min-height: 54px !important;
+                margin: 12px auto 0 !important;
+                border-radius: 9999px !important;
+                background: #ffffff !important;
+                color: #050505 !important;
+                font-size: 15px !important;
+                letter-spacing: 0 !important;
+                line-height: 1 !important;
+                padding: 0 24px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            html,
+            body {
+                overflow-x: hidden !important;
+            }
+            #navbar.site-nav {
+                position: fixed !important;
+                height: 80px !important;
+                background: transparent !important;
+                border-bottom: 0 !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            #navbar.site-nav .site-nav-inner {
+                width: calc(100% - 28px) !important;
+                height: 62px !important;
+                margin-top: 12px !important;
+                padding: 0 13px !important;
+                grid-template-columns: auto 1fr !important;
+                background: rgba(255,255,255,0.93) !important;
+                border: 1px solid rgba(226,232,240,0.9) !important;
+                box-shadow: 0 14px 34px rgba(15,23,42,0.13) !important;
+            }
+            #mobileMenuBtn.site-menu-button {
+                position: static !important;
+                width: auto !important;
+                height: 36px !important;
+                min-width: 74px !important;
+                min-height: 36px !important;
+                padding: 0 12px !important;
+                display: inline-flex !important;
+                gap: 7px !important;
+                transform: none !important;
+                background: #0a0e1a !important;
+                color: #ffffff !important;
+                border: 1px solid rgba(15,23,42,0.1) !important;
+                box-shadow: 0 8px 18px rgba(15,23,42,0.16) !important;
+            }
+            #mobileMenuBtn.site-menu-button svg {
+                display: block !important;
+                width: 16px !important;
+                height: 16px !important;
+            }
+            #mobileMenuBtn.site-menu-button:active,
+            #mobileMenuBtn.site-menu-button:focus-visible {
+                transform: scale(0.96) !important;
+            }
+            #app {
+                padding-top: 0 !important;
+            }
+            .site-nav,
+            .site-nav-inner {
+                height: 80px !important;
+            }
+            .brand-wordmark {
+                color: #0a0e1a !important;
+                font-size: 18px !important;
+                letter-spacing: -0.045em !important;
+            }
+            .brand-wordmark span {
+                color: #64748b !important;
+            }
+            .brand-mark-icon {
+                width: 36px !important;
+                height: 36px !important;
+            }
+            .hero-product {
+                min-height: 100svh;
+                padding-bottom: 56px;
+                overflow-x: hidden;
+            }
+            .hero-product-content {
+                width: min(100vw, 390px);
+                max-width: 100vw;
+                padding-top: 180px;
+                overflow: hidden;
+                margin-left: 0;
+                margin-right: auto;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .hero-product-title {
+                max-width: 310px;
+                font-size: clamp(2.05rem, 9.4vw, 2.45rem);
+                letter-spacing: -0.04em;
+                line-height: 1.06;
+                overflow-wrap: normal;
+            }
+            .hero-product-title .hero-reveal-word,
+            .hero-product-subtitle .hero-reveal-word {
+                display: inline;
+                transform: none;
+            }
+            .hero-product-line {
+                margin-top: 0.04em;
+            }
+            .hero-type-word {
+                display: none;
+            }
+            .hero-product-mobile-swap {
+                display: block !important;
+                color: #60A5FA;
+            }
+            .hero-product-subtitle {
+                max-width: 310px;
+                font-size: 0.96rem;
+                line-height: 1.58;
+            }
+            .hero-product-actions {
+                width: min(100%, 310px);
+                display: grid;
+                gap: 10px;
+            }
+            .hero-product-cta {
+                min-height: 56px;
+                width: min(100%, 300px);
+                padding-left: 20px;
+                padding-right: 20px;
+                white-space: nowrap;
+            }
+            .hero-product-secondary {
+                min-height: 54px;
+                width: min(100%, 300px);
+                padding-left: 20px;
+                padding-right: 20px;
+                white-space: nowrap;
+            }
+            .hero-dashboard-wrap {
+                width: 100%;
+                margin-top: 44px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-dashboard-image {
+                border-radius: 18px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero-reveal-word,
+            .hero-product-cta,
+            .hero-product-secondary,
+            .hero-dashboard-wrap {
+                animation: none !important;
+                opacity: 1 !important;
+                filter: none !important;
+                transform: none !important;
+            }
+            .hero-product-video {
+                opacity: 0.5;
+            }
+        }
+    </style>
+    <style>
+        .visual-icon {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: #eff6ff;
+            color: #2563eb;
+            margin-bottom: 14px;
+        }
+        .visual-icon svg {
+            width: 21px;
+            height: 21px;
+            stroke: currentColor;
+        }
+        .interruption-visual {
+            position: relative;
+            min-height: 420px;
+            border: 1px solid #e2e8f0;
+            border-radius: 32px;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(37,99,235,0.11), transparent 36%),
+                linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            overflow: hidden;
+            padding: 26px;
+            box-shadow: 0 22px 60px rgba(15,23,42,0.07);
+        }
+        .interruption-visual::before {
+            content: '';
+            position: absolute;
+            inset: 28px;
+            border: 1px dashed rgba(37,99,235,0.18);
+            border-radius: 999px;
+        }
+        .owner-node {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 172px;
+            min-height: 172px;
+            transform: translate(-50%, -50%);
+            border-radius: 999px;
+            background: #0a0e1a;
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 24px;
+            box-shadow: 0 24px 64px rgba(10,14,26,0.22);
+        }
+        .owner-node strong {
+            display: block;
+            font-size: 20px;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+        .owner-node span {
+            display: block;
+            margin-top: 8px;
+            color: rgba(203,213,225,0.75);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .interrupt-chip {
+            position: absolute;
+            min-width: 128px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.92);
+            padding: 12px 14px;
+            color: #0a0e1a;
+            font-size: 13px;
+            font-weight: 850;
+            box-shadow: 0 14px 34px rgba(15,23,42,0.08);
+        }
+        .interrupt-chip small {
+            display: block;
+            margin-bottom: 5px;
+            color: #2563eb;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .interrupt-chip:nth-child(2) { left: 28px; top: 34px; }
+        .interrupt-chip:nth-child(3) { right: 34px; top: 58px; }
+        .interrupt-chip:nth-child(4) { left: 42px; bottom: 64px; }
+        .interrupt-chip:nth-child(5) { right: 42px; bottom: 44px; }
+        .interrupt-chip:nth-child(6) { left: 50%; bottom: 22px; transform: translateX(-50%); }
+        .install-visual {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        .install-visual-node {
+            min-height: 72px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #f8fafc;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 10px;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 850;
+            line-height: 1.18;
+        }
+        .install-card-featured .install-visual-node {
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.9);
+        }
+        .install-visual-arrow {
+            color: #60a5fa;
+            font-weight: 900;
+        }
+        .install-list.is-compact {
+            grid-template-columns: repeat(2, minmax(0,1fr));
+        }
+        .workflow-map-card {
+            position: relative;
+        }
+        .workflow-map-card::before {
+            content: '';
+            position: absolute;
+            left: 32px;
+            top: 42px;
+            bottom: 42px;
+            width: 2px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #bfdbfe, #2563eb, #bfdbfe);
+        }
+        .workflow-node {
+            position: relative;
+            margin-left: 26px;
+        }
+        .tool-board {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0,1fr));
+            gap: 14px;
+        }
+        .tool-group {
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            background: #f8fafc;
+            padding: 18px;
+        }
+        .tool-group h3 {
+            color: #0a0e1a;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .tool-group span {
+            display: flex;
+            align-items: center;
+            min-height: 38px;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 0 13px;
+            margin-top: 8px;
+        }
+        .industry-matrix {
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 20px 56px rgba(15,23,42,0.055);
+        }
+        .industry-row {
+            display: grid;
+            grid-template-columns: 0.8fr 1.1fr 0.9fr;
+            gap: 18px;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .industry-row:last-child {
+            border-bottom: 0;
+        }
+        .industry-row h3 {
+            color: #0a0e1a;
+            font-size: 18px;
+            font-weight: 850;
+            letter-spacing: -0.01em;
+        }
+        .industry-row p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .industry-row span {
+            justify-self: start;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 8px 11px;
+        }
+        .memory-visual {
+            min-height: 360px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 30px;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(96,165,250,0.16), transparent 36%),
+                rgba(255,255,255,0.045);
+            padding: 24px;
+            display: grid;
+            align-content: center;
+            gap: 12px;
+        }
+        .memory-loop {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+        .memory-loop-card {
+            min-height: 82px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.9);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.25;
+        }
+        .memory-loop-arrow {
+            color: #60a5fa;
+            font-weight: 900;
+        }
+        .memory-system-card {
+            margin-top: 8px;
+            border: 1px solid rgba(96,165,250,0.25);
+            border-radius: 20px;
+            background: rgba(37,99,235,0.16);
+            color: #bfdbfe;
+            padding: 18px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 900;
+        }
+        .process-rail {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0,1fr));
+            gap: 16px;
+        }
+        .process-rail::before {
+            content: '';
+            position: absolute;
+            left: 8%;
+            right: 8%;
+            top: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #bfdbfe, #2563eb, #bfdbfe);
+        }
+        .process-card-visual {
+            position: relative;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0 14px 34px rgba(15,23,42,0.045);
+        }
+        .process-card-visual.is-dark {
+            background: #0a0e1a;
+            color: #ffffff;
+            border-color: #0a0e1a;
+        }
+        .process-card-visual .step-dot {
+            width: 44px;
+            height: 44px;
+            border: 6px solid #ffffff;
+            border-radius: 999px;
+            background: #2563eb;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 900;
+            margin-bottom: 18px;
+            box-shadow: 0 0 0 1px #bfdbfe;
+        }
+        .process-card-visual h3 {
+            color: inherit;
+            font-size: 18px;
+            font-weight: 850;
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+            margin-bottom: 8px;
+        }
+        .process-card-visual p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .process-card-visual.is-dark p {
+            color: #cbd5e1;
+        }
+        @media (max-width: 900px) {
+            .tool-board,
+            .process-rail {
+                grid-template-columns: 1fr;
+            }
+            .process-rail::before {
+                display: none;
+            }
+            .industry-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+        @media (max-width: 767px) {
+            .interruption-visual {
+                min-height: auto;
+                display: grid;
+                gap: 10px;
+                padding: 16px;
+            }
+            .interruption-visual::before,
+            .owner-node {
+                position: static;
+                transform: none;
+                width: auto;
+                min-height: 118px;
+            }
+            .interrupt-chip {
+                position: static;
+                min-width: 0;
+                transform: none !important;
+            }
+            .install-visual {
+                grid-template-columns: 1fr;
+            }
+            .install-visual-arrow {
+                display: none;
+            }
+            .install-list.is-compact {
+                grid-template-columns: 1fr;
+            }
+            .workflow-map-card::before {
+                display: none;
+            }
+            .workflow-node {
+                margin-left: 0;
+            }
+            .memory-loop {
+                grid-template-columns: 1fr;
+            }
+            .memory-loop-arrow {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-brand-light text-brand-dark antialiased">
@@ -2815,43 +4642,39 @@
 </div>
 
 <!-- ═══════════════════════ NAV ═══════════════════════ -->
-<nav id="navbar" class="sticky top-0 z-50 transition-all duration-300" style="background: rgba(248,250,252,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10,14,26,0.06); transform: translateZ(0);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-[72px] items-center">
-            <a href="#home" class="flex items-center group">
-                <span class="text-[22px] font-bold tracking-tight text-brand-dark group-hover:opacity-80 transition-opacity">
-                    Dayton<span class="text-brand-muted font-normal">Growth</span><span class="text-brand-blue">Co.</span>
-                </span>
-            </a>
-            <div class="hidden md:flex items-center gap-6 lg:gap-10">
-                <a href="#products" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">Products</a>
-                <a href="#work" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">Examples</a>
-                <a href="#process" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">How It Works</a>
-                <a href="#pricing" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">Pricing</a>
-                <a href="#about" class="text-[14px] font-medium text-brand-muted hover:text-brand-blue transition-colors hover-underline">About</a>
-                <a href="#form" class="bg-brand-blue hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-[14px] font-semibold transition-all duration-300 shadow-[0_4px_14px_rgba(37,99,235,0.3)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.45)] hover:-translate-y-0.5">
-                    Get a Quick Recommendation
-                </a>
-            </div>
+<nav id="navbar" class="site-nav fixed top-0 left-0 right-0 z-50">
+    <div class="site-nav-inner">
+        <button id="brandMenuToggle" type="button" class="brand-mark group" aria-label="Open menu">
+            <span class="brand-mark-icon bg-gradient-to-br from-[#FF4D4D] via-[#F97316] to-[#EC4899]">
+                <img src="https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png" alt="" width="32" height="32" decoding="async" fetchpriority="high">
+            </span>
+            <span class="brand-wordmark">Dayton<span>Growth</span>Co.</span>
+        </button>
+        <div class="site-nav-links" aria-label="Primary navigation">
+            <a href="#products" class="hover-underline">Products</a>
+            <a href="#work" class="hover-underline">Examples</a>
+            <a href="#process" class="hover-underline">How It Works</a>
+            <a href="#pricing" class="hover-underline">Pricing</a>
+            <a href="#about" class="hover-underline">About</a>
         </div>
+        <a href="#form" class="site-nav-cta">Get a Quick Recommendation</a>
+        <button id="mobileMenuBtn" class="site-menu-button" aria-label="Open menu">
+            <svg id="menuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            <span id="mobileMenuBtnLabel" class="sr-only">Menu</span>
+        </button>
     </div>
-    <div id="mobileMenu" style="background: rgba(248,250,252,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(10,14,26,0.06);">
-        <div class="px-6 py-8 space-y-5 flex flex-col items-center">
-            <a href="#products" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">Products</a>
-            <a href="#work" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">Examples</a>
-            <a href="#process" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">How It Works</a>
-            <a href="#pricing" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">Pricing</a>
-            <a href="#about" class="mobile-nav-link text-[16px] font-medium text-brand-dark hover:text-brand-blue transition-colors">About</a>
-            <a href="#form" class="mobile-nav-link w-full text-center bg-brand-blue text-white px-8 py-3.5 rounded-full font-semibold text-[15px]">Get a Quick Recommendation</a>
+    <div id="mobileMenu" class="site-mobile-overlay" aria-hidden="true">
+        <div class="site-mobile-panel">
+            <a href="#products" class="mobile-nav-link">Products</a>
+            <a href="#work" class="mobile-nav-link">Examples</a>
+            <a href="#process" class="mobile-nav-link">How It Works</a>
+            <a href="#pricing" class="mobile-nav-link">Pricing</a>
+            <a href="#about" class="mobile-nav-link">About</a>
+            <a href="#form" class="mobile-nav-link site-mobile-cta">Get a Quick Recommendation</a>
         </div>
     </div>
 </nav>
-<button id="mobileMenuBtn" class="p-2 text-brand-dark">
-    <svg id="menuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    <span class="mobile-menu-glyph" aria-hidden="true"></span>
-    <span id="mobileMenuBtnLabel" class="mobile-menu-label">Menu</span>
-</button>
 
 <!-- ═══════════════════════ VIEWS ═══════════════════════ -->
 <main id="app">
@@ -2860,217 +4683,60 @@
 <div id="view-home">
 
     <!-- 1. HERO SECTION -->
-    <section class="relative bg-[#050505] text-white overflow-hidden noise min-h-[85vh] flex flex-col justify-center pt-16 pb-16 md:pt-24 md:pb-20 lg:pt-32 lg:pb-24">
-        <!-- Glows -->
-        <div class="absolute desktop-hero-orb desktop-hero-orb-one top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute desktop-hero-orb desktop-hero-orb-two top-[30%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="desktop-hero-orb desktop-hero-orb-three" aria-hidden="true"></div>
-        
-        <!-- Grid -->
-        <div class="absolute inset-0 bg-grid pointer-events-none"></div>
-        <div class="mobile-hero-orb" aria-hidden="true"></div>
-
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 mb-12 md:mb-16 lg:mb-20">
-            <div class="mobile-hero-premium" aria-label="Mobile hero">
-                <div class="mobile-hero-kicker">Built for local business</div>
-                <h1 class="mobile-hero-title">
-                    Built for<br>Dayton's
-                    <em class="mobile-hero-title-swap" data-mobile-hero-swap aria-live="polite">
-                        <span>roofers.</span>
-                        <span>auto shops.</span>
-                        <span>law firms.</span>
-                        <span>med spas.</span>
-                        <span>landscapers.</span>
-                        <span>contractors.</span>
-                        <span>salons.</span>
-                        <span>clinics.</span>
-                    </em>
-                </h1>
-                <div class="mobile-hero-rule" aria-hidden="true"></div>
-                <p class="mobile-hero-body">
-                    Custom <strong>booking flows, smart forms, and follow-up tools</strong> for local businesses that have better things to do than babysit inboxes.
-                </p>
-                <div class="mobile-hero-actions">
-                    <a href="#form" class="mobile-hero-primary">
-                        <span>
-                            <small>Free &middot; 5 minutes</small>
-                            <strong>Get a quick recommendation</strong>
-                        </span>
-                        <span class="mobile-hero-arrow" aria-hidden="true">›</span>
-                    </a>
-                    <a href="#pricing" class="mobile-hero-secondary">
-                        <span>View one-time packages</span>
-                        <span aria-hidden="true">›</span>
-                    </a>
-                </div>
-                <div class="mobile-hero-proof">
-                    <div class="mobile-hero-avatars" aria-hidden="true">
-                        <span class="mobile-hero-avatar" style="background:#4338ca;">JD</span>
-                        <span class="mobile-hero-avatar" style="background:#7c3aed;">MS</span>
-                        <span class="mobile-hero-avatar" style="background:#2563eb;">AK</span>
-                        <span class="mobile-hero-avatar" style="background:#0f766e;">RL</span>
+    <section class="hero-product relative bg-[#050505] text-white overflow-hidden">
+        <video class="hero-product-video" src="https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+        <div class="hero-product-video-mask" aria-hidden="true"></div>
+        <div class="grain-overlay" aria-hidden="true"></div>
+        <div class="hero-product-content">
+            <h1 class="hero-product-title">Fewer status calls. <span class="hero-product-line">Built for Dayton's <span class="hero-type-word" data-hero-type-word>contractors.</span><span class="mobile-hero-title-swap hero-product-mobile-swap" data-mobile-hero-swap><span class="visible">contractors.</span><span>roofers.</span><span>HVAC crews.</span><span>plumbers.</span><span>auto shops.</span></span></span></h1>
+            <p class="hero-product-subtitle" data-word-reveal-hero>DaytonGrowthCo installs practical communication workflows for contractors and service businesses so requests, updates, approvals, and reminders stop living in the owner's head.</p>
+            <div class="hero-product-actions" aria-label="Primary actions">
+                <a href="#form" class="hero-product-cta">Map my interruptions</a>
+                <a href="#pricing" class="hero-product-secondary">View installation packages</a>
+            </div>
+            <div class="hero-dashboard-wrap">
+                <div class="hero-system-map" aria-label="Operational communication flow preview">
+                    <div class="system-map-header">
+                        <p>Operational communication flow</p>
+                        <span>Built around the tools already in the business</span>
                     </div>
-                    <p class="mobile-hero-proof-copy"><strong>12 local businesses</strong> already replaced their spreadsheets.</p>
-                </div>
-            </div>
-            
-            <div class="desktop-hero-kicker">Built for local business</div>
-
-            <!-- Headline -->
-            <h1 class="hero-h1 text-4xl md:text-[72px] lg:text-[88px] font-bold tracking-[-0.03em] leading-tight md:leading-[1.05] mb-4 md:mb-6 text-white text-center">
-                Built for Dayton's
-                <span class="hero-line-italic"><span class="hero-type-word" data-hero-type-word></span><span class="hero-type-cursor" aria-hidden="true"></span></span>
-            </h1>
-
-            <div class="desktop-hero-rule" aria-hidden="true"></div>
-
-            <p class="hero-sub-mobile hidden md:hidden">
-                Practical websites, forms, booking flows, and follow-up tools for local businesses that would rather not lose leads to a heroic spreadsheet.
-            </p>
-
-            <p class="hero-sub hero-copy text-sm md:text-[15px] text-slate-500 mb-6 md:mb-10 leading-snug font-medium text-center">
-                We build <strong>booking flows, smart forms, and follow-up tools</strong> so your business runs — even when you're not watching.
-            </p>
-
-            <div class="hero-ctas flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-4 md:mb-16">
-                <a href="#form" class="hero-cta-primary inline-flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-blue-500 text-white px-8 py-3.5 md:py-4 rounded-full font-semibold text-[15px] transition-all shadow-[0_0_30px_rgba(37,99,235,0.3)]">
-                    <span>
-                        <small>Free &middot; 5 minutes</small>
-                        <strong>Get a quick recommendation</strong>
-                    </span>
-                    <span class="hero-cta-arrow" aria-hidden="true">›</span>
-                </a>
-                <a href="#pricing" class="hero-cta-secondary inline-flex items-center justify-center gap-2 bg-[#161B22] border border-white/10 hover:bg-[#1f2633] text-white px-8 py-3.5 md:py-4 rounded-full font-medium text-[15px] transition-all">
-                    <span>View one-time packages</span>
-                    <span aria-hidden="true">›</span>
-                </a>
-            </div>
-
-            <!-- Trust line -->
-            <div class="hero-trust grid grid-cols-1 sm:flex sm:flex-wrap items-center justify-center gap-y-2 gap-x-5 text-slate-400 text-xs md:text-[13px] font-medium mt-4 md:mt-0">
-                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3.5l7 2.7v5.2c0 4.2-2.8 7.9-7 9.1-4.2-1.2-7-4.9-7-9.1V6.2l7-2.7z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.9 12.1l2.1 2.1 4.3-4.6"/></svg>
-                    No monthly contract required
-                </div>
-                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden sm:block"></div>
-                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3"/></svg>
-                    Built for Dayton businesses
-                </div>
-                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden lg:block"></div>
-                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.9" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12.4l4.2 4.2L19 6.8"/></svg>
-                    Practical setup help
-                </div>
-                <div class="hero-trust-divider w-px h-4 bg-slate-700 hidden lg:block"></div>
-                <div class="hero-trust-item flex items-center justify-center gap-1.5 md:gap-2">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 19.5v-1.4a3.4 3.4 0 00-3.4-3.4H7.4A3.4 3.4 0 004 18.1v1.4"/><circle cx="10.25" cy="7.5" r="3.25"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.8 8.2v5.4M17.1 10.9h5.4"/></svg>
-                    12 local businesses upgraded their lead flow
-                </div>
-            </div>
-        </div>
-        <div class="mobile-hero-marquee" aria-hidden="true">
-            <div class="mobile-hero-marquee-track">
-                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
-                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
-            </div>
-        </div>
-
-        <!-- System Mockup (Animated Live Tool Walkthrough) -->
-        <div class="mockup-wrapper relative w-full max-w-[1000px] mx-auto px-4 sm:px-6 z-10">
-            <div class="bg-[#11131A]/90 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 sm:p-8 md:p-10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
-                <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
-                    <div class="text-blue-300 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
-                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                        Live System Preview
-                    </div>
-                    <div class="flex gap-1.5">
-                        <div class="w-3 h-3 rounded-full bg-[#FF5F57]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#28C840]"></div>
-                    </div>
-                </div>
-                <div class="flex flex-wrap justify-center gap-2 mb-7" role="tablist" aria-label="System preview states">
-                    <button class="mockup-demo-tab" type="button" data-demo-mode="intake" aria-selected="true">Form</button>
-                    <button class="mockup-demo-tab" type="button" data-demo-mode="notify" aria-selected="false">Notify</button>
-                    <button class="mockup-demo-tab" type="button" data-demo-mode="dashboard" aria-selected="false">Dashboard</button>
-                    <button class="mockup-demo-tab" type="button" data-demo-mode="followup" aria-selected="false">Follow-up</button>
-                </div>
-                <p class="mockup-demo-caption" data-demo-caption>Click through the system: a customer submits a request, the owner gets notified, the lead is saved, and follow-up is queued.</p>
-                
-                <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-                    
-                    <!-- Customer Form -->
-                    <div class="bg-[#1A1D24] border border-white/[0.06] rounded-[20px] p-6 w-full flex-1 shadow-lg relative">
-                        <h3 class="text-white font-semibold text-[16px] mb-1">Customer Form</h3>
-                        <p class="text-slate-400 text-[13px] mb-5">Visitor sends a request</p>
-                        
-                        <div class="space-y-3">
-                            <div class="mockup-name-container bg-[#11131A] border border-white/[0.05] rounded-xl px-4 py-3 flex items-center min-h-[44px] transition-all duration-300">
-                                <span class="text-slate-500 text-[13px] w-14">Name: </span>
-                                <span class="mockup-name text-slate-200 text-[13px] font-medium"></span>
-                                <span class="mockup-name-cursor mockup-cursor"></span>
-                            </div>
-                            <div class="mockup-svc-container bg-[#11131A] border border-white/[0.05] rounded-xl px-4 py-3 flex items-center min-h-[44px] transition-all duration-300">
-                                <span class="text-slate-500 text-[13px] w-16">Service: </span>
-                                <span class="mockup-service text-slate-200 text-[13px] font-medium"></span>
-                                <span class="mockup-svc-cursor mockup-cursor" style="display:none;"></span>
-                            </div>
-                            <div class="mockup-submit bg-[#2563EB] text-white text-center rounded-xl py-3 text-[14px] font-bold mt-4 shadow-[0_4px_20px_rgba(37,99,235,0.4)] transition-all duration-200 ease-out select-none">
-                                Submit Request
-                            </div>
+                    <div class="system-map-grid">
+                        <div class="system-node">
+                            <span>Request</span>
+                            <strong>Customer call, text, form, or email</strong>
                         </div>
-                    </div>
-
-                    <!-- Connecting Arrow -->
-                    <div class="hidden md:block shrink-0 relative">
-                        <svg class="w-6 h-6 text-blue-400/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </div>
-
-                    <!-- Dashboard / Notifications -->
-                    <div class="flex flex-col gap-5 w-full flex-1">
-                        <!-- Notification Toast -->
-                        <div class="mockup-toast bg-[#1A1D24] border border-emerald-500/30 rounded-[20px] p-5 mockup-fade-in-down relative overflow-hidden shadow-lg">
-                            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500"></div>
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 border border-emerald-500/30">
-                                    <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                                <h3 class="text-white font-semibold text-[15px]">New Lead Received</h3>
-                            </div>
-                            <p class="text-slate-300 text-[13px] pl-11">John Smith <span class="text-slate-500 mx-1.5">•</span> Roof Repair</p>
+                        <div class="system-arrow" aria-hidden="true">→</div>
+                        <div class="system-node system-node-accent">
+                            <span>Route</span>
+                            <strong>Office, technician, or owner only if needed</strong>
                         </div>
-                        
-                        <!-- Dashboard Panel -->
-                        <div class="bg-[#1A1D24] border border-white/[0.06] rounded-[20px] p-6 shadow-lg">
-                            <h3 class="text-white font-semibold text-[15px] mb-5">Leads Dashboard</h3>
-                            <div class="space-y-1">
-                                <div class="mockup-row flex justify-between items-center mockup-slide-in-bounce bg-emerald-500/5 border border-emerald-500/10 px-2.5 rounded-lg -mx-2.5">
-                                    <span class="text-white font-medium text-[13px]">John Smith</span>
-                                    <span class="text-emerald-400 bg-emerald-400/10 border border-emerald-500/20 px-2 py-0.5 rounded flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></div>
-                                        New
-                                    </span>
-                                </div>
-                                <div class="flex justify-between items-center py-2.5 px-2.5 -mx-2.5 transition-colors duration-500 rounded-lg">
-                                    <span class="text-slate-400 text-[13px]">Sarah Johnson</span>
-                                    <span class="mockup-status-old text-blue-400 bg-blue-400/10 border border-blue-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest mockup-status-change">
-                                        Contacted
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="system-arrow" aria-hidden="true">→</div>
+                        <div class="system-node system-node-owner">
+                            <span>Follow-up</span>
+                            <strong>Customer update, reminder, or estimate next step</strong>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="desktop-hero-marquee" aria-hidden="true">
-            <div class="desktop-hero-marquee-track">
-                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
-                <span>Booking flows</span><span>Lead capture</span><span>Follow-up automation</span><span>Custom forms</span><span>Landing pages</span><span>Client portals</span>
-            </div>
+    </section>
+
+    <section class="problem-strip" aria-label="Common contractor communication problems">
+        <div class="problem-strip-item">
+            <span>Status calls</span>
+            <p>Customers keep asking for updates while the workday is already full.</p>
+        </div>
+        <div class="problem-strip-item">
+            <span>Estimate drift</span>
+            <p>Open estimates go quiet because follow-up depends on memory.</p>
+        </div>
+        <div class="problem-strip-item">
+            <span>Scattered messages</span>
+            <p>Requests arrive through calls, texts, forms, email, and inboxes.</p>
+        </div>
+        <div class="problem-strip-item">
+            <span>Owner bottleneck</span>
+            <p>Everything routes through one person before anything moves.</p>
         </div>
     </section>
 
@@ -3079,7 +4745,6 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-14 items-start mb-14 md:mb-16 reveal-sweep">
                 <div>
-                    <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">The real bottleneck</div>
                     <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">The Real Problem Isn't More Leads</h2>
                     <p class="text-[18px] text-brand-muted leading-relaxed">Most contractors and service businesses are not struggling because they lack leads.</p>
                     <p class="mt-4 text-[18px] text-brand-muted leading-relaxed">They are struggling because the business constantly interrupts them.</p>
@@ -3099,7 +4764,6 @@
             </div>
 
             <div class="text-center max-w-3xl mx-auto mb-10 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">How interruption chaos hurts businesses</div>
                 <h3 class="text-[34px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-brand-dark">The owner becomes the operating system.</h3>
             </div>
 
@@ -3137,89 +4801,100 @@
     <section id="products" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-[#f5f5f7] border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">What we install</div>
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Focused systems that protect the owner's attention.</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">DaytonGrowthCo installs practical operational systems that reduce repetitive communication, organize requests, and keep work moving without everything depending on the owner.</p>
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Systems we install.</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Practical workflows for the communication problems that interrupt service businesses every day.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                <article class="product-card stagger-item">
-                    <div class="product-preview mb-5">
-                        <div class="product-preview-row"><span>Job status</span><span class="product-preview-chip">Sent</span></div>
-                        <div class="product-preview-row"><span>Appointment</span><span>Confirmed</span></div>
-                        <div class="product-preview-row"><span>Approval needed</span><span class="product-preview-chip">Routed</span></div>
+            <div class="installation-grid">
+                <article class="product-card install-card install-card-featured stagger-item">
+                    <div class="install-card-topline">Customer Communication System</div>
+                    <h3>For shops and contractors getting too many “any update?” calls.</h3>
+                    <p><strong>What it fixes:</strong> Customers asking for updates, scattered message threads, unclear handoffs, and owner-routed communication.</p>
+                    <div class="install-list">
+                        <span>Customer-facing update path</span>
+                        <span>Request routing</span>
+                        <span>Message templates</span>
+                        <span>Status update workflow</span>
+                        <span>Owner exception alerts</span>
+                        <span>Simple handoff documentation</span>
                     </div>
-                    <span class="type-pill">Customer communication</span>
-                    <h3 class="mt-3 text-[24px] font-bold text-brand-dark">Customer Update System</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-slate-500">Reduce incoming status calls by automatically keeping customers updated on jobs, appointments, approvals, and scheduling.</p>
+                    <div class="install-outcome">Outcome: customers know where to go, and owners stop being the default inbox.</div>
                 </article>
-                <article class="product-card stagger-item">
-                    <div class="product-preview mb-5">
-                        <div class="product-preview-row"><span>Estimate</span><span class="product-preview-chip">Open</span></div>
-                        <div class="product-preview-row"><span>Reminder</span><span>Queued</span></div>
-                        <div class="product-preview-row"><span>Follow-up</span><span class="product-preview-chip">Ready</span></div>
+
+                <article class="product-card install-card stagger-item">
+                    <div class="install-card-topline">Estimate Follow-Up System</div>
+                    <h3>For teams losing open estimates after the first conversation.</h3>
+                    <p><strong>What it fixes:</strong> Quiet prospects, forgotten callbacks, inconsistent reminders, and jobs that stall after pricing is sent.</p>
+                    <div class="install-list">
+                        <span>Estimate tracking structure</span>
+                        <span>Follow-up reminders</span>
+                        <span>Message templates</span>
+                        <span>Simple status categories</span>
+                        <span>Handoff documentation</span>
                     </div>
-                    <span class="type-pill">Estimate control</span>
-                    <h3 class="mt-3 text-[24px] font-bold text-brand-dark">Estimate Follow-Up System</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-slate-500">Keep estimates from getting forgotten with automatic reminders, customer follow-ups, and organized tracking.</p>
+                    <div class="install-outcome">Outcome: open estimates stop disappearing into memory.</div>
                 </article>
-                <article class="product-card stagger-item">
-                    <div class="product-preview mb-5">
-                        <div class="product-preview-row"><span>Request type</span><span>Repair</span></div>
-                        <div class="product-preview-row"><span>Photos</span><span class="product-preview-chip">Collected</span></div>
-                        <div class="product-preview-row"><span>Details</span><span class="product-preview-chip">Complete</span></div>
+
+                <article class="product-card install-card stagger-item">
+                    <div class="install-card-topline">Custom Operational Workflow</div>
+                    <h3>For a specific communication bottleneck that does not fit a standard package.</h3>
+                    <p><strong>What it fixes:</strong> Messy internal handoffs, repeated questions, unclear routing, or recurring admin loops.</p>
+                    <div class="install-list">
+                        <span>Workflow map</span>
+                        <span>Tool review</span>
+                        <span>Custom routing or reminder setup</span>
+                        <span>Documentation</span>
+                        <span>Testing with real scenarios</span>
                     </div>
-                    <span class="type-pill">Request intake</span>
-                    <h3 class="mt-3 text-[24px] font-bold text-brand-dark">Smart Request Intake</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-slate-500">Collect better customer information upfront so contractors spend less time chasing details and more time closing jobs.</p>
-                </article>
-                <article class="product-card stagger-item">
-                    <div class="product-preview mb-5">
-                        <div class="product-preview-row"><span>Urgent issue</span><span class="product-preview-chip">Flagged</span></div>
-                        <div class="product-preview-row"><span>Scheduling</span><span>Office</span></div>
-                        <div class="product-preview-row"><span>Owner review</span><span class="product-preview-chip">Only if needed</span></div>
-                    </div>
-                    <span class="type-pill">Routing</span>
-                    <h3 class="mt-3 text-[24px] font-bold text-brand-dark">Communication Routing System</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-slate-500">Organize incoming customer requests so urgent issues get handled quickly without overwhelming the owner.</p>
-                </article>
-                <article class="product-card stagger-item">
-                    <div class="product-preview mb-5">
-                        <div class="product-preview-row"><span>Callback</span><span class="product-preview-chip">Today</span></div>
-                        <div class="product-preview-row"><span>Pending approval</span><span>Open</span></div>
-                        <div class="product-preview-row"><span>Unfinished thread</span><span class="product-preview-chip">Tracked</span></div>
-                    </div>
-                    <span class="type-pill">Mental load</span>
-                    <h3 class="mt-3 text-[24px] font-bold text-brand-dark">Operational Reminder System</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-slate-500">Reduce mental overload by keeping track of callbacks, pending approvals, open requests, and unfinished conversations.</p>
-                </article>
-                <article class="product-card stagger-item bg-brand-dark text-white">
-                    <div class="relative z-10 h-full flex flex-col justify-between">
-                        <div>
-                            <span class="type-pill border-blue-400/20 bg-blue-500/10 text-blue-200">Category</span>
-                            <h3 class="mt-4 text-[28px] font-bold text-white leading-tight">Operational interruption reduction systems</h3>
-                            <p class="mt-4 text-[14px] leading-relaxed text-slate-400">Not another app to manage. A focused installation that reduces the daily communication load on the owner.</p>
-                        </div>
-                        <a href="#form" class="mt-8 inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-[14px] font-bold text-white">Map My Interruptions</a>
-                    </div>
+                    <div class="install-outcome">Outcome: a messy process becomes a repeatable system.</div>
                 </article>
             </div>
+        </div>
+    </section>
 
-            <div class="mt-12 rounded-[30px] bg-[#0A0E1A] border border-slate-900 px-6 py-8 md:px-10 md:py-10 reveal-sweep">
-                <div class="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 items-center">
-                    <div>
-                        <div class="text-blue-300 text-[11px] font-bold uppercase tracking-widest mb-3">This is not another CRM</div>
-                        <h3 class="text-[32px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-white mb-4">Small service businesses need simpler operations.</h3>
-                        <p class="text-[16px] text-slate-400 leading-relaxed">Most CRMs are built for large sales teams. Small service businesses do not need complicated dashboards and endless data entry.</p>
-                    </div>
-                    <div class="rounded-[24px] border border-white/10 bg-white/[0.045] p-6 md:p-8">
-                        <p class="text-[18px] md:text-[20px] text-white leading-relaxed">DaytonGrowthCo focuses on reducing interruptions, organizing communication, and removing repetitive operational headaches so owners can focus on running the business.</p>
-                        <div class="mt-6 grid sm:grid-cols-3 gap-3">
-                            <div class="rounded-2xl bg-white/[0.06] border border-white/10 p-4 text-blue-100 text-[13px] font-bold">Less interruption</div>
-                            <div class="rounded-2xl bg-white/[0.06] border border-white/10 p-4 text-blue-100 text-[13px] font-bold">Cleaner handoffs</div>
-                            <div class="rounded-2xl bg-white/[0.06] border border-white/10 p-4 text-blue-100 text-[13px] font-bold">Fewer loose ends</div>
-                        </div>
-                    </div>
+    <section class="system-map-section bg-white py-20 md:py-24 lg:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 lg:gap-14 items-center reveal-sweep">
+                <div>
+                    <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-5">A communication flow your team can actually use.</h2>
+                    <p class="text-[17px] md:text-[18px] text-brand-muted leading-relaxed">The system map shows where a request enters, what details get collected, who should see it, and when the owner should be pulled in.</p>
+                    <p class="mt-4 text-[16px] text-slate-500 leading-relaxed">The goal is not another dashboard. The goal is fewer loose ends and clearer handoffs.</p>
+                </div>
+                <div class="workflow-map-card" aria-label="Example operational communication flow">
+                    <div class="workflow-node workflow-node-start"><span>1</span><strong>Customer request</strong><p>Call, text, form, or email enters one clear path.</p></div>
+                    <div class="workflow-node"><span>2</span><strong>Intake captures details</strong><p>Project type, urgency, photos, address, and next step.</p></div>
+                    <div class="workflow-node workflow-node-accent"><span>3</span><strong>Routing rule</strong><p>Office, technician, or owner only if judgment is needed.</p></div>
+                    <div class="workflow-node"><span>4</span><strong>Customer update</strong><p>The customer gets a cleaner answer without another call.</p></div>
+                    <div class="workflow-node"><span>5</span><strong>Reminder / follow-up</strong><p>Open estimates, callbacks, and approvals stay visible.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="audit-section bg-[#f8fafc] py-20 md:py-24 lg:py-28">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10 reveal-sweep">
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Find the communication leak.</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Choose the issue that sounds most familiar. We will show the kind of system that usually fixes it.</p>
+            </div>
+            <div class="interruption-audit reveal-sweep">
+                <div class="audit-options" role="tablist" aria-label="Communication leak options">
+                    <button type="button" class="audit-option is-active" aria-selected="true" data-audit="status">Too many status calls</button>
+                    <button type="button" class="audit-option" aria-selected="false" data-audit="estimate">Slow estimate follow-up</button>
+                    <button type="button" class="audit-option" aria-selected="false" data-audit="messages">Scattered messages</button>
+                    <button type="button" class="audit-option" aria-selected="false" data-audit="owner">Owner is the bottleneck</button>
+                </div>
+                <div class="audit-result" id="auditResult" aria-live="polite">
+                    <p class="audit-kicker">Likely system</p>
+                    <h3>Customer Communication System</h3>
+                    <p>For teams fielding repeat “any update?” calls while work is already moving.</p>
+                    <ul>
+                        <li>Status update workflow</li>
+                        <li>Request routing</li>
+                        <li>Message templates</li>
+                        <li>Owner exception alerts</li>
+                    </ul>
+                    <a href="#form">Map your current communication flow</a>
                 </div>
             </div>
         </div>
@@ -3229,7 +4904,6 @@
     <section id="industry-tools" class="py-20 md:py-24 lg:py-28 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">Works with what you already use</div>
                 <h2 class="text-[34px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">No full rebuild required.</h2>
                 <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Already using WordPress, Wix, Squarespace, ServiceTitan, Housecall Pro, Jobber, Google Workspace, Square, Calendly, or simple spreadsheets?</p>
                 <p class="mt-4 text-[16px] md:text-[18px] text-brand-muted leading-relaxed">No problem. DaytonGrowthCo improves and connects the tools you already use instead of forcing you into a full rebuild.</p>
@@ -3259,7 +4933,6 @@
     <section id="work" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-3">Who this is built for</div>
                 <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Contractor-focused systems for interruption-heavy businesses.</h2>
                 <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">If the owner is constantly pulled into scheduling, approvals, updates, callbacks, and customer questions, the business is ready for an operational communication system.</p>
             </div>
@@ -3280,19 +4953,12 @@
     <section id="pricing" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <div class="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700 mb-5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                    One-time installation
-                </div>
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Operational System Installations</h2>
                 <p class="text-[18px] text-brand-muted leading-relaxed">Focused systems for reducing customer communication noise, estimate drift, and owner bottlenecks.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
                 <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 transition-all duration-500 flex flex-col stagger-item pricing-card">
-                    <div class="mb-5">
-                        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">Communication</span>
-                    </div>
                     <h3 class="text-[24px] font-bold text-brand-dark mb-2">Customer Communication System</h3>
                     <div class="mb-5">
                         <span class="text-[18px] text-brand-muted font-semibold">Starting at</span>
@@ -3312,9 +4978,6 @@
                 <div class="bg-brand-dark rounded-[28px] p-7 lg:p-8 border border-[#2a2a3a] flex flex-col relative overflow-hidden md:-translate-y-4 stagger-item pricing-card">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-600/12 to-purple-600/6 pointer-events-none"></div>
                     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent"></div>
-                    <div class="relative z-10 mb-5">
-                        <span class="text-[11px] uppercase tracking-widest font-bold text-white bg-blue-600 px-3 py-1.5 rounded-full">Most common</span>
-                    </div>
                     <h3 class="text-[24px] font-bold text-white mb-2 relative z-10">Estimate &amp; Follow-Up System</h3>
                     <div class="mb-5 relative z-10">
                         <span class="text-[18px] text-slate-400 font-semibold">Starting at</span>
@@ -3332,9 +4995,6 @@
                 </div>
 
                 <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 transition-all duration-500 flex flex-col stagger-item pricing-card">
-                    <div class="mb-5">
-                        <span class="text-[11px] uppercase tracking-widest font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full">Custom</span>
-                    </div>
                     <h3 class="text-[24px] font-bold text-brand-dark mb-2">Custom Operational Workflow</h3>
                     <div class="mb-5">
                         <span class="text-[18px] text-brand-muted font-semibold">Project-based</span>
@@ -3367,10 +5027,6 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 lg:gap-14 items-center reveal-sweep">
                 <div>
-                    <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-200 mb-6">
-                        <span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span>
-                        Owner focus
-                    </div>
                     <h2 class="text-[38px] md:text-[54px] font-bold tracking-[-0.02em] leading-[1.04] mb-6">Your Business Shouldn't Depend on Your Memory</h2>
                     <p class="text-slate-400 text-[17px] md:text-[18px] leading-relaxed">Most small businesses operate entirely from the owner's brain.</p>
                 </div>
@@ -3393,10 +5049,6 @@
     <section id="process" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white overflow-hidden border-t border-slate-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-14 reveal-sweep">
-                <div class="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700 mb-5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                    How it works
-                </div>
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Install one focused system. Reduce one real source of chaos.</h2>
                 <p class="text-[18px] text-brand-muted leading-relaxed">The work starts with the places your day gets interrupted most, then turns that friction into a cleaner operating flow.</p>
             </div>
@@ -3449,17 +5101,6 @@
                 <div class="absolute -inset-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-[20px] blur-[24px]"></div>
                 <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="Samuel Caruso, Founder of DaytonGrowthCo." width="320" height="400" loading="lazy" decoding="async" class="relative w-full aspect-[4/5] object-cover rounded-[16px] border-4 border-white shadow-xl z-10" />
                 
-                <!-- Mini SaaS Widget -->
-                <div class="absolute -bottom-4 -right-6 bg-white border border-slate-100 rounded-xl p-3 shadow-xl flex items-center gap-3 z-20 hidden md:flex">
-                    <div class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                    </div>
-                    <div class="text-left">
-                        <div class="text-[9px] text-slate-500 font-semibold uppercase tracking-wider">System Status</div>
-                        <div class="text-[12px] text-brand-dark font-bold">100% Operational</div>
-                    </div>
-                </div>
             </div>
             <div class="flex-1">
                 <h2 class="text-[28px] md:text-[32px] font-bold text-brand-dark mb-6">Meet the Founder</h2>
@@ -3484,7 +5125,6 @@
             
             <!-- Typical Workflow -->
             <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 stagger-item grayscale-[0.8] opacity-80 flex flex-col">
-                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">The Old Way</div>
                 <h3 class="text-[24px] font-bold text-brand-dark mb-6">Most Operations Depend on Memory</h3>
                 <div class="space-y-4 flex-1 text-[15px] text-slate-500">
                     <div class="flex gap-3"><span class="text-slate-400">×</span> Customers calling for the same updates</div>
@@ -3499,7 +5139,6 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 pointer-events-none"></div>
                 <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
                 
-                <div class="text-[11px] font-bold uppercase tracking-widest text-blue-400 mb-3 relative z-10">The New Way</div>
                 <h3 class="text-[24px] font-bold text-white mb-6 relative z-10">A System That Protects Focus</h3>
                 <div class="space-y-4 flex-1 text-[15px] text-slate-300 relative z-10">
                     <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Customer updates handled consistently</div>
@@ -3823,14 +5462,13 @@ document.addEventListener('DOMContentLoaded', () => {
         heroTypewriterStarted = true;
 
         const words = [
-            'roofers.',
-            'auto shops.',
-            'law firms.',
-            'med spas.',
-            'landscapers.',
             'contractors.',
-            'salons.',
-            'clinics.'
+            'roofers.',
+            'HVAC crews.',
+            'plumbers.',
+            'electricians.',
+            'auto shops.',
+            'remodelers.'
         ];
 
         if (reduceMotion) {
@@ -3839,37 +5477,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let wordIndex = 0;
-        let charIndex = 0;
-        let deleting = false;
+        wordEl.textContent = words[wordIndex];
 
-        const schedule = delay => window.setTimeout(tick, delay);
-        const tick = () => {
-            const word = words[wordIndex];
-
-            if (!deleting) {
-                charIndex += 1;
-                wordEl.textContent = word.slice(0, charIndex);
-                if (charIndex === word.length) {
-                    deleting = true;
-                    schedule(1800);
-                    return;
-                }
-                schedule(72);
-                return;
-            }
-
-            charIndex -= 1;
-            wordEl.textContent = word.slice(0, charIndex);
-            if (charIndex === 0) {
-                deleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                schedule(300);
-                return;
-            }
-            schedule(38);
+        const setStableWordWidth = () => {
+            const measure = document.createElement('span');
+            measure.className = wordEl.className;
+            measure.style.position = 'absolute';
+            measure.style.left = '-9999px';
+            measure.style.top = '-9999px';
+            measure.style.visibility = 'hidden';
+            measure.style.whiteSpace = 'nowrap';
+            measure.style.pointerEvents = 'none';
+            (wordEl.parentElement || document.body).appendChild(measure);
+            const maxWidth = words.reduce((width, word) => {
+                measure.textContent = word;
+                return Math.max(width, Math.ceil(measure.getBoundingClientRect().width));
+            }, 0);
+            measure.remove();
+            if (maxWidth) wordEl.style.minWidth = `${maxWidth}px`;
         };
 
-        schedule(300);
+        if (document.fonts?.ready) {
+            document.fonts.ready.then(setStableWordWidth);
+        } else {
+            requestAnimationFrame(setStableWordWidth);
+        }
+
+        const swapWord = () => {
+            wordEl.classList.add('is-word-exiting');
+            window.setTimeout(() => {
+                wordIndex = (wordIndex + 1) % words.length;
+                wordEl.textContent = words[wordIndex];
+                wordEl.classList.remove('is-word-exiting');
+                wordEl.classList.add('is-word-entering');
+                requestAnimationFrame(() => {
+                    wordEl.classList.remove('is-word-entering');
+                });
+            }, 260);
+        };
+
+        window.setInterval(swapWord, 1900);
     };
 
     const initMobileHeroSwap = () => {
@@ -3949,274 +5596,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initReveal();
 
-    // Industry tools interactive section
-    const industryData = [
-      { id:'contractors', label:'Contractors', tools:[
-        { name:'Smart Quote Request Form', benefit:'Get better leads before the phone rings', description:'A custom form that asks the right questions about project type, location, urgency, and budget so contractors get better-qualified inquiries.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Service Area Estimator', benefit:'Help customers self-qualify instantly', description:'A simple tool that lets customers enter zip code, project type, or square footage to estimate if the company serves them and what the project range might be.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Missed Call Text-Back System', benefit:'Capture leads even when the crew is busy', description:'Automatically text customers back when a call is missed so no lead disappears after hours or during jobs.', type:'Best with existing tools', animation:'text-reply' },
-        { name:'Lead Dashboard for Jobs', benefit:'Keep new requests organized', description:'A lightweight dashboard showing new inquiries, contacted leads, estimates sent, and booked jobs.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'auto-repair', label:'Auto Repair', tools:[
-        { name:'Repair Request Intake Form', benefit:'Pre-qualify service requests online', description:'A guided form that collects vehicle info, symptoms, urgency, and preferred appointment timing before the shop has to answer the phone.', type:'Hybrid setup', animation:'dropdown-select' },
-        { name:'Appointment Booking Tool', benefit:'Let customers request service after hours', description:'A scheduling interface for oil changes, inspections, diagnostics, and other common shop appointments.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Repair Status Tracker', benefit:'Reduce “is my car ready?” calls', description:'A simple customer-facing status tracker that shows progress like Received, Diagnosing, In Progress, Ready for Pickup.', type:'Custom build', animation:'pipeline-progress' },
-        { name:'Missed Call Follow-Up System', benefit:'Recover lost jobs automatically', description:'When the shop misses a call, the system immediately texts the customer and starts a simple intake flow.', type:'Best with existing tools', animation:'text-reply' }
-      ]},
-      { id:'dentists-ortho', label:'Dentists & Ortho', tools:[
-        { name:'New Patient Intake Flow', benefit:'Collect better patient info before scheduling', description:'A modern intake flow that gathers treatment interest, insurance status, and contact details before the office has to follow up.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Consultation Booking System', benefit:'Make it easier to book consultations', description:'A simple booking workflow for whitening consults, orthodontic consults, or cosmetic dentistry inquiries.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Treatment Interest Quiz', benefit:'Guide visitors to the right service', description:'A short guided quiz that helps visitors identify which service fits their needs and routes them to the correct next step.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Lead Follow-Up Dashboard', benefit:'Track inquiries that haven’t booked yet', description:'A simple internal view showing new leads, contacted leads, and consultations booked.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'law-firms', label:'Law Firms', tools:[
-        { name:'Case Intake Form', benefit:'Filter and organize leads faster', description:'A structured intake form for injury, family law, or criminal defense leads that captures the right details up front.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Consultation Request Tool', benefit:'Make contacting the firm easier', description:'A modern consultation request flow that feels more professional than a basic contact form.', type:'Best with existing tools', animation:'notification-toast' },
-        { name:'Lead Qualification Workflow', benefit:'Reduce time spent on low-fit leads', description:'A logic-based workflow that routes inquiries based on location, case type, or urgency.', type:'Custom build', animation:'pipeline-progress' },
-        { name:'Simple Intake Dashboard', benefit:'Keep inquiries organized by stage', description:'A clean dashboard that tracks inquiry received, contacted, consult scheduled, and retained.', type:'Custom build', animation:'dashboard-status' }
-      ]},
-      { id:'med-spas', label:'Med Spas', tools:[
-        { name:'Treatment Consultation Quiz', benefit:'Guide prospects toward the right service', description:'A branded quiz helping visitors choose the most relevant service before booking.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Booking System for Consults', benefit:'Make consultation scheduling frictionless', description:'A clean, premium booking experience for consultations and service requests.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Lead Nurture Follow-Up Flow', benefit:'Stay in front of warm prospects', description:'An automated follow-up sequence for consultation requests that have not booked yet.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Offer Landing Page Tool', benefit:'Promote seasonal campaigns more effectively', description:'A focused page and lead form setup for treatments, promos, and limited-time campaigns.', type:'Custom build', animation:'notification-toast' }
-      ]},
-      { id:'landscapers', label:'Landscapers', tools:[
-        { name:'Yard Quote Form', benefit:'Get clearer quote requests', description:'A service form that collects yard size, job type, timeline, and address before contact.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Seasonal Service Signup Tool', benefit:'Make recurring services easier to sell', description:'A simple signup interface for mowing, mulch, cleanup, snow removal, or maintenance plans.', type:'Custom build', animation:'checklist-flow' },
-        { name:'Service Area Checker', benefit:'Instantly confirm if they serve the customer', description:'A lightweight area checker using zip code or address to confirm service coverage.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Missed Call Auto Reply', benefit:'Capture landscaping leads after hours', description:'Automatically respond when calls are missed and direct customers into the right inquiry flow.', type:'Best with existing tools', animation:'text-reply' }
-      ]},
-      { id:'cleaning-services', label:'Cleaning Services', tools:[
-        { name:'Cleaning Quote Calculator', benefit:'Make quote requests easier and faster', description:'A calculator that estimates pricing based on home size, frequency, and service type.', type:'Custom build', animation:'estimate-calc' },
-        { name:'Booking Request Form', benefit:'Collect service details before follow-up', description:'A form that captures square footage, service type, recurring vs one-time, and preferred schedule.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Recurring Service Signup Flow', benefit:'Encourage long-term recurring clients', description:'A cleaner signup process for repeat service plans and seasonal work.', type:'Custom build', animation:'checklist-flow' },
-        { name:'Lead Follow-Up Automation', benefit:'Keep quote requests from going cold', description:'A simple message sequence that follows up on new inquiries if the customer does not respond right away.', type:'Best with existing tools', animation:'notification-toast' }
-      ]},
-      { id:'real-estate', label:'Real Estate', tools:[
-        { name:'Buyer Intake Form', benefit:'Pre-qualify leads before the call', description:'A form that collects timeline, price range, financing status, and target area.', type:'Hybrid setup', animation:'dropdown-select' },
-        { name:'Home Valuation Request Tool', benefit:'Generate seller leads more effectively', description:'A custom landing experience for homeowners requesting a valuation.', type:'Custom build', animation:'form-submit' },
-        { name:'Open House Follow-Up Flow', benefit:'Capture and nurture event leads', description:'A system that follows up with open house visitors automatically after they sign in.', type:'Best with existing tools', animation:'notification-toast' },
-        { name:'Lead Tracking Dashboard', benefit:'See exactly where each prospect stands', description:'A simple internal dashboard for New, Contacted, Viewing Scheduled, Offer Stage, Closed.', type:'Custom build', animation:'pipeline-progress' }
-      ]},
-      { id:'nonprofits', label:'Nonprofits', tools:[
-        { name:'Volunteer Signup System', benefit:'Make volunteering easier to manage', description:'A modern form and workflow for volunteer interest, availability, and role matching.', type:'Hybrid setup', animation:'checklist-flow' },
-        { name:'Donation Campaign Landing Tool', benefit:'Increase campaign clarity and conversions', description:'A focused landing page experience for a specific fundraising campaign.', type:'Best with existing tools', animation:'estimate-calc' },
-        { name:'Event Response Tracker', benefit:'Organize event signups more clearly', description:'A dashboard for RSVPs, follow-ups, attendance status, and reminders.', type:'Custom build', animation:'dashboard-status' },
-        { name:'Constituent Intake Workflow', benefit:'Keep outreach and responses organized', description:'A simple internal system for tracking inquiries, requests, and follow-up actions.', type:'Custom build', animation:'pipeline-progress' }
-      ]},
-      { id:'gyms-fitness', label:'Gyms & Fitness', tools:[
-        { name:'Trial Class Signup Tool', benefit:'Capture more trial leads', description:'A simple signup flow for trial classes, intro sessions, or personal training consultations.', type:'Hybrid setup', animation:'form-submit' },
-        { name:'Membership Interest Quiz', benefit:'Help visitors choose the right membership', description:'A short quiz that routes prospects toward the best plan based on goals and preferences.', type:'Custom build', animation:'quiz-flow' },
-        { name:'Consultation Booking Flow', benefit:'Make joining the gym easier', description:'A booking tool for tours, intro calls, and personal training consultations.', type:'Best with existing tools', animation:'calendar-booking' },
-        { name:'Lead Nurture Dashboard', benefit:'Track prospects who have not joined yet', description:'A lightweight lead board showing New, Contacted, Trial Booked, Joined.', type:'Custom build', animation:'pipeline-progress' }
-      ]}
-    ];
-
-    const selectorEl = document.getElementById('industrySelector');
-    const toolsGridEl = document.getElementById('industryToolsGrid');
-    let activeIndustry = industryData[0]?.id;
-
-    const previewByType = (type) => {
-        if (type === 'form-submit' || type === 'dropdown-select') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area form-preview flex flex-col">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Request intake</div><div class="preview-tiny-label">3 fields completed</div></div>
-                        <span class="preview-mini-pill">Live</span>
-                    </div>
-                    <div class="preview-input-line preview-glow">
-                        <span class="preview-tiny-label">Name</span><span class="text-[10px] font-bold text-slate-700">John S.</span><span class="preview-check">✓</span>
-                    </div>
-                    <div class="preview-input-line preview-fade" style="animation-delay:.15s">
-                        <span class="preview-tiny-label">Service</span><span class="text-[10px] font-bold text-slate-700">${type === 'dropdown-select' ? 'Repair' : 'Quote'}</span><span class="preview-check">✓</span>
-                    </div>
-                    <div class="preview-input-line preview-fade" style="animation-delay:.3s">
-                        <span class="preview-tiny-label">Urgency</span><span class="tool-anim-pill bg-amber-50 text-amber-700">This week</span>
-                    </div>
-                    <div class="preview-detail-grid mt-1">
-                        <div class="preview-stat-box"><div class="preview-tiny-label">Source</div><div class="text-[10px] font-bold text-slate-800 mt-1">Website</div></div>
-                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">Route</div><div class="text-[10px] font-bold text-blue-700 mt-1">Sales</div></div>
-                    </div>
-                    <div class="preview-action-btn preview-pulse mt-auto">Route + notify owner</div>
-                    <div class="tool-anim-item preview-save-badge preview-slide bg-emerald-50 border border-emerald-300 text-emerald-700">Saved + notified</div>
-                </div>
-            </div>`;
+    const revealSectionImmediately = section => {
+        if (!section) return;
+        section.querySelectorAll('.reveal, .reveal-sweep, .stagger-item').forEach(el => {
+            el.style.transitionDelay = el.classList.contains('stagger-item') ? el.style.transitionDelay : '';
+            el.classList.add('visible');
+        });
+        if (section.classList.contains('reveal') || section.classList.contains('reveal-sweep')) {
+            section.classList.add('visible');
         }
-        if (type === 'calendar-booking') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Booking calendar</div><div class="preview-tiny-label">Available times</div></div>
-                        <span class="preview-mini-pill">Today</span>
-                    </div>
-                    <div class="grid grid-cols-5 gap-1">${Array.from({length:15}).map((_,i)=>`<div class="h-4 rounded-md border ${[7,8,12].includes(i)?'border-blue-300 bg-blue-50 preview-slot':'border-slate-200 bg-slate-100'}"></div>`).join('')}</div>
-                    <div class="preview-row">
-                        <span class="preview-label">Service</span><span class="tool-anim-pill bg-blue-50 text-blue-700">Consult</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1.5">
-                        <div class="h-7 rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between">
-                            <span class="preview-label text-[10px]">2:30 PM</span><span class="h-2 w-5 bg-slate-200 rounded-full"></span>
-                        </div>
-                        <div class="h-7 rounded-lg border border-blue-300 bg-blue-50 px-2 flex items-center justify-between preview-glow">
-                            <span class="preview-label text-[10px] text-blue-700">3:15 PM</span><span class="preview-check">✓</span>
-                        </div>
-                    </div>
-                    <div class="h-7 rounded-lg border border-emerald-300 bg-emerald-50 text-[10px] text-emerald-700 font-semibold flex items-center justify-center preview-slide">Booking confirmed + reminder queued</div>
-                </div>
-            </div>`;
-        }
-        if (type === 'pipeline-progress') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area">
-                    <div class="preview-topbar">
-                        <div class="preview-title">Lead pipeline</div>
-                        <span class="preview-mini-pill">4 active</span>
-                    </div>
-                    <div class="preview-kanban">
-                        <div class="preview-column"><div class="preview-column-title">New</div><div class="preview-lead-card"><div class="text-[9px] font-bold text-slate-700 mb-1">John S.</div><div class="preview-field-line w-[45%]"></div></div></div>
-                        <div class="preview-column preview-glow"><div class="preview-column-title">Contacted</div><div class="preview-lead-card preview-slide"><div class="text-[9px] font-bold text-slate-700 mb-1">Maria K.</div><span class="tool-anim-pill bg-amber-50 text-amber-700">Follow-up</span></div></div>
-                        <div class="preview-column"><div class="preview-column-title">Booked</div><div class="preview-lead-card preview-fade"><div class="text-[9px] font-bold text-slate-700 mb-1">Lee Auto</div><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Ready</span></div></div>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'dashboard-status') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-1.5">
-                    <div class="preview-topbar">
-                        <div><div class="preview-title">Operations dashboard</div><div class="preview-tiny-label">Updated now</div></div>
-                        <span class="preview-mini-pill">Synced</span>
-                    </div>
-                    <div class="preview-detail-grid">
-                        <div class="preview-stat-box preview-glow"><div class="preview-tiny-label">New</div><div class="text-[16px] font-extrabold text-slate-900 leading-none mt-1">12</div></div>
-                        <div class="preview-stat-box"><div class="preview-tiny-label">Booked</div><div class="text-[16px] font-extrabold text-emerald-600 leading-none mt-1">5</div></div>
-                    </div>
-                    <div class="preview-row preview-slide"><span class="text-[10px] font-bold text-slate-700">Sarah Johnson</span><span class="tool-anim-pill bg-emerald-50 text-emerald-700">Contacted</span></div>
-                    <div class="preview-row preview-fade" style="animation-delay:.25s"><span class="text-[10px] font-bold text-slate-700">Quote follow-up</span><span class="tool-anim-pill bg-violet-50 text-violet-700">Queued</span></div>
-                </div>
-            </div>`;
-        }
-        if (type === 'text-reply' || type === 'notification-toast') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area notification-preview">
-                    <div class="preview-topbar mb-0">
-                        <div class="preview-title">${type === 'text-reply' ? 'Missed call text-back' : 'Follow-up automation'}</div>
-                        <span class="preview-mini-pill">Auto</span>
-                    </div>
-                    <div class="preview-bubble-card is-inbound rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-600 leading-snug preview-bubble">Missed call: new website lead</div>
-                    <div class="preview-bubble-card is-outbound rounded-xl bg-blue-600 px-2.5 py-2 text-[10px] text-white leading-snug preview-bubble" style="animation-delay:.5s">Hi, we saw your request. Want the next available time?</div>
-                    <div class="preview-bubble-card is-inbound rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] text-emerald-700 leading-snug preview-bubble" style="animation-delay:.9s">Customer replied: Yes</div>
-                    <div class="preview-trigger-row rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-semibold flex items-center justify-between px-2 preview-fade">
-                        <span>Lead marked warm</span><span class="opacity-80">Notified</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'quiz-flow' || type === 'checklist-flow') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar mb-0">
-                        <div><div class="preview-title">${type === 'quiz-flow' ? 'Fit finder' : 'Signup checklist'}</div><div class="preview-tiny-label">Step 3 of 4</div></div>
-                        <span class="preview-mini-pill">Routing</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">${Array.from({length:4}).map((_,i)=>`<span class="h-1.5 flex-1 rounded-full ${i < 3 ? 'bg-blue-500' : 'bg-slate-300'} ${i===2 ? 'preview-pulse' : ''}"></span>`).join('')}</div>
-                    <div class="preview-row"><span class="preview-field-line w-[68%]"></span><span class="h-3 w-3 rounded-full border border-slate-300"></span></div>
-                    <div class="preview-row preview-glow"><span class="preview-field-line w-[54%]"></span><span class="preview-check">✓</span></div>
-                    <div class="preview-row preview-fade"><span class="preview-field-line w-[48%]"></span><span class="tool-anim-pill bg-blue-50 text-blue-700">Best fit</span></div>
-                    <div class="relative overflow-hidden h-6 rounded-lg border border-blue-200 bg-blue-50 flex items-center justify-center text-[10px] text-blue-700 font-semibold">
-                        <span class="preview-swap absolute">Evaluating answer…</span>
-                        <span class="preview-reveal">Matched next step</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        if (type === 'estimate-calc') {
-            return `<div class="preview-shell">
-                <div class="preview-safe-area flex flex-col gap-2">
-                    <div class="preview-topbar mb-0">
-                        <div class="preview-title">Instant estimate</div>
-                        <span class="preview-mini-pill">Qualified</span>
-                    </div>
-                    <div class="preview-map">
-                        <span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span><span class="preview-map-pin preview-pulse"></span>
-                    </div>
-                    <div class="preview-row"><span class="preview-label">Property size</span><span class="preview-field-line w-10"></span></div>
-                    <div class="preview-row"><span class="preview-label">Service type</span><span class="tool-anim-pill bg-slate-100 text-slate-600">Selected</span></div>
-                    <div class="h-2 bg-slate-200 rounded-full"><div class="h-full bg-blue-600 rounded-full preview-fill"></div></div>
-                    <div class="h-9 rounded-lg border border-blue-200 bg-blue-50 px-2.5 flex items-center justify-between preview-glow">
-                        <span class="text-[10px] text-slate-600">Estimated range</span>
-                        <span class="text-[11px] text-blue-700 font-bold preview-shift">$4.5k–$6.8k</span>
-                    </div>
-                </div>
-            </div>`;
-        }
-        return `<div class="preview-shell"><div class="h-full w-full bg-white border border-slate-200 rounded-lg"></div></div>`;
     };
 
-    const toolCard = (tool, index) => `
-      <article class="industry-card industry-tools-fade" style="transition-delay:${index * 60}ms;" tabindex="0">
-        <div>
-          <span class="type-pill">${tool.type}</span>
-          <h3 class="mt-3 text-[24px] leading-tight font-bold text-brand-dark">${tool.name}</h3>
-          <p class="mt-2 text-[15px] font-semibold text-slate-800">${tool.benefit}</p>
-          <p class="mt-2 text-[14px] text-slate-500 leading-relaxed">${tool.description}</p>
-        </div>
-        ${previewByType(tool.animation)}
-      </article>`;
+    const revealCurrentHashSection = () => {
+        const hash = window.location.hash;
+        if (!hash || hash === '#' || hash === '#home') return;
+        const target = document.querySelector(hash);
+        if (!target) return;
+        revealSectionImmediately(target);
+        const nextSection = target.nextElementSibling;
+        if (nextSection?.tagName === 'SECTION') revealSectionImmediately(nextSection);
+    };
 
-    const renderIndustryTabs = () => {
-        if (!selectorEl) return;
-        selectorEl.innerHTML = industryData.map((industry, idx) => `
-          <button class="industry-tab" role="tab" id="tab-${industry.id}" aria-selected="${industry.id === activeIndustry}" aria-controls="panel-${industry.id}" tabindex="${industry.id === activeIndustry ? 0 : -1}" data-industry-id="${industry.id}">${industry.label}</button>
-        `).join('');
+    window.addEventListener('hashchange', () => window.setTimeout(revealCurrentHashSection, 220));
+    window.setTimeout(revealCurrentHashSection, 520);
 
-        selectorEl.querySelectorAll('[role="tab"]').forEach((tab, idx, arr) => {
-            tab.addEventListener('click', () => switchIndustry(tab.dataset.industryId));
-            tab.addEventListener('keydown', (e) => {
-                const key = e.key;
-                if (!['ArrowLeft','ArrowRight','Home','End'].includes(key)) return;
-                e.preventDefault();
-                let next = idx;
-                if (key === 'ArrowRight') next = (idx + 1) % arr.length;
-                if (key === 'ArrowLeft') next = (idx - 1 + arr.length) % arr.length;
-                if (key === 'Home') next = 0;
-                if (key === 'End') next = arr.length - 1;
-                arr[next].focus();
-                switchIndustry(arr[next].dataset.industryId);
+    const initInterruptionAudit = () => {
+        const audit = document.querySelector('.interruption-audit');
+        const result = document.getElementById('auditResult');
+        if (!audit || !result) return;
+        const auditData = {
+            status: {
+                title: 'Customer Communication System',
+                copy: 'For teams fielding repeat “any update?” calls while work is already moving.',
+                items: ['Status update workflow', 'Request routing', 'Message templates', 'Owner exception alerts'],
+                cta: 'Map your current communication flow'
+            },
+            estimate: {
+                title: 'Estimate Follow-Up System',
+                copy: 'For businesses sending estimates but losing momentum after the first conversation.',
+                items: ['Open estimate tracker', 'Follow-up reminders', 'Message templates', 'Simple status categories'],
+                cta: 'Review your estimate flow'
+            },
+            messages: {
+                title: 'Custom Operational Workflow',
+                copy: 'For teams with requests spread across calls, texts, forms, inboxes, and social messages.',
+                items: ['Intake path', 'Routing rules', 'Shared tracking structure', 'Team handoff documentation'],
+                cta: 'Identify where messages enter'
+            },
+            owner: {
+                title: 'Owner Attention System',
+                copy: 'For businesses where every loose end still lands on the owner before anything moves.',
+                items: ['Routing rules', 'Exception alerts', 'Customer update templates', 'Internal handoff process'],
+                cta: 'Separate decisions from updates'
+            }
+        };
+        const renderAudit = key => {
+            const data = auditData[key] || auditData.status;
+            result.innerHTML = `
+                <p class="audit-kicker">Likely system</p>
+                <h3>${data.title}</h3>
+                <p>${data.copy}</p>
+                <ul>${data.items.map(item => `<li>${item}</li>`).join('')}</ul>
+                <a href="#form">${data.cta}</a>
+            `;
+        };
+        audit.querySelectorAll('.audit-option').forEach(button => {
+            button.addEventListener('click', () => {
+                audit.querySelectorAll('.audit-option').forEach(option => {
+                    option.classList.remove('is-active');
+                    option.setAttribute('aria-selected', 'false');
+                });
+                button.classList.add('is-active');
+                button.setAttribute('aria-selected', 'true');
+                renderAudit(button.dataset.audit);
             });
         });
     };
 
-    const renderTools = () => {
-        if (!toolsGridEl) return;
-        const industry = industryData.find(i => i.id === activeIndustry) || industryData[0];
-        toolsGridEl.style.opacity = '0';
-        toolsGridEl.style.transform = 'translateY(8px)';
-        setTimeout(() => {
-            toolsGridEl.innerHTML = industry.tools.map(toolCard).join('');
-            toolsGridEl.setAttribute('id', `panel-${industry.id}`);
-            toolsGridEl.setAttribute('role', 'tabpanel');
-            toolsGridEl.setAttribute('aria-labelledby', `tab-${industry.id}`);
-            toolsGridEl.setAttribute('aria-label', `${industry.label} tools`);
-            requestAnimationFrame(() => {
-                toolsGridEl.style.transition = 'opacity 260ms ease, transform 260ms ease';
-                toolsGridEl.style.opacity = '1';
-                toolsGridEl.style.transform = 'translateY(0)';
-            });
-        }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120);
-    };
-
-    const switchIndustry = (industryId) => {
-        activeIndustry = industryId;
-        renderIndustryTabs();
-        renderTools();
-    };
-
-    if (selectorEl && toolsGridEl) {
-        renderIndustryTabs();
-        renderTools();
-    }
+    initInterruptionAudit();
 
     // Mobile menu
     const btn = document.getElementById('mobileMenuBtn');
@@ -4676,7 +6133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollToHashTarget = (hash, behavior = 'smooth') => {
         const el = document.querySelector(hash);
         if (!el) return;
-        const headerOffset = window.matchMedia('(max-width: 767px)').matches ? 68 : 80;
+        const headerOffset = window.matchMedia('(max-width: 767px)').matches ? 0 : 80;
         const elementPosition = el.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({
@@ -4870,10 +6327,10 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.setAttribute('aria-selected', String(tab.dataset.demoMode === mode));
         });
         const demos = {
-            intake: { name: 'John Smith', service: 'Roof Repair', toast: false, row: false, old: 'Contacted', title: 'Submit Request', caption: 'Step 1: the customer fills out a guided form with the details your business needs before calling back.' },
-            notify: { name: 'Maria Lopez', service: 'Estimate Request', toast: true, row: false, old: 'Contacted', title: 'Notification Sent', caption: 'Step 2: the owner gets a clear notification instead of waiting for someone to check the website inbox.' },
-            dashboard: { name: 'Avery Kim', service: 'Consultation', toast: true, row: true, old: 'Booked', title: 'Saved to Dashboard', caption: 'Step 3: the inquiry is saved into a simple dashboard so the team knows what happened and what is next.' },
-            followup: { name: 'Sarah Johnson', service: 'Quote Follow-Up', toast: true, row: true, old: 'Reminder Queued', title: 'Follow-Up Queued', caption: 'Step 4: follow-up is queued so warm leads are not left sitting after the first touch.' }
+            intake: { name: 'Customer update request', service: 'Roof repair status', toast: false, row: false, old: 'New request', title: 'Capture Request', caption: 'Step 1: the customer gives the details your team needs without another back-and-forth call.' },
+            notify: { name: 'Estimate approval needed', service: 'HVAC replacement quote', toast: true, row: false, old: 'Needs review', title: 'Route to Owner', caption: 'Step 2: only the requests that need judgment reach the owner, while routine updates stay out of the way.' },
+            dashboard: { name: 'Callback reminder', service: 'Plumbing estimate follow-up', toast: true, row: true, old: 'Tracked', title: 'Add to Tracker', caption: 'Step 3: the open loop is saved into a simple tracker so the team knows what happened and what is next.' },
+            followup: { name: 'Customer status update', service: 'Job scheduled for Friday', toast: true, row: true, old: 'Reminder queued', title: 'Queue Follow-Up', caption: 'Step 4: follow-up is queued so customers and open estimates are not left waiting on memory.' }
         };
         const demo = demos[mode] || demos.intake;
         const captionEl = document.querySelector('[data-demo-caption]');
@@ -4912,7 +6369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorNames.forEach(el => el.style.display = 'inline-block');
         cursorSvcs.forEach(el => el.style.display = 'none');
         btns.forEach(el => {
-            el.textContent = 'Submit Request';
+            el.textContent = 'Capture Request';
             el.classList.remove('mockup-btn-click', 'mockup-btn-hover');
         });
         toasts.forEach(el => el.classList.remove('active'));
@@ -4941,7 +6398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await sleep(400);
         if (!canAnimateMockup()) return;
 
-        if (!(await typeText('John Smith', nameEls))) return;
+        if (!(await typeText('Customer update request', nameEls))) return;
         await sleep(300);
         if (!canAnimateMockup()) return;
         nameContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
@@ -4954,7 +6411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await sleep(300);
         if (!canAnimateMockup()) return;
 
-        if (!(await typeText('Roof Repair', svcEls))) return;
+        if (!(await typeText('Roof repair status', svcEls))) return;
         await sleep(300);
         if (!canAnimateMockup()) return;
         svcContainers.forEach(el => el.classList.remove('mockup-focus-glow'));
@@ -5097,6 +6554,314 @@ document.addEventListener("submit", ev => {
         setTimeout(function () { loadIdentityScript(bootIdentityLoginHandler); }, 1500);
     }
 })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const premiumReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    try {
+        const ruleTargets = ['services', 'products', 'work', 'industry-tools', 'pricing', 'process', 'form'];
+        ruleTargets.forEach(function (id) {
+            const section = document.getElementById(id);
+            if (!section) return;
+            const previous = section.previousElementSibling;
+            if (previous && previous.classList.contains('section-rule')) return;
+            const rule = document.createElement('div');
+            rule.className = 'section-rule';
+            if (id === 'form') rule.classList.add('section-rule-dark');
+            section.parentNode.insertBefore(rule, section);
+        });
+    } catch (error) {}
+
+    try {
+        if (!premiumReduceMotion) {
+            const splitHeading = function (heading) {
+                if (!heading || heading.dataset.wordRevealReady === 'true') return [];
+                const words = (heading.textContent || '').trim().split(/\s+/).filter(Boolean);
+                if (!words.length) return [];
+                heading.dataset.wordRevealReady = 'true';
+                heading.textContent = '';
+                return words.map(function (word, index) {
+                    const wrap = document.createElement('span');
+                    const inner = document.createElement('span');
+                    wrap.className = 'word-reveal-wrap';
+                    inner.className = 'word-reveal-inner';
+                    inner.textContent = word;
+                    inner.style.transitionDelay = Math.min(index * 48, 320) + 'ms';
+                    wrap.appendChild(inner);
+                    heading.appendChild(wrap);
+                    return inner;
+                });
+            };
+
+            const revealHeadings = [];
+            ['services', 'products', 'industry-tools', 'pricing', 'process'].forEach(function (id) {
+                const heading = document.querySelector('#' + id + ' h2');
+                if (heading) revealHeadings.push(heading);
+            });
+            Array.from(document.querySelectorAll('section h2')).forEach(function (heading) {
+                if ((heading.textContent || '').trim() === "Your Business Shouldn't Depend on Your Memory") {
+                    revealHeadings.push(heading);
+                }
+            });
+
+            const headingObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    const inners = Array.from(entry.target.querySelectorAll('.word-reveal-inner'));
+                    inners.forEach(function (inner, index) {
+                        window.setTimeout(function () {
+                            inner.classList.add('word-visible');
+                        }, Math.min(index * 48, 320));
+                    });
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.18, rootMargin: '0px 0px -60px 0px' });
+
+            revealHeadings.forEach(function (heading) {
+                if (heading.closest('#form') || heading.closest('footer') || heading.closest('#work')) return;
+                splitHeading(heading);
+                headingObserver.observe(heading);
+            });
+        }
+    } catch (error) {}
+
+    try {
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            const glowCards = document.querySelectorAll('.service-card, .product-card, .work-card, .pricing-card, .industry-card');
+            glowCards.forEach(function (card) {
+                card.addEventListener('mousemove', function (event) {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--glow-x', (event.clientX - rect.left) + 'px');
+                    card.style.setProperty('--glow-y', (event.clientY - rect.top) + 'px');
+                });
+                card.addEventListener('mouseleave', function () {
+                    card.style.setProperty('--glow-x', '50%');
+                    card.style.setProperty('--glow-y', '50%');
+                });
+            });
+        }
+    } catch (error) {}
+
+    try {
+        if (!document.getElementById('scroll-progress-bar')) {
+            const bar = document.createElement('div');
+            bar.id = 'scroll-progress-bar';
+            document.body.insertBefore(bar, document.body.firstChild);
+            const updateProgress = function () {
+                const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+                bar.style.width = pct + '%';
+            };
+            window.addEventListener('scroll', updateProgress, { passive: true });
+            window.addEventListener('resize', updateProgress);
+            updateProgress();
+        }
+    } catch (error) {}
+
+    try {
+        if (!premiumReduceMotion) {
+            const auditForm = document.getElementById('auditForm');
+            const fields = document.querySelectorAll('#auditForm .relative.group input, #auditForm .relative.group textarea');
+            fields.forEach(function (field) {
+                if (field.nextElementSibling && field.nextElementSibling.classList.contains('field-line')) return;
+                const line = document.createElement('span');
+                line.className = 'field-line';
+                field.insertAdjacentElement('afterend', line);
+                field.addEventListener('focus', function () {
+                    line.classList.add('is-focused');
+                });
+                field.addEventListener('blur', function () {
+                    line.classList.remove('is-focused');
+                });
+            });
+            const syncFieldLines = function () {
+                fields.forEach(function (field) {
+                    const line = field.nextElementSibling;
+                    if (line && line.classList.contains('field-line')) {
+                        line.classList.toggle('is-focused', document.activeElement === field);
+                    }
+                });
+            };
+            if (auditForm) {
+                auditForm.addEventListener('focusin', function (event) {
+                    if (!event.target.matches('.relative.group input, .relative.group textarea')) return;
+                    const line = event.target.nextElementSibling;
+                    if (line && line.classList.contains('field-line')) line.classList.add('is-focused');
+                });
+                auditForm.addEventListener('focusout', function (event) {
+                    if (!event.target.matches('.relative.group input, .relative.group textarea')) return;
+                    const line = event.target.nextElementSibling;
+                    if (line && line.classList.contains('field-line')) line.classList.remove('is-focused');
+                });
+                auditForm.addEventListener('click', function () {
+                    window.setTimeout(syncFieldLines, 0);
+                });
+                auditForm.addEventListener('keyup', syncFieldLines);
+            }
+            window.setTimeout(syncFieldLines, 0);
+        }
+    } catch (error) {}
+
+    try {
+        if (!premiumReduceMotion) {
+            const heroSection = document.querySelector('#view-home > section:first-of-type');
+            const grid = heroSection ? heroSection.querySelector('.bg-grid') : null;
+            if (grid && !(grid.nextElementSibling && grid.nextElementSibling.classList.contains('grid-pulse-overlay'))) {
+                const overlay = document.createElement('div');
+                overlay.className = 'grid-pulse-overlay';
+                grid.insertAdjacentElement('afterend', overlay);
+            }
+        }
+    } catch (error) {}
+
+    try {
+        const sectionIds = ['services', 'products', 'work', 'industry-tools', 'pricing', 'process', 'form'];
+        const desktopLinks = Array.from(document.querySelectorAll('#navbar a[href^="#"]')).filter(function (link) {
+            return sectionIds.indexOf((link.getAttribute('href') || '').replace('#', '')) !== -1 && !link.closest('#mobileMenu') && link.classList.contains('hover-underline');
+        });
+        const clearActive = function () {
+            desktopLinks.forEach(function (link) {
+                link.classList.remove('nav-active');
+            });
+        };
+        const setActive = function (id) {
+            clearActive();
+            desktopLinks.forEach(function (link) {
+                if (link.getAttribute('href') === '#' + id) link.classList.add('nav-active');
+            });
+        };
+        const sectionObserver = new IntersectionObserver(function (entries) {
+            if (window.scrollY < 120) {
+                clearActive();
+                return;
+            }
+            const visible = entries
+                .filter(function (entry) { return entry.isIntersecting; })
+                .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
+            if (visible && visible.target.id) setActive(visible.target.id);
+        }, { threshold: 0.3, rootMargin: '-12% 0px -58% 0px' });
+        sectionIds.forEach(function (id) {
+            const section = document.getElementById(id);
+            if (section) sectionObserver.observe(section);
+        });
+        window.addEventListener('scroll', function () {
+            if (window.scrollY < 120) clearActive();
+        }, { passive: true });
+    } catch (error) {}
+
+    try {
+        const workHeading = document.querySelector('#work h2');
+        const workSection = document.getElementById('work');
+        if (workHeading && workSection && workHeading.dataset.workHighlightReady !== 'true') {
+            const words = (workHeading.textContent || '').trim().split(/\s+/).filter(Boolean);
+            if (words.length) {
+                workHeading.dataset.workHighlightReady = 'true';
+                workHeading.textContent = '';
+                const wordSpans = words.map(function (word, index) {
+                    const span = document.createElement('span');
+                    span.className = 'work-highlight-word';
+                    span.textContent = word + (index === words.length - 1 ? '' : ' ');
+                    workHeading.appendChild(span);
+                    return span;
+                });
+                const updateWorkHighlight = function () {
+                    if (premiumReduceMotion) {
+                        wordSpans.forEach(function (span) { span.classList.add('work-highlight-active'); });
+                        return;
+                    }
+                    const rect = workSection.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                    const rawProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+                    const progress = Math.max(0, Math.min(1, (rawProgress - 0.2) / 0.8));
+                    const activeCount = Math.ceil(progress * wordSpans.length);
+                    wordSpans.forEach(function (span, index) {
+                        span.classList.toggle('work-highlight-active', index < activeCount);
+                    });
+                };
+                window.addEventListener('scroll', updateWorkHighlight, { passive: true });
+                window.addEventListener('resize', updateWorkHighlight);
+                updateWorkHighlight();
+            }
+        }
+    } catch (error) {}
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const splitHeroWords = () => {
+        const targets = Array.from(document.querySelectorAll('[data-word-reveal-hero]'));
+        if (!targets.length) return;
+        const words = [];
+
+        targets.forEach(target => {
+            if (target.dataset.heroWordsReady === 'true') return;
+            target.dataset.heroWordsReady = 'true';
+            const text = target.textContent.trim();
+            target.textContent = '';
+            text.split(/\s+/).forEach((word, index, arr) => {
+                const span = document.createElement('span');
+                span.className = 'hero-reveal-word';
+                span.textContent = word;
+                words.push(span);
+                target.appendChild(span);
+                if (index < arr.length - 1) target.appendChild(document.createTextNode(' '));
+            });
+        });
+
+        if (reduceMotion) {
+            words.forEach(word => {
+                word.style.opacity = '1';
+                word.style.filter = 'none';
+                word.style.transform = 'none';
+            });
+            return;
+        }
+
+        const maxDelay = 3240;
+        const step = words.length > 1 ? maxDelay / (words.length - 1) : 0;
+        words.forEach((word, index) => {
+            word.style.animationDelay = `${Math.round(index * step)}ms`;
+        });
+    };
+
+    const initHeroOverlayNav = () => {
+        const logo = document.getElementById('brandMenuToggle');
+        const btn = document.getElementById('mobileMenuBtn');
+        const menu = document.getElementById('mobileMenu');
+        if (!logo || !btn || !menu) return;
+
+        const compact = window.matchMedia('(max-width: 1023px)');
+        const sync = () => {
+            const open = menu.classList.contains('open');
+            menu.setAttribute('aria-hidden', String(!open));
+            logo.setAttribute('aria-expanded', String(open));
+            logo.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            document.body.classList.toggle('nav-overlay-open', open);
+        };
+
+        logo.addEventListener('click', () => {
+            if (compact.matches) {
+                btn.click();
+                window.setTimeout(sync, 0);
+                return;
+            }
+            window.location.hash = '#home';
+        });
+
+        btn.addEventListener('click', () => window.setTimeout(sync, 0));
+        menu.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => window.setTimeout(sync, 0));
+        });
+        if (typeof compact.addEventListener === 'function') compact.addEventListener('change', sync);
+        sync();
+    };
+
+    splitHeroWords();
+    initHeroOverlayNav();
+});
 </script>
 </body>
 </html>
