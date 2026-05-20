@@ -4185,6 +4185,7 @@
         .hero-type-word {
             display: inline-block;
             color: #60A5FA;
+            font-style: italic;
             white-space: nowrap;
             opacity: 1;
             filter: blur(0);
@@ -4192,6 +4193,18 @@
             transition: opacity 260ms ease, filter 260ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, filter, transform;
             vertical-align: baseline;
+        }
+        .hero-type-word.is-typing::after,
+        .hero-product-mobile-swap.is-typing::after {
+            content: '';
+            display: inline-block;
+            width: 0.075em;
+            height: 0.82em;
+            margin-left: 0.08em;
+            border-radius: 9999px;
+            background: #60A5FA;
+            vertical-align: -0.08em;
+            animation: heroCursorBlink 0.85s step-end infinite;
         }
         .hero-type-word.is-word-exiting {
             opacity: 0;
@@ -4508,6 +4521,7 @@
             .hero-product-mobile-swap {
                 display: block !important;
                 color: #60A5FA;
+                font-style: italic !important;
             }
             .hero-product-subtitle {
                 max-width: 310px;
@@ -4545,7 +4559,7 @@
         }
         @media (max-width: 767px) {
             #navbar.site-nav .site-nav-inner {
-                top: max(10px, env(safe-area-inset-top, 0px)) !important;
+                top: max(14px, calc(env(safe-area-inset-top, 0px) + 4px)) !important;
                 left: 12px !important;
                 right: auto !important;
                 width: min(366px, calc(100vw - 24px)) !important;
@@ -4565,7 +4579,7 @@
             }
             #mobileMenuBtn.site-menu-button {
                 display: inline-flex !important;
-                top: max(21px, calc(env(safe-area-inset-top, 0px) + 21px)) !important;
+                top: max(25px, calc(env(safe-area-inset-top, 0px) + 25px)) !important;
                 right: 24px !important;
                 width: auto !important;
                 min-width: 58px !important;
@@ -4603,7 +4617,7 @@
             }
             .hero-product-mobile-swap span {
                 font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-                font-style: normal !important;
+                font-style: italic !important;
                 font-weight: 850 !important;
                 color: #60A5FA !important;
             }
@@ -5842,8 +5856,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-14 items-start mb-14 md:mb-16 reveal-sweep">
                 <div>
-                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">The Real Problem Isn't More Leads</h2>
-                    <p class="text-[18px] text-brand-muted leading-relaxed">It is trying to finish the work while every status call, schedule question, callback, and estimate follow-up lands on the owner.</p>
+                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">DGC reduces owner interruptions.</h2>
+                    <p class="text-[18px] text-brand-muted leading-relaxed">We install customer communication systems that catch status calls, callbacks, estimates, and updates before they hit the owner.</p>
                 </div>
                 <div class="rounded-[28px] border border-slate-200 bg-slate-50 p-6 md:p-8">
                     <div class="grid sm:grid-cols-2 gap-3 text-[15px] font-bold text-brand-dark mb-6">
@@ -5854,39 +5868,39 @@
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Scheduling questions.</div>
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Status checks.</div>
                     </div>
-                    <p class="text-[16px] text-slate-600 leading-relaxed">When the owner is the default inbox, the day turns reactive. DaytonGrowthCo installs simple interruption filters so fewer routine questions break the workday.</p>
+                    <p class="text-[16px] text-slate-600 leading-relaxed">The goal is simple: fewer routine questions breaking the workday.</p>
                 </div>
             </div>
 
             <div class="text-center max-w-3xl mx-auto mb-10 reveal-sweep">
-                <h3 class="text-[34px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-brand-dark">The owner becomes the operating system. Every loose end routes through their brain.</h3>
+                <h3 class="text-[34px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-brand-dark">Stop routing every loose end through the owner.</h3>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5">
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">01</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Status calls mid-job</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Less “is my car ready?” and “any update?” while someone is trying to work.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Fewer “any update?” interruptions.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">02</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Forgotten callbacks</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Open estimates and return calls stop living on sticky notes or memory.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Follow-ups stop living in memory.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">03</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Repeat questions</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Fewer stops to answer the same pricing, timing, and next-step questions.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Repeat answers get handled faster.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">04</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Scattered messages</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Texts, calls, emails, and social messages stop becoming a mental tracking system.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Messages get routed into one path.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">05</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Owner bottlenecks</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">The owner gets pulled in for decisions, not every routine update.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Owners handle decisions, not every update.</p>
                 </div>
             </div>
         </div>
@@ -5896,47 +5910,47 @@
     <section id="products" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-[#f5f5f7] border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Interruption systems we install.</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Productized fixes for the calls, callbacks, customer updates, and scattered messages that keep stopping the workday.</p>
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Systems we install.</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Focused fixes for the communication problems that interrupt the day.</p>
             </div>
 
             <div class="installation-grid">
                 <article class="product-card install-card install-card-featured stagger-item">
                     <div class="install-card-topline">Status Buffer</div>
-                    <h3>For shops and contractors tired of “any update?” calls.</h3>
-                    <p><strong>Reduces:</strong> status calls, scattered update texts, unclear handoffs, and customers who only know to call the owner.</p>
+                    <h3>Reduce “any update?” calls.</h3>
+                    <p><strong>Reduces:</strong> status calls, scattered update texts, and unclear handoffs.</p>
                     <div class="install-list">
                         <span>Customer update path</span>
                         <span>Status request intake</span>
                         <span>Reply templates</span>
                         <span>Owner exception alerts</span>
                     </div>
-                    <div class="install-outcome">Outcome: customers know where to check, and owners stop being the update desk.</div>
+                    <div class="install-outcome">Outcome: customers know where to check.</div>
                 </article>
 
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Estimate Rescue</div>
-                    <h3>For estimates that get sent, then disappear into the day.</h3>
-                    <p><strong>Reduces:</strong> lost callbacks, forgotten follow-ups, stalled approvals, and “I meant to call them back” moments.</p>
+                    <h3>Catch estimates before they go quiet.</h3>
+                    <p><strong>Reduces:</strong> lost callbacks, forgotten follow-ups, and stalled approvals.</p>
                     <div class="install-list">
                         <span>Open estimate tracker</span>
                         <span>Callback reminders</span>
                         <span>Follow-up message flow</span>
                     </div>
-                    <div class="install-outcome">Outcome: open money stops depending on the owner remembering to chase it.</div>
+                    <div class="install-outcome">Outcome: open estimates get a next step.</div>
                 </article>
 
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Owner Filter</div>
-                    <h3>For the recurring communication mess that keeps pulling the owner off the floor.</h3>
-                    <p><strong>Reduces:</strong> unclear routing, repeated questions, messy handoffs, and admin loops that should not need the owner.</p>
+                    <h3>Filter routine owner interruptions.</h3>
+                    <p><strong>Reduces:</strong> unclear routing, repeated questions, and messy handoffs.</p>
                     <div class="install-list">
                         <span>Interruption map</span>
                         <span>Message routing rules</span>
                         <span>Callback or reminder setup</span>
                         <span>Testing with real scenarios</span>
                     </div>
-                    <div class="install-outcome">Outcome: fewer routine questions make it all the way to the owner.</div>
+                    <div class="install-outcome">Outcome: fewer routine questions reach the owner.</div>
                 </article>
             </div>
         </div>
@@ -5947,7 +5961,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Interruption Relief Installations</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">Focused communication infrastructure for the parts of the day that keep stealing the owner&apos;s attention.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">Pick the system that removes the loudest communication problem first.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
@@ -5957,7 +5971,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">$750</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For fewer “is it done yet?” calls, scheduling interruptions, and repeat update requests.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For fewer status calls and repeat update requests.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer status path</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Update request intake</li>
@@ -5975,7 +5989,7 @@
                         <span class="text-[18px] text-slate-400 font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-white tracking-tight leading-none mt-1">$1,500</div>
                     </div>
-                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For fewer lost callbacks, quiet estimates, and jobs that stall after pricing is sent.</p>
+                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For estimates, callbacks, and approvals that need follow-up.</p>
                     <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Open estimate tracker</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Callback catch system</li>
@@ -5991,7 +6005,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Project-based</span>
                         <div class="text-[42px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">Custom Quote</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For one recurring communication mess that keeps dragging the owner back in.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For the recurring communication mess pulling the owner back in.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Interruption map</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Message routing rules</li>
@@ -6004,8 +6018,8 @@
 
             <div class="mt-14 md:mt-16 rounded-[28px] border border-blue-100 bg-blue-50/70 px-6 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center md:justify-between gap-6 max-w-5xl mx-auto reveal-sweep">
                 <div>
-                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not sure where the interruptions are coming from?</h3>
-                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us what keeps stopping the day. We will point you toward the first system that removes the most noise.</p>
+                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not sure where to start?</h3>
+                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us what keeps interrupting the day. We will point to the first fix.</p>
                 </div>
                 <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3.5 rounded-full text-[14px] font-semibold transition-all duration-300 shrink-0">Get a Quick Recommendation</a>
             </div>
@@ -6016,16 +6030,16 @@
     <section id="process" class="bottom-video-zone pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white overflow-hidden border-t border-slate-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-14 reveal-sweep">
-                <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Install one focused interruption filter.</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">Start with the part of the day that keeps yanking the owner out of work.</p>
+                <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">How it works.</h2>
+                <p class="text-[18px] text-brand-muted leading-relaxed">We find the loudest interruption and install the simplest fix.</p>
             </div>
 
             <div class="grid lg:grid-cols-5 gap-4">
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center mb-5">1</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">List the interruptions</h3><p class="text-[14px] text-slate-500 leading-relaxed">Status calls, missed callbacks, scattered texts, scheduling questions.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mb-5">2</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Pick the loudest one</h3><p class="text-[14px] text-slate-500 leading-relaxed">Choose the problem that interrupts the owner the most often.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-dark p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-white text-brand-dark font-bold flex items-center justify-center mb-5">3</div><h3 class="text-[19px] font-bold text-white mb-2">Install the filter</h3><p class="text-[14px] text-slate-400 leading-relaxed">Create the intake, update path, callback system, or routing rule.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mb-5">4</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Fit current tools</h3><p class="text-[14px] text-slate-500 leading-relaxed">Connect it to the forms, inboxes, calendars, or job tools already in use.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center mb-5">5</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Test the handoff</h3><p class="text-[14px] text-slate-500 leading-relaxed">Run real “customer called again” scenarios before handing it over.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center mb-5">1</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">List the interruptions</h3><p class="text-[14px] text-slate-500 leading-relaxed">Calls, callbacks, texts, updates.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mb-5">2</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Pick the loudest one</h3><p class="text-[14px] text-slate-500 leading-relaxed">Start where the owner gets pulled in most.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-dark p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-white text-brand-dark font-bold flex items-center justify-center mb-5">3</div><h3 class="text-[19px] font-bold text-white mb-2">Install the filter</h3><p class="text-[14px] text-slate-400 leading-relaxed">Build the intake, update path, or routing rule.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mb-5">4</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Fit current tools</h3><p class="text-[14px] text-slate-500 leading-relaxed">Use the inboxes and tools already in place.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center mb-5">5</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Test the handoff</h3><p class="text-[14px] text-slate-500 leading-relaxed">Run real scenarios before handoff.</p></div>
             </div>
         </div>
     </section>
@@ -6165,8 +6179,8 @@
     </div>
     <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 z-10 stagger-group">
         <div class="text-center mb-8 md:mb-10 reveal-sweep">
-            <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Tell us where the day breaks down.</h2>
-            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">We'll map your communication leak and recommend the simplest operational fix. Response guaranteed within 24 hours.</p>
+            <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Tell us what keeps interrupting you.</h2>
+            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">We will recommend the simplest first fix. Response guaranteed within 24 hours.</p>
         </div>
 
         <div class="form-card bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
@@ -6568,25 +6582,45 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        let wordIndex = 0;
-        wordEl.textContent = words[wordIndex];
+        runHeroWordTyping(wordEl, words, { minWidth: true });
+    };
+
+    const initMobileHeroSwap = () => {
+        const container = document.querySelector('[data-mobile-hero-swap]');
+        if (!container) return;
+        if (container.dataset.typingReady === 'true') return;
+        container.dataset.typingReady = 'true';
+        const words = Array.from(container.querySelectorAll('span')).map(span => span.textContent.trim()).filter(Boolean);
+        if (!words.length) return;
+        container.textContent = words[0];
+        if (reduceMotion || window.matchMedia('(min-width: 768px)').matches) return;
+        runHeroWordTyping(container, words, { minWidth: true });
+    };
+
+    const runHeroWordTyping = (target, words, options = {}) => {
+        const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms));
+        const typeSpeed = 92;
+        const deleteSpeed = 58;
+        const holdTime = 1250;
+        let cancelled = false;
 
         const setStableWordWidth = () => {
+            if (!options.minWidth) return;
             const measure = document.createElement('span');
-            measure.className = wordEl.className;
+            measure.className = target.className;
             measure.style.position = 'absolute';
             measure.style.left = '-9999px';
             measure.style.top = '-9999px';
             measure.style.visibility = 'hidden';
             measure.style.whiteSpace = 'nowrap';
             measure.style.pointerEvents = 'none';
-            (wordEl.parentElement || document.body).appendChild(measure);
+            (target.parentElement || document.body).appendChild(measure);
             const maxWidth = words.reduce((width, word) => {
                 measure.textContent = word;
                 return Math.max(width, Math.ceil(measure.getBoundingClientRect().width));
             }, 0);
             measure.remove();
-            if (maxWidth) wordEl.style.minWidth = `${maxWidth}px`;
+            if (maxWidth) target.style.minWidth = `${maxWidth}px`;
         };
 
         if (document.fonts?.ready) {
@@ -6595,46 +6629,31 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(setStableWordWidth);
         }
 
-        const swapWord = () => {
-            wordEl.classList.add('is-word-exiting');
-            window.setTimeout(() => {
+        const loop = async () => {
+            let wordIndex = 0;
+            target.classList.add('is-typing');
+            while (!cancelled) {
+                const word = words[wordIndex];
+                for (let i = target.textContent.length; i > 0; i--) {
+                    target.textContent = target.textContent.slice(0, i - 1);
+                    await wait(deleteSpeed);
+                    if (cancelled) return;
+                }
+                for (let i = 0; i < word.length; i++) {
+                    target.textContent += word.charAt(i);
+                    await wait(typeSpeed);
+                    if (cancelled) return;
+                }
+                await wait(holdTime);
                 wordIndex = (wordIndex + 1) % words.length;
-                wordEl.textContent = words[wordIndex];
-                wordEl.classList.remove('is-word-exiting');
-                wordEl.classList.add('is-word-entering');
-                requestAnimationFrame(() => {
-                    wordEl.classList.remove('is-word-entering');
-                });
-            }, 260);
+            }
         };
 
-        window.setInterval(swapWord, 1900);
-    };
-
-    const initMobileHeroSwap = () => {
-        const container = document.querySelector('[data-mobile-hero-swap]');
-        if (!container) return;
-        const spans = Array.from(container.querySelectorAll('span'));
-        if (!spans.length) return;
-        let index = spans.findIndex(span => span.classList.contains('visible'));
-        if (index < 0) index = 0;
-
-        const setWidth = span => {
-            container.style.minWidth = `${Math.ceil(span.scrollWidth)}px`;
+        loop();
+        return () => {
+            cancelled = true;
+            target.classList.remove('is-typing');
         };
-
-        spans.forEach(span => span.classList.remove('visible'));
-        spans[index].classList.add('visible');
-        requestAnimationFrame(() => setWidth(spans[index]));
-
-        if (reduceMotion || window.matchMedia('(min-width: 768px)').matches) return;
-
-        window.setInterval(() => {
-            spans[index].classList.remove('visible');
-            index = (index + 1) % spans.length;
-            spans[index].classList.add('visible');
-            setWidth(spans[index]);
-        }, 2400);
     };
 
     const isPlainHomeRoute = () => {
