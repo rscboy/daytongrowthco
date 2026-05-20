@@ -3472,6 +3472,30 @@
                 linear-gradient(180deg, rgba(248,250,252,0.96), rgba(255,255,255,0.91) 42%, rgba(248,250,252,0.9)),
                 radial-gradient(circle at 50% 0%, rgba(37,99,235,0.1), transparent 42%);
         }
+        #pricing {
+            overflow: hidden;
+        }
+        #pricing .pricing-video-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            filter: saturate(1.05) contrast(1.04);
+            transform: scale(1.01);
+            pointer-events: none;
+        }
+        #pricing.bottom-video-zone::before {
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(248,250,252,0.9), rgba(255,255,255,0.84) 42%, rgba(248,250,252,0.9)),
+                radial-gradient(circle at 50% 0%, rgba(37,99,235,0.08), transparent 42%);
+        }
+        #pricing.bottom-video-zone > *:not(.pricing-video-bg) {
+            z-index: 2;
+        }
         #form.bottom-video-zone::before {
             background:
                 radial-gradient(circle at 80% 18%, rgba(37,99,235,0.2), transparent 34%),
@@ -3494,12 +3518,16 @@
             #process.bottom-video-zone::before {
                 background: linear-gradient(180deg, rgba(248,250,252,0.97), rgba(255,255,255,0.94));
             }
+            #pricing .pricing-video-bg {
+                opacity: 0.38;
+            }
             #form.bottom-video-zone::before {
                 background: linear-gradient(180deg, rgba(7,10,18,0.78), rgba(10,14,26,0.94));
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            #bottomVideoBackdrop video {
+            #bottomVideoBackdrop video,
+            #pricing .pricing-video-bg {
                 display: none;
             }
         }
@@ -5763,6 +5791,282 @@
             }
         }
     </style>
+    <style>
+        /* Final premium mobile polish pass. */
+        .hero-product-video-mask {
+            background:
+                linear-gradient(180deg, rgba(5, 8, 15, 0.76) 0%, rgba(5, 8, 15, 0.52) 38%, rgba(5, 8, 15, 0.88) 74%, #050505 100%),
+                radial-gradient(circle at 32% 38%, rgba(80, 124, 210, 0.24), transparent 42%) !important;
+        }
+        .hero-type-word,
+        .hero-product-mobile-swap,
+        .hero-product-mobile-swap span {
+            color: #7aaeff !important;
+        }
+        .hero-type-word.is-typing::after,
+        .hero-product-mobile-swap.is-typing::after {
+            background: rgba(122, 174, 255, 0.82) !important;
+        }
+        .hero-system-map {
+            background: rgba(8, 12, 24, 0.74) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36) !important;
+            backdrop-filter: blur(18px) saturate(135%) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+        }
+        .system-node {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            background: rgba(255, 255, 255, 0.045) !important;
+        }
+        @media (max-width: 767px) {
+            #navbar.site-nav .site-nav-inner {
+                top: max(15px, calc(env(safe-area-inset-top, 0px) + 8px)) !important;
+                left: 50% !important;
+                right: auto !important;
+                width: min(398px, calc(100vw - 28px)) !important;
+                height: 52px !important;
+                padding: 0 10px 0 12px !important;
+                gap: 10px !important;
+                border-radius: 9999px !important;
+                background: rgba(246, 248, 251, 0.86) !important;
+                border-color: rgba(226, 232, 240, 0.64) !important;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12) !important;
+                backdrop-filter: blur(20px) saturate(145%) !important;
+                -webkit-backdrop-filter: blur(20px) saturate(145%) !important;
+                transform: translateX(-50%) !important;
+            }
+            #navbar.site-nav .brand-mark {
+                gap: 10px !important;
+                padding-right: 56px !important;
+            }
+            .brand-mark-icon {
+                width: 30px !important;
+                height: 30px !important;
+                border-radius: 11px !important;
+            }
+            .brand-wordmark {
+                font-size: 16px !important;
+                letter-spacing: -0.04em !important;
+            }
+            .brand-wordmark span {
+                color: #475569 !important;
+            }
+            #mobileMenuBtn.site-menu-button {
+                width: 52px !important;
+                min-width: 52px !important;
+                height: 34px !important;
+                min-height: 34px !important;
+                padding: 0 11px !important;
+                gap: 5px !important;
+            }
+            #mobileMenuBtn.site-menu-button svg {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            #mobileMenu.site-mobile-overlay {
+                top: calc(max(15px, env(safe-area-inset-top, 0px)) + 62px) !important;
+            }
+            .hero-product-content {
+                padding-top: 78px !important;
+            }
+            .hero-product-title {
+                line-height: 0.99 !important;
+                letter-spacing: -0.04em !important;
+                margin-bottom: 10px !important;
+            }
+            .hero-product-subtitle {
+                color: rgba(255, 255, 255, 0.82) !important;
+                line-height: 1.48 !important;
+                margin-bottom: 13px !important;
+            }
+            .hero-product-actions {
+                gap: 7px !important;
+            }
+            .hero-product-cta,
+            .hero-product-secondary {
+                min-height: 48px !important;
+                font-size: 13.5px !important;
+            }
+            .hero-product-secondary {
+                border-color: rgba(255, 255, 255, 0.12) !important;
+                background: rgba(255, 255, 255, 0.055) !important;
+                backdrop-filter: blur(16px) !important;
+                -webkit-backdrop-filter: blur(16px) !important;
+            }
+            .hero-dashboard-wrap {
+                margin-top: 26px !important;
+            }
+            .hero-system-map {
+                padding: 15px !important;
+                border-radius: 20px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Copy reduction polish: keep supporting text quieter than the offer. */
+        #services p,
+        #products p,
+        #pricing p,
+        #process p,
+        #form p,
+        #view-about p {
+            font-size: clamp(14px, 1.08vw, 16px) !important;
+            line-height: 1.5 !important;
+        }
+        .service-card p,
+        .install-card p,
+        .pricing-card p,
+        .process-step p,
+        #view-about .grid p {
+            font-size: 13.5px !important;
+            line-height: 1.45 !important;
+        }
+        .install-outcome,
+        .pricing-card li {
+            font-size: 13.5px !important;
+        }
+        @media (max-width: 767px) {
+            #services p,
+            #products p,
+            #pricing p,
+            #process p,
+            #form p,
+            #view-about p {
+                font-size: 14px !important;
+                line-height: 1.46 !important;
+            }
+            .service-card p,
+            .install-card p,
+            .pricing-card p,
+            .process-step p {
+                font-size: 13px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Device-style communication flow window. */
+        .hero-system-map {
+            position: relative !important;
+            overflow: hidden !important;
+            padding: 58px 20px 20px !important;
+            border-radius: 30px !important;
+            background:
+                linear-gradient(180deg, rgba(248, 250, 252, 0.18), rgba(15, 23, 42, 0.58)),
+                rgba(8, 12, 24, 0.78) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 28px 90px rgba(0, 0, 0, 0.38) !important;
+            backdrop-filter: blur(22px) saturate(140%) !important;
+            -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
+        }
+        .hero-system-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 42px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.07)),
+                rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-system-map::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 18px;
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #ff5f57;
+            box-shadow: 18px 0 0 #ffbd2e, 36px 0 0 #28c840;
+            opacity: 0.9;
+        }
+        .system-map-header {
+            min-height: 46px !important;
+            align-items: center !important;
+            margin: 0 0 14px !important;
+            padding: 12px 14px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 18px !important;
+            background: rgba(255, 255, 255, 0.055) !important;
+        }
+        .system-map-header p {
+            color: rgba(255, 255, 255, 0.94) !important;
+            font-size: 12px !important;
+            letter-spacing: 0.08em !important;
+        }
+        .system-map-header span {
+            color: rgba(226, 232, 240, 0.72) !important;
+            font-size: 12px !important;
+        }
+        .system-node {
+            min-height: 88px !important;
+            border-radius: 22px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.05)),
+                rgba(255, 255, 255, 0.035) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+        }
+        .system-node-accent {
+            border-color: rgba(122, 174, 255, 0.22) !important;
+            background:
+                linear-gradient(180deg, rgba(122, 174, 255, 0.18), rgba(37, 99, 235, 0.08)),
+                rgba(255, 255, 255, 0.04) !important;
+        }
+        .system-node-owner {
+            border-color: rgba(255, 255, 255, 0.14) !important;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06)),
+                rgba(255, 255, 255, 0.045) !important;
+        }
+        .system-node span {
+            color: #9cc4ff !important;
+            font-size: 10px !important;
+        }
+        .system-node strong {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-size: 13.5px !important;
+        }
+        .system-arrow {
+            width: 28px;
+            height: 28px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 999px;
+            background: rgba(122, 174, 255, 0.12);
+            color: rgba(190, 216, 255, 0.78) !important;
+            font-size: 18px !important;
+            line-height: 1;
+        }
+        @media (max-width: 767px) {
+            .hero-system-map {
+                padding: 50px 14px 14px !important;
+                border-radius: 24px !important;
+            }
+            .hero-system-map::before {
+                height: 36px;
+            }
+            .hero-system-map::after {
+                top: 14px;
+                left: 16px;
+                width: 8px;
+                height: 8px;
+                box-shadow: 15px 0 0 #ffbd2e, 30px 0 0 #28c840;
+            }
+            .system-map-header {
+                padding: 11px 12px !important;
+                border-radius: 16px !important;
+            }
+            .system-node {
+                min-height: 58px !important;
+                border-radius: 16px !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-brand-light text-brand-dark antialiased">
@@ -5831,21 +6135,21 @@
         <div class="hero-product-video-mask" aria-hidden="true"></div>
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
-            <h1 class="hero-product-title">Customer communication systems for Dayton <span class="hero-product-line"><span class="hero-type-word" data-hero-type-word>contractors.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap><span class="visible">contractors.</span><span>roofers.</span><span>HVAC crews.</span><span>plumbers.</span><span>electricians.</span><span>auto shops.</span><span>remodelers.</span></span></span></h1>
-            <p class="hero-product-subtitle" data-word-reveal-hero>We install practical workflows so requests, updates, approvals, and reminders stop living in the owner&apos;s head.</p>
+            <h1 class="hero-product-title">Customer communication systems for <span class="hero-product-line"><span class="hero-type-word" data-hero-type-word>contractors.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap><span class="visible">contractors.</span><span>roofers.</span><span>HVAC crews.</span><span>plumbers.</span><span>electricians.</span><span>auto shops.</span><span>remodelers.</span></span></span></h1>
+            <p class="hero-product-subtitle" data-word-reveal-hero>We reduce status calls, lost callbacks, and scattered updates before they interrupt the owner.</p>
             <div class="hero-product-actions" aria-label="Primary actions">
                 <a href="#form" class="hero-product-cta">Get a Quick Recommendation</a>
                 <a href="#pricing" class="hero-product-secondary">View Installation Packages</a>
             </div>
             <div class="hero-system-map-wrap hero-dashboard-wrap" aria-label="Communication workflow preview">
                 <div class="hero-system-map">
-                    <div class="system-map-header"><p>Communication flow</p><span>Customer request to owner exception</span></div>
+                    <div class="system-map-header"><p>Communication flow</p><span>Request to route to owner only if needed</span></div>
                     <div class="system-map-grid">
-                        <div class="system-node"><span>Intake</span><strong>Request captured clearly</strong></div>
+                        <div class="system-node"><span>Intake</span><strong>Customer request</strong></div>
                         <div class="system-arrow" aria-hidden="true">→</div>
-                        <div class="system-node system-node-accent"><span>Routing</span><strong>Sent to the right place</strong></div>
+                        <div class="system-node system-node-accent"><span>Routing</span><strong>Handled or assigned</strong></div>
                         <div class="system-arrow" aria-hidden="true">→</div>
-                        <div class="system-node system-node-owner"><span>Owner</span><strong>Only pulled in when needed</strong></div>
+                        <div class="system-node system-node-owner"><span>Owner</span><strong>Only if needed</strong></div>
                     </div>
                 </div>
             </div>
@@ -5856,8 +6160,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-14 items-start mb-14 md:mb-16 reveal-sweep">
                 <div>
-                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">DGC reduces owner interruptions.</h2>
-                    <p class="text-[18px] text-brand-muted leading-relaxed">We install customer communication systems that catch status calls, callbacks, estimates, and updates before they hit the owner.</p>
+                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">Fewer calls. Clearer follow-ups.</h2>
+                    <p class="text-[18px] text-brand-muted leading-relaxed">DGC installs communication systems so routine customer questions stop routing through the owner.</p>
                 </div>
                 <div class="rounded-[28px] border border-slate-200 bg-slate-50 p-6 md:p-8">
                     <div class="grid sm:grid-cols-2 gap-3 text-[15px] font-bold text-brand-dark mb-6">
@@ -5868,39 +6172,39 @@
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Scheduling questions.</div>
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Status checks.</div>
                     </div>
-                    <p class="text-[16px] text-slate-600 leading-relaxed">The goal is simple: fewer routine questions breaking the workday.</p>
+                    <p class="text-[16px] text-slate-600 leading-relaxed">DGC gives those requests a place to go.</p>
                 </div>
             </div>
 
             <div class="text-center max-w-3xl mx-auto mb-10 reveal-sweep">
-                <h3 class="text-[34px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-brand-dark">Stop routing every loose end through the owner.</h3>
+                <h3 class="text-[34px] md:text-[44px] font-bold tracking-[-0.03em] leading-tight text-brand-dark">What gets quieter.</h3>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5">
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">01</div>
-                    <h4 class="text-[18px] font-bold text-brand-dark mb-3">Status calls mid-job</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Fewer “any update?” interruptions.</p>
+                    <h4 class="text-[18px] font-bold text-brand-dark mb-3">Status calls</h4>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Fewer “any update?” calls.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">02</div>
-                    <h4 class="text-[18px] font-bold text-brand-dark mb-3">Forgotten callbacks</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Follow-ups stop living in memory.</p>
+                    <h4 class="text-[18px] font-bold text-brand-dark mb-3">Callbacks</h4>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Follow-ups get tracked.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">03</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Repeat questions</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Repeat answers get handled faster.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Common answers get routed.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">04</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Scattered messages</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Messages get routed into one path.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Texts and calls get organized.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">05</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Owner bottlenecks</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Owners handle decisions, not every update.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Owners see what matters.</p>
                 </div>
             </div>
         </div>
@@ -5911,14 +6215,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Systems we install.</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Focused fixes for the communication problems that interrupt the day.</p>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Pick one communication problem. Install one clean fix.</p>
             </div>
 
             <div class="installation-grid">
                 <article class="product-card install-card install-card-featured stagger-item">
                     <div class="install-card-topline">Status Buffer</div>
                     <h3>Reduce “any update?” calls.</h3>
-                    <p><strong>Reduces:</strong> status calls, scattered update texts, and unclear handoffs.</p>
+                    <p><strong>Reduces:</strong> status calls and update texts.</p>
                     <div class="install-list">
                         <span>Customer update path</span>
                         <span>Status request intake</span>
@@ -5931,7 +6235,7 @@
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Estimate Rescue</div>
                     <h3>Catch estimates before they go quiet.</h3>
-                    <p><strong>Reduces:</strong> lost callbacks, forgotten follow-ups, and stalled approvals.</p>
+                    <p><strong>Reduces:</strong> lost callbacks and stalled approvals.</p>
                     <div class="install-list">
                         <span>Open estimate tracker</span>
                         <span>Callback reminders</span>
@@ -5943,7 +6247,7 @@
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Owner Filter</div>
                     <h3>Filter routine owner interruptions.</h3>
-                    <p><strong>Reduces:</strong> unclear routing, repeated questions, and messy handoffs.</p>
+                    <p><strong>Reduces:</strong> repeat questions and messy handoffs.</p>
                     <div class="install-list">
                         <span>Interruption map</span>
                         <span>Message routing rules</span>
@@ -5958,10 +6262,11 @@
 
     <!-- 3. PRICING SECTION -->
     <section id="pricing" class="bottom-video-zone pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-white border-t border-slate-200">
+        <video id="pricingMuxVideo" class="pricing-video-bg" muted autoplay playsinline loop preload="none" poster="https://image.mux.com/blULaJm2RMbAmsrwxLrBdgEx9yI1do2yM89vHTkdA6I/thumbnail.jpg?time=0" data-mux-stream="https://stream.mux.com/blULaJm2RMbAmsrwxLrBdgEx9yI1do2yM89vHTkdA6I.m3u8" aria-hidden="true"></video>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Interruption Relief Installations</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">Pick the system that removes the loudest communication problem first.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">Start with the interruption costing the most time.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
@@ -5971,7 +6276,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">$750</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For fewer status calls and repeat update requests.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For routine status questions.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer status path</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Update request intake</li>
@@ -5989,7 +6294,7 @@
                         <span class="text-[18px] text-slate-400 font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-white tracking-tight leading-none mt-1">$1,500</div>
                     </div>
-                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For estimates, callbacks, and approvals that need follow-up.</p>
+                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For estimates that need follow-up.</p>
                     <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Open estimate tracker</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Callback catch system</li>
@@ -6005,7 +6310,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Project-based</span>
                         <div class="text-[42px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">Custom Quote</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For the recurring communication mess pulling the owner back in.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For one recurring communication mess.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Interruption map</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Message routing rules</li>
@@ -6019,7 +6324,7 @@
             <div class="mt-14 md:mt-16 rounded-[28px] border border-blue-100 bg-blue-50/70 px-6 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center md:justify-between gap-6 max-w-5xl mx-auto reveal-sweep">
                 <div>
                     <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not sure where to start?</h3>
-                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us what keeps interrupting the day. We will point to the first fix.</p>
+                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us what keeps interrupting you. We will point to the first fix.</p>
                 </div>
                 <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3.5 rounded-full text-[14px] font-semibold transition-all duration-300 shrink-0">Get a Quick Recommendation</a>
             </div>
@@ -6031,7 +6336,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-14 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">How it works.</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">We find the loudest interruption and install the simplest fix.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">Find the interruption. Build the route. Test the handoff.</p>
             </div>
 
             <div class="grid lg:grid-cols-5 gap-4">
@@ -6077,13 +6382,13 @@
             <div class="flex-1 about-founder-copy">
                 <h2 class="text-[28px] md:text-[32px] font-bold text-brand-dark mb-6">Meet the Founder</h2>
                 <div class="space-y-5 text-[16px] md:text-[17px] leading-relaxed text-slate-700">
-                    <p>Born and raised in Dayton, Ohio, <strong class="text-brand-dark font-semibold">Samuel Caruso</strong> has always loved building things.</p>
-                    <p>He earned his undergraduate degree in History from the University of Michigan and later completed a Master's in Entrepreneurship and Emerging Technology.</p>
+                    <p><strong class="text-brand-dark font-semibold">Samuel Caruso</strong> builds practical systems for local service businesses.</p>
+                    <p>DGC focuses on the customer communication problems that interrupt owners during the day.</p>
                     <div class="relative pl-6 py-2 my-8">
                         <div class="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-brand-blue to-purple-500 rounded-full"></div>
-                        <p class="text-[18px] text-brand-dark font-semibold italic leading-relaxed">"After seeing how many local businesses struggled with outdated websites, Samuel realized the problem wasn't design. <span class="bg-blue-500/10 text-brand-blue px-1.5 rounded inline-block transform -rotate-1 shadow-sm border border-blue-500/20">The problem was that their websites didn't actually do anything.</span>"</p>
+                        <p class="text-[18px] text-brand-dark font-semibold italic leading-relaxed">"Most owners are not short on effort. <span class="bg-blue-500/10 text-brand-blue px-1.5 rounded inline-block transform -rotate-1 shadow-sm border border-blue-500/20">They are stuck being the communication hub.</span>"</p>
                     </div>
-                    <p>He founded DaytonGrowthCo. to fix that, giving business owners a reliable partner focused entirely on building systems for growth.</p>
+                    <p>DaytonGrowthCo. installs simple routes for updates, callbacks, estimates, and owner exceptions.</p>
                 </div>
             </div>
         </div>
@@ -6098,12 +6403,12 @@
             <!-- Typical Website -->
             <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 stagger-item flex flex-col">
                 <div class="text-[11px] font-bold uppercase tracking-widest text-slate-600 mb-3">The Old Way</div>
-                <h3 class="text-[24px] font-bold text-brand-dark mb-6">Most Websites Just Sit There</h3>
+                <h3 class="text-[24px] font-bold text-brand-dark mb-6">The Owner Is The Inbox</h3>
                 <div class="space-y-4 flex-1 text-[15px] text-slate-700">
-                    <div class="flex gap-3"><span class="text-slate-600">×</span> Hard to update</div>
-                    <div class="flex gap-3"><span class="text-slate-600">×</span> Basic contact forms that lose leads</div>
-                    <div class="flex gap-3"><span class="text-slate-600">×</span> Hidden from local Google searches</div>
-                    <div class="flex gap-3"><span class="text-slate-600">×</span> Broken mobile experiences</div>
+                    <div class="flex gap-3"><span class="text-slate-600">×</span> Status calls interrupt work</div>
+                    <div class="flex gap-3"><span class="text-slate-600">×</span> Callbacks depend on memory</div>
+                    <div class="flex gap-3"><span class="text-slate-600">×</span> Updates get scattered</div>
+                    <div class="flex gap-3"><span class="text-slate-600">×</span> Everything routes to the owner</div>
                 </div>
             </div>
 
@@ -6113,12 +6418,12 @@
                 <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
                 
                 <div class="text-[11px] font-bold uppercase tracking-widest text-blue-400 mb-3 relative z-10">The New Way</div>
-                <h3 class="text-[24px] font-bold text-white mb-6 relative z-10">A System That Works</h3>
+                <h3 class="text-[24px] font-bold text-white mb-6 relative z-10">Communication Has A Path</h3>
                 <div class="space-y-4 flex-1 text-[15px] text-slate-300 relative z-10">
-                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Handled for you completely</div>
-                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Smart lead capture & follow-ups</div>
-                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Optimized for Dayton local searches</div>
-                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Flawless, app-like mobile experience</div>
+                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Status requests get routed</div>
+                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Callbacks get tracked</div>
+                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Estimates get follow-up</div>
+                    <div class="flex gap-3"><span class="text-emerald-400 font-bold">✓</span> Owners see exceptions</div>
                 </div>
             </div>
 
@@ -6131,24 +6436,24 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
         <div class="text-center mb-16 reveal-sweep">
             <h2 class="text-[36px] md:text-[42px] font-bold tracking-tight text-brand-dark mb-4">What Makes Us Different</h2>
-            <p class="text-[17px] text-slate-700">Clear, structured thinking applied directly to your business.</p>
+            <p class="text-[17px] text-slate-700">Simple systems for the interruptions your team already feels.</p>
         </div>
         
         <div class="grid md:grid-cols-3 gap-8">
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-blue-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Ongoing Management</h3>
-                <p class="text-[14px] text-slate-700 leading-relaxed">All software updates, security patches, and backups handled so your site never goes down.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Interruption First</h3>
+                <p class="text-[14px] text-slate-700 leading-relaxed">We start with what keeps stopping the owner.</p>
             </div>
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-purple-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Local SEO</h3>
-                <p class="text-[14px] text-slate-700 leading-relaxed">Your Google Business Profile and local keywords kept current so nearby customers find you first.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Built Around Your Tools</h3>
+                <p class="text-[14px] text-slate-700 leading-relaxed">We improve the inboxes and workflows already in place.</p>
             </div>
             <div class="stagger-item text-center px-4">
                 <div class="w-12 h-12 mx-auto bg-emerald-50 rounded-xl flex items-center justify-center mb-5"><svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Performance Upgrades</h3>
-                <p class="text-[14px] text-slate-700 leading-relaxed">Continuous monitoring and improvement of site speed to keep your visitors engaged.</p>
+                <h3 class="text-[18px] font-bold text-brand-dark mb-3">Installed, Not Theoretical</h3>
+                <p class="text-[14px] text-slate-700 leading-relaxed">You get a working route, not a strategy deck.</p>
             </div>
         </div>
     </div>
@@ -6180,7 +6485,7 @@
     <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 z-10 stagger-group">
         <div class="text-center mb-8 md:mb-10 reveal-sweep">
             <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Tell us what keeps interrupting you.</h2>
-            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">We will recommend the simplest first fix. Response guaranteed within 24 hours.</p>
+            <p class="text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">We will recommend the simplest first fix.</p>
         </div>
 
         <div class="form-card bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
@@ -6235,21 +6540,21 @@
                             <input type="radio" name="serviceTier" value="Status Buffer - starting at $750" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" required />
                             <div class="ml-4">
                                 <span class="block text-[14px] font-semibold text-slate-200">Status Buffer - starting at $750</span>
-                                <span class="block text-[13px] text-slate-500 mt-1">Reduce “is it done yet?” calls, scheduling questions, and repeat updates</span>
+                                <span class="block text-[13px] text-slate-500 mt-1">Reduce status calls and repeat updates</span>
                             </div>
                         </label>
                         <label class="flex items-start p-5 border border-blue-500/40 bg-blue-900/10 rounded-[20px] cursor-pointer relative transition-all duration-300">
                             <input type="radio" name="serviceTier" value="Estimate Rescue - starting at $1,500" checked class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
                             <div class="ml-4">
                                 <span class="block text-[14px] font-semibold text-white">Estimate Rescue - starting at $1,500</span>
-                                <span class="block text-[13px] text-blue-300/70 mt-1">Catch open estimates, callbacks, approvals, and reminders before they slip</span>
+                                <span class="block text-[13px] text-blue-300/70 mt-1">Catch estimates and callbacks before they slip</span>
                             </div>
                         </label>
                         <label class="flex items-start p-6 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-300">
                             <input type="radio" name="serviceTier" value="Owner Filter - custom quote" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" />
                             <div class="ml-4">
                                 <span class="block text-[14px] font-semibold text-slate-200">Owner Filter - custom quote</span>
-                                <span class="block text-[13px] text-slate-500 mt-1">For one recurring communication mess that keeps dragging the owner back in</span>
+                                <span class="block text-[13px] text-slate-500 mt-1">Route one recurring communication mess</span>
                             </div>
                         </label>
                     </div>
@@ -6285,7 +6590,7 @@
                         Dayton<span class="font-normal text-slate-500">Growth</span><span class="text-brand-blue">Co.</span>
                     </span>
                 </div>
-                <p class="text-[14px] leading-relaxed max-w-[280px] mb-6">Helping contractors and service businesses reduce interruptions, organize customer communication, and protect the owner's focus.</p>
+                <p class="text-[14px] leading-relaxed max-w-[280px] mb-6">Customer communication systems for fewer owner interruptions.</p>
                 <a href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] rounded-full text-white text-[13px] font-medium transition-all duration-300">
                     <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     Client Portal
@@ -6396,6 +6701,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.requestAnimationFrame(raf);
         window.daytonGrowthLenis = lenis;
     };
+    const initHeroVideoPlayback = () => {
+        const heroVideo = document.querySelector('.hero-product-video');
+        if (!heroVideo || reduceMotion) return;
+        const slowHeroVideo = () => {
+            heroVideo.playbackRate = 0.85;
+        };
+        slowHeroVideo();
+        heroVideo.addEventListener('loadedmetadata', slowHeroVideo, { once: true });
+    };
     const initRecaptchaProtection = () => {
         const form = document.getElementById('auditForm');
         const key = document.querySelector('meta[name="recaptcha-site-key"]')?.content?.trim();
@@ -6445,11 +6759,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     const initBottomMuxVideo = () => {
-        const video = document.getElementById('bottomMuxVideo');
-        const src = video?.dataset?.muxStream;
-        if (!video || !src || reduceMotion) return;
+        const videos = Array.from(document.querySelectorAll('video[data-mux-stream]'));
+        if (!videos.length || reduceMotion) return;
 
-        const playQuietly = () => {
+        const playQuietly = video => {
             video.muted = true;
             video.playsInline = true;
             const playPromise = video.play();
@@ -6458,23 +6771,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        const loadNativeHls = video => {
+            const src = video.dataset?.muxStream;
+            if (!src || !video.canPlayType('application/vnd.apple.mpegurl')) return false;
             video.src = src;
-            video.addEventListener('loadedmetadata', playQuietly, { once: true });
+            video.addEventListener('loadedmetadata', () => playQuietly(video), { once: true });
             video.load();
+            return true;
+        };
+
+        const hlsVideos = videos.filter(video => !loadNativeHls(video));
+        if (!hlsVideos.length) {
             return;
-        }
+        };
 
         const attachHls = () => {
             if (!window.Hls || !window.Hls.isSupported()) return;
-            const hls = new window.Hls({
-                capLevelToPlayerSize: true,
-                maxBufferLength: 18,
-                backBufferLength: 12
+            hlsVideos.forEach(video => {
+                const src = video.dataset?.muxStream;
+                if (!src || video.dataset.hlsAttached === 'true') return;
+                video.dataset.hlsAttached = 'true';
+                const hls = new window.Hls({
+                    capLevelToPlayerSize: true,
+                    maxBufferLength: 18,
+                    backBufferLength: 12
+                });
+                hls.loadSource(src);
+                hls.attachMedia(video);
+                hls.on(window.Hls.Events.MANIFEST_PARSED, () => playQuietly(video));
             });
-            hls.loadSource(src);
-            hls.attachMedia(video);
-            hls.on(window.Hls.Events.MANIFEST_PARSED, playQuietly);
         };
 
         if (window.Hls) {
@@ -6482,9 +6807,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const existingScript = document.querySelector('script[data-hls-loader]');
+        if (existingScript) {
+            existingScript.addEventListener('load', attachHls, { once: true });
+            return;
+        }
+
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js';
         script.async = true;
+        script.dataset.hlsLoader = 'true';
         script.onload = attachHls;
         document.head.appendChild(script);
     };
@@ -6517,6 +6849,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const splashReady = initSplashScreen();
     runWhenIdle(initVendorEnhancements);
+    runWhenIdle(initHeroVideoPlayback);
     runWhenIdle(initLenisScroll);
     runWhenIdle(initRecaptchaProtection);
     runWhenIdle(initBottomMuxVideo);
@@ -6630,7 +6963,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const loop = async () => {
-            let wordIndex = 0;
+            const currentWord = target.textContent.trim();
+            const currentIndex = words.findIndex(word => word === currentWord);
+            let wordIndex = currentIndex >= 0 ? (currentIndex + 1) % words.length : 0;
             target.classList.add('is-typing');
             while (!cancelled) {
                 const word = words[wordIndex];
