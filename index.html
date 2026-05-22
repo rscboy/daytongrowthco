@@ -4155,6 +4155,7 @@
         }
         .hero-product-video {
             object-fit: cover;
+            object-position: center center;
             z-index: 0;
             opacity: 0.72;
         }
@@ -5947,6 +5948,139 @@
         }
     </style>
     <style>
+        /* Estimate portal demo: quiet, Apple-inspired product preview. */
+        .estimate-demo {
+            background:
+                radial-gradient(circle at 18% 8%, rgba(37, 99, 235, 0.08), transparent 34%),
+                linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 100%);
+        }
+        .estimate-demo-shell {
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.74);
+            box-shadow:
+                0 34px 100px rgba(15, 23, 42, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+        }
+        .estimate-demo-window {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
+            border: 1px solid rgba(203, 213, 225, 0.72);
+            box-shadow:
+                0 24px 70px rgba(15, 23, 42, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.96);
+        }
+        .estimate-demo-tab {
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            background: rgba(255, 255, 255, 0.74);
+            color: #475569;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        .estimate-demo-tab[aria-selected="true"] {
+            border-color: rgba(37, 99, 235, 0.25);
+            background: #0a0e1a;
+            color: #ffffff;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+        }
+        .estimate-demo-card {
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        .estimate-demo-pill {
+            border: 1px solid rgba(37, 99, 235, 0.16);
+            background: rgba(239, 246, 255, 0.82);
+            color: #1d4ed8;
+        }
+        .estimate-demo-progress {
+            position: relative;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+        .estimate-demo-progress span {
+            display: block;
+            height: 100%;
+            width: var(--progress, 66%);
+            border-radius: inherit;
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            transition: width 420ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .estimate-demo-preview {
+            transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 320ms ease;
+        }
+        .estimate-demo-preview.is-updating {
+            transform: translateY(-2px) scale(1.006);
+            box-shadow: 0 28px 80px rgba(37, 99, 235, 0.13);
+        }
+        .estimate-demo-windowbar {
+            min-height: 58px;
+            background: rgba(255, 255, 255, 0.72);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.82);
+        }
+        .estimate-demo-address {
+            max-width: min(460px, 56vw);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .estimate-demo-side {
+            background:
+                linear-gradient(180deg, rgba(248, 250, 252, 0.92), rgba(241, 245, 249, 0.82));
+            border-right: 1px solid rgba(226, 232, 240, 0.84);
+        }
+        .estimate-demo-device {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(203, 213, 225, 0.86);
+            box-shadow:
+                0 28px 80px rgba(15, 23, 42, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.94);
+        }
+        .estimate-demo-activity {
+            background: rgba(248, 250, 252, 0.82);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+        .estimate-demo-line-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.74);
+        }
+        .estimate-demo-line-item:last-child {
+            border-bottom: 0;
+        }
+        .estimate-demo-action {
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+        }
+        .estimate-demo-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+        }
+        @media (max-width: 767px) {
+            .estimate-demo-shell {
+                border-radius: 28px !important;
+            }
+            .estimate-demo-window {
+                border-radius: 24px !important;
+            }
+            .estimate-demo-address {
+                max-width: 150px;
+                font-size: 10px !important;
+            }
+            .estimate-demo-windowbar {
+                min-height: 52px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .estimate-demo-progress span,
+            .estimate-demo-preview {
+                transition: none !important;
+            }
+        }
+    </style>
+    <style>
         /* Device-style communication flow window. */
         .hero-system-map {
             position: relative !important;
@@ -6286,6 +6420,1735 @@
             }
         }
     </style>
+    <style>
+        /* Final responsive cleanup: keep the product story crisp and intentional. */
+        html {
+            scroll-padding-top: 94px;
+        }
+        #services,
+        #demo,
+        #products,
+        #pricing,
+        #process,
+        #form {
+            scroll-margin-top: 94px;
+        }
+        .word-reveal-inner {
+            transform: none !important;
+            opacity: 1 !important;
+            transition: none !important;
+            will-change: auto !important;
+        }
+        #demo .estimate-demo-shell {
+            max-width: 1180px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .estimate-demo-metrics .estimate-demo-card {
+            min-height: 94px;
+        }
+        .estimate-demo-metrics .text-\[28px\],
+        .estimate-demo-metrics .text-\[22px\] {
+            line-height: 1;
+        }
+        .estimate-demo-window,
+        .estimate-demo-device,
+        .estimate-demo-card,
+        .pricing-card,
+        .install-card,
+        .service-card,
+        .process-step {
+            overflow-wrap: anywhere;
+        }
+        @media (min-width: 1024px) {
+            #services,
+            #demo,
+            #products,
+            #pricing,
+            #process {
+                padding-top: 76px !important;
+                padding-bottom: 92px !important;
+            }
+            #demo .estimate-demo-preview {
+                min-height: 100%;
+            }
+            #pricing .pricing-card {
+                padding: 30px !important;
+            }
+            #pricing h2,
+            #products h2,
+            #process h2,
+            #demo h2 {
+                text-wrap: balance;
+            }
+        }
+        @media (max-width: 767px) {
+            html {
+                scroll-padding-top: 78px;
+            }
+            #services,
+            #demo,
+            #products,
+            #pricing,
+            #process,
+            #form {
+                scroll-margin-top: 78px;
+            }
+            #services,
+            #demo,
+            #products,
+            #pricing,
+            #process {
+                padding-top: 48px !important;
+                padding-bottom: 58px !important;
+            }
+            #form {
+                padding-top: 54px !important;
+                padding-bottom: 64px !important;
+            }
+            #services h2,
+            #demo h2,
+            #products h2,
+            #pricing h2,
+            #process h2,
+            #form h2 {
+                font-size: clamp(31px, 8.9vw, 38px) !important;
+                line-height: 1.04 !important;
+                letter-spacing: -0.04em !important;
+                margin-bottom: 12px !important;
+                text-wrap: balance;
+            }
+            #services h2 + p,
+            #demo h2 + p,
+            #products h2 + p,
+            #pricing h2 + p,
+            #process h2 + p,
+            #form h2 + p {
+                font-size: 14.5px !important;
+                line-height: 1.48 !important;
+                max-width: 32rem !important;
+            }
+            #services .max-w-7xl,
+            #demo .max-w-7xl,
+            #products .max-w-7xl,
+            #pricing .max-w-7xl,
+            #process .max-w-7xl,
+            #form .max-w-3xl {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+            .estimate-demo .text-center {
+                margin-bottom: 22px !important;
+            }
+            .estimate-demo .inline-flex {
+                margin-bottom: 14px !important;
+            }
+            .estimate-demo-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+                margin-bottom: 14px !important;
+            }
+            .estimate-demo-metrics .estimate-demo-card {
+                min-height: 74px !important;
+                padding: 13px !important;
+                border-radius: 18px !important;
+            }
+            .estimate-demo-metrics .text-\[10px\] {
+                font-size: 9px !important;
+                letter-spacing: 0.1em !important;
+                margin-bottom: 8px !important;
+            }
+            .estimate-demo-metrics .text-\[28px\],
+            .estimate-demo-metrics .text-\[22px\] {
+                font-size: 24px !important;
+                letter-spacing: -0.045em !important;
+            }
+            .estimate-demo-shell {
+                padding: 7px !important;
+                border-radius: 26px !important;
+                box-shadow: 0 22px 70px rgba(15, 23, 42, 0.12) !important;
+            }
+            .estimate-demo-window {
+                border-radius: 22px !important;
+            }
+            .estimate-demo-windowbar {
+                min-height: 44px !important;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+            .estimate-demo-windowbar .h-3 {
+                width: 9px !important;
+                height: 9px !important;
+            }
+            .estimate-demo-address {
+                max-width: 172px !important;
+                padding: 5px 10px !important;
+                font-size: 9.5px !important;
+            }
+            .estimate-demo-grid {
+                display: block !important;
+            }
+            .estimate-demo-side,
+            .estimate-demo-main,
+            .estimate-demo-right {
+                padding: 14px !important;
+            }
+            .estimate-demo-side {
+                border-right: 0 !important;
+                border-bottom: 1px solid rgba(226, 232, 240, 0.84) !important;
+            }
+            .estimate-demo-side [role="tablist"] {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 7px !important;
+                margin-bottom: 12px !important;
+            }
+            .estimate-demo-tab {
+                min-height: 36px !important;
+                padding: 0 8px !important;
+                border-radius: 14px !important;
+                font-size: 11px !important;
+                line-height: 1.1 !important;
+                text-align: center !important;
+            }
+            .estimate-demo-side > .estimate-demo-card {
+                padding: 14px !important;
+                border-radius: 18px !important;
+                margin-bottom: 10px !important;
+            }
+            .estimate-demo-side h3 {
+                font-size: 20px !important;
+                margin-bottom: 10px !important;
+            }
+            .estimate-demo-side .text-\[38px\] {
+                font-size: 31px !important;
+                margin-bottom: 10px !important;
+            }
+            .estimate-demo-side .grid.grid-cols-2 {
+                gap: 8px !important;
+            }
+            .estimate-demo-side button {
+                min-height: 42px !important;
+                padding: 0 12px !important;
+                border-radius: 15px !important;
+                font-size: 12px !important;
+            }
+            .estimate-demo-device {
+                padding: 14px !important;
+                border-radius: 22px !important;
+                box-shadow: 0 18px 52px rgba(15, 23, 42, 0.09), inset 0 1px 0 rgba(255,255,255,0.94) !important;
+            }
+            .estimate-demo-device > .flex:first-child {
+                gap: 12px !important;
+                margin-bottom: 14px !important;
+            }
+            .estimate-demo-device .h-12 {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 14px !important;
+            }
+            .estimate-demo-summary {
+                padding: 14px !important;
+                border-radius: 19px !important;
+                margin-bottom: 12px !important;
+            }
+            .estimate-demo-summary h4 {
+                font-size: 23px !important;
+                line-height: 1.08 !important;
+                margin-bottom: 8px !important;
+            }
+            .estimate-demo-summary p {
+                font-size: 13px !important;
+                line-height: 1.42 !important;
+            }
+            .estimate-demo-summary .min-w-\[150px\] {
+                min-width: 0 !important;
+                width: 100% !important;
+                padding: 13px !important;
+                border-radius: 16px !important;
+            }
+            .estimate-demo-facts,
+            .estimate-demo-steps {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+                margin-bottom: 12px !important;
+            }
+            .estimate-demo-facts > div,
+            .estimate-demo-steps > div {
+                padding: 12px !important;
+                border-radius: 16px !important;
+            }
+            .estimate-demo-line-item {
+                padding: 9px 0 !important;
+                gap: 8px !important;
+            }
+            .estimate-demo-line-item span,
+            .estimate-demo-line-item strong {
+                font-size: 13px !important;
+            }
+            .estimate-demo-device .flex.flex-col.sm\:flex-row {
+                gap: 9px !important;
+            }
+            .estimate-demo-device .flex.flex-col.sm\:flex-row button {
+                min-height: 44px !important;
+                padding: 0 14px !important;
+                font-size: 13px !important;
+            }
+            .estimate-demo-right {
+                border-left: 0 !important;
+            }
+            .estimate-demo-right .estimate-demo-activity,
+            .estimate-demo-right .estimate-demo-card {
+                padding: 13px !important;
+                border-radius: 18px !important;
+            }
+            .estimate-demo-right .space-y-4 {
+                display: grid !important;
+                gap: 10px !important;
+            }
+            .estimate-demo-right p {
+                font-size: 12.5px !important;
+                line-height: 1.38 !important;
+            }
+            #services .grid.lg\:grid-cols-\[0\.9fr_1\.1fr\] {
+                gap: 20px !important;
+                margin-bottom: 34px !important;
+            }
+            #services .text-center.max-w-3xl {
+                text-align: center !important;
+            }
+            .service-card {
+                padding: 16px !important;
+                border-radius: 18px !important;
+                grid-template-columns: 36px 1fr !important;
+                column-gap: 12px !important;
+            }
+            .service-card > div:first-child {
+                font-size: 22px !important;
+            }
+            .service-card h4 {
+                font-size: 15.5px !important;
+            }
+            .service-card p {
+                font-size: 12.8px !important;
+            }
+            #products .text-center,
+            #pricing .text-center,
+            #process .text-center {
+                text-align: center !important;
+                margin-bottom: 24px !important;
+            }
+            #products .installation-grid {
+                gap: 14px !important;
+            }
+            #products .install-card {
+                padding: 18px !important;
+                border-radius: 20px !important;
+            }
+            #products .install-card h3,
+            #products .install-card-featured h3 {
+                font-size: 19.5px !important;
+                line-height: 1.14 !important;
+            }
+            #products .install-card p {
+                margin-bottom: 12px !important;
+                font-size: 13.5px !important;
+                line-height: 1.42 !important;
+            }
+            #products .install-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 7px !important;
+                margin: 12px 0 14px !important;
+            }
+            #products .install-list span,
+            #products .install-card-featured .install-list span {
+                padding: 8px 9px !important;
+                font-size: 11.5px !important;
+                line-height: 1.2 !important;
+            }
+            #products .install-list span:nth-child(n+5) {
+                display: none !important;
+            }
+            #products .install-outcome {
+                margin-top: 12px !important;
+                padding-top: 12px !important;
+                font-size: 12.5px !important;
+            }
+            #pricing .grid.md\:grid-cols-3 {
+                gap: 14px !important;
+            }
+            #pricing .pricing-card {
+                padding: 20px !important;
+                border-radius: 22px !important;
+            }
+            #pricing .pricing-card.md\:-translate-y-4 {
+                transform: none !important;
+            }
+            #pricing .pricing-card h3 {
+                font-size: 20px !important;
+            }
+            #pricing .pricing-card .text-\[48px\] {
+                font-size: 42px !important;
+            }
+            #pricing .pricing-card .text-\[42px\] {
+                font-size: 32px !important;
+            }
+            #pricing .pricing-card p {
+                margin-bottom: 18px !important;
+            }
+            #pricing .pricing-card ul {
+                margin-bottom: 18px !important;
+            }
+            #pricing .pricing-card a[href="#form"] {
+                min-height: 46px !important;
+                display: grid !important;
+                place-items: center !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            #process .grid.lg\:grid-cols-5 {
+                gap: 9px !important;
+            }
+            #form .form-card {
+                border-radius: 24px !important;
+                padding: 20px !important;
+            }
+            #auditForm {
+                gap: 22px !important;
+            }
+            #auditForm .space-y-3 {
+                display: grid !important;
+                gap: 10px !important;
+            }
+            #auditForm label:has(input[type="radio"]) {
+                padding: 14px !important;
+                border-radius: 16px !important;
+            }
+            footer {
+                padding-top: 58px !important;
+                padding-bottom: 58px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Mobile scale pass: slightly more zoomed-out without touching the splash screen. */
+        @media (max-width: 767px) {
+            body:not(.splash-lock) #app {
+                font-size: 14px;
+            }
+            body:not(.splash-lock) #navbar.site-nav .site-nav-inner {
+                width: min(390px, calc(100vw - 30px)) !important;
+                height: 50px !important;
+                padding-left: 11px !important;
+                padding-right: 9px !important;
+            }
+            body:not(.splash-lock) #navbar.site-nav .brand-mark {
+                gap: 9px !important;
+                padding-right: 50px !important;
+            }
+            body:not(.splash-lock) .brand-mark-icon {
+                width: 28px !important;
+                height: 28px !important;
+                border-radius: 10px !important;
+            }
+            body:not(.splash-lock) .brand-wordmark {
+                font-size: 15px !important;
+            }
+            body:not(.splash-lock) #mobileMenuBtn.site-menu-button {
+                width: 48px !important;
+                min-width: 48px !important;
+                height: 32px !important;
+                min-height: 32px !important;
+            }
+            body:not(.splash-lock) .hero-product-content {
+                padding-top: 60px !important;
+            }
+            body:not(.splash-lock) .hero-product-title {
+                font-size: clamp(29px, 9.2vw, 36px) !important;
+                line-height: 1 !important;
+                margin-bottom: 9px !important;
+            }
+            body:not(.splash-lock) .hero-product-subtitle {
+                max-width: 30rem !important;
+                font-size: 13.5px !important;
+                line-height: 1.43 !important;
+                margin-bottom: 12px !important;
+            }
+            body:not(.splash-lock) .hero-product-actions {
+                gap: 6px !important;
+            }
+            body:not(.splash-lock) .hero-product-cta,
+            body:not(.splash-lock) .hero-product-secondary {
+                min-height: 44px !important;
+                font-size: 12.5px !important;
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+            body:not(.splash-lock) .hero-dashboard-wrap {
+                margin-top: 22px !important;
+            }
+            body:not(.splash-lock) .hero-system-map {
+                padding: 44px 13px 13px !important;
+                border-radius: 18px !important;
+            }
+            body:not(.splash-lock) .system-map-header {
+                padding: 10px 11px !important;
+                margin-bottom: 10px !important;
+            }
+            body:not(.splash-lock) .system-node {
+                min-height: 54px !important;
+                padding: 10px !important;
+            }
+            body:not(.splash-lock) .system-node strong {
+                font-size: 12px !important;
+            }
+            body:not(.splash-lock) #services,
+            body:not(.splash-lock) #demo,
+            body:not(.splash-lock) #products,
+            body:not(.splash-lock) #pricing,
+            body:not(.splash-lock) #process {
+                padding-top: 42px !important;
+                padding-bottom: 50px !important;
+            }
+            body:not(.splash-lock) #form {
+                padding-top: 48px !important;
+                padding-bottom: 56px !important;
+            }
+            body:not(.splash-lock) #services h2,
+            body:not(.splash-lock) #demo h2,
+            body:not(.splash-lock) #products h2,
+            body:not(.splash-lock) #pricing h2,
+            body:not(.splash-lock) #process h2,
+            body:not(.splash-lock) #form h2 {
+                font-size: clamp(28px, 8.1vw, 34px) !important;
+                line-height: 1.04 !important;
+                margin-bottom: 10px !important;
+            }
+            body:not(.splash-lock) #services h2 + p,
+            body:not(.splash-lock) #demo h2 + p,
+            body:not(.splash-lock) #products h2 + p,
+            body:not(.splash-lock) #pricing h2 + p,
+            body:not(.splash-lock) #process h2 + p,
+            body:not(.splash-lock) #form h2 + p,
+            body:not(.splash-lock) #services p,
+            body:not(.splash-lock) #products p,
+            body:not(.splash-lock) #pricing p,
+            body:not(.splash-lock) #process p,
+            body:not(.splash-lock) #form p {
+                font-size: 13.25px !important;
+                line-height: 1.42 !important;
+            }
+            body:not(.splash-lock) .estimate-demo .text-center,
+            body:not(.splash-lock) #products .text-center,
+            body:not(.splash-lock) #pricing .text-center,
+            body:not(.splash-lock) #process .text-center,
+            body:not(.splash-lock) #form .text-center {
+                margin-bottom: 18px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-metrics {
+                gap: 8px !important;
+                margin-bottom: 12px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-metrics .estimate-demo-card {
+                min-height: 62px !important;
+                padding: 11px !important;
+                border-radius: 16px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-metrics .text-\[28px\],
+            body:not(.splash-lock) .estimate-demo-metrics .text-\[22px\] {
+                font-size: 21px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-shell {
+                padding: 6px !important;
+                border-radius: 23px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-window {
+                border-radius: 20px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-side,
+            body:not(.splash-lock) .estimate-demo-main,
+            body:not(.splash-lock) .estimate-demo-right {
+                padding: 12px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-tab {
+                min-height: 32px !important;
+                font-size: 10.5px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-side > .estimate-demo-card,
+            body:not(.splash-lock) .estimate-demo-summary,
+            body:not(.splash-lock) .estimate-demo-facts > div,
+            body:not(.splash-lock) .estimate-demo-steps > div,
+            body:not(.splash-lock) .estimate-demo-right .estimate-demo-activity,
+            body:not(.splash-lock) .estimate-demo-right .estimate-demo-card {
+                padding: 12px !important;
+                border-radius: 16px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-side h3 {
+                font-size: 18px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-side .text-\[38px\] {
+                font-size: 28px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-device {
+                padding: 12px !important;
+                border-radius: 19px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-summary h4 {
+                font-size: 20px !important;
+            }
+            body:not(.splash-lock) .estimate-demo-line-item span,
+            body:not(.splash-lock) .estimate-demo-line-item strong,
+            body:not(.splash-lock) .estimate-demo-right p {
+                font-size: 12px !important;
+            }
+            body:not(.splash-lock) .service-card,
+            body:not(.splash-lock) #products .install-card,
+            body:not(.splash-lock) #pricing .pricing-card,
+            body:not(.splash-lock) #process .stagger-item,
+            body:not(.splash-lock) #form .form-card {
+                border-radius: 18px !important;
+                padding: 16px !important;
+            }
+            body:not(.splash-lock) .service-card h4,
+            body:not(.splash-lock) #process .stagger-item h3 {
+                font-size: 14.5px !important;
+            }
+            body:not(.splash-lock) #products .install-card h3,
+            body:not(.splash-lock) #products .install-card-featured h3 {
+                font-size: 18px !important;
+            }
+            body:not(.splash-lock) #products .install-list {
+                gap: 6px !important;
+            }
+            body:not(.splash-lock) #products .install-list span,
+            body:not(.splash-lock) #products .install-card-featured .install-list span {
+                padding: 7px 8px !important;
+                font-size: 10.8px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card h3 {
+                font-size: 18px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card .text-\[48px\] {
+                font-size: 38px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card .text-\[42px\] {
+                font-size: 28px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card li {
+                font-size: 12.5px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card a[href="#form"] {
+                min-height: 42px !important;
+                font-size: 12.5px !important;
+            }
+            body:not(.splash-lock) #auditForm {
+                gap: 18px !important;
+            }
+            body:not(.splash-lock) #auditForm input[type="text"],
+            body:not(.splash-lock) #auditForm input[type="email"],
+            body:not(.splash-lock) #auditForm textarea {
+                min-height: 44px !important;
+                font-size: 14px !important;
+            }
+            body:not(.splash-lock) #auditForm label:has(input[type="radio"]) {
+                padding: 12px !important;
+                border-radius: 14px !important;
+            }
+            body:not(.splash-lock) footer {
+                padding-top: 50px !important;
+                padding-bottom: 50px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Desktop demo console: all primary mock data visible in one viewport. */
+        @media (min-width: 1024px) {
+            #demo.estimate-demo {
+                min-height: 100svh;
+                padding-top: 96px !important;
+                padding-bottom: 28px !important;
+                display: flex;
+                align-items: flex-start;
+            }
+            #demo > .max-w-7xl {
+                width: min(100%, 1560px);
+            }
+            #demo .max-w-3xl.text-center {
+                max-width: 760px !important;
+                margin-bottom: 14px !important;
+            }
+            #demo .inline-flex {
+                margin-bottom: 10px !important;
+                padding: 5px 12px !important;
+                font-size: 9.5px !important;
+            }
+            #demo h2 {
+                font-size: clamp(34px, 3.1vw, 46px) !important;
+                line-height: 0.98 !important;
+                margin-bottom: 10px !important;
+            }
+            #demo h2 + p {
+                max-width: 760px !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                font-size: 14px !important;
+                line-height: 1.4 !important;
+            }
+            .estimate-demo-metrics {
+                max-width: 920px !important;
+                gap: 10px !important;
+                margin-bottom: 12px !important;
+            }
+            .estimate-demo-metrics .estimate-demo-card {
+                min-height: 56px !important;
+                padding: 10px 14px !important;
+                border-radius: 16px !important;
+            }
+            .estimate-demo-metrics .text-\[10px\] {
+                font-size: 8.5px !important;
+                letter-spacing: 0.11em !important;
+                margin-bottom: 6px !important;
+            }
+            .estimate-demo-metrics .text-\[28px\],
+            .estimate-demo-metrics .text-\[22px\] {
+                font-size: 22px !important;
+                line-height: 1 !important;
+            }
+            #demo .estimate-demo-shell {
+                max-width: 1500px !important;
+                padding: 10px !important;
+                border-radius: 30px !important;
+            }
+            #demo .estimate-demo-window {
+                border-radius: 24px !important;
+                overflow: hidden !important;
+            }
+            #demo .estimate-demo-windowbar {
+                min-height: 44px !important;
+                padding-left: 18px !important;
+                padding-right: 18px !important;
+            }
+            #demo .estimate-demo-windowbar .h-3 {
+                width: 10px !important;
+                height: 10px !important;
+            }
+            #demo .estimate-demo-address {
+                max-width: 360px !important;
+                padding: 6px 16px !important;
+                font-size: 10.5px !important;
+            }
+            #demo .estimate-demo-grid {
+                grid-template-columns: 260px minmax(0, 1fr) 288px !important;
+                height: min(650px, calc(100svh - 278px));
+                min-height: 560px;
+                overflow: hidden;
+            }
+            #demo .estimate-demo-side,
+            #demo .estimate-demo-main,
+            #demo .estimate-demo-right {
+                padding: 16px !important;
+                min-height: 0;
+                overflow: hidden;
+            }
+            #demo .estimate-demo-side [role="tablist"] {
+                gap: 8px !important;
+                margin-bottom: 12px !important;
+            }
+            #demo .estimate-demo-tab {
+                min-height: 38px !important;
+                padding: 0 14px !important;
+                font-size: 12px !important;
+            }
+            #demo .estimate-demo-side > .estimate-demo-card {
+                padding: 15px !important;
+                border-radius: 18px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-side h3 {
+                font-size: 20px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-side .text-\[38px\] {
+                font-size: 31px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-side .grid.grid-cols-2 {
+                gap: 8px !important;
+            }
+            #demo .estimate-demo-side button {
+                min-height: 40px !important;
+                padding: 0 12px !important;
+                border-radius: 15px !important;
+                font-size: 12px !important;
+            }
+            #demo .estimate-demo-device {
+                height: 100%;
+                padding: 16px !important;
+                border-radius: 22px !important;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            #demo .estimate-demo-device > .flex:first-child {
+                gap: 12px !important;
+                margin-bottom: 12px !important;
+            }
+            #demo .estimate-demo-device .h-12 {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 14px !important;
+            }
+            #demo .estimate-demo-summary {
+                padding: 16px !important;
+                border-radius: 20px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-summary h4 {
+                font-size: clamp(24px, 2.1vw, 30px) !important;
+                line-height: 1.02 !important;
+                margin-bottom: 8px !important;
+            }
+            #demo .estimate-demo-summary p {
+                font-size: 13px !important;
+                line-height: 1.38 !important;
+            }
+            #demo .estimate-demo-summary .min-w-\[150px\] {
+                min-width: 128px !important;
+                padding: 12px !important;
+                border-radius: 16px !important;
+            }
+            #demo .estimate-demo-summary .text-\[28px\] {
+                font-size: 25px !important;
+            }
+            #demo .estimate-demo-facts {
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-facts > div,
+            #demo .estimate-demo-steps > div {
+                padding: 11px !important;
+                border-radius: 15px !important;
+            }
+            #demo .estimate-demo-facts .text-\[15px\],
+            #demo .estimate-demo-steps .text-\[14px\] {
+                font-size: 12.5px !important;
+                line-height: 1.25 !important;
+            }
+            #demo .estimate-demo-summary .rounded-\[22px\] {
+                padding: 12px !important;
+                border-radius: 16px !important;
+            }
+            #demo .estimate-demo-line-item {
+                padding: 7px 0 !important;
+            }
+            #demo .estimate-demo-line-item span,
+            #demo .estimate-demo-line-item strong {
+                font-size: 12.5px !important;
+            }
+            #demo .estimate-demo-steps {
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-device .flex.flex-col.sm\:flex-row {
+                gap: 8px !important;
+                margin-top: auto;
+            }
+            #demo .estimate-demo-device .flex.flex-col.sm\:flex-row button {
+                min-height: 39px !important;
+                padding: 0 14px !important;
+                font-size: 12.5px !important;
+            }
+            #demo .estimate-demo-right .text-\[11px\] {
+                font-size: 9.5px !important;
+            }
+            #demo .estimate-demo-activity,
+            #demo .estimate-demo-right .estimate-demo-card {
+                padding: 14px !important;
+                border-radius: 18px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-right .space-y-4 {
+                display: grid !important;
+                gap: 10px !important;
+            }
+            #demo .estimate-demo-right p {
+                font-size: 12.5px !important;
+                line-height: 1.32 !important;
+            }
+            #demo .estimate-demo-controls {
+                margin-top: 0 !important;
+            }
+            #demo .estimate-demo-controls .grid {
+                gap: 7px !important;
+            }
+            #demo .estimate-demo-controls button {
+                min-height: 34px !important;
+                padding: 0 8px !important;
+                border-radius: 12px !important;
+                font-size: 10.5px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Readability pass: less copy, larger small text on mobile. */
+        @media (max-width: 767px) {
+            body:not(.splash-lock) #services p,
+            body:not(.splash-lock) #products p,
+            body:not(.splash-lock) #pricing p,
+            body:not(.splash-lock) #process p,
+            body:not(.splash-lock) #form p {
+                font-size: 14px !important;
+                line-height: 1.45 !important;
+            }
+            body:not(.splash-lock) .service-card p,
+            body:not(.splash-lock) #products .install-card p,
+            body:not(.splash-lock) #pricing .pricing-card p,
+            body:not(.splash-lock) #process .process-step p {
+                font-size: 13.5px !important;
+                line-height: 1.38 !important;
+            }
+            body:not(.splash-lock) #products .install-card {
+                padding: 18px !important;
+            }
+            body:not(.splash-lock) #products .install-card h3,
+            body:not(.splash-lock) #products .install-card-featured h3 {
+                font-size: 21px !important;
+                line-height: 1.12 !important;
+            }
+            body:not(.splash-lock) #products .install-card p {
+                margin-bottom: 12px !important;
+            }
+            body:not(.splash-lock) #products .install-list {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            body:not(.splash-lock) #products .install-list span,
+            body:not(.splash-lock) #products .install-card-featured .install-list span {
+                padding: 9px 10px !important;
+                font-size: 12.5px !important;
+                line-height: 1.18 !important;
+            }
+            body:not(.splash-lock) #products .install-outcome {
+                font-size: 13.5px !important;
+                line-height: 1.35 !important;
+            }
+            body:not(.splash-lock) .service-card h4 {
+                font-size: 16px !important;
+            }
+            body:not(.splash-lock) #pricing .pricing-card li {
+                font-size: 13.5px !important;
+                line-height: 1.35 !important;
+            }
+        }
+    </style>
+    <style>
+        /* Product cards: make the offer feel visual, concrete, and less like copy blocks. */
+        .install-visual {
+            position: relative;
+            margin: 18px 0 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(37, 99, 235, 0.12);
+            background:
+                radial-gradient(circle at 16% 0%, rgba(96, 165, 250, 0.14), transparent 34%),
+                linear-gradient(180deg, #ffffff, #f8fafc);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                0 18px 44px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            overflow-wrap: normal !important;
+            word-break: normal !important;
+        }
+        .install-visual *,
+        .install-visual-actions span,
+        .install-visual-status,
+        .install-visual-flow div {
+            overflow-wrap: normal !important;
+            word-break: normal !important;
+            hyphens: none !important;
+        }
+        .install-card-featured .install-visual {
+            border-color: rgba(147, 197, 253, 0.2);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(96, 165, 250, 0.22), transparent 34%),
+                linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.14),
+                0 18px 44px rgba(0,0,0,0.18);
+        }
+        .install-visual-bar {
+            display: flex;
+            gap: 6px;
+            padding: 12px 14px 0;
+        }
+        .install-visual-bar span {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #93c5fd;
+        }
+        .install-visual-bar span:nth-child(1) { background: #fb7185; }
+        .install-visual-bar span:nth-child(2) { background: #fbbf24; }
+        .install-visual-bar span:nth-child(3) { background: #34d399; }
+        .install-visual-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+        }
+        .install-visual-row > div {
+            min-width: 0;
+        }
+        .install-visual-row small,
+        .install-visual-status,
+        .install-visual-flow div {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .install-visual-row small,
+        .install-visual-row strong,
+        .install-visual-row em,
+        .install-visual-actions span,
+        .install-visual-status,
+        .install-visual-flow div {
+            white-space: nowrap;
+        }
+        .install-card-featured .install-visual-row small,
+        .install-card-featured .install-visual-status,
+        .install-card-featured .install-visual-flow div {
+            color: rgba(226, 232, 240, 0.72);
+        }
+        .install-visual-row strong {
+            display: block;
+            margin-top: 4px;
+            color: #0a0e1a;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            line-height: 1;
+        }
+        .install-card-featured .install-visual-row strong {
+            color: #ffffff;
+        }
+        .install-visual-row em {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.1);
+            color: #15803d;
+            padding: 7px 10px;
+            font-size: 10px;
+            font-style: normal;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .install-card-featured .install-visual-row em {
+            background: rgba(34, 197, 94, 0.14);
+            color: #bbf7d0;
+        }
+        .install-visual-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 0 14px 14px;
+        }
+        .install-visual-actions span,
+        .install-visual-status {
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.76);
+            color: #334155;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 850;
+            line-height: 1;
+            text-align: center;
+        }
+        .install-card-featured .install-visual-actions span,
+        .install-card-featured .install-visual-status {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .install-visual-followup {
+            display: grid;
+            gap: 8px;
+            padding: 14px;
+        }
+        .install-visual-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .install-visual-status span {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.1);
+        }
+        .install-visual-status.active span {
+            background: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+        .install-visual-flow {
+            display: grid;
+            grid-template-columns: 1fr 18px 1fr 18px 1fr;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+        }
+        .install-visual-flow div {
+            min-height: 58px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: rgba(255, 255, 255, 0.76);
+            text-align: center;
+            line-height: 1.2;
+        }
+        .install-visual-flow span {
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #93c5fd, #2563eb);
+        }
+        @media (max-width: 767px) {
+            .install-visual {
+                margin: 14px 0 14px;
+                border-radius: 18px;
+            }
+            .install-visual-row {
+                padding: 12px;
+            }
+            .install-visual-row strong {
+                font-size: 27px;
+            }
+            .install-visual-actions {
+                padding: 0 12px 12px;
+            }
+            .install-visual-actions span,
+            .install-visual-status {
+                padding: 9px 10px;
+                font-size: 11.5px;
+            }
+            .install-visual-flow {
+                grid-template-columns: 1fr 14px 1fr 14px 1fr;
+                gap: 6px;
+                padding: 12px;
+            }
+            .install-visual-flow div {
+                min-height: 46px;
+                border-radius: 14px;
+                font-size: 9.5px;
+            }
+        }
+        @media (min-width: 768px) {
+            .install-visual {
+                min-height: 0;
+            }
+            .install-visual-row strong {
+                font-size: 30px;
+            }
+            .install-visual-actions span {
+                min-width: 0;
+            }
+            .install-visual-followup {
+                min-height: 154px;
+                align-content: center;
+            }
+            .install-visual-flow {
+                min-height: 154px;
+            }
+        }
+    </style>
+    <style>
+        /* Professor pass: quieter navigation, clearer product proof, calmer cards. */
+        @media (min-width: 768px) {
+            #navbar.site-nav .site-nav-inner {
+                height: 62px !important;
+                background: rgba(248, 250, 252, 0.84) !important;
+                border-color: rgba(226, 232, 240, 0.72) !important;
+                box-shadow: 0 16px 48px rgba(15, 23, 42, 0.1) !important;
+            }
+            #navbar.site-nav .brand-mark-icon {
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 12px !important;
+            }
+            #navbar.site-nav .brand-wordmark {
+                font-size: 19px !important;
+            }
+            #navbar.site-nav .site-nav-links a {
+                font-size: 13px !important;
+            }
+            #navbar.site-nav .site-nav-cta {
+                min-height: 40px !important;
+                padding: 0 20px !important;
+                font-size: 13px !important;
+            }
+        }
+        .hero-system-map {
+            max-width: 860px !important;
+        }
+        .system-node strong {
+            font-size: 17px !important;
+        }
+        .system-node:first-child strong {
+            font-size: 22px !important;
+            letter-spacing: -0.04em;
+        }
+        #products {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06), transparent 32%),
+                #f7f8fb !important;
+        }
+        #products .installation-grid {
+            align-items: stretch !important;
+        }
+        #products .install-card,
+        #products .install-card-featured {
+            display: flex !important;
+            flex-direction: column !important;
+            background: rgba(255, 255, 255, 0.86) !important;
+            color: #0a0e1a !important;
+            border: 1px solid rgba(203, 213, 225, 0.78) !important;
+            box-shadow: 0 18px 54px rgba(15, 23, 42, 0.07) !important;
+        }
+        #products .install-card-featured {
+            background:
+                radial-gradient(circle at 16% 0%, rgba(37, 99, 235, 0.12), transparent 34%),
+                rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(37, 99, 235, 0.22) !important;
+        }
+        #products .install-card h3,
+        #products .install-card-featured h3 {
+            color: #0a0e1a !important;
+            min-height: 0 !important;
+            margin-bottom: 12px !important;
+        }
+        #products .install-card p,
+        #products .install-card-featured p {
+            min-height: 0 !important;
+            color: #64748b !important;
+            margin-bottom: 0 !important;
+        }
+        #products .install-card p strong,
+        #products .install-card-featured p strong {
+            color: #334155 !important;
+        }
+        #products .install-card-topline {
+            color: #2563eb !important;
+        }
+        #products .install-visual {
+            min-height: 118px !important;
+            margin: 14px 0 !important;
+            border-radius: 18px !important;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(37, 99, 235, 0.11), transparent 34%),
+                linear-gradient(180deg, #ffffff, #f8fafc) !important;
+            border-color: rgba(203, 213, 225, 0.9) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 14px 30px rgba(15,23,42,0.045) !important;
+        }
+        #products .install-card-featured .install-visual-row small,
+        #products .install-card-featured .install-visual-status,
+        #products .install-card-featured .install-visual-flow div {
+            color: #64748b !important;
+        }
+        #products .install-card-featured .install-visual-row strong {
+            color: #0a0e1a !important;
+        }
+        #products .install-card-featured .install-visual-actions span,
+        #products .install-card-featured .install-visual-status {
+            border-color: rgba(148, 163, 184, 0.24) !important;
+            background: rgba(255,255,255,0.78) !important;
+            color: #334155 !important;
+        }
+        #products .install-list {
+            margin-top: 14px !important;
+        }
+        #products .install-list span,
+        #products .install-card-featured .install-list span {
+            background: rgba(248, 250, 252, 0.9) !important;
+            border-color: rgba(203, 213, 225, 0.78) !important;
+            color: #334155 !important;
+        }
+        #products .install-outcome,
+        #products .install-card-featured .install-outcome {
+            margin-top: auto !important;
+            border-top-color: rgba(203, 213, 225, 0.78) !important;
+            color: #1d4ed8 !important;
+        }
+        @media (min-width: 1024px) {
+            #products .install-card,
+            #products .install-card-featured {
+                padding: 28px !important;
+            }
+            #products .install-visual {
+                height: 132px !important;
+            }
+            #products .install-visual-row strong {
+                font-size: 28px !important;
+            }
+            #products .install-visual-followup,
+            #products .install-visual-flow {
+                min-height: 132px !important;
+            }
+            #products .install-visual-flow div {
+                min-height: 48px !important;
+                font-size: 10px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            #products .install-card,
+            #products .install-card-featured {
+                background: rgba(255, 255, 255, 0.9) !important;
+                color: #0a0e1a !important;
+            }
+            #products .install-visual {
+                min-height: 116px !important;
+            }
+            #products .install-outcome,
+            #products .install-card-featured .install-outcome {
+                color: #1d4ed8 !important;
+            }
+        }
+    </style>
+    <style>
+        /* Final design-review pass: tighter product proof, fewer bordered pills, cleaner viewport fit. */
+        .hero-product-title {
+            max-width: 920px !important;
+        }
+        .hero-product-cta,
+        .site-nav-cta,
+        .site-mobile-cta {
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.18) !important;
+        }
+        .hero-system-map {
+            border-color: rgba(255, 255, 255, 0.14) !important;
+            background: rgba(12, 16, 28, 0.66) !important;
+            width: min(100%, 860px) !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        .system-node {
+            background: rgba(255, 255, 255, 0.055) !important;
+        }
+        #services,
+        #products,
+        #demo,
+        #pricing,
+        #process {
+            position: relative;
+        }
+        #products .install-list {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 7px !important;
+            margin-top: 16px !important;
+        }
+        #products .install-list span,
+        #products .install-card-featured .install-list span {
+            position: relative;
+            border: 0 !important;
+            background: transparent !important;
+            padding: 0 0 0 18px !important;
+            color: #475569 !important;
+            font-size: 13px !important;
+            line-height: 1.25 !important;
+            text-align: left !important;
+            box-shadow: none !important;
+        }
+        #products .install-list span::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55em;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #9db9ff;
+            transform: translateY(-50%);
+        }
+        #products .install-outcome,
+        #products .install-card-featured .install-outcome {
+            color: #334155 !important;
+            font-weight: 800 !important;
+            font-size: 13px !important;
+            line-height: 1.35 !important;
+        }
+        #products .install-outcome::before {
+            content: 'Use case';
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        #products .install-card-topline {
+            color: #3f6ee8 !important;
+            letter-spacing: 0.13em !important;
+        }
+        #products .install-visual {
+            border-radius: 22px !important;
+            border-color: rgba(203, 213, 225, 0.72) !important;
+        }
+        #products .install-visual-actions span,
+        #products .install-visual-status,
+        #products .install-visual-flow div {
+            border-color: rgba(203, 213, 225, 0.7) !important;
+            background: rgba(255, 255, 255, 0.64) !important;
+        }
+        #products .install-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 28px 70px rgba(15, 23, 42, 0.11) !important;
+        }
+        #demo.estimate-demo {
+            background:
+                radial-gradient(circle at 50% 4%, rgba(37, 99, 235, 0.08), transparent 34%),
+                linear-gradient(180deg, #f7f8fb 0%, #eef3fb 100%) !important;
+        }
+        #demo .estimate-demo-shell {
+            box-shadow: 0 34px 90px rgba(15, 23, 42, 0.15) !important;
+        }
+        #demo .estimate-demo-card,
+        #demo .estimate-demo-activity,
+        #demo .estimate-demo-preview,
+        #demo .estimate-demo-summary {
+            border-color: rgba(203, 213, 225, 0.7) !important;
+        }
+        @media (min-width: 1024px) {
+            #demo.estimate-demo {
+                padding-top: 82px !important;
+                padding-bottom: 22px !important;
+            }
+            #demo .max-w-3xl.text-center {
+                margin-bottom: 10px !important;
+            }
+            #demo h2 {
+                font-size: clamp(32px, 2.7vw, 42px) !important;
+            }
+            #demo h2 + p {
+                font-size: 13.5px !important;
+            }
+            .estimate-demo-metrics {
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-grid {
+                height: min(560px, calc(100svh - 244px)) !important;
+                min-height: 470px !important;
+                grid-template-columns: 236px minmax(0, 1fr) 270px !important;
+            }
+            #demo .estimate-demo-side,
+            #demo .estimate-demo-main,
+            #demo .estimate-demo-right {
+                padding: 14px !important;
+            }
+            #demo .estimate-demo-summary h4 {
+                font-size: clamp(22px, 1.8vw, 28px) !important;
+            }
+            #demo .estimate-demo-summary p,
+            #demo .estimate-demo-right p {
+                font-size: 12px !important;
+            }
+            #demo .estimate-demo-side > .estimate-demo-card:nth-of-type(2) {
+                display: none !important;
+            }
+            #products .installation-grid {
+                gap: 24px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            .hero-product-content {
+                padding-top: 106px !important;
+            }
+            .hero-product-title {
+                font-size: clamp(35px, 9.4vw, 39px) !important;
+                line-height: 1.02 !important;
+                max-width: 9.5em !important;
+            }
+            .hero-product-subtitle {
+                max-width: 30ch !important;
+                font-size: 14px !important;
+                line-height: 1.45 !important;
+                margin-top: 10px !important;
+            }
+            .hero-product-actions {
+                margin-top: 18px !important;
+            }
+            .hero-product-cta {
+                min-height: 48px !important;
+                padding: 0 22px !important;
+                font-size: 13.5px !important;
+            }
+            .hero-system-map-wrap {
+                margin-top: 24px !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            .hero-system-map {
+                width: min(100%, 345px) !important;
+                margin: 0 auto !important;
+                padding: 11px !important;
+                border-radius: 20px !important;
+            }
+            .system-map-header {
+                display: block !important;
+                padding: 10px 12px !important;
+                margin-bottom: 10px !important;
+                border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                border-radius: 15px !important;
+            }
+            .system-map-header p {
+                font-size: 10px !important;
+                letter-spacing: 0.11em !important;
+            }
+            .system-map-header span {
+                display: block !important;
+                margin-top: 4px !important;
+                font-size: 12px !important;
+            }
+            .system-map-grid {
+                grid-template-columns: 1fr 14px 1fr 14px 1fr !important;
+                gap: 5px !important;
+                align-items: stretch !important;
+            }
+            .system-node {
+                min-height: 72px !important;
+                padding: 10px 7px !important;
+                border-radius: 14px !important;
+            }
+            .system-node span {
+                margin-bottom: 6px !important;
+                font-size: 8px !important;
+                letter-spacing: 0.1em !important;
+            }
+            .system-node strong,
+            .system-node:first-child strong {
+                font-size: 11px !important;
+                line-height: 1.18 !important;
+                letter-spacing: -0.02em !important;
+            }
+            .system-node:first-child strong {
+                font-size: 15px !important;
+            }
+            .system-arrow {
+                display: grid !important;
+                place-items: center !important;
+                font-size: 14px !important;
+            }
+            #products .install-card,
+            #products .install-card-featured {
+                padding: 22px !important;
+                border-radius: 26px !important;
+            }
+            #products .install-visual {
+                min-height: 104px !important;
+            }
+            #products .install-list {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px 12px !important;
+            }
+            #products .install-list span,
+            #products .install-card-featured .install-list span {
+                font-size: 12.5px !important;
+            }
+            #demo .estimate-demo-windowbar {
+                padding-left: 13px !important;
+                padding-right: 13px !important;
+            }
+            #demo .estimate-demo-address {
+                max-width: 190px !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+                font-size: 10px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Spacing QA: prevent fixed-nav overlap and keep demo/hero mockups visually complete. */
+        html {
+            scroll-padding-top: 84px !important;
+        }
+        #services,
+        #demo,
+        #products,
+        #pricing,
+        #process,
+        #form {
+            scroll-margin-top: 84px !important;
+        }
+        .hero-system-map .system-map-grid::before,
+        .hero-system-map .system-map-grid::after {
+            display: none !important;
+        }
+        .hero-system-map .system-node,
+        .hero-system-map .system-arrow {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        @media (min-width: 1024px) {
+            #demo.estimate-demo {
+                min-height: 100svh !important;
+                padding-top: 74px !important;
+                padding-bottom: 22px !important;
+                align-items: flex-start !important;
+            }
+            #demo .max-w-3xl.text-center {
+                margin-bottom: 8px !important;
+            }
+            #demo .inline-flex {
+                margin-bottom: 8px !important;
+            }
+            #demo h2 {
+                font-size: clamp(30px, 2.4vw, 38px) !important;
+                margin-bottom: 8px !important;
+            }
+            #demo h2 + p {
+                font-size: 13px !important;
+                line-height: 1.35 !important;
+            }
+            #demo .estimate-demo-metrics {
+                max-width: 850px !important;
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-metrics .estimate-demo-card {
+                min-height: 48px !important;
+                padding: 8px 12px !important;
+            }
+            #demo .estimate-demo-metrics .text-\[28px\],
+            #demo .estimate-demo-metrics .text-\[22px\] {
+                font-size: 20px !important;
+            }
+            #demo .estimate-demo-shell {
+                width: min(100%, 1260px) !important;
+                max-width: 1260px !important;
+                padding: 8px !important;
+                border-radius: 26px !important;
+            }
+            #demo .estimate-demo-window {
+                border-radius: 20px !important;
+            }
+            #demo .estimate-demo-windowbar {
+                min-height: 38px !important;
+            }
+            #demo .estimate-demo-grid {
+                grid-template-columns: 216px minmax(0, 1fr) 248px !important;
+                height: min(540px, calc(100svh - 250px)) !important;
+                min-height: 470px !important;
+            }
+            #demo .estimate-demo-side,
+            #demo .estimate-demo-main,
+            #demo .estimate-demo-right {
+                padding: 12px !important;
+            }
+            #demo .estimate-demo-side > .estimate-demo-card {
+                display: none !important;
+            }
+            #demo .estimate-demo-side [role="tablist"] {
+                margin-bottom: 10px !important;
+            }
+            #demo .estimate-demo-side > .grid.grid-cols-1 {
+                margin-top: 0 !important;
+                gap: 8px !important;
+            }
+            #demo .estimate-demo-tab,
+            #demo .estimate-demo-side button {
+                min-height: 35px !important;
+                border-radius: 14px !important;
+                font-size: 11px !important;
+            }
+            #demo .estimate-demo-device {
+                padding: 13px !important;
+                border-radius: 19px !important;
+            }
+            #demo .estimate-demo-device > .flex:first-child {
+                margin-bottom: 9px !important;
+            }
+            #demo .estimate-demo-device .h-12 {
+                width: 34px !important;
+                height: 34px !important;
+            }
+            #demo .estimate-demo-summary {
+                padding: 13px !important;
+                margin-bottom: 9px !important;
+            }
+            #demo .estimate-demo-summary h4 {
+                font-size: clamp(20px, 1.55vw, 25px) !important;
+            }
+            #demo .estimate-demo-summary .min-w-\[150px\] {
+                min-width: 116px !important;
+                padding: 10px !important;
+            }
+            #demo .estimate-demo-summary .text-\[28px\] {
+                font-size: 22px !important;
+            }
+            #demo .estimate-demo-facts > div,
+            #demo .estimate-demo-steps > div {
+                padding: 9px !important;
+            }
+            #demo .estimate-demo-facts .text-\[15px\],
+            #demo .estimate-demo-steps .text-\[14px\] {
+                font-size: 11.5px !important;
+            }
+            #demo .estimate-demo-line-item {
+                padding: 5px 0 !important;
+            }
+            #demo .estimate-demo-right .estimate-demo-activity,
+            #demo .estimate-demo-right .estimate-demo-card {
+                padding: 12px !important;
+                margin-bottom: 8px !important;
+            }
+            #demo .estimate-demo-right p,
+            #demo .estimate-demo-line-item span,
+            #demo .estimate-demo-line-item strong {
+                font-size: 11.5px !important;
+                line-height: 1.28 !important;
+            }
+            #demo .estimate-demo-controls button {
+                min-height: 31px !important;
+                font-size: 10px !important;
+            }
+            #demo .estimate-demo-device .flex.flex-col.sm\:flex-row button {
+                min-height: 34px !important;
+                padding: 0 12px !important;
+                font-size: 11px !important;
+            }
+        }
+        @media (max-width: 767px) {
+            html {
+                scroll-padding-top: 94px !important;
+            }
+            #services,
+            #demo,
+            #products,
+            #pricing,
+            #process,
+            #form {
+                scroll-margin-top: 94px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Wide hero video fill: crop out the source video's dark side gutters. */
+        @media (min-width: 1024px) {
+            .hero-product-video {
+                left: 50% !important;
+                width: 112vw !important;
+                max-width: none !important;
+                height: 112% !important;
+                transform: translateX(-50%) scale(1.08) !important;
+                transform-origin: center center !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-brand-light text-brand-dark antialiased">
@@ -6319,6 +8182,7 @@
             <span class="brand-wordmark">Dayton<span>Growth</span>Co.</span>
         </a>
         <div class="site-nav-links" aria-label="Primary navigation">
+            <a href="#demo" class="hover-underline">Demo</a>
             <a href="#products" class="hover-underline">Products</a>
             <a href="#process" class="hover-underline">How It Works</a>
             <a href="#pricing" class="hover-underline">Pricing</a>
@@ -6333,6 +8197,7 @@
     </div>
     <div id="mobileMenu" class="site-mobile-overlay" aria-hidden="true">
         <div class="site-mobile-panel">
+            <a href="#demo" class="mobile-nav-link">Demo</a>
             <a href="#products" class="mobile-nav-link">Products</a>
             <a href="#process" class="mobile-nav-link">How It Works</a>
             <a href="#pricing" class="mobile-nav-link">Pricing</a>
@@ -6354,21 +8219,20 @@
         <div class="hero-product-video-mask" aria-hidden="true"></div>
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
-            <h1 class="hero-product-title">Estimate portals for Dayton <span class="hero-product-line"><span class="hero-type-word" data-hero-type-word>contractors.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap><span class="visible">contractors.</span><span>roofers.</span><span>HVAC crews.</span><span>plumbers.</span><span>electricians.</span><span>remodelers.</span></span></span></h1>
-            <p class="hero-product-subtitle" data-word-reveal-hero>Send estimates, collect approvals, answer customer questions, and track follow-ups in one place instead of through scattered calls, texts, PDFs, and callbacks.</p>
+            <h1 class="hero-product-title">Estimate portals for <span class="hero-product-line"><span class="hero-type-word" data-hero-type-word>contractors.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap><span class="visible">contractors.</span><span>roofers.</span><span>HVAC crews.</span><span>plumbers.</span><span>electricians.</span><span>remodelers.</span></span></span></h1>
+            <p class="hero-product-subtitle" data-word-reveal-hero>Send estimates, collect approvals, and follow up in one clean portal.</p>
             <div class="hero-product-actions" aria-label="Primary actions">
-                <a href="#form" class="hero-product-cta">Get a Quick Recommendation</a>
-                <a href="#pricing" class="hero-product-secondary">View Installation Packages</a>
+                <a href="#demo" class="hero-product-cta">Try the Demo</a>
             </div>
             <div class="hero-system-map-wrap hero-dashboard-wrap" aria-label="Estimate portal flow preview">
                 <div class="hero-system-map">
-                    <div class="system-map-header"><p>Estimate flow</p><span>Estimate sent to approved job</span></div>
+                    <div class="system-map-header"><p>Customer estimate page</p><span>Price, questions, approval</span></div>
                     <div class="system-map-grid">
-                        <div class="system-node"><span>Request</span><strong>Customer requests work</strong></div>
+                        <div class="system-node"><span>Estimate</span><strong>$4,850</strong></div>
                         <div class="system-arrow" aria-hidden="true">→</div>
-                        <div class="system-node system-node-accent"><span>Estimate</span><strong>Customer receives estimate portal</strong></div>
+                        <div class="system-node system-node-accent"><span>Question</span><strong>Ask before approving</strong></div>
                         <div class="system-arrow" aria-hidden="true">→</div>
-                        <div class="system-node system-node-owner"><span>Approval</span><strong>Approve, schedule, or ask questions</strong></div>
+                        <div class="system-node system-node-owner"><span>Approval</span><strong>Approve job</strong></div>
                     </div>
                 </div>
             </div>
@@ -6379,8 +8243,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-14 items-start mb-14 md:mb-16 reveal-sweep">
                 <div>
-                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">A better way to manage estimates.</h2>
-                    <p class="text-[18px] text-brand-muted leading-relaxed">Most contractors still manage estimates through calls, texts, email PDFs, callbacks, sticky notes, and memory.</p>
+                    <h2 class="text-[36px] md:text-[52px] font-bold tracking-[-0.035em] leading-[1.05] text-brand-dark mb-5">Estimates without the mess.</h2>
+                    <p class="text-[18px] text-brand-muted leading-relaxed">One portal for the estimate, questions, approval, and follow-up.</p>
                 </div>
                 <div class="rounded-[28px] border border-slate-200 bg-slate-50 p-6 md:p-8">
                     <div class="grid sm:grid-cols-2 gap-3 text-[15px] font-bold text-brand-dark mb-6">
@@ -6391,7 +8255,7 @@
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Sticky notes.</div>
                         <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3">Memory.</div>
                     </div>
-                    <p class="text-[16px] text-slate-600 leading-relaxed">That is how estimates get forgotten, customers disappear, and jobs go cold. DaytonGrowthCo installs branded estimate portals so customers can review work, ask questions, approve jobs, and schedule next steps in one organized place.</p>
+                    <p class="text-[16px] text-slate-600 leading-relaxed">DaytonGrowthCo replaces the scattered back-and-forth with one branded estimate page customers can review, approve, and reopen anytime.</p>
                 </div>
             </div>
 
@@ -6403,27 +8267,206 @@
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">01</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Scattered estimate conversations</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">No more estimate details spread across texts, emails, and calls.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Keep details on one page.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">02</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Forgotten follow-ups</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Open estimates stay visible until the customer responds or the job closes.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Keep open estimates visible.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">03</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Customer callback loops</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Customers stop calling repeatedly asking about pricing, updates, or next steps.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Show pricing and next steps clearly.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">04</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Lost estimate PDFs</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">Customers can always reopen their estimate page instead of searching old emails.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Give customers one link to reopen.</p>
                 </div>
                 <div class="service-card rounded-[24px] border border-slate-200 bg-white p-6 stagger-item">
                     <div class="text-[32px] font-extrabold text-blue-600 mb-5">05</div>
                     <h4 class="text-[18px] font-bold text-brand-dark mb-3">Approval confusion</h4>
-                    <p class="text-[14px] text-slate-500 leading-relaxed">See exactly which estimates are pending, viewed, approved, or stalled.</p>
+                    <p class="text-[14px] text-slate-500 leading-relaxed">Know what is pending or approved.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="estimate-demo pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
+            <div class="max-w-3xl mx-auto text-center mb-10 md:mb-12 reveal-sweep">
+                <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-5">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    Live mock demo
+                </div>
+                <h2 class="text-[38px] md:text-[56px] font-bold tracking-[-0.04em] leading-[1.02] text-brand-dark mb-5">Try the portal demo.</h2>
+                <p class="text-[17px] md:text-[19px] text-brand-muted leading-relaxed">Pick a job, approve it, ask a question, or send a reminder.</p>
+            </div>
+
+            <div class="estimate-demo-metrics grid sm:grid-cols-4 gap-3 mb-6 max-w-5xl mx-auto reveal-sweep">
+                <div class="estimate-demo-card rounded-2xl p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Portal views</div>
+                    <div class="text-[28px] font-extrabold tracking-[-0.04em] text-brand-dark" data-demo-views>2x</div>
+                </div>
+                <div class="estimate-demo-card rounded-2xl p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Questions</div>
+                    <div class="text-[28px] font-extrabold tracking-[-0.04em] text-brand-dark" data-demo-question-count>1</div>
+                </div>
+                <div class="estimate-demo-card rounded-2xl p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Files</div>
+                    <div class="text-[28px] font-extrabold tracking-[-0.04em] text-brand-dark" data-demo-files>4</div>
+                </div>
+                <div class="estimate-demo-card rounded-2xl p-4">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Status</div>
+                    <div class="text-[22px] font-extrabold tracking-[-0.04em] text-brand-dark" data-demo-metric-status>Pending</div>
+                </div>
+            </div>
+
+            <div class="estimate-demo-shell rounded-[38px] p-3 md:p-4 stagger-item">
+                <div class="estimate-demo-window rounded-[32px] overflow-hidden">
+                    <div class="estimate-demo-windowbar flex items-center justify-between gap-3 px-4 md:px-5">
+                        <div class="flex items-center gap-2" aria-hidden="true">
+                            <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span>
+                            <span class="h-3 w-3 rounded-full bg-[#ffbd2e]"></span>
+                            <span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
+                        </div>
+                        <div class="estimate-demo-address flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[12px] font-semibold text-slate-500">estimate.daytongrowth.co/watson-roofing</div>
+                        <div class="text-[11px] font-bold uppercase tracking-widest text-blue-600">Demo</div>
+                    </div>
+
+                    <div class="estimate-demo-grid grid xl:grid-cols-[300px_minmax(0,1fr)_320px]">
+                        <aside class="estimate-demo-side p-5 md:p-6">
+                            <div class="flex flex-wrap xl:flex-col gap-2 mb-6" role="tablist" aria-label="Estimate demo scenarios">
+                                <button type="button" class="estimate-demo-tab rounded-full px-4 py-2.5 text-[13px] font-bold transition-all text-left" data-estimate-demo="roof" role="tab" aria-selected="true">Roof repair</button>
+                                <button type="button" class="estimate-demo-tab rounded-full px-4 py-2.5 text-[13px] font-bold transition-all text-left" data-estimate-demo="hvac" role="tab" aria-selected="false">HVAC install</button>
+                                <button type="button" class="estimate-demo-tab rounded-full px-4 py-2.5 text-[13px] font-bold transition-all text-left" data-estimate-demo="plumbing" role="tab" aria-selected="false">Plumbing</button>
+                            </div>
+
+                            <div class="estimate-demo-card rounded-[24px] p-5 mb-4">
+                                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Customer</div>
+                                <h3 class="text-[24px] font-extrabold tracking-[-0.035em] leading-tight text-brand-dark mb-4" data-demo-customer>Maria Thompson</h3>
+                                <span class="estimate-demo-pill inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest" data-demo-status>Pending approval</span>
+                            </div>
+
+                            <div class="estimate-demo-card rounded-[24px] p-5 mb-4">
+                                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Estimate total</div>
+                                <div class="text-[38px] font-extrabold tracking-[-0.055em] text-brand-dark mb-3" data-demo-total>$4,850</div>
+                                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-2">
+                                    <span>Progress</span>
+                                    <span data-demo-progress-label>Viewed, question asked</span>
+                                </div>
+                                <div class="estimate-demo-progress h-2 rounded-full" style="--progress: 66%" aria-hidden="true"><span></span></div>
+                            </div>
+
+                            <div class="grid grid-cols-2 xl:grid-cols-1 gap-3">
+                                <button type="button" class="estimate-demo-action rounded-2xl bg-brand-dark text-white px-4 py-3 text-[13px] font-bold" data-demo-action="approved">Mock approval</button>
+                                <button type="button" class="estimate-demo-action rounded-2xl bg-white border border-slate-200 text-brand-dark px-4 py-3 text-[13px] font-bold" data-demo-action="question">Mock question</button>
+                            </div>
+                        </aside>
+
+                        <main class="estimate-demo-main p-5 md:p-7 bg-white">
+                            <div class="estimate-demo-preview estimate-demo-device rounded-[30px] p-5 md:p-7">
+                                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-7">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-12 w-12 rounded-2xl bg-brand-dark text-white grid place-items-center text-[15px] font-black" data-demo-initials>WR</div>
+                                        <div>
+                                            <div class="text-[15px] font-black text-brand-dark" data-demo-contractor>Watson Roofing Co.</div>
+                                            <div class="text-[12px] font-semibold text-slate-500">Private customer estimate portal</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-700">Secure</span>
+                                        <span class="rounded-full bg-blue-50 border border-blue-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-700" data-demo-approval>Awaiting signature</span>
+                                    </div>
+                                </div>
+
+                                <div class="estimate-demo-summary rounded-[26px] bg-white border border-slate-200 p-5 md:p-6 mb-5">
+                                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-5">
+                                        <div>
+                                            <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2">Estimate summary</div>
+                                            <h4 class="text-[26px] md:text-[32px] font-extrabold tracking-[-0.045em] leading-[1.05] text-brand-dark mb-3" data-demo-preview-title>Storm damage roof repair</h4>
+                                            <p class="text-[14px] md:text-[15px] text-slate-600 leading-relaxed max-w-xl" data-demo-description>Replace damaged shingles, reseal flashing, and remove storm debris from the rear slope.</p>
+                                        </div>
+                                        <div class="rounded-[22px] bg-slate-50 border border-slate-200 p-4 min-w-[150px]">
+                                            <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total</div>
+                                            <div class="text-[28px] font-extrabold tracking-[-0.05em] text-brand-dark" data-demo-preview-total>$4,850</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="estimate-demo-facts grid md:grid-cols-3 gap-3 mb-5">
+                                        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+                                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Timeline</div>
+                                            <div class="text-[15px] font-bold text-brand-dark" data-demo-timeline>1 day</div>
+                                        </div>
+                                        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+                                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Deposit</div>
+                                            <div class="text-[15px] font-bold text-brand-dark" data-demo-deposit>$1,200</div>
+                                        </div>
+                                        <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+                                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Next step</div>
+                                            <div class="text-[15px] font-bold text-brand-dark" data-demo-next-step>Approve or ask question</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-[22px] border border-slate-200 bg-[#fbfbfd] p-4">
+                                        <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2">Line items</div>
+                                        <div data-demo-line-items>
+                                            <div class="estimate-demo-line-item"><span class="text-[14px] font-semibold text-slate-700">Shingle replacement</span><strong class="text-[14px] text-brand-dark">$2,900</strong></div>
+                                            <div class="estimate-demo-line-item"><span class="text-[14px] font-semibold text-slate-700">Flashing reseal</span><strong class="text-[14px] text-brand-dark">$1,150</strong></div>
+                                            <div class="estimate-demo-line-item"><span class="text-[14px] font-semibold text-slate-700">Cleanup and haul away</span><strong class="text-[14px] text-brand-dark">$800</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="estimate-demo-steps grid md:grid-cols-3 gap-3 mb-5">
+                                    <div class="rounded-2xl bg-white border border-slate-200 p-4">
+                                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Review</div>
+                                        <div class="text-[14px] font-bold leading-snug text-brand-dark">Photos, scope, and pricing</div>
+                                    </div>
+                                    <div class="rounded-2xl bg-white border border-slate-200 p-4">
+                                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Ask</div>
+                                        <div class="text-[14px] font-bold leading-snug text-brand-dark" data-demo-question>Can you include gutter cleanup?</div>
+                                    </div>
+                                    <div class="rounded-2xl bg-white border border-slate-200 p-4">
+                                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Upload</div>
+                                        <div class="text-[14px] font-bold leading-snug text-brand-dark" data-demo-upload>4 project photos attached</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <button type="button" class="flex-1 rounded-full bg-blue-600 text-white px-5 py-3.5 text-[14px] font-bold shadow-[0_18px_40px_rgba(37,99,235,0.22)]">Approve estimate</button>
+                                    <button type="button" class="flex-1 rounded-full bg-white border border-slate-200 text-brand-dark px-5 py-3.5 text-[14px] font-bold">Ask a question</button>
+                                </div>
+                            </div>
+                        </main>
+
+                        <aside class="estimate-demo-right p-5 md:p-6 bg-slate-50/80 border-t xl:border-t-0 xl:border-l border-slate-200/80">
+                            <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4">Portal activity</div>
+                            <div class="estimate-demo-activity rounded-[24px] p-4 mb-4">
+                                <div class="space-y-4" data-demo-activity>
+                                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-blue-500 shrink-0"></span><p class="text-[13px] leading-snug text-slate-600"><strong class="text-brand-dark">Viewed estimate</strong><br>Customer opened the portal this morning.</p></div>
+                                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-amber-500 shrink-0"></span><p class="text-[13px] leading-snug text-slate-600"><strong class="text-brand-dark">Question added</strong><br>Asked about gutter cleanup.</p></div>
+                                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-slate-300 shrink-0"></span><p class="text-[13px] leading-snug text-slate-600"><strong class="text-brand-dark">Follow-up queued</strong><br>Reminder set for tomorrow.</p></div>
+                                </div>
+                            </div>
+                            <div class="estimate-demo-card rounded-[24px] p-4">
+                                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Why it matters</div>
+                                <p class="text-[13px] leading-relaxed text-slate-600" data-demo-note>The estimate, customer question, files, status, and next step stay connected instead of getting split across texts and email.</p>
+                            </div>
+                            <div class="estimate-demo-controls estimate-demo-card rounded-[24px] p-4 mt-4">
+                                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">Try the flow</div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-white border border-slate-200 text-brand-dark px-3 py-2.5 text-[12px] font-bold" data-demo-action="viewed">Customer viewed</button>
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-white border border-slate-200 text-brand-dark px-3 py-2.5 text-[12px] font-bold" data-demo-action="question">Ask question</button>
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-blue-600 text-white px-3 py-2.5 text-[12px] font-bold" data-demo-action="approved">Approve</button>
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-white border border-slate-200 text-brand-dark px-3 py-2.5 text-[12px] font-bold" data-demo-action="uploaded">Upload photos</button>
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-white border border-slate-200 text-brand-dark px-3 py-2.5 text-[12px] font-bold" data-demo-action="reminder">Send reminder</button>
+                                    <button type="button" class="estimate-demo-action rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 px-3 py-2.5 text-[12px] font-bold" data-demo-action="reset">Reset</button>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
                 </div>
             </div>
         </div>
@@ -6433,52 +8476,76 @@
     <section id="products" class="pt-14 pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 bg-[#f5f5f7] border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
-                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Estimate portals we install.</h2>
-                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Built for contractors who send estimates every week and need a cleaner way to manage approvals and follow-ups.</p>
+                <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-4">Choose your install.</h2>
+                <p class="text-[16px] md:text-[18px] text-brand-muted leading-relaxed">Start where estimates get stuck.</p>
             </div>
 
             <div class="installation-grid">
                 <article class="product-card install-card install-card-featured stagger-item">
                     <div class="install-card-topline">Estimate Portal</div>
-                    <h3>For contractors tired of sending estimates through text messages and PDFs.</h3>
-                    <p><strong>Includes:</strong> one organized estimate page for each customer.</p>
+                    <h3>Estimate Portal</h3>
+                    <div class="install-visual install-visual-portal" aria-hidden="true">
+                        <div class="install-visual-bar"><span></span><span></span><span></span></div>
+                        <div class="install-visual-row">
+                            <div>
+                                <small>Estimate #1042</small>
+                                <strong>$4,850</strong>
+                            </div>
+                            <em>Ready</em>
+                        </div>
+                        <div class="install-visual-actions">
+                            <span>Approve</span>
+                            <span>Ask question</span>
+                        </div>
+                    </div>
+                    <p>Send estimates through one customer page.</p>
                     <div class="install-list">
-                        <span>Private customer estimate page</span>
-                        <span>Estimate approval buttons</span>
-                        <span>Customer Q&A section</span>
-                        <span>Photo and file uploads</span>
+                        <span>Estimate page</span>
+                        <span>Approve button</span>
+                        <span>Questions</span>
+                        <span>Uploads</span>
                         <span>Follow-up reminders</span>
                         <span>Estimate status tracking</span>
                     </div>
-                    <div class="install-outcome">Outcome: customers have one place to review, approve, and respond to estimates.</div>
+                    <div class="install-outcome">Best for: scattered estimate PDFs and texts.</div>
                 </article>
 
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Estimate Follow-Up Portal</div>
-                    <h3>For estimates that go quiet after being sent.</h3>
-                    <p><strong>Includes:</strong> clearer next steps after pricing is sent.</p>
-                    <div class="install-list">
-                        <span>Viewed estimate tracking</span>
-                        <span>Automatic follow-up reminders</span>
-                        <span>Approval status updates</span>
-                        <span>Callback tracking</span>
-                        <span>Customer response organization</span>
+                    <h3>Follow-Up Portal</h3>
+                    <div class="install-visual install-visual-followup" aria-hidden="true">
+                        <div class="install-visual-status active"><span></span>Viewed 2x</div>
+                        <div class="install-visual-status"><span></span>Reminder queued</div>
+                        <div class="install-visual-status"><span></span>Waiting on approval</div>
                     </div>
-                    <div class="install-outcome">Outcome: fewer estimates disappear without a next step.</div>
+                    <p>Track viewed estimates and send follow-ups.</p>
+                    <div class="install-list">
+                        <span>Viewed tracking</span>
+                        <span>Follow-up reminders</span>
+                        <span>Approval status</span>
+                        <span>Callback notes</span>
+                    </div>
+                    <div class="install-outcome">Best for: open estimates going cold.</div>
                 </article>
 
                 <article class="product-card install-card stagger-item">
                     <div class="install-card-topline">Custom Estimate Workflow</div>
-                    <h3>For contractors with a messy or inconsistent estimate process.</h3>
-                    <p><strong>Includes:</strong> a cleaner path from first request to approval.</p>
+                    <h3>Custom Estimate Flow</h3>
+                    <div class="install-visual install-visual-flow" aria-hidden="true">
+                        <div>Request</div>
+                        <span></span>
+                        <div>Portal</div>
+                        <span></span>
+                        <div>Approve</div>
+                    </div>
+                    <p>Build the portal around your current process.</p>
                     <div class="install-list">
-                        <span>Estimate process review</span>
+                        <span>Process review</span>
                         <span>Portal customization</span>
-                        <span>Custom customer flow</span>
-                        <span>Communication organization</span>
+                        <span>Customer flow</span>
                         <span>Real-world testing</span>
                     </div>
-                    <div class="install-outcome">Outcome: a cleaner estimate process from request to approval.</div>
+                    <div class="install-outcome">Best for: inconsistent estimate handoffs.</div>
                 </article>
             </div>
         </div>
@@ -6490,7 +8557,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Estimate Portal Installations</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">Start with the part of the estimate process causing the most delays or confusion.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">Start where estimates get stuck.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
@@ -6500,7 +8567,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">$1,500</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For contractors who want a cleaner way to send and manage estimates.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">Send estimates from one portal.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Private estimate pages</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer approvals</li>
@@ -6518,7 +8585,7 @@
                         <span class="text-[18px] text-slate-400 font-semibold">Starting at</span>
                         <div class="text-[48px] font-extrabold text-white tracking-tight leading-none mt-1">$2,500</div>
                     </div>
-                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">For contractors losing estimates after sending pricing.</p>
+                    <p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">Follow up after pricing is sent.</p>
                     <ul class="space-y-3.5 mb-8 flex-1 relative z-10">
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Follow-up automation</li>
                         <li class="flex items-start gap-3 text-[14px] text-slate-200"><svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Viewed estimate tracking</li>
@@ -6534,7 +8601,7 @@
                         <span class="text-[18px] text-brand-muted font-semibold">Project-based</span>
                         <div class="text-[42px] font-extrabold text-brand-dark tracking-tight leading-none mt-1">Custom Quote</div>
                     </div>
-                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For contractors needing a fully customized estimate process.</p>
+                    <p class="text-brand-muted text-[14px] mb-7 leading-relaxed">Build a custom estimate flow.</p>
                     <ul class="space-y-3.5 mb-8 flex-1">
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Portal customization</li>
                         <li class="flex items-start gap-3 text-[14px] text-brand-dark"><svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Workflow setup</li>
@@ -6547,8 +8614,8 @@
 
             <div class="mt-14 md:mt-16 rounded-[28px] border border-blue-100 bg-blue-50/70 px-6 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center md:justify-between gap-6 max-w-5xl mx-auto reveal-sweep">
                 <div>
-                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not sure where estimates are breaking down?</h3>
-                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us how you currently send and follow up on estimates. We will recommend the simplest improvement first.</p>
+                    <h3 class="text-[30px] md:text-[36px] font-bold tracking-[-0.02em] text-brand-dark mb-3">Not sure where to start?</h3>
+                    <p class="text-[16px] text-brand-muted leading-relaxed max-w-2xl">Tell us what feels messy. We will recommend the simplest fix.</p>
                 </div>
                 <a href="#form" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3.5 rounded-full text-[14px] font-semibold transition-all duration-300 shrink-0">Get a Quick Recommendation</a>
             </div>
@@ -6560,15 +8627,15 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-12 md:mb-14 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">How it works.</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">Replace scattered estimate communication with one organized customer portal.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">From request to approval, in one place.</p>
             </div>
 
             <div class="grid lg:grid-cols-5 gap-4">
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center mb-5">1</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Customer requests work</h3><p class="text-[14px] text-slate-500 leading-relaxed">Collect the job request and estimate details.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mb-5">2</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Send estimate portal</h3><p class="text-[14px] text-slate-500 leading-relaxed">Customer receives a branded estimate page.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-dark p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-white text-brand-dark font-bold flex items-center justify-center mb-5">3</div><h3 class="text-[19px] font-bold text-white mb-2">Customer reviews estimate</h3><p class="text-[14px] text-slate-400 leading-relaxed">Approve work, ask questions, upload photos, or schedule next steps.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mb-5">4</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Track estimate status</h3><p class="text-[14px] text-slate-500 leading-relaxed">See which estimates are viewed, approved, waiting, or stalled.</p></div>
-                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center mb-5">5</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Follow up automatically</h3><p class="text-[14px] text-slate-500 leading-relaxed">Keep estimates moving without relying on memory or callbacks.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center mb-5">1</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Request comes in</h3><p class="text-[14px] text-slate-500 leading-relaxed">Capture the job details.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mb-5">2</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Portal is sent</h3><p class="text-[14px] text-slate-500 leading-relaxed">Customer gets one estimate link.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-dark p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-white text-brand-dark font-bold flex items-center justify-center mb-5">3</div><h3 class="text-[19px] font-bold text-white mb-2">Customer reviews</h3><p class="text-[14px] text-slate-400 leading-relaxed">Approve or ask a question.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mb-5">4</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Status updates</h3><p class="text-[14px] text-slate-500 leading-relaxed">See what is pending.</p></div>
+                <div class="process-step rounded-[24px] border border-slate-200 bg-brand-light p-6 stagger-item"><div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center mb-5">5</div><h3 class="text-[19px] font-bold text-brand-dark mb-2">Follow-up happens</h3><p class="text-[14px] text-slate-500 leading-relaxed">No memory required.</p></div>
             </div>
         </div>
     </section>
@@ -7240,12 +9307,37 @@ document.addEventListener('DOMContentLoaded', () => {
         return !hash || hash === '#' || hash === '#home';
     };
 
-    const startHeroTypingIfReady = () => {
-        if (!splashComplete || !isPlainHomeRoute()) return;
-        initHeroTypewriterForCurrentViewport();
+    const isHeroProductVisible = () => {
+        const hero = document.querySelector('.hero-product');
+        if (!hero || !hero.getClientRects().length) return false;
+        const rect = hero.getBoundingClientRect();
+        return rect.top < window.innerHeight * 0.86 && rect.bottom > window.innerHeight * 0.16;
+    };
+
+    const startHeroTypingIfReady = (options = {}) => {
+        if (!splashComplete) return;
+        if (!isPlainHomeRoute() && !isHeroProductVisible()) return;
+        initHeroTypewriterForCurrentViewport(options);
     };
 
     splashReady.then(startHeroTypingIfReady);
+    window.addEventListener('hashchange', () => {
+        window.setTimeout(() => startHeroTypingIfReady(), 80);
+    });
+    window.addEventListener('resize', () => {
+        window.setTimeout(() => startHeroTypingIfReady(), 80);
+    }, { passive: true });
+    const heroProductForTyping = document.querySelector('.hero-product');
+    if (heroProductForTyping && 'IntersectionObserver' in window) {
+        const heroTypingObserver = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                startHeroTypingIfReady();
+            }
+        }, { rootMargin: '0px 0px -18% 0px', threshold: 0.16 });
+        heroTypingObserver.observe(heroProductForTyping);
+    } else {
+        window.addEventListener('scroll', () => startHeroTypingIfReady(), { passive: true });
+    }
 
     // ── STAGGERED GSAP/FRAMER STYLE REVEAL ANIMATIONS ──
     const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -7763,7 +9855,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollToHashTarget = (hash, behavior = 'smooth') => {
         const el = document.querySelector(hash);
         if (!el) return;
-        const headerOffset = window.matchMedia('(max-width: 767px)').matches ? 0 : 80;
+        const headerOffset = window.matchMedia('(max-width: 767px)').matches ? 92 : 84;
         const elementPosition = el.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         window.scrollTo({
@@ -7824,6 +9916,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
+    const syncInitialHashScroll = () => {
+        const hash = window.location.hash;
+        if (!hash || hash === '#' || hash === '#home' || hash === '#about') return;
+        scrollToHashTarget(hash, 'auto');
+        revealHashTarget(hash);
+    };
+    splashReady.then(() => {
+        window.setTimeout(syncInitialHashScroll, 120);
+        window.setTimeout(syncInitialHashScroll, 620);
+    });
     if (typeof updateMobileStickyCta === 'function') updateMobileStickyCta();
     
     document.querySelectorAll('a[href^="#"]').forEach(link => {
@@ -7848,6 +9950,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateMeta = () => {
         const currentHash = window.location.hash || '#';
         const meta = {
+            '#demo': { title: 'Estimate Portal Demo | DaytonGrowthCo', desc: 'Try a mock estimate portal demo and see how contractors can show estimates, collect approvals, answer customer questions, and track follow-ups in one place.', canonical: 'https://www.daytongrowth.co/#demo', keywords: 'estimate portal demo, contractor estimate portal, customer estimate page, estimate approval demo' },
             '#about': { title: 'About DaytonGrowthCo. | Contractor Estimate Portals', desc: 'Meet DaytonGrowthCo., a Dayton-based company installing branded estimate portals for contractors who need a cleaner way to send estimates, collect approvals, and follow up.', canonical: 'https://www.daytongrowth.co/#about', keywords: 'about DaytonGrowthCo, Dayton contractor estimate portals, branded estimate portal, Samuel Caruso' },
             '#process': { title: 'How It Works | Contractor Estimate Portals | DaytonGrowthCo', desc: 'See how DaytonGrowthCo replaces scattered estimate communication with branded customer portals for estimates, approvals, questions, status tracking, and follow-ups.', canonical: 'https://www.daytongrowth.co/#process', keywords: 'contractor estimate portal, estimate approval page, estimate follow up portal, contractor customer portal' }
         };
@@ -8347,7 +10450,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (error) {}
 
     try {
-        const sectionIds = ['services', 'products', 'pricing', 'process', 'form'];
+        const sectionIds = ['services', 'demo', 'products', 'pricing', 'process', 'form'];
         const desktopLinks = Array.from(document.querySelectorAll('#navbar a[href^="#"]')).filter(function (link) {
             return sectionIds.indexOf((link.getAttribute('href') || '').replace('#', '')) !== -1 && !link.closest('#mobileMenu') && link.classList.contains('hover-underline');
         });
@@ -8385,6 +10488,240 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const initEstimatePortalDemo = () => {
+        const demoTabs = Array.from(document.querySelectorAll('[data-estimate-demo]'));
+        if (!demoTabs.length) return;
+        const preview = document.querySelector('.estimate-demo-preview');
+        const progress = document.querySelector('.estimate-demo-progress');
+        let currentDemoKey = 'roof';
+        const setText = (selector, value) => {
+            const el = document.querySelector(selector);
+            if (el) el.textContent = value;
+        };
+        const demoData = {
+            roof: {
+                contractor: 'Watson Roofing Co.',
+                initials: 'WR',
+                customer: 'Maria Thompson',
+                status: 'Pending approval',
+                metricStatus: 'Pending',
+                title: 'Storm damage roof repair',
+                total: '$4,850',
+                views: '2x',
+                questions: '1',
+                files: '4',
+                progress: '66%',
+                progressLabel: 'Viewed, question asked',
+                description: 'Replace damaged shingles, reseal flashing, and remove storm debris from the rear slope.',
+                timeline: '1 day',
+                deposit: '$1,200',
+                nextStep: 'Approve or ask question',
+                question: 'Can you include gutter cleanup?',
+                approval: 'Awaiting signature',
+                upload: '4 project photos attached',
+                note: 'The estimate, customer question, files, status, and next step stay connected instead of getting split across texts and email.',
+                lineItems: [
+                    ['Shingle replacement', '$2,900'],
+                    ['Flashing reseal', '$1,150'],
+                    ['Cleanup and haul away', '$800']
+                ],
+                activity: [
+                    ['Viewed estimate', 'Customer opened the portal this morning.', 'bg-blue-500'],
+                    ['Question added', 'Asked about gutter cleanup.', 'bg-amber-500'],
+                    ['Follow-up queued', 'Reminder set for tomorrow.', 'bg-slate-300']
+                ]
+            },
+            hvac: {
+                contractor: 'Gem City HVAC',
+                initials: 'GC',
+                customer: 'Derrick Ellis',
+                status: 'Viewed today',
+                metricStatus: 'Viewed',
+                title: 'HVAC replacement estimate',
+                total: '$9,400',
+                views: '3x',
+                questions: '1',
+                files: '2',
+                progress: '48%',
+                progressLabel: 'Viewed, waiting on approval',
+                description: 'Replace aging furnace and AC unit with a high-efficiency system, thermostat, and disposal.',
+                timeline: '2 days',
+                deposit: '$2,500',
+                nextStep: 'Send approval reminder',
+                question: 'Is financing available?',
+                approval: 'Reminder queued',
+                upload: 'Equipment photos attached',
+                note: 'Pricing, financing questions, equipment details, and follow-up reminders stay attached to the same estimate page.',
+                lineItems: [
+                    ['Furnace and AC system', '$7,400'],
+                    ['Smart thermostat', '$425'],
+                    ['Removal and disposal', '$1,575']
+                ],
+                activity: [
+                    ['Viewed estimate', 'Customer viewed the replacement options.', 'bg-blue-500'],
+                    ['Question added', 'Asked about financing and warranty.', 'bg-amber-500'],
+                    ['Reminder queued', 'Follow-up scheduled for 10 AM tomorrow.', 'bg-slate-300']
+                ]
+            },
+            plumbing: {
+                contractor: 'Northline Plumbing',
+                initials: 'NP',
+                customer: 'North Main Cafe',
+                status: 'Approved',
+                metricStatus: 'Approved',
+                title: 'Commercial sink line repair',
+                total: '$1,780',
+                views: '5x',
+                questions: '2',
+                files: '6',
+                progress: '100%',
+                progressLabel: 'Approved, ready to schedule',
+                description: 'Repair leaking sink line, replace shutoff valves, and test drainage before reopening.',
+                timeline: 'Half day',
+                deposit: '$500',
+                nextStep: 'Schedule repair window',
+                question: 'Can this happen before 8 AM?',
+                approval: 'Approved',
+                upload: '6 site photos attached',
+                note: 'The approved estimate is ready for scheduling, with the scope, timing question, and deposit details preserved.',
+                lineItems: [
+                    ['Sink line repair', '$920'],
+                    ['Shutoff valve replacement', '$430'],
+                    ['Drain test and cleanup', '$430']
+                ],
+                activity: [
+                    ['Estimate approved', 'Customer approved the repair scope.', 'bg-emerald-500'],
+                    ['Timing question', 'Requested service before opening.', 'bg-amber-500'],
+                    ['Ready to schedule', 'Next step is choosing the repair window.', 'bg-blue-500']
+                ]
+            }
+        };
+
+        const renderLineItems = items => {
+            const container = document.querySelector('[data-demo-line-items]');
+            if (!container) return;
+            container.innerHTML = items.map(([label, amount]) => `<div class="estimate-demo-line-item"><span class="text-[14px] font-semibold text-slate-700">${label}</span><strong class="text-[14px] text-brand-dark">${amount}</strong></div>`).join('');
+        };
+
+        const renderActivity = items => {
+            const container = document.querySelector('[data-demo-activity]');
+            if (!container) return;
+            container.innerHTML = items.map(([title, detail, color]) => `<div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full ${color} shrink-0"></span><p class="text-[13px] leading-snug text-slate-600"><strong class="text-brand-dark">${title}</strong><br>${detail}</p></div>`).join('');
+        };
+
+        const applyDemo = key => {
+            const data = demoData[key] || demoData.roof;
+            currentDemoKey = demoData[key] ? key : 'roof';
+            demoTabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.estimateDemo === key)));
+            setText('[data-demo-contractor]', data.contractor);
+            setText('[data-demo-initials]', data.initials);
+            setText('[data-demo-customer]', data.customer);
+            setText('[data-demo-status]', data.status);
+            setText('[data-demo-metric-status]', data.metricStatus);
+            setText('[data-demo-title]', data.title);
+            setText('[data-demo-total]', data.total);
+            setText('[data-demo-preview-total]', data.total);
+            setText('[data-demo-views]', data.views);
+            setText('[data-demo-question-count]', data.questions);
+            setText('[data-demo-files]', data.files);
+            setText('[data-demo-progress-label]', data.progressLabel);
+            setText('[data-demo-preview-title]', data.title);
+            setText('[data-demo-description]', data.description);
+            setText('[data-demo-timeline]', data.timeline);
+            setText('[data-demo-deposit]', data.deposit);
+            setText('[data-demo-next-step]', data.nextStep);
+            setText('[data-demo-question]', data.question);
+            setText('[data-demo-approval]', data.approval);
+            setText('[data-demo-upload]', data.upload);
+            setText('[data-demo-note]', data.note);
+            renderLineItems(data.lineItems);
+            renderActivity(data.activity);
+            if (progress) progress.style.setProperty('--progress', data.progress);
+            if (preview) {
+                preview.classList.add('is-updating');
+                window.setTimeout(() => preview.classList.remove('is-updating'), 320);
+            }
+        };
+
+        demoTabs.forEach(tab => {
+            tab.addEventListener('click', () => applyDemo(tab.dataset.estimateDemo));
+        });
+        document.querySelectorAll('[data-demo-action]').forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.dataset.demoAction;
+                const base = demoData[currentDemoKey] || demoData.roof;
+                if (action === 'reset') {
+                    applyDemo(currentDemoKey);
+                } else if (action === 'viewed') {
+                    setText('[data-demo-status]', 'Viewed today');
+                    setText('[data-demo-metric-status]', 'Viewed');
+                    setText('[data-demo-views]', String(Number.parseInt(base.views, 10) + 1) + 'x');
+                    setText('[data-demo-progress-label]', 'Viewed, waiting on reply');
+                    setText('[data-demo-next-step]', 'Follow up tomorrow');
+                    renderActivity([
+                        ['Portal opened', 'Customer reviewed the estimate details.', 'bg-blue-500'],
+                        ['Pricing visible', 'Total, deposit, and line items are in one place.', 'bg-slate-300'],
+                        ['Follow-up queued', 'Reminder stays attached to this estimate.', 'bg-slate-300']
+                    ]);
+                    if (progress) progress.style.setProperty('--progress', '54%');
+                } else if (action === 'approved') {
+                    setText('[data-demo-status]', 'Approved');
+                    setText('[data-demo-metric-status]', 'Approved');
+                    setText('[data-demo-progress-label]', 'Approved, ready to schedule');
+                    setText('[data-demo-approval]', 'Approved');
+                    setText('[data-demo-next-step]', 'Schedule next step');
+                    renderActivity([
+                        ['Estimate approved', 'Customer approved the estimate from the portal.', 'bg-emerald-500'],
+                        ['Signature captured', 'Approval status updated automatically.', 'bg-blue-500'],
+                        ['Ready to schedule', 'Next step is queued for the contractor.', 'bg-slate-300']
+                    ]);
+                    if (progress) progress.style.setProperty('--progress', '100%');
+                } else if (action === 'uploaded') {
+                    setText('[data-demo-status]', 'Files uploaded');
+                    setText('[data-demo-metric-status]', 'Files');
+                    setText('[data-demo-files]', String(Number.parseInt(base.files, 10) + 2));
+                    setText('[data-demo-upload]', 'New photos added by customer');
+                    setText('[data-demo-next-step]', 'Review uploaded photos');
+                    renderActivity([
+                        ['Photos uploaded', 'Customer added new project photos.', 'bg-blue-500'],
+                        ['Scope preserved', 'Files remain attached to the estimate.', 'bg-emerald-500'],
+                        ['Review needed', 'Contractor can adjust pricing if needed.', 'bg-amber-500']
+                    ]);
+                    if (progress) progress.style.setProperty('--progress', '76%');
+                } else if (action === 'reminder') {
+                    setText('[data-demo-status]', 'Reminder sent');
+                    setText('[data-demo-metric-status]', 'Reminder');
+                    setText('[data-demo-progress-label]', 'Reminder sent, waiting on customer');
+                    setText('[data-demo-next-step]', 'Wait for response');
+                    renderActivity([
+                        ['Reminder sent', 'Customer received a follow-up from the portal.', 'bg-blue-500'],
+                        ['No callback needed', 'The open estimate stays visible.', 'bg-emerald-500'],
+                        ['Next check-in set', 'Follow-up queue updates automatically.', 'bg-slate-300']
+                    ]);
+                    if (progress) progress.style.setProperty('--progress', '62%');
+                } else {
+                    setText('[data-demo-status]', 'Question received');
+                    setText('[data-demo-metric-status]', 'Question');
+                    setText('[data-demo-question-count]', String(Number.parseInt(base.questions, 10) + 1));
+                    setText('[data-demo-progress-label]', 'Question received, reply needed');
+                    setText('[data-demo-question]', 'Customer asked about timing and materials');
+                    setText('[data-demo-next-step]', 'Reply to customer');
+                    renderActivity([
+                        ['Question received', 'Customer asked about timing and materials.', 'bg-amber-500'],
+                        ['Estimate still open', 'The job stays visible while awaiting reply.', 'bg-blue-500'],
+                        ['Follow-up protected', 'Reminder remains attached to the estimate.', 'bg-slate-300']
+                    ]);
+                    if (progress) progress.style.setProperty('--progress', '72%');
+                }
+                if (preview) {
+                    preview.classList.add('is-updating');
+                    window.setTimeout(() => preview.classList.remove('is-updating'), 320);
+                }
+            });
+        });
+        applyDemo('roof');
+    };
+
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const splitHeroWords = () => {
@@ -8474,6 +10811,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     splitHeroWords();
     initHeroOverlayNav();
+    initEstimatePortalDemo();
 });
 </script>
 </body>
