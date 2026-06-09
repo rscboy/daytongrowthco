@@ -4226,12 +4226,17 @@
             }
         }
         .hero-product-line {
-            display: block;
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
         }
         .hero-type-word {
             display: inline-block;
             color: #60A5FA;
             font-style: italic;
+            text-align: left;
             white-space: nowrap;
             opacity: 1;
             filter: blur(0);
@@ -10167,6 +10172,504 @@
             }
         }
     </style>
+    <style>
+        /* Final mobile polish: animated tool cards and deck-style pricing. */
+        @media (max-width: 767px) {
+            body:not(.splash-lock) #industry-tools {
+                padding-top: 34px !important;
+                padding-bottom: 42px !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .text-center {
+                margin-bottom: 14px !important;
+                text-align: left !important;
+            }
+
+            body:not(.splash-lock) #industry-tools h2 {
+                margin: 0 0 8px !important;
+                font-size: clamp(34px, 10vw, 42px) !important;
+                line-height: 1.04 !important;
+                letter-spacing: 0 !important;
+                text-wrap: balance;
+            }
+
+            body:not(.splash-lock) #industry-tools h2.scroll-words-ready[data-scroll-kind="headline"]::after {
+                content: none !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .text-center::after {
+                content: 'Choose an industry. Watch the example system run.';
+                display: block;
+                max-width: 29ch;
+                color: #64748b;
+                font-size: 14px;
+                line-height: 1.42;
+                text-wrap: pretty;
+            }
+
+            body:not(.splash-lock) #industrySelector {
+                margin-left: -16px !important;
+                margin-right: -16px !important;
+                padding: 2px 16px 12px !important;
+                gap: 9px !important;
+                scroll-snap-type: x proximity;
+            }
+
+            body:not(.splash-lock) #industrySelector .industry-tab {
+                min-height: 40px !important;
+                padding: 0 16px !important;
+                border-radius: 9999px !important;
+                font-size: 13px !important;
+                letter-spacing: 0 !important;
+            }
+
+            body:not(.splash-lock) #industryToolsGrid {
+                display: flex !important;
+                gap: 12px !important;
+                margin-left: -16px !important;
+                margin-right: -16px !important;
+                padding: 2px 16px 10px !important;
+                overflow-x: auto !important;
+                overflow-y: visible !important;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            body:not(.splash-lock) #industryToolsGrid::-webkit-scrollbar {
+                display: none;
+            }
+
+            body:not(.splash-lock) #industryToolsGrid::after {
+                content: '';
+                flex: 0 0 4px;
+            }
+
+            body:not(.splash-lock) #industry-tools .industry-card {
+                flex: 0 0 min(78vw, 318px) !important;
+                min-height: 316px !important;
+                display: grid !important;
+                grid-template-rows: auto auto !important;
+                gap: 12px !important;
+                padding: 15px !important;
+                border-radius: 22px !important;
+                scroll-snap-align: start;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+                transform: none !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .industry-card h3 {
+                margin-top: 10px !important;
+                font-size: 22px !important;
+                line-height: 1.08 !important;
+                letter-spacing: 0 !important;
+                text-wrap: balance;
+            }
+
+            body:not(.splash-lock) #industry-tools .industry-card p.text-slate-800 {
+                display: block !important;
+                margin-top: 8px !important;
+                color: #334155 !important;
+                font-size: 14px !important;
+                line-height: 1.32 !important;
+                text-wrap: pretty;
+            }
+
+            body:not(.splash-lock) #industry-tools .industry-card p.text-slate-500 {
+                display: none !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .preview-shell {
+                display: block !important;
+                height: 154px !important;
+                margin-top: 8px !important;
+                border-radius: 18px !important;
+                align-self: start;
+                overflow: hidden !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .preview-safe-area {
+                border-radius: 14px !important;
+                padding: 8px !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .preview-shell * {
+                animation-duration: 1800ms !important;
+            }
+
+            body:not(.splash-lock) #industry-tools .preview-title,
+            body:not(.splash-lock) #industry-tools .preview-label,
+            body:not(.splash-lock) #industry-tools .preview-tiny-label {
+                letter-spacing: 0 !important;
+            }
+
+            body:not(.splash-lock) #pricing {
+                padding-top: 36px !important;
+                padding-bottom: 44px !important;
+            }
+
+            body:not(.splash-lock) #pricing .text-center {
+                margin-bottom: 14px !important;
+            }
+
+            body:not(.splash-lock) #pricing h2 {
+                max-width: 13ch !important;
+                font-size: clamp(34px, 9.5vw, 40px) !important;
+                line-height: 1.05 !important;
+                letter-spacing: 0 !important;
+                text-wrap: balance;
+            }
+
+            body:not(.splash-lock) #pricing h2 + p {
+                max-width: 29ch !important;
+                font-size: 13.5px !important;
+                line-height: 1.42 !important;
+                text-wrap: pretty;
+            }
+
+            body:not(.splash-lock) #pricing .grid.md\:grid-cols-3 {
+                display: flex !important;
+                gap: 12px !important;
+                margin-left: -16px !important;
+                margin-right: -16px !important;
+                padding: 2px 16px 12px !important;
+                overflow-x: auto !important;
+                overflow-y: visible !important;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            body:not(.splash-lock) #pricing .grid.md\:grid-cols-3::-webkit-scrollbar {
+                display: none;
+            }
+
+            body:not(.splash-lock) #pricing .grid.md\:grid-cols-3::after {
+                content: '';
+                flex: 0 0 4px;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card {
+                flex: 0 0 min(82vw, 330px) !important;
+                min-height: 304px !important;
+                display: grid !important;
+                grid-template-rows: auto auto auto 1fr auto !important;
+                gap: 8px !important;
+                padding: 18px !important;
+                border-radius: 24px !important;
+                scroll-snap-align: start;
+                overflow: hidden !important;
+                transform: none !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card.md\:-translate-y-4 {
+                transform: none !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card h3 {
+                font-size: 22px !important;
+                line-height: 1.08 !important;
+                letter-spacing: 0 !important;
+                text-wrap: balance;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card .text-\[48px\] {
+                font-size: 48px !important;
+                line-height: 0.95 !important;
+                letter-spacing: 0 !important;
+                font-variant-numeric: tabular-nums;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card p {
+                display: -webkit-box !important;
+                margin-top: 2px !important;
+                font-size: 13px !important;
+                line-height: 1.28 !important;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-wrap: pretty;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card ul {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+                margin: 5px 0 0 !important;
+                align-content: start !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card li {
+                width: fit-content !important;
+                padding: 6px 8px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 9999px !important;
+                background: #ffffff !important;
+                color: #334155 !important;
+                font-size: 11px !important;
+                line-height: 1 !important;
+                white-space: nowrap !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card.bg-brand-dark li {
+                border-color: rgba(148, 163, 184, 0.18) !important;
+                background: rgba(255,255,255,0.06) !important;
+                color: #e2e8f0 !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card li:nth-child(n+3) {
+                display: none !important;
+            }
+
+            body:not(.splash-lock) #pricing .pricing-card a[href="#form"] {
+                align-self: end;
+                min-height: 46px !important;
+                border-radius: 16px !important;
+                font-size: 13px !important;
+                letter-spacing: 0 !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body:not(.splash-lock) #industry-tools .preview-shell * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+    <style>
+        /* Dedicated mobile pricing deck hook. Keeps pricing from falling back to stacked cards. */
+        html {
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        @media (max-width: 767px) {
+            html body #pricing .pricing-deck {
+                display: flex !important;
+                width: auto !important;
+                max-width: none !important;
+                gap: 12px !important;
+                margin-left: -16px !important;
+                margin-right: -16px !important;
+                padding: 4px 16px 14px !important;
+                overflow-x: auto !important;
+                overflow-y: visible !important;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            html body #pricing .pricing-deck::-webkit-scrollbar {
+                display: none;
+            }
+
+            html body #pricing .pricing-deck::after {
+                content: '';
+                flex: 0 0 6px;
+            }
+
+            html body #pricing .pricing-deck .pricing-card {
+                flex: 0 0 min(84vw, 328px) !important;
+                min-height: 302px !important;
+                max-width: min(84vw, 328px) !important;
+                position: relative;
+                display: grid !important;
+                grid-template-rows: auto auto auto 1fr auto !important;
+                align-content: start !important;
+                gap: 8px !important;
+                padding: 18px !important;
+                border-radius: 24px !important;
+                scroll-snap-align: center;
+                box-shadow: 0 12px 34px rgba(15, 23, 42, 0.07) !important;
+                transform: none !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card > span:first-child {
+                margin-bottom: 2px !important;
+                padding: 5px 9px !important;
+                font-size: 10px !important;
+                letter-spacing: 0 !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card h3 {
+                margin: 0 !important;
+                font-size: 21px !important;
+                line-height: 1.08 !important;
+                letter-spacing: 0 !important;
+                text-wrap: balance;
+            }
+
+            html body #pricing .pricing-deck .pricing-card > div:has(.text-\[48px\]) {
+                margin: 2px 0 0 !important;
+                gap: 8px !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card .text-\[48px\] {
+                font-size: 46px !important;
+                line-height: 0.95 !important;
+                letter-spacing: 0 !important;
+                font-variant-numeric: tabular-nums;
+            }
+
+            html body #pricing .pricing-deck .pricing-card p {
+                display: -webkit-box !important;
+                margin: 0 !important;
+                font-size: 13px !important;
+                line-height: 1.28 !important;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden !important;
+                text-wrap: pretty;
+            }
+
+            html body #pricing .pricing-deck .pricing-card ul {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+                margin: 3px 0 0 !important;
+                padding: 0 !important;
+                align-content: start !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card li {
+                width: fit-content !important;
+                max-width: 100% !important;
+                padding: 6px 8px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 9999px !important;
+                background: #ffffff !important;
+                color: #334155 !important;
+                font-size: 11px !important;
+                line-height: 1 !important;
+                white-space: nowrap !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card.bg-brand-dark li {
+                border-color: rgba(148, 163, 184, 0.18) !important;
+                background: rgba(255,255,255,0.06) !important;
+                color: #e2e8f0 !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card li:nth-child(n+3) {
+                display: none !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card a[href="#form"] {
+                align-self: end;
+                min-height: 48px !important;
+                padding: 0 14px !important;
+                border-radius: 16px !important;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px !important;
+                letter-spacing: 0 !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card {
+                opacity: 0.74;
+                transition: opacity 180ms ease-out, transform 180ms ease-out, box-shadow 180ms ease-out !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card.is-pricing-active {
+                z-index: 2;
+                opacity: 1;
+                transform: translateY(-3px) scale(1.015) !important;
+                box-shadow: 0 16px 42px rgba(15, 23, 42, 0.12) !important;
+            }
+
+            html body #pricing .pricing-deck .pricing-card.is-card-pressed,
+            html body #pricing .pricing-deck .pricing-card a[href="#form"]:active {
+                transform: scale(0.96) !important;
+            }
+
+            html body #pricing .pricing-swipe-hint {
+                width: fit-content;
+                margin: -2px auto 12px;
+                padding: 7px 11px;
+                border: 1px solid #e2e8f0;
+                border-radius: 9999px;
+                background: rgba(255,255,255,0.9);
+                color: #64748b;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1;
+                opacity: 0.92;
+                transform: translateY(0);
+                transition: opacity 180ms ease-in, transform 180ms ease-in;
+                pointer-events: none;
+            }
+
+            html body #pricing .pricing-swipe-hint.is-hint-muted {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            html body #pricing .pricing-deck-dots {
+                display: flex;
+                justify-content: center;
+                gap: 0;
+                margin: 2px 0 18px;
+            }
+
+            html body #pricing .pricing-deck-dot {
+                position: relative;
+                width: 40px;
+                height: 40px;
+                border: 0;
+                border-radius: 9999px;
+                background: transparent;
+                padding: 0;
+                transform: scale(1);
+                transition: transform 180ms ease-out;
+            }
+
+            html body #pricing .pricing-deck-dot::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 6px;
+                height: 6px;
+                border-radius: 9999px;
+                background: #cbd5e1;
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1);
+                transition: opacity 180ms ease-out, transform 180ms ease-out, background-color 180ms ease-out;
+            }
+
+            html body #pricing .pricing-deck-dot.is-active {
+                opacity: 1;
+            }
+
+            html body #pricing .pricing-deck-dot.is-active::after {
+                background: #2563eb;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.45);
+            }
+
+            html body #pricing .pricing-deck-dot:active {
+                transform: scale(0.96);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .pricing-swipe-hint,
+            .pricing-deck-dots {
+                display: none !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html body #pricing .pricing-deck .pricing-card,
+            html body #pricing .pricing-swipe-hint,
+            html body #pricing .pricing-deck-dot {
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-brand-light text-brand-dark antialiased">
@@ -10238,8 +10741,8 @@
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
             <div class="desktop-hero-kicker">Built for local business</div>
-            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for your <span class="hero-type-word" data-hero-type-word>roofing company.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap aria-live="polite"><span class="visible">roofers.</span><span>auto shops.</span><span>law firms.</span><span>med spas.</span><span>landscapers.</span><span>contractors.</span><span>salons.</span><span>clinics.</span></span></span></h1>
-            <p class="hero-product-subtitle" data-word-reveal-hero>We build booking flows, smart forms, and follow-up tools so your business runs even when you are not watching.</p>
+            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for your  <span class="hero-type-word" data-hero-type-word>roofing company.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap aria-live="polite"><span class="visible">roofers.</span><span>auto shops.</span><span>law firms.</span><span>med spas.</span><span>landscapers.</span><span>contractors.</span><span>salons.</span><span>clinics.</span></span></span></h1>
+            <p class="hero-product-subtitle" data-word-reveal-hero>We automate the systems behind your website and daily workflow so leads, follow-ups, and next steps move without you babysitting every handoff.</p>
             <div class="hero-product-actions" aria-label="Primary actions">
                 <a href="#form" class="hero-product-cta">Get a Quick Recommendation</a>
                 <a href="#pricing" class="hero-product-cta hero-product-cta-secondary">View One-Time Packages</a>
@@ -10264,7 +10767,7 @@
             <div class="text-center mb-10 md:mb-12 reveal-sweep">
                 <div class="text-blue-500 text-[11px] font-bold uppercase tracking-widest mb-2.5">Website + Lead Setup</div>
                 <h2 class="text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-tight text-brand-dark mb-3.5">Updated systems. <br>More customers.</h2>
-                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">We connect the important pieces around your website so customers know what to do and new inquiries do not vanish into the usual business fog.</p>
+                <p class="text-[17px] text-brand-muted leading-relaxed max-w-2xl mx-auto">We build practical systems for your website and business operations so leads are captured, routed, followed up with, and easier to manage.</p>
                 <div class="services-mobile-proof" aria-hidden="true">
                     <span><strong>3</strong> setup paths</span>
                     <span><strong>1</strong> cleaner flow</span>
@@ -10512,11 +11015,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 stagger-group">
             <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12 reveal-sweep">
                 <h2 class="text-[44px] md:text-[54px] font-bold tracking-[-0.02em] text-brand-dark leading-[1.05] mb-3.5">Simple One-Time Setup Packages</h2>
-                <p class="text-[18px] text-brand-muted leading-relaxed">No monthly contract required. Get a better website, better lead capture, or a simple system that helps you stop missing opportunities.</p>
+                <p class="text-[18px] text-brand-muted leading-relaxed">One-time setup options for better websites, lead capture, and business workflow systems.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
-                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card"><span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full w-fit mb-5">More calls</span><h3 class="text-[24px] font-bold text-brand-dark mb-2">Website Setup</h3><div class="mb-5 flex items-baseline gap-2"><span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$599</span><span class="text-brand-muted font-semibold text-[14px]">one-time</span></div><p class="text-brand-muted text-[14px] mb-7 leading-relaxed">A clean, professional website that makes it easy for customers to call, request a quote, or get in touch.</p><ul class="space-y-3.5 mb-8 flex-1"><li class="text-[14px] text-brand-dark">✓ Mobile-friendly website</li><li class="text-[14px] text-brand-dark">✓ Clear CTA buttons</li><li class="text-[14px] text-brand-dark">✓ Contact or quote form</li><li class="text-[14px] text-brand-dark">✓ Basic local SEO setup</li></ul><a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Start With a Website</a></div>
-                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-all duration-500 flex flex-col stagger-item pricing-card"><span class="text-[11px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full w-fit mb-5">Fewer missed leads</span><h3 class="text-[24px] font-bold text-brand-dark mb-2">Lead System Setup</h3><div class="mb-5 flex items-baseline gap-2"><span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$399</span><span class="text-brand-muted font-semibold text-[14px]">one-time</span></div><p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that already have a website but need better forms, notifications, booking, and tracking.</p><ul class="space-y-3.5 mb-8 flex-1"><li class="text-[14px] text-brand-dark">✓ Improved quote form</li><li class="text-[14px] text-brand-dark">✓ Lead notifications</li><li class="text-[14px] text-brand-dark">✓ Customer auto-response</li><li class="text-[14px] text-brand-dark">✓ Simple lead tracker</li></ul><a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-all duration-300">Fix My Lead Flow</a></div>
+            <div class="pricing-deck grid md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto items-stretch">
+                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-transform duration-200 flex flex-col stagger-item pricing-card"><span class="text-[11px] uppercase tracking-widest font-bold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full w-fit mb-5">More calls</span><h3 class="text-[24px] font-bold text-brand-dark mb-2">Website Setup</h3><div class="mb-5 flex items-baseline gap-2"><span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$599</span><span class="text-brand-muted font-semibold text-[14px]">one-time</span></div><p class="text-brand-muted text-[14px] mb-7 leading-relaxed">A clean, professional website that makes it easy for customers to call, request a quote, or get in touch.</p><ul class="space-y-3.5 mb-8 flex-1"><li class="text-[14px] text-brand-dark">✓ Mobile-friendly website</li><li class="text-[14px] text-brand-dark">✓ Clear CTA buttons</li><li class="text-[14px] text-brand-dark">✓ Contact or quote form</li><li class="text-[14px] text-brand-dark">✓ Basic local SEO setup</li></ul><a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-colors duration-200">Start With a Website</a></div>
+                <div class="bg-brand-light rounded-[28px] p-7 lg:p-8 border border-slate-200 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] transition-transform duration-200 flex flex-col stagger-item pricing-card"><span class="text-[11px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full w-fit mb-5">Fewer missed leads</span><h3 class="text-[24px] font-bold text-brand-dark mb-2">Lead System Setup</h3><div class="mb-5 flex items-baseline gap-2"><span class="text-[48px] font-extrabold text-brand-dark tracking-tight">$399</span><span class="text-brand-muted font-semibold text-[14px]">one-time</span></div><p class="text-brand-muted text-[14px] mb-7 leading-relaxed">For businesses that already have a website but need better forms, notifications, booking, and tracking.</p><ul class="space-y-3.5 mb-8 flex-1"><li class="text-[14px] text-brand-dark">✓ Improved quote form</li><li class="text-[14px] text-brand-dark">✓ Lead notifications</li><li class="text-[14px] text-brand-dark">✓ Customer auto-response</li><li class="text-[14px] text-brand-dark">✓ Simple lead tracker</li></ul><a href="#form" class="block w-full text-center bg-white border border-slate-200 hover:border-brand-blue hover:text-brand-blue text-brand-dark font-semibold text-[14px] py-3.5 rounded-full transition-colors duration-200">Fix My Lead Flow</a></div>
                 <div class="bg-brand-dark rounded-[28px] p-7 lg:p-8 border border-[#2a2a3a] flex flex-col relative overflow-hidden shadow-[0_24px_70px_rgba(37,99,235,0.2)] md:-translate-y-4 stagger-item pricing-card"><div class="absolute inset-0 bg-gradient-to-br from-blue-600/12 to-purple-600/6 pointer-events-none"></div><span class="relative z-10 text-[11px] uppercase tracking-widest font-bold text-white bg-blue-600 px-3 py-1.5 rounded-full w-fit mb-5">Best starter option</span><h3 class="text-[24px] font-bold text-white mb-2 relative z-10">Website + Lead System</h3><div class="mb-5 flex items-baseline gap-2 relative z-10"><span class="text-[48px] font-extrabold text-white tracking-tight">$999</span><span class="text-slate-400 font-semibold text-[14px]">one-time</span></div><p class="text-slate-400 text-[14px] mb-7 leading-relaxed relative z-10">A better website plus a simple system for handling new customer inquiries.</p><ul class="space-y-3.5 mb-8 flex-1 relative z-10"><li class="text-[14px] text-slate-200">✓ Everything in Website Setup</li><li class="text-[14px] text-slate-200">✓ Everything in Lead System Setup</li><li class="text-[14px] text-slate-200">✓ Basic follow-up setup</li><li class="text-[14px] text-slate-200">✓ Full lead flow testing</li></ul><a href="#form" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-bold text-[14px] py-3.5 rounded-full transition-colors duration-300 relative z-10">Build My Lead System</a></div>
             </div>
             <p class="max-w-4xl mx-auto mt-8 text-center text-[14px] md:text-[15px] text-slate-500 leading-relaxed reveal-sweep">These are early-client one-time setup prices while DaytonGrowthCo. builds its first local case studies. Ongoing support and improvements are available separately if needed.</p>
@@ -11320,7 +11823,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderTools = () => {
         if (!toolsGridEl) return;
         const industry = industryData.find(item => item.id === activeIndustry) || industryData[0];
-        const visibleTools = window.matchMedia('(max-width: 767px)').matches ? industry.tools.slice(0, 2) : industry.tools;
+        const visibleTools = industry.tools;
         toolsGridEl.style.opacity = '0';
         toolsGridEl.style.transform = 'translateY(8px)';
         window.setTimeout(() => {
@@ -12431,6 +12934,106 @@ document.addEventListener('DOMContentLoaded', function () {
         }, { passive: true });
     } catch (error) {}
 
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const deck = document.querySelector('#pricing .pricing-deck');
+    if (!deck) return;
+    const cards = Array.from(deck.querySelectorAll('.pricing-card'));
+    if (!cards.length) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobileDeck = () => window.matchMedia('(max-width: 767px)').matches;
+
+    const hint = document.createElement('div');
+    hint.className = 'pricing-swipe-hint';
+    hint.textContent = 'Swipe packages';
+    hint.setAttribute('aria-hidden', 'true');
+    deck.insertAdjacentElement('beforebegin', hint);
+
+    const dots = document.createElement('div');
+    dots.className = 'pricing-deck-dots';
+    dots.setAttribute('aria-label', 'Pricing package position');
+    cards.forEach(function (card, index) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'pricing-deck-dot';
+        dot.setAttribute('aria-label', 'Show pricing package ' + (index + 1));
+        dot.addEventListener('click', function () {
+            if (!isMobileDeck()) return;
+            hint.classList.add('is-hint-muted');
+            card.scrollIntoView({
+                behavior: reduceMotion ? 'auto' : 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        });
+        dots.appendChild(dot);
+    });
+    deck.insertAdjacentElement('afterend', dots);
+
+    const dotEls = Array.from(dots.querySelectorAll('.pricing-deck-dot'));
+    let frame = 0;
+    let activeIndex = 0;
+
+    const setActive = function (nextIndex) {
+        activeIndex = nextIndex;
+        cards.forEach(function (card, index) {
+            card.classList.toggle('is-pricing-active', index === activeIndex);
+        });
+        dotEls.forEach(function (dot, index) {
+            dot.classList.toggle('is-active', index === activeIndex);
+            dot.setAttribute('aria-current', index === activeIndex ? 'true' : 'false');
+        });
+    };
+
+    const updateActive = function () {
+        frame = 0;
+        if (!isMobileDeck()) {
+            cards.forEach(function (card) { card.classList.remove('is-pricing-active'); });
+            dotEls.forEach(function (dot) { dot.classList.remove('is-active'); });
+            return;
+        }
+        const deckRect = deck.getBoundingClientRect();
+        const deckCenter = deckRect.left + deckRect.width / 2;
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+        cards.forEach(function (card, index) {
+            const rect = card.getBoundingClientRect();
+            const center = rect.left + rect.width / 2;
+            const distance = Math.abs(center - deckCenter);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        });
+        setActive(closestIndex);
+    };
+
+    const scheduleUpdate = function () {
+        if (frame) return;
+        frame = window.requestAnimationFrame(updateActive);
+    };
+
+    deck.addEventListener('scroll', function () {
+        hint.classList.add('is-hint-muted');
+        scheduleUpdate();
+    }, { passive: true });
+
+    cards.forEach(function (card) {
+        card.addEventListener('pointerdown', function () {
+            if (!isMobileDeck() || reduceMotion) return;
+            card.classList.add('is-card-pressed');
+        });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (eventName) {
+            card.addEventListener(eventName, function () {
+                card.classList.remove('is-card-pressed');
+            });
+        });
+    });
+
+    window.addEventListener('resize', scheduleUpdate);
+    updateActive();
 });
 </script>
 <script>
