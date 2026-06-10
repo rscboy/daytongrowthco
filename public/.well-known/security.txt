@@ -1,0 +1,3 @@
+Contact: mailto:help@daytongrowth.co
+Preferred-Languages: en
+Canonical: https://www.daytongrowth.co/.well-known/security.txt

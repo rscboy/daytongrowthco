@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samuel Caruso | Print Business Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --card-width: 3.5in;
+            --card-height: 2in;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        /* Card Container Styles */
+        .card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: linear-gradient(135deg, #0B1020 0%, #141B3A 40%, #1E1B4B 100%);
+            border-radius: 4px; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: white;
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Gradients & Accents */
+        .text-gradient-name {
+            background: linear-gradient(90deg, #ffffff, #C4C9FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-accent {
+            background: linear-gradient(90deg, #3B82F6, #9B6BFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .accent-border {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3B82F6, #9B6BFF);
+        }
+
+        .qr-placeholder {
+            background: white;
+            padding: 6px;
+            border-radius: 8px;
+            width: 65px;
+            height: 65px;
+        }
+
+        /* Print Specifics */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                display: block;
+            }
+            .card {
+                margin: 0 auto 1in auto;
+                box-shadow: none;
+                break-inside: avoid;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        .label {
+            font-size: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #7C8CFF;
+            font-weight: 700;
+            margin-bottom: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print mb-4 text-center">
+        <h2 class="text-2xl font-bold text-gray-800">Samuel Caruso - Final Refinement</h2>
+        <p class="text-gray-500 text-sm">Balanced vertical distribution for print</p>
+        <button onclick="window.print()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-lg">
+            Print to PDF
+        </button>
+    </div>
+
+    <!-- FRONT OF CARD -->
+    <div class="card flex flex-col items-center justify-center">
+        <div class="relative z-10 flex flex-col items-center">
+            <img src="https://daytongrowth.co/favicon.png" alt="Logo" class="w-12 h-12 rounded-xl border border-white/10 shadow-2xl mb-4">
+            <h1 class="text-xl font-extrabold tracking-tight text-gradient-name" style="font-family: 'Plus Jakarta Sans';">
+                Samuel Caruso
+            </h1>
+            <p class="text-[8px] uppercase tracking-[0.3em] font-bold text-gradient-accent mt-1">
+                Founder & Web Designer
+            </p>
+        </div>
+        <div class="accent-border"></div>
+    </div>
+
+    <!-- BACK OF CARD -->
+    <!-- Using justify-between with three sections to center the line perfectly -->
+    <div class="card p-8 pb-10 flex flex-col justify-between">
+        
+        <!-- Section 1: Top Details -->
+        <div class="flex justify-between items-start">
+            <div class="space-y-4">
+                <div>
+                    <h2 class="text-sm font-bold text-white tracking-tight leading-none">Samuel Caruso</h2>
+                    <p class="text-[7px] uppercase tracking-wider text-gradient-accent font-bold mt-1.5">DaytonGrowthCo.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <div>
+                        <p class="label">Mobile</p>
+                        <p class="text-[9px] text-gray-300 font-medium leading-none">(937) 367-7089</p>
+                    </div>
+                    <div>
+                        <p class="label">Email</p>
+                        <p class="text-[9px] text-gray-300 font-medium leading-none">sam@daytongrowth.co</p>
+                    </div>
+                    <div>
+                        <p class="label">Website</p>
+                        <p class="text-[9px] font-bold text-white leading-none">daytongrowth.co</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="qr-placeholder flex items-center justify-center overflow-hidden shadow-lg">
+                    <img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=https://daytongrowth.co&chld=L|1" alt="QR Code" class="w-full h-full">
+                </div>
+                <p class="text-[6px] uppercase tracking-widest text-gray-400 mt-2 font-bold">Scan to visit</p>
+            </div>
+        </div>
+
+        <!-- Section 2: The Middle Line -->
+        <div class="w-full border-t border-white/10 my-1"></div>
+
+        <!-- Section 3: Bottom Tagline -->
+        <div class="flex justify-between items-end mb-2">
+             <p class="text-[7px] text-gray-300 font-medium max-w-[240px] leading-relaxed">
+                High-performance web design & growth marketing solutions.
+             </p>
+             <img src="https://daytongrowth.co/favicon.png" alt="Logo" class="w-4 h-4 opacity-50 grayscale contrast-125">
+        </div>
+
+        <div class="accent-border"></div>
+    </div>
+
+    <div class="no-print max-w-md text-center text-gray-400 text-xs">
+        <p><strong>Print Tip:</strong> Ensure "Background Graphics" is enabled and "Margins" are set to "None" in your browser's print dialog.</p>
+    </div>
+
+</body>
+</html>

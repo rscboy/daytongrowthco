@@ -18,36 +18,6 @@
     window.scrollTo(0, 0);
   }
 
-  function keepTargetAtTop(target) {
-    if (!target) return;
-
-    const alignTarget = () => {
-      const top = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset);
-      window.scrollTo({ top, left: 0, behavior: "auto" });
-      document.documentElement.scrollTop = top;
-      document.body.scrollTop = top;
-    };
-
-    alignTarget();
-
-    requestAnimationFrame(() => {
-      alignTarget();
-      requestAnimationFrame(alignTarget);
-    });
-
-    setTimeout(alignTarget, 50);
-    setTimeout(alignTarget, 200);
-    setTimeout(alignTarget, 350);
-
-    const imgs = app ? app.querySelectorAll("img") : [];
-    imgs.forEach((img) => {
-      if (!img.complete) {
-        img.addEventListener("load", alignTarget, { once: true });
-        img.addEventListener("error", alignTarget, { once: true });
-      }
-    });
-  }
-
   function forceTopAfterPaintAndImages() {
     // Synchronous first — runs before browser has a chance to restore scroll
     scrollTopHard();
@@ -75,6 +45,14 @@
     const tpl = document.getElementById(tplId);
     if (!tpl || !app) return;
 
+    // ── KEY FIX ──────────────────────────────────────────────────────────────
+    // For any non-home route, strip the hash from the URL immediately so the
+    // browser never tries to scroll to a named anchor from a previous page.
+    if (pathname !== "/") {
+      history.replaceState(null, "", pathname);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Scroll to top BEFORE swapping content so there's no flash at old position
     scrollTopHard();
 
@@ -85,32 +63,27 @@
     // Re-init per-route hooks (lucide, reveals, etc.)
     if (typeof window.onRouteRendered === "function") window.onRouteRendered();
 
-    const hashTarget = hash ? app.querySelector(hash) || document.querySelector(hash) : null;
-
-    if (hashTarget) {
-      keepTargetAtTop(hashTarget);
-      return;
+    if (pathname === "/" && hash) {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        forceTopAfterPaintAndImages();
+      }
+    } else {
+      // Always force top for /aboutus and any other non-home route
+      forceTopAfterPaintAndImages();
     }
-
-    forceTopAfterPaintAndImages();
-  }
-
-  function normalizeRouteHash(url) {
-    if (url.pathname === "/aboutus" && url.hash === "#about-top") {
-      return "";
-    }
-
-    return url.hash;
   }
 
   function navigate(to) {
     const url = new URL(to, location.origin);
-    const normalizedHash = normalizeRouteHash(url);
 
-    const pushPath = url.pathname + normalizedHash;
+    // Strip hash when navigating to non-home routes so it can't interfere
+    const pushPath = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
     history.pushState(null, "", pushPath);
 
-    render(url.pathname, normalizedHash);
+    render(url.pathname, url.hash);
   }
 
   // Only intercept <a data-link>
@@ -139,16 +112,16 @@
 
     e.preventDefault();
 
-    navigate(url.pathname + url.hash);
+    const to = url.pathname === "/" ? url.pathname + url.hash : url.pathname;
+    navigate(to);
   });
 
   window.addEventListener("popstate", () => {
-    const normalizedHash = normalizeRouteHash(new URL(location.href));
-    render(location.pathname, normalizedHash);
+    render(location.pathname, location.hash);
   });
 
   // Initial render
-  render(location.pathname, normalizeRouteHash(new URL(location.href)));
+  render(location.pathname, location.hash);
 
   if (typeof window.setCurrentYearOnce === "function") window.setCurrentYearOnce();
 })();

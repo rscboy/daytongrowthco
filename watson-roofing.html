@@ -1,0 +1,1292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Watson Roofing Estimate Portal Demo | DaytonGrowthCo</title>
+  <meta name="description" content="Try a simple contractor estimate portal demo. Review a roof repair estimate, ask a question, add a photo, choose a date, and approve in one place.">
+  <link rel="canonical" href="https://estimate.daytongrowth.co/watson-roofing">
+  <meta property="og:title" content="Watson Roofing Estimate Portal Demo">
+  <meta property="og:description" content="A clean interactive estimate portal demo for contractors and their customers.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://estimate.daytongrowth.co/watson-roofing">
+  <meta name="robots" content="index, follow">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #070b16;
+      --muted: #667085;
+      --soft: #f6f8fb;
+      --panel: rgba(255, 255, 255, 0.86);
+      --line: #dce5f1;
+      --line-strong: #c6d2e2;
+      --blue: #2f66f6;
+      --blue-2: #7aa8ff;
+      --blue-soft: #edf4ff;
+      --green: #0f9f6e;
+      --green-soft: #eafaf3;
+      --amber: #d68a16;
+      --amber-soft: #fff5e3;
+      --shadow: 0 28px 90px rgba(15, 23, 42, 0.13);
+      --shadow-soft: 0 12px 34px rgba(15, 23, 42, 0.07);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(47, 102, 246, 0.16), transparent 31%),
+        radial-gradient(circle at 92% 12%, rgba(15, 159, 110, 0.09), transparent 34%),
+        linear-gradient(180deg, #f8fafc 0%, #edf2f8 100%);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(15, 23, 42, 0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.032) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 72%);
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(47, 102, 246, 0.3);
+      outline-offset: 3px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1440px, calc(100% - 32px));
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      padding: 22px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .portal {
+      width: 100%;
+      border: 1px solid rgba(198, 210, 226, 0.9);
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(22px) saturate(140%);
+      -webkit-backdrop-filter: blur(22px) saturate(140%);
+    }
+
+    .browser-bar {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,252,0.84));
+    }
+
+    .traffic {
+      display: flex;
+      gap: 10px;
+    }
+
+    .traffic span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .traffic span:nth-child(1) { background: #ff6259; }
+    .traffic span:nth-child(2) { background: #ffbd2e; }
+    .traffic span:nth-child(3) { background: #28c840; }
+
+    .address {
+      width: min(470px, 48vw);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f8fafc;
+      color: #697789;
+      font-size: 14px;
+      font-weight: 850;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .secure-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .demo-label {
+      justify-self: end;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: center;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 86% 0%, rgba(47, 102, 246, 0.11), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(248,250,252,0.72));
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 20px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.16), transparent 28%),
+        linear-gradient(135deg, #070b16, #141b2f);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 16px 34px rgba(15,23,42,0.15);
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: clamp(30px, 3vw, 48px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .top p {
+      max-width: 640px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .eyebrow,
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: #8a97aa;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .chip {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #475467;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .chip.green {
+      border-color: rgba(15, 159, 110, 0.24);
+      background: var(--green-soft);
+      color: #057a55;
+    }
+
+    .chip.blue {
+      border-color: rgba(47, 102, 246, 0.24);
+      background: var(--blue-soft);
+      color: #2458dc;
+    }
+
+    .button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 900;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: #b8c7d9;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .button.primary {
+      border-color: transparent;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 16px 32px rgba(47, 102, 246, 0.23);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(250px, 0.72fr) minmax(440px, 1.28fr) minmax(250px, 0.72fr);
+      gap: 18px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(47, 102, 246, 0.055), transparent 36%),
+        rgba(246, 248, 251, 0.82);
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: 0 16px 48px rgba(15, 23, 42, 0.055);
+      overflow: hidden;
+    }
+
+    .summary {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .customer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .customer-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 950;
+    }
+
+    .customer strong {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      letter-spacing: -0.025em;
+    }
+
+    .customer span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .total-box {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+    }
+
+    .total {
+      display: block;
+      color: var(--ink);
+      font-size: clamp(42px, 4vw, 58px);
+      line-height: 0.92;
+      font-weight: 950;
+      letter-spacing: -0.07em;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 780;
+    }
+
+    .meta strong {
+      color: var(--ink);
+      text-align: right;
+      font-weight: 950;
+    }
+
+    .progress-track {
+      height: 9px;
+      border-radius: 999px;
+      background: #e6edf6;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 34%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--blue-2));
+      transition: width 260ms ease;
+    }
+
+    .guide {
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #f9fbfe);
+    }
+
+    .step {
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      color: #4b5a6d;
+      padding: 8px;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .step span {
+      display: block;
+      color: #9aa6b8;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .step[aria-current="step"] {
+      border-color: transparent;
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+    }
+
+    .step[aria-current="step"] span {
+      color: rgba(255,255,255,0.62);
+    }
+
+    .panel {
+      display: none;
+      padding: 22px;
+      animation: panelIn 180ms ease both;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel h2 {
+      max-width: 680px;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: clamp(30px, 3.5vw, 50px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .panel > p {
+      max-width: 640px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .line-items {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 64px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .line-item:last-child {
+      border-bottom: 0;
+    }
+
+    .line-item h3 {
+      margin: 0 0 3px;
+      color: var(--ink);
+      font-size: 16px;
+      letter-spacing: -0.025em;
+    }
+
+    .line-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .price {
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .addon-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid rgba(47, 102, 246, 0.2);
+      border-radius: 22px;
+      background: var(--blue-soft);
+    }
+
+    .addon-row h3 {
+      margin: 0 0 3px;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .addon-row p {
+      margin: 0;
+      color: #49617e;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .toggle {
+      min-height: 40px;
+      border: 1px solid rgba(47, 102, 246, 0.22);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--blue);
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .toggle[aria-pressed="true"] {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .quick-card {
+      min-height: 92px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      padding: 14px;
+      text-align: left;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .quick-card span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .date-card {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      color: var(--ink);
+      padding: 12px;
+      text-align: center;
+      font-weight: 950;
+    }
+
+    .date-card span,
+    .date-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .date-card strong {
+      display: block;
+      margin: 3px 0;
+      font-size: 18px;
+      letter-spacing: -0.035em;
+    }
+
+    .date-card[aria-pressed="true"] {
+      border-color: rgba(47, 102, 246, 0.38);
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 96px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      color: var(--ink);
+      padding: 14px 16px;
+      font-weight: 650;
+      line-height: 1.45;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button-row .primary {
+      min-width: 190px;
+    }
+
+    .approval-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .approval-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      min-height: 56px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .approval-row strong {
+      color: var(--ink);
+      text-align: right;
+      font-weight: 950;
+    }
+
+    .signature {
+      width: 100%;
+      min-height: 82px;
+      margin-top: 14px;
+      border: 1px dashed #b8c6d9;
+      border-radius: 22px;
+      background: var(--soft);
+      color: #667085;
+      font-weight: 900;
+    }
+
+    .signature.is-signed {
+      border-style: solid;
+      border-color: rgba(15, 159, 110, 0.32);
+      background: var(--green-soft);
+      color: #057a55;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .activity {
+      padding: 20px;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+
+    .activity h2 {
+      margin-bottom: 0;
+      font-size: 20px;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 720;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: var(--blue);
+      box-shadow: 0 0 0 5px rgba(47, 102, 246, 0.1);
+    }
+
+    .dot.green {
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(15, 159, 110, 0.1);
+    }
+
+    .dot.amber {
+      background: var(--amber);
+      box-shadow: 0 0 0 5px rgba(213, 138, 22, 0.1);
+    }
+
+    .note {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 720;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 80;
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      pointer-events: none;
+      min-width: min(420px, calc(100vw - 32px));
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(7, 11, 22, 0.94);
+      color: #fff;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.32);
+      transition: opacity 220ms ease, transform 220ms ease;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 1100px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .summary,
+      .activity {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .total-box,
+      .note {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        display: block;
+        padding: 9px 0;
+      }
+
+      .portal {
+        border-radius: 28px;
+      }
+
+      .browser-bar {
+        min-height: 54px;
+        grid-template-columns: auto 1fr auto;
+        padding: 0 14px;
+      }
+
+      .traffic {
+        gap: 7px;
+      }
+
+      .traffic span {
+        width: 10px;
+        height: 10px;
+      }
+
+      .address {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .demo-label {
+        font-size: 10px;
+      }
+
+      .top {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 17px;
+      }
+
+      h1 {
+        font-size: clamp(28px, 9vw, 38px);
+      }
+
+      .top p {
+        font-size: 14px;
+      }
+
+      .chips {
+        justify-content: flex-start;
+      }
+
+      .workspace {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .card {
+        border-radius: 24px;
+      }
+
+      .summary,
+      .activity {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+
+      .summary {
+        gap: 13px;
+      }
+
+      .stepper {
+        padding: 10px;
+        gap: 6px;
+      }
+
+      .step {
+        min-height: 48px;
+        border-radius: 15px;
+        font-size: 13px;
+      }
+
+      .step span {
+        font-size: 9px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .panel h2 {
+        font-size: clamp(28px, 9vw, 38px);
+      }
+
+      .quick-actions,
+      .date-row {
+        grid-template-columns: 1fr;
+      }
+
+      .addon-row,
+      .line-item {
+        grid-template-columns: 1fr;
+      }
+
+      .button,
+      .toggle,
+      .button-row .primary {
+        width: 100%;
+      }
+
+      .approval-row {
+        display: grid;
+        gap: 4px;
+      }
+
+      .approval-row strong {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="portal" aria-label="Watson Roofing estimate portal demo">
+      <div class="browser-bar" aria-label="Browser frame">
+        <div class="traffic" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="address"><span class="secure-dot" aria-hidden="true"></span>estimate.daytongrowth.co/watson-roofing</div>
+        <div class="demo-label">Demo</div>
+      </div>
+
+      <header class="top">
+        <div class="brand">
+          <div class="avatar" aria-hidden="true">WR</div>
+          <div>
+            <span class="eyebrow">Private estimate portal</span>
+            <h1>Watson Roofing Co.</h1>
+            <p>Review the estimate, ask one question, add a photo, pick a date, and approve. No calls or lost PDFs.</p>
+          </div>
+        </div>
+        <div class="chips">
+          <span class="chip green">Secure</span>
+          <span class="chip blue" data-status-chip>Awaiting approval</span>
+          <button class="button" type="button" data-action="reset">Reset</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="card summary" aria-label="Estimate summary">
+          <div class="customer">
+            <div class="customer-icon" aria-hidden="true">MT</div>
+            <div>
+              <strong>Maria Thompson</strong>
+              <span>Storm damage roof repair</span>
+            </div>
+          </div>
+
+          <div class="total-box">
+            <span class="label">Estimate total</span>
+            <strong class="total" data-total-display>$4,850</strong>
+          </div>
+
+          <div class="meta-list">
+            <div class="meta"><span>Status</span><strong data-status-label>Pending</strong></div>
+            <div class="meta"><span>Deposit</span><strong>$1,200</strong></div>
+            <div class="meta"><span>Date</span><strong data-preferred-date>Not selected</strong></div>
+            <div class="meta"><span>Questions</span><strong data-question-count>1</strong></div>
+            <div class="meta"><span>Files</span><strong data-file-count>4</strong></div>
+          </div>
+
+          <div>
+            <span class="label">Portal progress</span>
+            <div class="progress-track" aria-hidden="true"><div class="progress-bar" data-progress></div></div>
+          </div>
+        </aside>
+
+        <section class="card guide" aria-label="Guided estimate actions">
+          <nav class="stepper" aria-label="Demo steps">
+            <button class="step" type="button" aria-current="step" data-step="review"><span>Step 1</span>Review</button>
+            <button class="step" type="button" aria-current="false" data-step="details"><span>Step 2</span>Details</button>
+            <button class="step" type="button" aria-current="false" data-step="approve"><span>Step 3</span>Approve</button>
+          </nav>
+
+          <section class="panel active" data-panel="review">
+            <span class="label">Customer view</span>
+            <h2>Everything about the estimate in one place.</h2>
+            <p>The customer sees the scope, price, add-ons, photos, questions, and approval in one clean page.</p>
+
+            <div class="line-items">
+              <div class="line-item">
+                <div><h3>Shingle replacement</h3><p>Rear slope repair.</p></div>
+                <div class="price">$2,900</div>
+              </div>
+              <div class="line-item">
+                <div><h3>Flashing reseal</h3><p>Seal exposed flashing.</p></div>
+                <div class="price">$1,150</div>
+              </div>
+              <div class="line-item">
+                <div><h3>Cleanup and haul away</h3><p>Remove storm debris.</p></div>
+                <div class="price">$800</div>
+              </div>
+            </div>
+
+            <div class="addon-row">
+              <div>
+                <h3>Add gutter cleanup?</h3>
+                <p>Optional while the crew is already on site. Adds $375.</p>
+              </div>
+              <button class="toggle" type="button" aria-pressed="false" data-action="toggle-addon">Add item</button>
+            </div>
+
+            <div class="button-row">
+              <button class="button primary" type="button" data-action="next-details">Continue</button>
+              <button class="button" type="button" data-action="ask">Ask a question</button>
+            </div>
+          </section>
+
+          <section class="panel" data-panel="details">
+            <span class="label">Question, photo, date</span>
+            <h2>Add what the contractor needs.</h2>
+            <p>One place for questions, photos, and the preferred install date.</p>
+
+            <div class="quick-actions">
+              <button class="quick-card" type="button" data-action="sample-question"><span>Question</span>Can the shingles match?</button>
+              <button class="quick-card" type="button" data-action="add-file"><span>Photo</span>Add sample roof photo</button>
+              <button class="quick-card" type="button" data-action="send-reminder"><span>Follow-up</span>Send reminder to owner</button>
+            </div>
+
+            <form data-question-form style="margin-top: 16px;">
+              <textarea name="question" placeholder="Or type your own question..."></textarea>
+              <div class="button-row">
+                <button class="button primary" type="submit">Send question</button>
+              </div>
+            </form>
+
+            <div class="date-row" aria-label="Preferred dates">
+              <button class="date-card" type="button" aria-pressed="false" data-date="Thursday, May 28"><span>Thu</span><strong>May 28</strong><small>Morning</small></button>
+              <button class="date-card" type="button" aria-pressed="false" data-date="Friday, May 29"><span>Fri</span><strong>May 29</strong><small>Afternoon</small></button>
+              <button class="date-card" type="button" aria-pressed="false" data-date="Monday, June 1"><span>Mon</span><strong>June 1</strong><small>Anytime</small></button>
+            </div>
+
+            <div class="button-row">
+              <button class="button primary" type="button" data-action="next-approve">Continue to approval</button>
+              <button class="button" type="button" data-action="back-review">Back</button>
+            </div>
+          </section>
+
+          <section class="panel" data-panel="approve">
+            <span class="label">Ready to approve</span>
+            <h2>Approve without another callback.</h2>
+            <p>The contractor gets a clear approval, selected date, files, and questions attached to the estimate.</p>
+
+            <div class="approval-box">
+              <div class="approval-row"><span>Total</span><strong data-total-display>$4,850</strong></div>
+              <div class="approval-row"><span>Deposit</span><strong>$1,200</strong></div>
+              <div class="approval-row"><span>Preferred date</span><strong data-preferred-date>Not selected</strong></div>
+              <div class="approval-row"><span>Status</span><strong data-status-label>Pending</strong></div>
+            </div>
+
+            <button class="signature" type="button" data-action="sign">Click to add mock signature</button>
+            <div class="button-row">
+              <button class="button primary" type="button" data-action="approve">Approve estimate</button>
+              <button class="button" type="button" data-action="back-details">Back</button>
+            </div>
+          </section>
+        </section>
+
+        <aside class="card activity" aria-label="Portal activity">
+          <div>
+            <span class="label">Live status</span>
+            <h2 data-activity-heading>Estimate waiting for customer.</h2>
+          </div>
+          <div class="activity-list" data-activity-list>
+            <div class="activity-item"><span class="dot"></span><span>Customer opened the estimate.</span></div>
+            <div class="activity-item"><span class="dot amber"></span><span>Question already attached.</span></div>
+            <div class="activity-item"><span class="dot"></span><span>Follow-up reminder is ready.</span></div>
+          </div>
+          <div class="note">
+            <strong>What this replaces</strong>
+            Scattered calls, texts, PDFs, callbacks, photo threads, and approval confusion.
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+  <script>
+    (() => {
+      const baseTotal = 4850;
+      const addonPrice = 375;
+      const state = {
+        step: 'review',
+        addon: false,
+        total: baseTotal,
+        questions: 1,
+        files: 4,
+        date: '',
+        signed: false,
+        approved: false
+      };
+
+      const $ = selector => document.querySelector(selector);
+      const $$ = selector => Array.from(document.querySelectorAll(selector));
+      const money = value => `$${value.toLocaleString()}`;
+
+      const progressByStep = {
+        review: 34,
+        details: 67,
+        approve: 88,
+        approved: 100
+      };
+
+      function toast(message) {
+        const el = $('[data-toast]');
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add('show');
+        window.clearTimeout(toast.timer);
+        toast.timer = window.setTimeout(() => el.classList.remove('show'), 2200);
+      }
+
+      function addActivity(message, tone = '') {
+        const list = $('[data-activity-list]');
+        if (!list) return;
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        item.innerHTML = `<span class="dot ${tone}"></span><span>${message}</span>`;
+        list.prepend(item);
+      }
+
+      function update() {
+        state.total = baseTotal + (state.addon ? addonPrice : 0);
+        $$('[data-total-display]').forEach(el => { el.textContent = money(state.total); });
+        $$('[data-question-count]').forEach(el => { el.textContent = state.questions; });
+        $$('[data-file-count]').forEach(el => { el.textContent = state.files; });
+        $$('[data-preferred-date]').forEach(el => { el.textContent = state.date || 'Not selected'; });
+        $$('[data-status-label]').forEach(el => { el.textContent = state.approved ? 'Approved' : 'Pending'; });
+
+        const chip = $('[data-status-chip]');
+        if (chip) chip.textContent = state.approved ? 'Approved' : 'Awaiting approval';
+
+        const progress = $('[data-progress]');
+        if (progress) progress.style.width = `${progressByStep[state.approved ? 'approved' : state.step]}%`;
+
+        const heading = $('[data-activity-heading]');
+        if (heading) {
+          if (state.approved) heading.textContent = 'Estimate approved.';
+          else if (state.step === 'approve') heading.textContent = 'Ready for approval.';
+          else if (state.step === 'details') heading.textContent = 'Customer adding details.';
+          else heading.textContent = 'Estimate waiting for customer.';
+        }
+      }
+
+      function go(step) {
+        state.step = step;
+        $$('[data-step]').forEach(btn => btn.setAttribute('aria-current', btn.dataset.step === step ? 'step' : 'false'));
+        $$('[data-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.panel === step));
+        update();
+        if (window.innerWidth < 1100) $('.guide')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      $$('[data-step]').forEach(btn => {
+        btn.addEventListener('click', () => go(btn.dataset.step));
+      });
+
+      $('[data-question-form]')?.addEventListener('submit', event => {
+        event.preventDefault();
+        const textarea = event.currentTarget.elements.question;
+        if (!textarea.value.trim()) {
+          toast('Type a question first.');
+          return;
+        }
+        textarea.value = '';
+        state.questions += 1;
+        addActivity('Question sent to Watson Roofing.', 'amber');
+        toast('Question sent.');
+        update();
+      });
+
+      $$('[data-date]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          $$('[data-date]').forEach(item => item.setAttribute('aria-pressed', 'false'));
+          btn.setAttribute('aria-pressed', 'true');
+          state.date = btn.dataset.date;
+          addActivity(`Preferred date selected: ${state.date}.`, 'green');
+          toast('Preferred date saved.');
+          update();
+        });
+      });
+
+      document.addEventListener('click', event => {
+        const action = event.target.closest('[data-action]')?.dataset.action;
+        if (!action) return;
+
+        if (action === 'reset') window.location.reload();
+        if (action === 'next-details' || action === 'ask') go('details');
+        if (action === 'next-approve') go('approve');
+        if (action === 'back-review') go('review');
+        if (action === 'back-details') go('details');
+
+        if (action === 'toggle-addon') {
+          state.addon = !state.addon;
+          const btn = event.target.closest('[data-action]');
+          btn.setAttribute('aria-pressed', String(state.addon));
+          btn.textContent = state.addon ? 'Added' : 'Add item';
+          addActivity(state.addon ? 'Gutter cleanup added.' : 'Gutter cleanup removed.', state.addon ? 'green' : '');
+          toast(state.addon ? 'Optional item added.' : 'Optional item removed.');
+          update();
+        }
+
+        if (action === 'sample-question') {
+          state.questions += 1;
+          addActivity('Question added: Can the shingles match?', 'amber');
+          toast('Sample question sent.');
+          update();
+        }
+
+        if (action === 'add-file') {
+          state.files += 1;
+          addActivity('Sample roof photo added.', 'green');
+          toast('Sample photo added.');
+          update();
+        }
+
+        if (action === 'send-reminder') {
+          addActivity('Follow-up reminder sent to the owner.', '');
+          toast('Reminder sent.');
+        }
+
+        if (action === 'sign') {
+          state.signed = true;
+          const signature = $('[data-action="sign"]');
+          signature.classList.add('is-signed');
+          signature.textContent = 'Maria Thompson';
+          addActivity('Mock signature added.', 'green');
+          toast('Mock signature added.');
+        }
+
+        if (action === 'approve') {
+          if (!state.signed) {
+            toast('Add the mock signature first.');
+            return;
+          }
+          state.approved = true;
+          addActivity('Estimate approved.', 'green');
+          toast('Estimate approved. Demo only.');
+          update();
+        }
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>
