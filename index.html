@@ -9333,6 +9333,35 @@
         }
     </style>
     <style>
+
+        /* Mobile hero: reveal immediately after the splash instead of staggered word-by-word animation. */
+        @media (max-width: 767px) {
+            .hero-product-title,
+            .hero-product-subtitle,
+            .hero-product-actions,
+            .hero-product-cta,
+            .hero-product-secondary,
+            .hero-reveal-word {
+                animation: none !important;
+                opacity: 1 !important;
+                filter: none !important;
+                transform: none !important;
+                transition-delay: 0ms !important;
+                will-change: auto !important;
+            }
+
+            .hero-product-mobile-swap,
+            .hero-product-mobile-swap span {
+                transition: none !important;
+                will-change: auto !important;
+            }
+
+            .hero-product-mobile-swap span.visible {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
         /* Wide hero video fill: crop out the source video's dark side gutters. */
         @media (min-width: 1024px) {
             .hero-product-video {
@@ -10749,7 +10778,7 @@
 
     <!-- 1. HERO SECTION -->
     <section class="hero-product relative bg-[#050505] text-white overflow-hidden">
-        <video class="hero-product-video" src="https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+        <video class="hero-product-video" src="https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4" autoplay muted loop playsinline preload="auto" fetchpriority="high" aria-hidden="true"></video>
         <div class="hero-product-video-mask" aria-hidden="true"></div>
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
@@ -11310,11 +11339,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const initHeroVideoPlayback = () => {
         const heroVideo = document.querySelector('.hero-product-video');
         if (!heroVideo || reduceMotion) return;
+        heroVideo.muted = true;
+        heroVideo.playsInline = true;
+        heroVideo.preload = 'auto';
+
         const slowHeroVideo = () => {
             heroVideo.playbackRate = 0.85;
         };
+        const playHeroVideo = () => {
+            slowHeroVideo();
+            const playPromise = heroVideo.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {});
+            }
+        };
+
         slowHeroVideo();
-        heroVideo.addEventListener('loadedmetadata', slowHeroVideo, { once: true });
+        if (heroVideo.readyState < 2) heroVideo.load();
+        playHeroVideo();
+        heroVideo.addEventListener('loadedmetadata', playHeroVideo, { once: true });
+        heroVideo.addEventListener('canplay', playHeroVideo, { once: true });
     };
     const initRecaptchaProtection = () => {
         const form = document.getElementById('auditForm');
@@ -11430,7 +11474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let heroTypewriterStarted = false;
 
     function startHeroTypingNearSplashEnd() {
-        if (!isPlainHomeRoute()) return;
+        if (!isPlainHomeRoute() || !window.matchMedia('(min-width: 768px)').matches) return;
         initHeroTypewriterForCurrentViewport({ startBlank: true });
     }
 
@@ -11463,7 +11507,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const splashReady = initSplashScreen();
     runWhenIdle(initVendorEnhancements);
-    runWhenIdle(initHeroVideoPlayback);
+    initHeroVideoPlayback();
     runWhenIdle(initLenisScroll);
     runWhenIdle(initRecaptchaProtection);
     runWhenIdle(initBottomMuxVideo);
@@ -11551,7 +11595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         words[index].classList.add('visible');
         requestAnimationFrame(() => setSwapWidth(words[index]));
 
-        if (reduceMotion || window.matchMedia('(min-width: 768px)').matches) return;
+        if (reduceMotion || window.matchMedia('(max-width: 767px)').matches) return;
 
         const rotate = () => {
             words[index].classList.remove('visible');
@@ -13348,11 +13392,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        if (reduceMotion) {
+        const shouldShowHeroWordsImmediately = reduceMotion || window.matchMedia('(max-width: 767px)').matches;
+        if (shouldShowHeroWordsImmediately) {
             words.forEach(word => {
+                word.style.animation = 'none';
                 word.style.opacity = '1';
                 word.style.filter = 'none';
                 word.style.transform = 'none';
+                word.style.willChange = 'auto';
             });
             return;
         }
