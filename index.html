@@ -4278,6 +4278,9 @@
             filter: blur(8px);
             transform: translateY(0.18em);
         }
+        .js-enabled .hero-type-word[data-hero-type-word]:not(.is-typing):not(.typing-complete) {
+            visibility: hidden;
+        }
         .hero-product-mobile-swap {
             display: none;
         }
@@ -4580,7 +4583,7 @@
                 margin-top: 0.04em;
             }
             .hero-type-word {
-                display: none;
+                display: inline-block;
             }
             .hero-product-mobile-swap {
                 display: block !important;
@@ -5925,7 +5928,14 @@
             }
 
             .hero-product-line {
+                display: block !important;
                 margin-top: 0.08em !important;
+                width: auto !important;
+            }
+
+            .hero-type-word {
+                display: inline-block !important;
+                min-width: 0;
             }
 
             .hero-product-mobile-swap {
@@ -10806,7 +10816,7 @@
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
             <div class="desktop-hero-kicker">Built for local business</div>
-            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for <span class="hero-type-word" data-hero-type-word>roofing companies.</span><span class="hero-product-mobile-swap" data-mobile-hero-swap aria-live="polite"><span class="visible">roofing companies.</span><span>auto shops.</span><span>law firms.</span><span>med spas.</span><span>landscaping crews.</span><span>local contractors.</span><span>salons.</span><span>clinics.</span></span></span></h1>
+            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for <span class="hero-type-word" data-hero-type-word>small businesses.</span></span></h1>
             <p class="hero-product-subtitle" data-word-reveal-hero>We automate the systems behind the website and daily workflow so leads, follow-ups, and next steps move without you babysitting every handoff.</p>
             <div class="hero-product-actions" aria-label="Primary actions">
                 <a href="#form" class="hero-product-cta">Get a Quick Recommendation</a>
@@ -11496,11 +11506,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let splashComplete = false;
     let heroTypewriterStarted = false;
 
-    function startHeroTypingNearSplashEnd() {
-        if (!isPlainHomeRoute() || !window.matchMedia('(min-width: 768px)').matches) return;
-        initHeroTypewriterForCurrentViewport({ startBlank: true });
-    }
-
     const initSplashScreen = () => {
         return new Promise(resolve => {
             const splash = document.getElementById('splashScreen');
@@ -11511,9 +11516,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.body.classList.add('splash-lock');
             const showFor = reduceMotion ? 220 : 1650;
-            if (!reduceMotion) {
-                window.setTimeout(startHeroTypingNearSplashEnd, Math.max(0, showFor - 420));
-            }
             window.setTimeout(() => {
                 splash.classList.add('is-done');
                 document.body.classList.remove('splash-lock');
@@ -11574,68 +11576,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
     updateNavbarState();
 
-    const initDesktopHeroTypewriter = (options = {}) => {
+    const initHeroBusinessTypewriter = () => {
         if (heroTypewriterStarted) return;
         const wordEl = document.querySelector('[data-hero-type-word]');
         if (!wordEl) return;
-        if (!window.matchMedia('(min-width: 768px)').matches) return;
         heroTypewriterStarted = true;
 
-        const words = [
-            'roofing companies.',
-            'HVAC companies.',
-            'plumbing companies.',
-            'electrical contractors.',
-            'remodeling crews.',
-            'local contractors.'
-        ];
+        const words = ['small businesses.'];
 
         if (reduceMotion) {
             wordEl.textContent = words[0];
+            wordEl.classList.add('typing-complete');
             return;
         }
 
-        runHeroWordTyping(wordEl, words, { minWidth: true, startBlank: options.startBlank });
+        runHeroWordTyping(wordEl, words, { minWidth: true, startBlank: true, loop: false });
     };
 
-    const initMobileHeroSwap = (options = {}) => {
-        const container = document.querySelector('[data-mobile-hero-swap]');
-        if (!container) return;
-        if (container.dataset.typingReady === 'true') return;
-        container.dataset.typingReady = 'true';
-        const words = Array.from(container.querySelectorAll('span'));
-        if (!words.length) return;
-
-        let index = words.findIndex(span => span.classList.contains('visible'));
-        if (index < 0) index = 0;
-
-        const setSwapWidth = span => {
-            if (!span) return;
-            container.style.minWidth = `${Math.ceil(span.scrollWidth)}px`;
-        };
-
-        words.forEach(span => span.classList.remove('visible'));
-        words[index].classList.add('visible');
-        requestAnimationFrame(() => setSwapWidth(words[index]));
-
-        if (reduceMotion) return;
-
-        const rotate = () => {
-            words[index].classList.remove('visible');
-            index = (index + 1) % words.length;
-            words[index].classList.add('visible');
-            setSwapWidth(words[index]);
-        };
-
-        window.setInterval(rotate, options.interval || 2400);
-    };
-
-    const initHeroTypewriterForCurrentViewport = (options = {}) => {
-        if (window.matchMedia('(min-width: 768px)').matches) {
-            initDesktopHeroTypewriter(options);
-        } else {
-            initMobileHeroSwap(options);
-        }
+    const initHeroTypewriterForCurrentViewport = () => {
+        initHeroBusinessTypewriter();
     };
 
     const runHeroWordTyping = (target, words, options = {}) => {
@@ -11671,10 +11630,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const loop = async () => {
+            if (options.minWidth) {
+                const currentWidth = Math.ceil(target.getBoundingClientRect().width);
+                if (currentWidth) target.style.minWidth = `${currentWidth}px`;
+            }
             if (options.startBlank) target.textContent = '';
             const currentWord = target.textContent.trim();
             const currentIndex = words.findIndex(word => word === currentWord);
             let wordIndex = options.startBlank ? 0 : (currentIndex >= 0 ? (currentIndex + 1) % words.length : 0);
+            target.classList.remove('typing-complete');
             target.classList.add('is-typing');
             while (!cancelled) {
                 const word = words[wordIndex];
@@ -11687,6 +11651,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     target.textContent += word.charAt(i);
                     await wait(typeSpeed);
                     if (cancelled) return;
+                }
+                if (options.loop === false) {
+                    target.classList.remove('is-typing');
+                    target.classList.add('typing-complete');
+                    return;
                 }
                 await wait(holdTime);
                 wordIndex = (wordIndex + 1) % words.length;
