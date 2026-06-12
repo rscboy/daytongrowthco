@@ -3344,6 +3344,20 @@
             transform: scaleX(0);
             transition: transform 0.08s linear;
         }
+        /* Drive the progress bar off a CSS scroll-timeline instead of a JS scroll
+           handler (no main-thread work, no per-frame scrollHeight reads). Gated by
+           @supports so non-supporting browsers simply show no bar (scaleX(0)). */
+        @supports (animation-timeline: scroll()) {
+            #scroll-progress-bar {
+                transition: none;
+                animation: dgc-scroll-progress linear;
+                animation-timeline: scroll(root block);
+            }
+        }
+        @keyframes dgc-scroll-progress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
         #auditForm .relative.group {
             position: relative;
         }
@@ -12819,12 +12833,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
             const glowCards = document.querySelectorAll('.service-card, .product-card, .pricing-card');
             glowCards.forEach(function (card) {
+                // Measure the card rect once per hover (on enter) instead of on every
+                // mousemove, so pointer tracking never forces a layout read per frame.
+                let rect = null;
+                card.addEventListener('mouseenter', function () {
+                    rect = card.getBoundingClientRect();
+                });
                 card.addEventListener('mousemove', function (event) {
-                    const rect = card.getBoundingClientRect();
+                    if (!rect) rect = card.getBoundingClientRect();
                     card.style.setProperty('--glow-x', (event.clientX - rect.left) + 'px');
                     card.style.setProperty('--glow-y', (event.clientY - rect.top) + 'px');
                 });
                 card.addEventListener('mouseleave', function () {
+                    rect = null;
                     card.style.setProperty('--glow-x', '50%');
                     card.style.setProperty('--glow-y', '50%');
                 });
@@ -12837,14 +12858,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const bar = document.createElement('div');
             bar.id = 'scroll-progress-bar';
             document.body.insertBefore(bar, document.body.firstChild);
-            const updateProgress = function () {
-                const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-                const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-                bar.style.transform = 'scaleX(' + (pct / 100) + ')';
-            };
-            window.addEventListener('scroll', updateProgress, { passive: true });
-            window.addEventListener('resize', updateProgress);
-            updateProgress();
+            // Progress is driven by a CSS scroll-timeline (see #scroll-progress-bar
+            // styles). No scroll listener — avoids per-frame scrollHeight reads.
         }
     } catch (error) {}
 
