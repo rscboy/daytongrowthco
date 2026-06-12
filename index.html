@@ -5880,7 +5880,30 @@
             }
 
             .splash-screen {
-                display: none !important;
+                display: grid !important;
+                min-height: 100dvh;
+                padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+            }
+
+            .splash-inner {
+                width: min(250px, 82vw);
+                min-height: 132px;
+                gap: 0.9rem;
+            }
+
+            .splash-mark {
+                width: 58px;
+                height: 58px;
+            }
+
+            .splash-logo {
+                width: 52px;
+                height: 52px;
+                border-radius: 14px;
+            }
+
+            .splash-wordmark {
+                font-size: clamp(1.35rem, 7vw, 1.8rem);
             }
 
             .hero-product {
