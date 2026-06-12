@@ -11595,7 +11595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         words[index].classList.add('visible');
         requestAnimationFrame(() => setSwapWidth(words[index]));
 
-        if (reduceMotion || window.matchMedia('(max-width: 767px)').matches) return;
+        if (reduceMotion) return;
 
         const rotate = () => {
             words[index].classList.remove('visible');
