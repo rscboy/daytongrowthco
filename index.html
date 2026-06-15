@@ -10727,6 +10727,52 @@
             html body #pricing .pricing-deck-dot:active {
                 transform: scale(0.96);
             }
+
+            /* Pricing intro: center and balance across the mobile/tablet viewport
+               instead of a narrow left column with empty space on the right. */
+            html body:not(.splash-lock) #pricing {
+                padding-top: 30px !important;
+            }
+            html body #pricing .text-center.max-w-3xl {
+                text-align: center !important;
+                max-width: 33rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                margin-bottom: 16px !important;
+            }
+            html body #pricing .text-center.max-w-3xl h2 {
+                text-align: center !important;
+                max-width: none !important;
+                line-height: 1.04 !important;
+                margin: 0 auto 8px !important;
+            }
+            html body #pricing .text-center.max-w-3xl h2 + p {
+                text-align: center !important;
+                max-width: 30rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+            /* Services intro ("Simple sites. Serious systems."): center and balance
+               across the mobile/tablet viewport, matching the pricing intro. */
+            html body:not(.splash-lock) #services .text-center {
+                text-align: center !important;
+                max-width: 33rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            html body:not(.splash-lock) #services .text-center h2 {
+                text-align: center !important;
+                max-width: none !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            html body:not(.splash-lock) #services .text-center h2 + p {
+                text-align: center !important;
+                max-width: 30rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
         }
 
         @media (min-width: 768px) {
@@ -10786,11 +10832,50 @@
         </div>
         <a href="/contact" class="site-nav-cta">Start a Project</a>
         <button id="mobileMenuBtn" class="site-menu-button" aria-label="Open menu" onclick="event.preventDefault();event.stopPropagation();const m=document.getElementById('mobileMenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);m.setAttribute('aria-hidden',String(!o));this.setAttribute('aria-expanded',String(o));this.setAttribute('aria-label',o?'Close menu':'Open menu');document.body.classList.toggle('nav-overlay-open',o);document.getElementById('navbar')?.classList.toggle('menu-open',o);document.getElementById('menuIconOpen')?.classList.toggle('hidden',o);document.getElementById('menuIconClose')?.classList.toggle('hidden',!o);">
-            <svg id="menuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            <svg id="menuMorphIcon" class="menu-morph-icon w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path class="mm-line mm-1" d="M4 7L20 7"/>
+                <path class="mm-line mm-2" d="M4 12L20 12"/>
+                <path class="mm-line mm-3" d="M4 17L20 17"/>
+            </svg>
             <span id="mobileMenuBtnLabel" class="sr-only">Menu</span>
         </button>
     </div>
+    <style>
+        /* Morphing menu icon — single 3-stroke SVG transforms hamburger <-> X (no crossfade) */
+        .menu-morph-icon .mm-line {
+            transition: d 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.25s ease;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .menu-morph-icon .mm-line { transition: none; }
+        }
+    </style>
+    <script>
+    (function () {
+        var btn = document.getElementById('mobileMenuBtn');
+        var svg = document.getElementById('menuMorphIcon');
+        if (!btn || !svg) return;
+        var paths = [svg.querySelector('.mm-1'), svg.querySelector('.mm-2'), svg.querySelector('.mm-3')];
+        // Each state is exactly three M..L.. strokes so any line morphs into any other.
+        // The middle stroke collapses to the center point (opacity 0) for the 2-line X.
+        var MENU = ['M4 7L20 7', 'M4 12L20 12', 'M4 17L20 17'];
+        var CROSS = ['M5.5 5.5L18.5 18.5', 'M12 12L12 12', 'M5.5 18.5L18.5 5.5'];
+        var apply = function (open) {
+            var state = open ? CROSS : MENU;
+            for (var i = 0; i < paths.length; i++) {
+                var p = paths[i];
+                if (!p) continue;
+                p.setAttribute('d', state[i]);                 // correct end-state everywhere
+                try { p.style.d = 'path("' + state[i] + '")'; } catch (e) {} // smooth tween where supported
+                p.style.opacity = (open && i === 1) ? '0' : '1';
+            }
+        };
+        apply(btn.getAttribute('aria-expanded') === 'true');
+        // aria-expanded is the single source of truth; every existing toggle path sets it.
+        new MutationObserver(function () {
+            apply(btn.getAttribute('aria-expanded') === 'true');
+        }).observe(btn, { attributes: true, attributeFilter: ['aria-expanded'] });
+    })();
+    </script>
     <div id="mobileMenu" class="site-mobile-overlay" aria-hidden="true">
         <div class="site-mobile-panel">
             <a href="/demo" class="mobile-nav-link">Demo</a>
@@ -10816,7 +10901,7 @@
         <div class="grain-overlay" aria-hidden="true"></div>
         <div class="hero-product-content">
             <div class="desktop-hero-kicker">Built for local business</div>
-            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for <span class="hero-type-word" data-hero-type-word>small businesses.</span></span></h1>
+            <h1 class="hero-product-title">Automating the workflow<span class="hero-product-line">for<span class="hero-type-word" data-hero-type-word>small businesses.</span></span></h1>
             <p class="hero-product-subtitle" data-word-reveal-hero>We automate the systems behind the website and daily workflow so leads, follow-ups, and next steps move without you babysitting every handoff.</p>
             <div class="hero-product-actions" aria-label="Primary actions">
                 <a href="/contact" class="hero-product-cta">Start a Project</a>
@@ -10941,7 +11026,7 @@
 
                             <div class="estimate-demo-card rounded-[24px] p-5 mb-4">
                                 <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Estimate total</div>
-                                <div class="text-[38px] font-extrabold tracking-[-0.055em] text-brand-dark mb-3" data-demo-total>$4,850</div>
+                                <div class="text-[38px] font-extrabold tracking-[-0.055em] text-brand-dark mb-3 tabular-nums" data-demo-total>$4,850</div>
                                 <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-2">
                                     <span>Progress</span>
                                     <span data-demo-progress-label>Viewed, question asked</span>
@@ -10981,7 +11066,7 @@
                                         </div>
                                         <div class="rounded-[22px] bg-slate-50 border border-slate-200 p-4 min-w-[150px]">
                                             <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total</div>
-                                            <div class="text-[28px] font-extrabold tracking-[-0.05em] text-brand-dark" data-demo-preview-total>$4,850</div>
+                                            <div class="text-[28px] font-extrabold tracking-[-0.05em] text-brand-dark tabular-nums" data-demo-preview-total>$4,850</div>
                                         </div>
                                     </div>
 
@@ -10992,7 +11077,7 @@
                                         </div>
                                         <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
                                             <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Deposit</div>
-                                            <div class="text-[15px] font-bold text-brand-dark" data-demo-deposit>$1,200</div>
+                                            <div class="text-[15px] font-bold text-brand-dark tabular-nums" data-demo-deposit>$1,200</div>
                                         </div>
                                         <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
                                             <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Next step</div>
@@ -11079,7 +11164,7 @@
             </div>
             <div class="mt-10 md:mt-12 rounded-[24px] border border-slate-200 bg-slate-50 px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4 reveal-sweep">
                 <p class="text-[15px] md:text-[16px] text-brand-dark">Need a specific system implemented, like salon booking, quote intake, or a client portal? We can recommend the right setup or build it from scratch.</p>
-                <a href="/contact" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-200 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Start a Project</a>
+                <a href="/contact" class="inline-flex items-center justify-center gap-2 bg-brand-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-[background-color,box-shadow,transform] duration-200 shadow-[0_6px_18px_rgba(37,99,235,0.25)]">Start a Project</a>
             </div>
         </div>
     </section>
@@ -11244,18 +11329,18 @@
 </main>
 
 <!-- ═══════════════════════ GLOBAL INTAKE FORM ═══════════════════════ -->
-<section id="form" class="bottom-video-zone pt-14 pb-20 md:pt-18 md:pb-24 bg-[#0A0E1A] text-white relative overflow-hidden noise border-t border-white/[0.04]">
+<section id="form" class="bottom-video-zone pt-12 pb-16 md:pt-14 md:pb-18 bg-[#0A0E1A] text-white relative overflow-hidden noise border-t border-white/[0.04]">
     <div class="absolute inset-0 pointer-events-none"><div class="absolute top-0 right-0 w-[700px] h-[700px] bg-blue-600/15 rounded-full blur-[120px]"></div><div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]"></div></div>
     <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 z-10 stagger-group">
-        <div class="text-center mb-8 md:mb-10 reveal-sweep"><h2 class="text-balance text-[36px] md:text-[48px] font-bold tracking-[-0.02em] leading-[1.05] mb-4 md:mb-5">Start a Project</h2><p class="text-pretty text-[17px] text-slate-400 leading-relaxed max-w-xl mx-auto">DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact. We handle simple website and SEO improvements, tech integrations, and more complex custom systems.</p></div>
-        <div class="form-card bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[36px] p-6 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
-            <form id="auditForm" method="POST" action="https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec" target="hidden_iframe" class="space-y-8 md:space-y-9">
+        <div class="text-center mb-6 md:mb-7 reveal-sweep"><h2 class="text-balance text-[30px] md:text-[40px] font-bold tracking-[-0.02em] leading-[1.05] mb-3">Start a Project</h2><p class="text-pretty text-[15px] text-slate-400 leading-relaxed max-w-xl mx-auto">DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact. We handle simple website and SEO improvements, tech integrations, and more complex custom systems.</p></div>
+        <div class="form-card bg-[#0D1117]/80 backdrop-blur-xl border border-white/[0.05] rounded-[28px] p-6 md:p-8 shadow-[0_40px_80px_rgba(0,0,0,0.6)] stagger-item">
+            <form id="auditForm" method="POST" action="https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec" target="hidden_iframe" class="space-y-5 md:space-y-6">
                 <input type="hidden" id="recaptchaToken" name="recaptchaToken" value=""><input type="hidden" id="recaptchaAction" name="recaptchaAction" value="quick_recommendation">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="relative group"><input type="text" id="contactName" name="yourName" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="contactName" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Your Name *</label></div><div class="relative group"><input type="text" id="bizName" name="businessName" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="bizName" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Business Name *</label></div><div class="relative group"><input type="email" id="email" name="emailAddress" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="email" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Email Address *</label></div><div class="relative group"><input type="text" id="website" name="currentDomain" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " /><label for="website" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Current Website (Optional)</label></div></div>
-                <div><label class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4">Your main goal *</label><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-200"><input type="radio" name="mainGoal" value="Build or improve my website" class="w-4 h-4 accent-blue-500" required checked /><span class="ml-3 text-[14px] text-slate-200">Build or improve my website</span></label><label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-200"><input type="radio" name="mainGoal" value="Improve local SEO" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Improve local SEO</span></label><label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-200"><input type="radio" name="mainGoal" value="Implement a system I need" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Implement a system I need</span></label><label class="flex items-center p-4 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-all duration-200"><input type="radio" name="mainGoal" value="Build something custom" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Build something custom</span></label></div></div>
-                <div><label class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-4">Setup package *</label><div class="space-y-3"><label class="flex items-start p-5 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-200"><input type="radio" name="serviceTier" value="Website and SEO setup" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" required /><div class="ml-4"><span class="block text-[14px] font-semibold text-slate-200">Website + SEO Setup</span><span class="block text-[13px] text-slate-500 mt-1">A cleaner website, stronger local search basics, and clear contact or quote paths</span></div></label><label class="flex items-start p-5 border border-blue-500/40 bg-blue-900/10 rounded-[20px] cursor-pointer relative transition-all duration-200"><input type="radio" name="serviceTier" value="Tech integration" checked class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" /><div class="ml-4"><span class="block text-[14px] font-semibold text-white">Tech Integration</span><span class="block text-[13px] text-blue-300/70 mt-1">Implement a booking page, form flow, calendar connection, notifications, or follow-up system</span></div></label><label class="flex items-start p-6 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-200"><input type="radio" name="serviceTier" value="Custom systems" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" /><div class="ml-4"><span class="block text-[14px] font-semibold text-slate-200">Custom Systems</span><span class="block text-[13px] text-slate-500 mt-1">A custom tool, dashboard, portal, or workflow built around how your business runs</span></div></label></div></div>
-                <div class="relative group pt-4"><textarea id="details" name="notes" rows="2" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors resize-none peer" placeholder=" "></textarea><label for="details" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">What do you want implemented? (Optional)</label></div>
-                <div><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.97] text-white font-bold text-[15px] py-4.5 rounded-full transition-[transform,box-shadow,background-color] duration-150 flex justify-center items-center gap-2.5 shadow-lg hover:shadow-xl" style="padding-top: 18px; padding-bottom: 18px;">Start a Project <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button><div id="auditStatus" aria-live="polite" class="text-center text-slate-300 text-[14px] mt-4 min-h-[20px]"></div><p class="text-center text-slate-600 text-[12px] mt-2 uppercase tracking-widest font-semibold">Response guaranteed within 24 hours</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5"><div class="relative group"><input type="text" id="contactName" name="yourName" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="contactName" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Your Name *</label></div><div class="relative group"><input type="text" id="bizName" name="businessName" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="bizName" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Business Name *</label></div><div class="relative group"><input type="email" id="email" name="emailAddress" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required /><label for="email" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Email Address *</label></div><div class="relative group"><input type="text" id="website" name="currentDomain" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors peer" placeholder=" " /><label for="website" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">Current Website (Optional)</label></div></div>
+                <fieldset class="border-0 p-0 m-0 min-w-0"><legend class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">Your main goal *</legend><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><label class="flex items-center p-3 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="mainGoal" value="Build or improve my website" class="w-4 h-4 accent-blue-500" required checked /><span class="ml-3 text-[14px] text-slate-200">Build or improve my website</span></label><label class="flex items-center p-3 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="mainGoal" value="Improve local SEO" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Improve local SEO</span></label><label class="flex items-center p-3 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="mainGoal" value="Implement a system I need" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Implement a system I need</span></label><label class="flex items-center p-3 border border-white/[0.06] rounded-[16px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/40 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="mainGoal" value="Build something custom" class="w-4 h-4 accent-blue-500" /><span class="ml-3 text-[14px] text-slate-200">Build something custom</span></label></div></fieldset>
+                <fieldset class="border-0 p-0 m-0 min-w-0"><legend class="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">Setup package *</legend><div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch"><label class="flex items-start p-4 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="serviceTier" value="Website and SEO setup" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" required /><div class="ml-4"><span class="block text-[14px] font-semibold text-slate-200">Website + SEO Setup</span><span class="block text-[13px] text-slate-500 mt-1">A cleaner website, stronger local search basics, and clear contact or quote paths</span></div></label><label class="flex items-start p-4 border border-blue-500/40 bg-blue-900/10 rounded-[20px] cursor-pointer relative transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="serviceTier" value="Tech integration" checked class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" /><div class="ml-4"><span class="block text-[14px] font-semibold text-white">Tech Integration</span><span class="block text-[13px] text-blue-300/70 mt-1">Implement a booking page, form flow, calendar connection, notifications, or follow-up system</span></div></label><label class="flex items-start p-4 border border-white/[0.06] rounded-[20px] cursor-pointer hover:bg-blue-900/15 hover:border-blue-500/30 transition-[background-color,border-color,transform] duration-200 active:scale-[0.98]"><input type="radio" name="serviceTier" value="Custom systems" class="mt-0.5 w-4 h-4 accent-blue-500 shrink-0" /><div class="ml-4"><span class="block text-[14px] font-semibold text-slate-200">Custom Systems</span><span class="block text-[13px] text-slate-500 mt-1">A custom tool, dashboard, portal, or workflow built around how your business runs</span></div></label></div></fieldset>
+                <div class="relative group pt-1"><textarea id="details" name="notes" rows="2" class="w-full bg-transparent border-b border-slate-700 py-3 text-[15px] text-white focus:outline-none focus:border-blue-500 transition-colors resize-none peer" placeholder=" "></textarea><label for="details" class="absolute left-0 top-3 origin-top-left text-slate-500 text-[14px] cursor-text transition-[transform,color] duration-200 ease-out peer-focus:-translate-y-8 peer-focus:scale-[0.78] peer-focus:text-blue-400 peer-focus:font-semibold peer-focus:uppercase peer-focus:tracking-wider peer-valid:-translate-y-8 peer-valid:scale-[0.78] peer-valid:uppercase peer-valid:tracking-wider">What do you want implemented? (Optional)</label></div>
+                <div><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.97] text-white font-bold text-[15px] py-3.5 rounded-full transition-[transform,box-shadow,background-color] duration-150 flex justify-center items-center gap-2.5 shadow-lg hover:shadow-xl">Start a Project <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button><div id="auditStatus" aria-live="polite" class="text-center text-slate-300 text-[14px] mt-3 min-h-[20px]"></div><p class="text-center text-slate-600 text-[12px] mt-2 uppercase tracking-widest font-semibold">Response guaranteed within 24 hours</p></div>
             </form><iframe name="hidden_iframe" style="display:none;"></iframe>
         </div>
     </div>
@@ -11274,7 +11359,7 @@
                     </span>
                 </div>
                 <p class="text-[14px] leading-relaxed max-w-[280px] mb-6">Helping Dayton-area businesses improve websites, local SEO, tech integrations, and the systems behind daily work.</p>
-                <a href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] rounded-full text-white text-[13px] font-medium transition-all duration-200">
+                <a href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] rounded-full text-white text-[13px] font-medium transition-[background-color,box-shadow,transform] duration-200">
                     <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     Client Portal
                 </a>
@@ -11317,10 +11402,10 @@
         <div class="border-t border-white/[0.04] pt-8 flex flex-col md:flex-row justify-between items-center text-[12px] gap-4">
             <p>&copy; <span id="currentYear"></span> DaytonGrowthCo. All rights reserved.</p>
             <div class="flex flex-wrap gap-6">
-                <button class="legal-link hover:text-white transition-colors" data-modal="terms">Terms of Service</button>
-                <button class="legal-link hover:text-white transition-colors" data-modal="privacy">Privacy Policy</button>
-                <button class="legal-link hover:text-white transition-colors" data-modal="disclaimer">Disclaimer</button>
-                <button class="legal-link hover:text-white transition-colors" data-modal="accessibility">Accessibility</button>
+                <button class="legal-link hover:text-white transition active:scale-[0.97] inline-flex items-center py-3 -my-3" data-modal="terms">Terms of Service</button>
+                <button class="legal-link hover:text-white transition active:scale-[0.97] inline-flex items-center py-3 -my-3" data-modal="privacy">Privacy Policy</button>
+                <button class="legal-link hover:text-white transition active:scale-[0.97] inline-flex items-center py-3 -my-3" data-modal="disclaimer">Disclaimer</button>
+                <button class="legal-link hover:text-white transition active:scale-[0.97] inline-flex items-center py-3 -my-3" data-modal="accessibility">Accessibility</button>
             </div>
         </div>
     </div>
@@ -11328,11 +11413,11 @@
 
 <!-- ═══════════════════════ LEGAL MODAL ═══════════════════════ -->
 <div id="legalModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-[760px] max-h-[88vh] rounded-[24px] shadow-2xl flex flex-col modal-inner" onclick="event.stopPropagation()">
+    <div class="bg-white w-full max-w-[760px] max-h-[88vh] rounded-[24px] shadow-2xl flex flex-col modal-inner" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="event.stopPropagation()">
         <div class="p-7 border-b border-slate-100 flex justify-between items-center shrink-0">
             <h2 id="modalTitle" class="text-[22px] font-bold text-brand-dark"></h2>
             <button id="closeModalBtn" aria-label="Close" class="text-slate-400 hover:text-brand-dark hover:bg-slate-100 p-2 rounded-full transition-colors">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                <svg class="w-5 h-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
         <div id="modalBody" class="p-7 overflow-y-auto text-[15px] leading-relaxed text-slate-600"></div>
@@ -11721,7 +11806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 const items = entry.target.querySelectorAll('.stagger-item');
                 items.forEach((item, index) => {
-                    item.style.transitionDelay = `${index * 55}ms`;
+                    item.style.transitionDelay = `${index * 50}ms`;
                     item.classList.add('visible');
                 });
                 obs.unobserve(entry.target);
@@ -11847,7 +11932,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<div class="preview-shell"><div class="h-full w-full bg-white border border-slate-200 rounded-lg"></div></div>`;
     };
 
-    const toolCard = (tool, index) => `<article class="industry-card industry-tools-fade" style="transition-delay:${index * 60}ms;" tabindex="0"><div><span class="type-pill">${tool.type}</span><h3 class="mt-3 text-[24px] leading-tight font-bold text-brand-dark">${tool.name}</h3><p class="mt-2 text-[15px] font-semibold text-slate-800">${tool.benefit}</p><p class="mt-2 text-[14px] text-slate-500 leading-relaxed">${tool.description}</p></div>${previewByType(tool.animation)}</article>`;
+    const toolCard = (tool, index) => `<article class="industry-card industry-tools-fade" style="transition-delay:${index * 50}ms;" tabindex="0"><div><span class="type-pill">${tool.type}</span><h3 class="mt-3 text-[24px] leading-tight font-bold text-brand-dark">${tool.name}</h3><p class="mt-2 text-[15px] font-semibold text-slate-800">${tool.benefit}</p><p class="mt-2 text-[14px] text-slate-500 leading-relaxed">${tool.description}</p></div>${previewByType(tool.animation)}</article>`;
 
     const renderIndustryTabs = () => {
         if (!selectorEl) return;
@@ -12330,20 +12415,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBody = document.getElementById('modalBody');
     const closeBtn = document.getElementById('closeModalBtn');
 
+    let lastFocusedBeforeModal = null;
+
+    const getModalFocusable = () => modal
+        ? Array.from(modal.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'))
+            .filter(el => el.offsetParent !== null)
+        : [];
+
+    const handleModalKeydown = e => {
+        if (e.key === 'Escape') { closeModal(); return; }
+        if (e.key !== 'Tab') return;
+        const focusable = getModalFocusable();
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    };
+
     const openModal = key => {
         const d = legalContent[key];
         if (!d) return;
         modalTitle.textContent = d.title;
         modalBody.innerHTML = d.html;
         if (modal) {
+            lastFocusedBeforeModal = document.activeElement;
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            document.addEventListener('keydown', handleModalKeydown);
+            if (closeBtn) closeBtn.focus();
         }
     };
     const closeModal = () => {
         if (modal) {
             modal.classList.add('hidden');
             document.body.style.overflow = '';
+            document.removeEventListener('keydown', handleModalKeydown);
+            if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === 'function') {
+                lastFocusedBeforeModal.focus();
+            }
+            lastFocusedBeforeModal = null;
         }
     };
 
