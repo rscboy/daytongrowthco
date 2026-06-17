@@ -148,6 +148,15 @@ const pageSections = [
   { id: "cta", label: "Demo" },
 ];
 
+const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
+const formAction =
+  "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
+const socialLinks = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
+  { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
+];
+
 const videos = {
   hero: {
     src: "https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4",
@@ -232,10 +241,10 @@ function Header() {
         <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
           <img
             className="logo-image"
-            src="https://www.daytongrowth.co/favicon.png?v=2"
+            src={logoUrl}
             alt=""
-            width="28"
-            height="28"
+            width="32"
+            height="32"
           />
           <span>
             Dayton<span>Growth</span><b>Co.</b>
@@ -248,6 +257,84 @@ function Header() {
       </nav>
     </header>
   );
+}
+
+function useRecaptchaProtection() {
+  useEffect(() => {
+    const form = document.getElementById("auditForm") as HTMLFormElement | null;
+    const key = document.querySelector<HTMLMetaElement>('meta[name="recaptcha-site-key"]')?.content.trim();
+    if (!form || !key) return;
+
+    const loadRecaptcha = () =>
+      new Promise<any>((resolve) => {
+        const win = window as unknown as { grecaptcha?: any };
+        if (win.grecaptcha?.execute) {
+          resolve(win.grecaptcha);
+          return;
+        }
+
+        const existing = document.querySelector<HTMLScriptElement>("script[data-dgc-recaptcha]");
+        if (existing) {
+          existing.addEventListener("load", () => resolve(win.grecaptcha), { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(key)}`;
+        script.async = true;
+        script.defer = true;
+        script.dataset.dgcRecaptcha = "true";
+        script.onload = () => resolve(win.grecaptcha);
+        document.head.appendChild(script);
+      });
+
+    let submittingWithToken = false;
+    let submittedToIframe = false;
+    const onSubmit = async (event: SubmitEvent) => {
+      if (submittingWithToken) {
+        submittingWithToken = false;
+        return;
+      }
+
+      event.preventDefault();
+      const tokenField = document.getElementById("recaptchaToken") as HTMLInputElement | null;
+      const actionField = document.getElementById("recaptchaAction") as HTMLInputElement | null;
+      const status = document.getElementById("auditStatus");
+      if (status) status.textContent = "Securing submission...";
+
+      const grecaptcha = await loadRecaptcha();
+      grecaptcha.ready(async () => {
+        try {
+          const token = await grecaptcha.execute(key, { action: "quick_recommendation" });
+          if (tokenField) tokenField.value = token;
+          if (actionField) actionField.value = "quick_recommendation";
+          if (status) status.textContent = "Sending...";
+          submittingWithToken = true;
+          submittedToIframe = true;
+          form.requestSubmit();
+        } catch {
+          if (status) status.textContent = "Sending...";
+          submittingWithToken = true;
+          submittedToIframe = true;
+          form.requestSubmit();
+        }
+      });
+    };
+
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe[name="hidden_iframe"]');
+    const onIframeLoad = () => {
+      if (!submittedToIframe) return;
+      const status = document.getElementById("auditStatus");
+      if (status) status.textContent = "Request received. We will respond within 24 hours.";
+    };
+
+    form.addEventListener("submit", onSubmit);
+    iframe?.addEventListener("load", onIframeLoad);
+    return () => {
+      form.removeEventListener("submit", onSubmit);
+      iframe?.removeEventListener("load", onIframeLoad);
+    };
+  }, []);
 }
 
 function useActiveSection() {
@@ -745,31 +832,93 @@ function OutcomeSection() {
   );
 }
 
+function ProjectForm() {
+  return (
+    <div className="form-card" data-reveal>
+      <form id="auditForm" method="POST" action={formAction} target="hidden_iframe" className="project-form">
+        <input type="hidden" id="recaptchaToken" name="recaptchaToken" value="" readOnly />
+        <input type="hidden" id="recaptchaAction" name="recaptchaAction" value="quick_recommendation" readOnly />
+
+        <div className="form-grid">
+          <label className="form-field" htmlFor="contactName">
+            <span>Your Name *</span>
+            <input id="contactName" name="yourName" type="text" autoComplete="name" required />
+          </label>
+          <label className="form-field" htmlFor="bizName">
+            <span>Business Name *</span>
+            <input id="bizName" name="businessName" type="text" autoComplete="organization" required />
+          </label>
+          <label className="form-field" htmlFor="email">
+            <span>Email Address *</span>
+            <input id="email" name="emailAddress" type="email" autoComplete="email" required />
+          </label>
+          <label className="form-field" htmlFor="website">
+            <span>Current Website</span>
+            <input id="website" name="currentDomain" type="text" inputMode="url" autoComplete="url" />
+          </label>
+        </div>
+
+        <fieldset className="form-choice-group">
+          <legend>Your main goal *</legend>
+          {["Build or improve my website", "Improve local SEO", "Implement a system I need", "Build something custom"].map(
+            (goal, index) => (
+              <label className="choice-pill" key={goal}>
+                <input name="mainGoal" type="radio" value={goal} required defaultChecked={index === 0} />
+                <span>{goal}</span>
+              </label>
+            ),
+          )}
+        </fieldset>
+
+        <fieldset className="form-choice-group package-group">
+          <legend>Setup package *</legend>
+          {["Website and SEO setup", "Tech integration", "Custom systems"].map((tier, index) => (
+            <label className="choice-pill" key={tier}>
+              <input name="serviceTier" type="radio" value={tier} required defaultChecked={index === 1} />
+              <span>{tier}</span>
+            </label>
+          ))}
+        </fieldset>
+
+        <label className="form-field full" htmlFor="details">
+          <span>What do you want implemented?</span>
+          <textarea id="details" name="notes" rows={3} />
+        </label>
+
+        <button type="submit" className="button button-primary large form-submit">
+          Start a Project
+          <ArrowRight size={16} aria-hidden="true" />
+        </button>
+        <div id="auditStatus" aria-live="polite" className="form-status" />
+        <p className="form-microcopy">Response guaranteed within 24 hours</p>
+      </form>
+      <iframe name="hidden_iframe" title="Form submission status" className="hidden-iframe" />
+    </div>
+  );
+}
+
 function FinalCTA() {
   return (
     <section id="cta" className="final-cta">
       <BackgroundVideo className="form-background-video" poster={videos.form.poster} stream={videos.form.stream} />
       <div className="form-video-mask" aria-hidden="true" />
-      <div className="mx-auto max-w-4xl px-5 text-center sm:px-8">
-        <span className="section-kicker">Start a project</span>
-        <h2>DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact.</h2>
-        <p>
-          We handle simple website and SEO improvements, tech integrations, and more complex custom systems.
-        </p>
-        <div className="intake-options" aria-label="Setup package options">
-          <span>Website + SEO Setup</span>
-          <span>Tech Integration</span>
-          <span>Custom Systems</span>
-        </div>
-        <div className="cta-actions">
-          <a className="button button-primary large" href="mailto:help@daytongrowth.co">
-            Start a Project
-            <ArrowRight size={16} aria-hidden="true" />
-          </a>
-          <a className="text-link" href="tel:+19373677089">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+        <div className="final-cta-copy text-center lg:text-left">
+          <span className="section-kicker">Start a project</span>
+          <h2>DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact.</h2>
+          <p>
+            We handle simple website and SEO improvements, tech integrations, and more complex custom systems.
+          </p>
+          <div className="intake-options" aria-label="Setup package options">
+            <span>Website + SEO Setup</span>
+            <span>Tech Integration</span>
+            <span>Custom Systems</span>
+          </div>
+          <a className="text-link phone-link" href="tel:+19373677089">
             (937) 367-7089
           </a>
         </div>
+        <ProjectForm />
       </div>
     </section>
   );
@@ -815,7 +964,7 @@ function SplashScreen() {
     <div className={`splash-screen ${done ? "is-done" : ""}`} aria-hidden="true">
       <div className="splash-inner">
         <div className="splash-mark">
-          <img src="https://www.daytongrowth.co/favicon.png?v=2" alt="" className="splash-logo" />
+          <img src={logoUrl} alt="" className="splash-logo" />
         </div>
         <div className="splash-wordmark">
           Dayton<span className="splash-growth">Growth</span><span className="splash-co">Co.</span>
@@ -942,6 +1091,7 @@ function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
   useMotionSystem();
   useMuxVideos();
+  useRecaptchaProtection();
 
   return (
     <>
@@ -960,13 +1110,46 @@ function App() {
         <FinalCTA />
       </main>
       <footer className="site-footer">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <span>© {year} DaytonGrowthCo. All rights reserved.</span>
-          <span>
-            Dayton, OH · <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a> ·{" "}
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
+          <div className="footer-brand">
+            <a href="#top" className="footer-logo" aria-label="DaytonGrowthCo home">
+              <img src={logoUrl} alt="" width="32" height="32" />
+              <span>Dayton<span>Growth</span><b>Co.</b></span>
+            </a>
+            <p>A Dayton vibecoding firm helping local businesses improve websites, local SEO, tech integrations, and the systems behind daily work.</p>
+            <a
+              className="client-portal-link"
+              href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Client Portal
+            </a>
+            <div className="social-links" aria-label="Social media">
+              {socialLinks.map((link) => (
+                <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <nav className="footer-links" aria-label="Services">
+            <a href="/website-design/">Website Design</a>
+            <a href="/local-seo/">Local SEO</a>
+            <a href="/website-maintenance/">Maintenance</a>
+            <a href="/aboutus.html">About Us</a>
+            <a href="#workflow">How It Works</a>
+          </nav>
+          <nav className="footer-links" aria-label="Legal and contact">
+            <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
             <a href="tel:+19373677089">(937) 367-7089</a>
-          </span>
+            <a href="/privacy-policy/">Privacy</a>
+            <a href="/terms-of-service/">Terms</a>
+            <a href="/disclaimer/">Disclaimer</a>
+            <a href="/accessibility/">Accessibility</a>
+          </nav>
         </div>
+        <div className="footer-bottom">© {year} DaytonGrowthCo. All rights reserved.</div>
       </footer>
     </>
   );
