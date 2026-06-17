@@ -214,17 +214,6 @@ const pricingCards = [
   },
 ];
 
-const preservedCopy = [
-  "DaytonGrowthCo helps Dayton-area businesses set up clearer websites, smarter forms, booking flows, follow-up tools, and simple lead organization systems.",
-  "One-time setups that automate workflow, integrate your website with the tools you use, and build custom tools for local businesses.",
-  "DaytonGrowthCo automates manual workflow, integrates websites with the tools businesses already use, and builds custom tools so local businesses save time and win more work.",
-  "The setups help reduce confusing websites, missed form submissions, scattered messages, slow follow-up, manual handoffs, and leads that disappear into inboxes or spreadsheets.",
-  "Born and raised in Dayton, Ohio, Samuel Caruso has always loved building things.",
-  "After seeing how many local businesses struggled with outdated websites, Samuel realized the problem was not design. The problem was that their websites did not actually do anything.",
-  "He founded DaytonGrowthCo. to fix that, giving business owners a reliable partner focused on building practical systems for growth.",
-  "Helping Dayton-area businesses improve websites, local SEO, tech integrations, and the systems behind daily work.",
-];
-
 function Header() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -924,27 +913,6 @@ function FinalCTA() {
   );
 }
 
-function CopyArchive() {
-  return (
-    <section className="copy-archive" aria-labelledby="copy-archive-heading">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading compact-heading" data-reveal>
-          <span className="section-kicker">Original DaytonGrowthCo. copy preserved</span>
-          <h2 id="copy-archive-heading">
-            Same business.
-            <span>New presentation system.</span>
-          </h2>
-        </div>
-        <div className="archive-grid">
-          {preservedCopy.map((copy) => (
-            <p key={copy}>{copy}</p>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function SplashScreen() {
   const [done, setDone] = useState(false);
 
@@ -1106,7 +1074,6 @@ function App() {
         <FeatureGrid />
         <AboutSection />
         <OutcomeSection />
-        <CopyArchive />
         <FinalCTA />
       </main>
       <footer className="site-footer">

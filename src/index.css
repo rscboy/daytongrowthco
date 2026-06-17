@@ -238,7 +238,7 @@
 
   .hero-section {
     position: relative;
-    min-height: 118svh;
+    min-height: 100svh;
     overflow: clip;
     background: #f8cfad;
   }
@@ -400,9 +400,9 @@
   .clay-hero-copy {
     position: relative;
     z-index: 3;
-    max-width: 63rem;
-    min-height: 78svh;
-    padding-top: clamp(4rem, 12svh, 8.5rem);
+    max-width: 58rem;
+    min-height: 60svh;
+    padding-top: clamp(3.5rem, 9svh, 6rem);
   }
 
   .hero-entrance {
@@ -422,13 +422,13 @@
   }
 
   .clay-hero-copy h1 {
-    margin-top: 1.4rem;
+    margin-top: 1.2rem;
     color: #1a1a1a;
-    max-width: 70rem;
-    font-size: clamp(4rem, 7.8vw, 7.25rem);
+    max-width: 22ch;
+    font-size: clamp(3rem, 5.2vw, 5.25rem);
     font-weight: 650;
     letter-spacing: 0;
-    line-height: 0.9;
+    line-height: 0.95;
   }
 
   .clay-hero-copy h1 span,
@@ -871,10 +871,10 @@
   .final-cta h2 {
     margin-top: 0.75rem;
     color: #1a1a1a;
-    font-size: clamp(2.4rem, 5vw, 5.2rem);
+    font-size: clamp(2.1rem, 3.6vw, 3.6rem);
     font-weight: 650;
     letter-spacing: 0;
-    line-height: 1;
+    line-height: 1.04;
   }
 
   .workflow-copy p:not(.step-count),
@@ -950,13 +950,13 @@
   .glass-moment {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(5rem, 10vw, 8rem);
+    padding-block: clamp(4rem, 6vw, 6.5rem);
   }
 
   .about-section {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(5rem, 10vw, 8.5rem);
+    padding-block: clamp(4rem, 6vw, 6.5rem);
     background: #f8fafc;
   }
 
@@ -1160,27 +1160,6 @@
     font-weight: 700;
   }
 
-  .copy-archive {
-    padding-block: clamp(4.5rem, 9vw, 7rem);
-    background: #f5f4f0;
-  }
-
-  .archive-grid {
-    display: grid;
-    gap: 0.75rem;
-    margin-top: 2rem;
-  }
-
-  .archive-grid p {
-    border: 1px solid #dedbd4;
-    border-radius: 8px;
-    padding: 1rem;
-    color: #5f5c56;
-    background: rgba(255, 255, 255, 0.66);
-    font-size: 0.92rem;
-    line-height: 1.62;
-  }
-
   .glass-stage {
     position: relative;
     min-height: 28rem;
@@ -1216,10 +1195,10 @@
       0 26px 70px rgba(58, 69, 74, 0.18);
     backdrop-filter: blur(10px) saturate(132%);
     transform: translateX(-50%);
-    font-size: clamp(5rem, 13vw, 10rem);
+    font-size: clamp(3.25rem, 7.5vw, 6.5rem);
     font-weight: 720;
     letter-spacing: 0;
-    line-height: 0.9;
+    line-height: 0.92;
     text-shadow: 0 1px 16px rgba(82, 91, 96, 0.14);
   }
 
@@ -1262,7 +1241,7 @@
   }
 
   .section-shell {
-    padding-block: clamp(5rem, 10vw, 8.5rem);
+    padding-block: clamp(4rem, 6vw, 6.5rem);
   }
 
   .section-heading {
@@ -1286,9 +1265,9 @@
   }
 
   .feature-cell {
-    min-height: 15rem;
+    min-height: 12rem;
     border-bottom: 1px solid #dedbd4;
-    padding: 1.6rem;
+    padding: 1.5rem;
     background: rgba(255, 255, 255, 0.54);
     transition: background-color 150ms ease;
   }
@@ -1298,9 +1277,9 @@
   }
 
   .feature-cell h3 {
-    margin-top: 2.2rem;
+    margin-top: 1.4rem;
     color: #252522;
-    font-size: 1.12rem;
+    font-size: 1.1rem;
     font-weight: 650;
   }
 
@@ -1322,7 +1301,7 @@
   }
 
   .compact-heading h2 {
-    font-size: clamp(2.25rem, 4vw, 4.2rem);
+    font-size: clamp(2rem, 2.9vw, 3rem);
   }
 
   .metric-grid {
@@ -1342,7 +1321,7 @@
     display: block;
     color: #1f211f;
     font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: clamp(2.3rem, 6vw, 4.5rem);
+    font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     font-weight: 760;
     line-height: 1;
   }
@@ -1365,7 +1344,7 @@
   .final-cta {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(5rem, 10vw, 8.5rem);
+    padding-block: clamp(4rem, 6vw, 6.5rem);
     color: #ffffff;
     background:
       radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.18), transparent 34%),
@@ -1886,10 +1865,6 @@
 
   .pricing-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .archive-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .feature-cell {
