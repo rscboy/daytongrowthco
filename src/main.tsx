@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
@@ -156,6 +156,7 @@ const socialLinks = [
   { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
 ];
+const rotatingAudiences = ["small businesses", "local service pros", "growing brands", "busy founders", "teams that need leads"];
 
 const videos = {
   hero: {
@@ -422,6 +423,29 @@ function StatusPill({ text, complete = false }: { text: string; complete?: boole
   );
 }
 
+function RotatingAudience() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    const interval = window.setInterval(() => {
+      setIndex((current) => (current + 1) % rotatingAudiences.length);
+    }, 2600);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <span className="rotating-audience" aria-live="polite">
+      <span key={rotatingAudiences[index]} className="active">
+        {rotatingAudiences[index]}
+      </span>
+    </span>
+  );
+}
+
 function DottedPanel({
   children,
   className = "",
@@ -564,11 +588,13 @@ function Hero() {
           <span className="hero-label">DaytonGrowthCo. / automation system setup</span>
           <h1 className="hero-title">
             <span data-scroll-words>Automating the workflow</span>{" "}
-            <span data-scroll-words>for small businesses.</span>
+            <span className="hero-audience-line">
+              for <RotatingAudience />.
+            </span>
           </h1>
           <p>
-            We automate the systems behind the website and daily workflow so leads, follow-ups, and next steps move
-            without you babysitting every handoff.
+            We turn outdated websites and scattered follow-up into clean systems that help visitors trust you, contact
+            you, and become leads.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -684,25 +710,95 @@ function StickyWorkflow() {
   );
 }
 
-function LiquidGlassMoment() {
+function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
+  const isAfter = variant === "after";
+
   return (
-    <section className="glass-moment" aria-labelledby="glass-heading">
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+    <div className={`website-mockup ${variant}`}>
+      <div className="browser-bar" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <small>{isAfter ? "modern-service-site.com" : "old-business-site.net"}</small>
+      </div>
+      <div className="mockup-body">
+        <header className="mockup-nav">
+          <strong>{isAfter ? "ClearCo Services" : "Company Name"}</strong>
+          <nav aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </nav>
+        </header>
+        <div className="mockup-hero">
+          <div>
+            <h3>{isAfter ? "Fast help from a trusted local team." : "Welcome to our website"}</h3>
+            <p>
+              {isAfter
+                ? "Clear services, proof, and one obvious path to request help."
+                : "Old copy, unclear services, and no strong reason to contact."}
+            </p>
+          </div>
+          <div className="mockup-visual" aria-hidden="true" />
+        </div>
+        <div className="mockup-content">
+          <div className="mockup-card primary" />
+          <div className="mockup-card" />
+          <div className="mockup-card" />
+        </div>
+        <footer className="mockup-footer" aria-hidden="true">
+          <span>{isAfter ? "Request sent" : "Missing CTA"}</span>
+          <i />
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function WebsiteTransformation() {
+  const [position, setPosition] = useState(58);
+
+  return (
+    <section className="transformation-section" aria-labelledby="transformation-heading">
+      <div className="shader-field" aria-hidden="true" />
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="section-heading compact-heading" data-reveal>
-          <span className="section-kicker">Version two cue</span>
-          <h2 id="glass-heading">
-            Lead system preview.
-            <span>Form, notify, follow up.</span>
+          <span className="section-kicker">Website transformation</span>
+          <h2 id="transformation-heading">
+            From outdated site
+            <span>to lead-ready system.</span>
           </h2>
           <p>
-            The original site used polished product-motion scenes instead of generic screenshots. This redesign keeps
-            that idea with a calmer material stage and a clear customer handoff.
+            We turn outdated websites into clean, trust-building systems that make the offer obvious and convert
+            visitors into leads.
           </p>
         </div>
-        <div className="glass-stage" aria-hidden="true">
-          <ClayLandscape scene="pearl" />
-          <div className="glass-word">Flow</div>
-          <div className="glass-chip">Follow-up queued</div>
+        <div className="transformation-showcase" data-reveal>
+          <div className="comparison-labels" aria-hidden="true">
+            <span>Before</span>
+            <span>After</span>
+          </div>
+          <div className="comparison-frame" style={{ "--split": `${position}%` } as React.CSSProperties}>
+            <WebsiteMockup variant="before" />
+            <div className="after-layer" aria-hidden="true">
+              <WebsiteMockup variant="after" />
+            </div>
+            <div className="comparison-handle" aria-hidden="true" />
+            <input
+              className="comparison-range"
+              type="range"
+              min="18"
+              max="82"
+              value={position}
+              aria-label="Compare outdated website and modern website"
+              onChange={(event) => setPosition(Number(event.currentTarget.value))}
+            />
+          </div>
+          <div className="transformation-notes">
+            <span>Cleaner message</span>
+            <span>Stronger trust</span>
+            <span>Clearer lead path</span>
+          </div>
         </div>
       </div>
     </section>
@@ -710,6 +806,12 @@ function LiquidGlassMoment() {
 }
 
 function AboutSection() {
+  const founderNotes = [
+    "Built in Dayton, Ohio",
+    "Practical systems over bloated marketing",
+    "Websites that help owners follow up faster",
+  ];
+
   return (
     <section className="about-section" id="about">
       <BackgroundVideo className="about-section-video" poster={videos.about.poster} stream={videos.about.stream} />
@@ -731,6 +833,13 @@ function AboutSection() {
                 <strong>100% Operational</strong>
               </div>
             </div>
+          </div>
+          <div className="founder-reel" aria-label="Founder focus">
+            {founderNotes.map((note, index) => (
+              <span key={note} style={{ "--reel-index": index } as React.CSSProperties}>
+                {note}
+              </span>
+            ))}
           </div>
         </div>
         <div className="section-heading about-copy" data-reveal>
@@ -834,80 +943,33 @@ function selectPackageAndScroll(event: React.MouseEvent, index: number) {
 }
 
 function PricingCards() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const onScroll = () => {
-      const center = track.scrollLeft + track.clientWidth / 2;
-      let best = 0;
-      let bestDist = Infinity;
-      Array.from(track.children).forEach((child, index) => {
-        const card = child as HTMLElement;
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const dist = Math.abs(cardCenter - center);
-        if (dist < bestDist) {
-          bestDist = dist;
-          best = index;
-        }
-      });
-      setActive(best);
-    };
-
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const goTo = (index: number) => {
-    const card = trackRef.current?.children[index] as HTMLElement | undefined;
-    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  };
-
   return (
-    <div className="pricing-carousel">
-      <div className="pricing-grid" ref={trackRef}>
-        {pricingCards.map((card, index) => (
-          <article
-            className={`pricing-card ${card.featured ? "featured" : ""}`}
-            key={card.title}
-            data-reveal
-            style={{ "--reveal-delay": `${index * 120}ms` } as React.CSSProperties}
+    <div className="pricing-grid">
+      {pricingCards.map((card, index) => (
+        <article
+          className={`pricing-card ${card.featured ? "featured" : ""}`}
+          key={card.title}
+          data-reveal
+          style={{ "--reveal-delay": `${index * 110}ms` } as React.CSSProperties}
+        >
+          <span className="eyebrow">{card.label}</span>
+          <h3>{card.title}</h3>
+          <strong>{card.price}</strong>
+          <p>{card.text}</p>
+          <ul>
+            {card.bullets.map((bullet) => (
+              <li key={bullet}>✓ {bullet}</li>
+            ))}
+          </ul>
+          <a
+            className={`button ${card.featured ? "button-primary" : "button-secondary"}`}
+            href="#cta"
+            onClick={(event) => selectPackageAndScroll(event, index)}
           >
-            {card.featured ? <span className="pricing-badge">Most popular</span> : null}
-            <span className="eyebrow">{card.label}</span>
-            <h3>{card.title}</h3>
-            <strong>{card.price}</strong>
-            <p>{card.text}</p>
-            <ul>
-              {card.bullets.map((bullet) => (
-                <li key={bullet}>✓ {bullet}</li>
-              ))}
-            </ul>
-            <a
-              className={`button ${card.featured ? "button-primary" : "button-secondary"}`}
-              href="#cta"
-              onClick={(event) => selectPackageAndScroll(event, index)}
-            >
-              {card.action}
-            </a>
-          </article>
-        ))}
-      </div>
-      <div className="pricing-dots" aria-label="Pricing cards">
-        {pricingCards.map((card, index) => (
-          <button
-            key={card.title}
-            type="button"
-            className={index === active ? "active" : ""}
-            aria-label={`Show ${card.title}`}
-            aria-current={index === active ? "true" : undefined}
-            onClick={() => goTo(index)}
-          />
-        ))}
-      </div>
+            {card.action}
+          </a>
+        </article>
+      ))}
     </div>
   );
 }
@@ -942,7 +1004,7 @@ function ProjectForm() {
           <legend>Your main goal *</legend>
           {["Build or improve my website", "Improve local SEO", "Implement a system I need", "Build something custom"].map(
             (goal, index) => (
-              <label className="choice-pill" key={goal}>
+              <label className="choice-option" key={goal}>
                 <input name="mainGoal" type="radio" value={goal} required defaultChecked={index === 0} />
                 <span>{goal}</span>
               </label>
@@ -953,7 +1015,7 @@ function ProjectForm() {
         <fieldset className="form-choice-group package-group">
           <legend>Setup package *</legend>
           {["Website and SEO setup", "Tech integration", "Custom systems"].map((tier, index) => (
-            <label className="choice-pill" key={tier}>
+            <label className="choice-option" key={tier}>
               <input name="serviceTier" type="radio" value={tier} required defaultChecked={index === 1} />
               <span>{tier}</span>
             </label>
@@ -985,20 +1047,15 @@ function FinalCTA() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
           <span className="section-kicker">Start a project</span>
-          <h2>
-            <span className="cta-heading-full">
-              DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact.
-            </span>
-            <span className="cta-heading-short">Let’s build the system your business needs.</span>
-          </h2>
+          <h2>Let’s build the system your business needs.</h2>
           <p>
-            We handle simple website and SEO improvements, tech integrations, and more complex custom systems.
+            Website and SEO improvements, tech integrations, and custom systems — built around how your business runs.
           </p>
-          <div className="intake-options" aria-label="Setup package options">
-            <span>Website + SEO Setup</span>
-            <span>Tech Integration</span>
-            <span>Custom Systems</span>
-          </div>
+          <ul className="intake-list" aria-label="What we set up">
+            <li>Website + SEO Setup</li>
+            <li>Tech Integration</li>
+            <li>Custom Systems</li>
+          </ul>
           <a className="text-link phone-link" href="tel:+19373677089">
             (937) 367-7089
           </a>
@@ -1169,7 +1226,7 @@ function App() {
       <main>
         <Hero />
         <StickyWorkflow />
-        <LiquidGlassMoment />
+        <WebsiteTransformation />
         <FeatureGrid />
         <AboutSection />
         <OutcomeSection />
