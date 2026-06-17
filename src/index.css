@@ -403,8 +403,8 @@
   .clay-hero-copy {
     position: relative;
     z-index: 3;
-    max-width: 50rem;
-    min-height: 47svh;
+    max-width: 48rem;
+    min-height: 43svh;
     padding-top: clamp(0.75rem, 2svh, 1.5rem);
   }
 
@@ -1183,14 +1183,23 @@
   }
 
   .mockup-nav nav span {
-    width: 2.4rem;
-    height: 0.44rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.4rem;
+    min-height: 0.44rem;
     border-radius: 999px;
     background: #cfc5bb;
+    color: #6b6258;
+    font-size: 0.54rem;
+    font-weight: 720;
   }
 
   .website-mockup.after .mockup-nav nav span {
-    background: #dce5ee;
+    min-height: 1.1rem;
+    padding-inline: 0.46rem;
+    background: #eef4f8;
+    color: #405a72;
   }
 
   .mockup-hero {
@@ -1205,7 +1214,10 @@
   }
 
   .website-mockup.before .mockup-hero {
-    background: repeating-linear-gradient(135deg, #fff8ef 0 11px, #f4eadf 11px 22px);
+    border-style: dashed;
+    background:
+      repeating-linear-gradient(135deg, #fff8ef 0 11px, #f4eadf 11px 22px),
+      linear-gradient(180deg, #fff7ed, #eee0d0);
   }
 
   .website-mockup.after .mockup-hero {
@@ -1238,7 +1250,75 @@
     color: #53606c;
   }
 
+  .mockup-trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.48rem;
+  }
+
+  .mockup-trust-row span {
+    border: 1px solid rgba(39, 39, 37, 0.09);
+    border-radius: 6px;
+    padding: 0.22rem 0.38rem;
+    color: #8b5e43;
+    background: rgba(255, 244, 232, 0.78);
+    font-size: clamp(0.54rem, 0.82vw, 0.68rem);
+    font-weight: 760;
+  }
+
+  .website-mockup.after .mockup-trust-row span {
+    border-color: rgba(134, 165, 195, 0.36);
+    color: #405a72;
+    background: rgba(236, 243, 249, 0.86);
+  }
+
+  .mockup-cta-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+    border: 1px solid rgba(39, 39, 37, 0.1);
+    border-radius: 8px;
+    padding: 0.48rem 0.58rem;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .mockup-cta-strip strong {
+    color: #6d4936;
+    font-size: clamp(0.62rem, 1vw, 0.78rem);
+    font-weight: 760;
+  }
+
+  .mockup-cta-strip span {
+    color: #84786e;
+    font-size: clamp(0.54rem, 0.82vw, 0.68rem);
+    line-height: 1.2;
+    text-align: right;
+  }
+
+  .website-mockup.after .mockup-cta-strip {
+    border-color: rgba(31, 33, 31, 0.14);
+    background: #1f211f;
+    box-shadow: 0 12px 26px rgba(39, 39, 37, 0.12);
+  }
+
+  .website-mockup.after .mockup-cta-strip strong {
+    color: #ffffff;
+  }
+
+  .website-mockup.after .mockup-cta-strip span {
+    color: #c8d4e0;
+  }
+
   .mockup-visual {
+    position: relative;
+    display: grid;
+    align-content: end;
+    gap: 0.55rem;
+    min-height: 100%;
+    padding: 0.7rem;
     border: 1px solid rgba(39, 39, 37, 0.08);
     border-radius: 10px;
     background:
@@ -1252,12 +1332,74 @@
       linear-gradient(180deg, #ffffff, #edf3f7);
   }
 
+  .mockup-alert-bar,
+  .mockup-dead-button,
+  .mockup-phone-card,
+  .mockup-review-card {
+    border: 1px solid rgba(39, 39, 37, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .mockup-alert-bar {
+    height: 2.4rem;
+    background:
+      linear-gradient(90deg, rgba(151, 83, 54, 0.16), transparent),
+      repeating-linear-gradient(90deg, #ead9c9 0 1.8rem, #dfcdbd 1.8rem 2rem);
+  }
+
+  .mockup-dead-button {
+    width: 54%;
+    height: 1.6rem;
+    background: #cba889;
+  }
+
+  .mockup-phone-card,
+  .mockup-review-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.36rem;
+    width: fit-content;
+    padding: 0.45rem 0.56rem;
+    color: #30495f;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 12px 24px rgba(39, 39, 37, 0.08);
+    font-size: clamp(0.58rem, 0.92vw, 0.75rem);
+    font-weight: 760;
+  }
+
+  .mockup-review-card {
+    margin-left: auto;
+    color: #425f49;
+    background: #eef8f1;
+  }
+
   .mockup-card {
+    display: grid;
+    align-content: space-between;
+    gap: 0.45rem;
     flex: 1;
     min-height: clamp(2.4rem, 6vw, 4.8rem);
     border: 1px solid rgba(39, 39, 37, 0.08);
     border-radius: 8px;
+    padding: 0.55rem;
     background: rgba(255, 255, 255, 0.52);
+  }
+
+  .mockup-card span {
+    color: #5f5c56;
+    font-size: clamp(0.56rem, 0.9vw, 0.72rem);
+    font-weight: 720;
+    line-height: 1.2;
+  }
+
+  .mockup-card i {
+    display: block;
+    width: 68%;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.2;
   }
 
   .website-mockup.before .mockup-card {
@@ -1266,6 +1408,10 @@
 
   .website-mockup.after .mockup-card.primary {
     background: #e9f1f7;
+  }
+
+  .website-mockup.after .mockup-card span {
+    color: #30495f;
   }
 
   .mockup-footer {
@@ -1503,6 +1649,33 @@
     line-height: 1.62;
   }
 
+  .pricing-fit,
+  .pricing-result {
+    border: 1px solid rgba(222, 219, 212, 0.8);
+    border-radius: 10px;
+    padding: 0.72rem;
+    background: rgba(245, 244, 240, 0.72);
+  }
+
+  .pricing-fit span,
+  .pricing-result span {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #8a857d;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .pricing-card p.pricing-fit {
+    margin-top: 0.82rem;
+    color: #3f3b36;
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.45;
+  }
+
   .pricing-card ul {
     display: grid;
     gap: 0.55rem;
@@ -1513,8 +1686,36 @@
     list-style: none;
   }
 
+  .pricing-result {
+    margin: auto 0 1rem;
+  }
+
+  .pricing-result strong {
+    display: block;
+    color: #252522;
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .pricing-card.featured .pricing-fit,
+  .pricing-card.featured .pricing-result {
+    border-color: rgba(226, 232, 240, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .pricing-card.featured .pricing-fit span,
+  .pricing-card.featured .pricing-result span {
+    color: rgba(226, 232, 240, 0.58);
+  }
+
+  .pricing-card.featured p.pricing-fit,
+  .pricing-card.featured .pricing-result strong {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
   .pricing-card .button {
-    margin-top: auto;
+    margin-top: 0;
   }
 
   .intake-list {
@@ -1797,7 +1998,45 @@
 
   .project-form {
     display: grid;
-    gap: 0.82rem;
+    gap: 0.74rem;
+  }
+
+  .form-step-heading {
+    display: flex;
+    gap: 0.68rem;
+    align-items: flex-start;
+    padding-top: 0.18rem;
+    text-align: left;
+  }
+
+  .form-step-heading > span {
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 1.55rem;
+    height: 1.55rem;
+    border: 1px solid rgba(134, 165, 195, 0.28);
+    border-radius: 8px;
+    color: #dbeafe;
+    background: rgba(134, 165, 195, 0.1);
+    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 760;
+  }
+
+  .form-step-heading strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 0.92rem;
+    font-weight: 720;
+    line-height: 1.25;
+  }
+
+  .form-step-heading p {
+    margin-top: 0.18rem;
+    color: #8f9bad;
+    font-size: 0.78rem;
+    line-height: 1.35;
   }
 
   .form-grid,

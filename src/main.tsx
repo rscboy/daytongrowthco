@@ -177,6 +177,8 @@ const pricingCards = [
     label: "Website foundation",
     title: "Website + SEO Setup",
     price: "Website pricing",
+    bestFor: "A business with an outdated site or unclear lead path.",
+    outcome: "Cleaner website, stronger local basics, and an easier way to inquire.",
     text: "For businesses that need a cleaner website, stronger local search basics, service pages, contact paths, and a more professional online presence.",
     bullets: [
       "Mobile-friendly website setup",
@@ -190,6 +192,8 @@ const pricingCards = [
     label: "Implemented for you",
     title: "Tech Integration",
     price: "Project-based",
+    bestFor: "A business that already knows which process needs to be connected.",
+    outcome: "Forms, booking, calendars, and notifications working together.",
     text: "For businesses that already know they need a system implemented, like salon booking, intake forms, calendar routing, reminders, or tool connections.",
     bullets: [
       "Booking page or request flow",
@@ -203,6 +207,8 @@ const pricingCards = [
     label: "Most flexible",
     title: "Custom Systems",
     price: "Custom quote",
+    bestFor: "A business with a workflow that does not fit a simple setup.",
+    outcome: "A scoped tool, dashboard, portal, or internal workflow built around you.",
     text: "For more complicated work: custom dashboards, portals, lead systems, internal workflows, and tools built around how your business actually runs.",
     bullets: [
       "Custom dashboards or portals",
@@ -613,11 +619,6 @@ function Hero() {
           ))}
         </div>
       </div>
-      <div className="hero-product-float" aria-label="Product workflow preview">
-        <DottedPanel className="hero-product-stage">
-          <ProductSceneCard step={workflowSteps[3]} index={3} />
-        </DottedPanel>
-      </div>
     </section>
   );
 }
@@ -712,6 +713,9 @@ function StickyWorkflow() {
 
 function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
   const isAfter = variant === "after";
+  const serviceCards = isAfter
+    ? ["Emergency repairs", "Maintenance plans", "Free estimate"]
+    : ["Service one", "Service two", "More"];
 
   return (
     <div className={`website-mockup ${variant}`}>
@@ -719,35 +723,70 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
         <span />
         <span />
         <span />
-        <small>{isAfter ? "modern-service-site.com" : "old-business-site.net"}</small>
+        <small>{isAfter ? "daytonserviceco.com" : "old-business-site.net"}</small>
       </div>
       <div className="mockup-body">
         <header className="mockup-nav">
-          <strong>{isAfter ? "ClearCo Services" : "Company Name"}</strong>
+          <strong>{isAfter ? "Dayton Service Co." : "ACME HOME SERVICES"}</strong>
           <nav aria-hidden="true">
-            <span />
-            <span />
-            <span />
+            <span>{isAfter ? "Services" : ""}</span>
+            <span>{isAfter ? "Reviews" : ""}</span>
+            <span>{isAfter ? "Contact" : ""}</span>
           </nav>
         </header>
         <div className="mockup-hero">
           <div>
+            <div className="mockup-trust-row" aria-hidden="true">
+              {isAfter ? (
+                <>
+                  <span>4.9 rated locally</span>
+                  <span>24h response</span>
+                </>
+              ) : (
+                <>
+                  <span>Last updated 2017</span>
+                  <span>Desktop only</span>
+                </>
+              )}
+            </div>
             <h3>{isAfter ? "Fast help from a trusted local team." : "Welcome to our website"}</h3>
             <p>
               {isAfter
                 ? "Clear services, proof, and one obvious path to request help."
                 : "Old copy, unclear services, and no strong reason to contact."}
             </p>
+            <div className="mockup-cta-strip" aria-hidden="true">
+              <strong>{isAfter ? "Request a quote" : "Click here"}</strong>
+              <span>{isAfter ? "Typical reply: same day" : "Contact form buried below"}</span>
+            </div>
           </div>
-          <div className="mockup-visual" aria-hidden="true" />
+          <div className="mockup-visual" aria-hidden="true">
+            {isAfter ? (
+              <>
+                <div className="mockup-phone-card">
+                  <Phone size={13} aria-hidden="true" />
+                  <span>3 new inquiries</span>
+                </div>
+                <div className="mockup-review-card">5.0 rating</div>
+              </>
+            ) : (
+              <>
+                <div className="mockup-alert-bar" />
+                <div className="mockup-dead-button" />
+              </>
+            )}
+          </div>
         </div>
         <div className="mockup-content">
-          <div className="mockup-card primary" />
-          <div className="mockup-card" />
-          <div className="mockup-card" />
+          {serviceCards.map((card, index) => (
+            <div className={`mockup-card ${index === 0 ? "primary" : ""}`} key={card}>
+              <span>{card}</span>
+              <i />
+            </div>
+          ))}
         </div>
         <footer className="mockup-footer" aria-hidden="true">
-          <span>{isAfter ? "Request sent" : "Missing CTA"}</span>
+          <span>{isAfter ? "Lead captured + routed" : "Missing CTA"}</span>
           <i />
         </footer>
       </div>
@@ -955,12 +994,20 @@ function PricingCards() {
           <span className="eyebrow">{card.label}</span>
           <h3>{card.title}</h3>
           <strong>{card.price}</strong>
+          <p className="pricing-fit">
+            <span>Best for</span>
+            {card.bestFor}
+          </p>
           <p>{card.text}</p>
           <ul>
             {card.bullets.map((bullet) => (
               <li key={bullet}>✓ {bullet}</li>
             ))}
           </ul>
+          <div className="pricing-result">
+            <span>Primary outcome</span>
+            <strong>{card.outcome}</strong>
+          </div>
           <a
             className={`button ${card.featured ? "button-primary" : "button-secondary"}`}
             href="#cta"
@@ -981,6 +1028,13 @@ function ProjectForm() {
         <input type="hidden" id="recaptchaToken" name="recaptchaToken" value="" readOnly />
         <input type="hidden" id="recaptchaAction" name="recaptchaAction" value="quick_recommendation" readOnly />
 
+        <div className="form-step-heading">
+          <span>1</span>
+          <div>
+            <strong>Tell us where to reply.</strong>
+            <p>Just the basics so we can understand the business and follow up.</p>
+          </div>
+        </div>
         <div className="form-grid">
           <label className="form-field" htmlFor="contactName">
             <span>Your Name *</span>
@@ -1000,6 +1054,13 @@ function ProjectForm() {
           </label>
         </div>
 
+        <div className="form-step-heading">
+          <span>2</span>
+          <div>
+            <strong>Choose the closest starting point.</strong>
+            <p>You can change direction later. This helps us route the conversation.</p>
+          </div>
+        </div>
         <fieldset className="form-choice-group">
           <legend>Your main goal *</legend>
           {["Build or improve my website", "Improve local SEO", "Implement a system I need", "Build something custom"].map(
@@ -1022,6 +1083,13 @@ function ProjectForm() {
           ))}
         </fieldset>
 
+        <div className="form-step-heading">
+          <span>3</span>
+          <div>
+            <strong>Share the project in plain English.</strong>
+            <p>A sentence or two is enough if you are early.</p>
+          </div>
+        </div>
         <label className="form-field full" htmlFor="details">
           <span>What do you want implemented?</span>
           <textarea id="details" name="notes" rows={3} />
