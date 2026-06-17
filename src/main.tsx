@@ -330,27 +330,39 @@ function useActiveSection() {
   const [activeSection, setActiveSection] = useState(pageSections[0].id);
 
   useEffect(() => {
-    const sections = pageSections
-      .map((section) => document.getElementById(section.id))
-      .filter((section): section is HTMLElement => Boolean(section));
+    const ids = pageSections.map((section) => section.id);
 
-    if (!("IntersectionObserver" in window) || sections.length === 0) return;
+    const update = () => {
+      // The section is "active" once its top has scrolled above a reference
+      // line near the upper third of the viewport. Walking top-to-bottom and
+      // keeping the last one that has crossed the line gives a deterministic
+      // mapping that never skips sections (unlike intersection-ratio sorting).
+      const line = window.innerHeight * 0.35;
+      let current = ids[0];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visible?.target.id) {
-          setActiveSection(visible.target.id);
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= line) {
+          current = id;
         }
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.08, 0.2, 0.45, 0.7] },
-    );
+      }
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      // Snap to the final section once the page is scrolled to the bottom.
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        current = ids[ids.length - 1];
+      }
+
+      setActiveSection((prev) => (prev === current ? prev : current));
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   return activeSection;
@@ -547,7 +559,7 @@ function Hero() {
       <div className="hero-product-video-mask" aria-hidden="true" />
       <div className="sky-glow" aria-hidden="true" />
       <ClayLandscape scene="warm" />
-      <div className="mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
+      <div className="mx-auto max-w-7xl px-5 pt-20 sm:px-8 lg:pt-24">
         <div className="clay-hero-copy hero-entrance">
           <span className="hero-label">DaytonGrowthCo. / automation system setup</span>
           <h1 className="hero-title">
@@ -894,7 +906,12 @@ function FinalCTA() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
           <span className="section-kicker">Start a project</span>
-          <h2>DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact.</h2>
+          <h2>
+            <span className="cta-heading-full">
+              DaytonGrowthCo. helps small to mid-sized companies improve profitability by increasing digital impact.
+            </span>
+            <span className="cta-heading-short">Let’s build the system your business needs.</span>
+          </h2>
           <p>
             We handle simple website and SEO improvements, tech integrations, and more complex custom systems.
           </p>
