@@ -257,8 +257,47 @@
         ]
       }
     </script>
+
+    <style id="boot-splash-style">
+      /* Paint the brand splash on the very first frame so the unstyled SEO
+         fallback never flashes before the app bundle loads and mounts. */
+      html { background: #05070d; }
+      body { margin: 0; }
+      #boot-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(circle at 50% 38%, rgba(37, 99, 235, 0.16), transparent 34%),
+          radial-gradient(circle at 55% 58%, rgba(168, 85, 247, 0.1), transparent 36%),
+          linear-gradient(180deg, #05070d 0%, #070a12 52%, #050505 100%);
+        font-family: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      #boot-splash .boot-wordmark {
+        font-size: clamp(1.45rem, 5vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        white-space: nowrap;
+        color: #ffffff;
+      }
+      #boot-splash .boot-wordmark .g { color: rgba(203, 213, 225, 0.82); font-weight: 400; }
+      #boot-splash .boot-wordmark .c { color: #60a5fa; font-weight: 900; }
+    </style>
+    <noscript>
+      <style>
+        /* No JS: never show the boot overlay, just the static fallback. */
+        #boot-splash { display: none !important; }
+      </style>
+    </noscript>
   </head>
   <body>
+    <div id="boot-splash" aria-hidden="true">
+      <span class="boot-wordmark">Dayton<span class="g">Growth</span><span class="c">Co.</span></span>
+    </div>
     <div id="root">
       <main>
         <section>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
@@ -563,7 +563,7 @@ function Hero() {
         <div className="clay-hero-copy hero-entrance">
           <span className="hero-label">DaytonGrowthCo. / automation system setup</span>
           <h1 className="hero-title">
-            <span data-scroll-words>Automating the workflow</span>
+            <span data-scroll-words>Automating the workflow</span>{" "}
             <span data-scroll-words>for small businesses.</span>
           </h1>
           <p>
@@ -809,27 +809,106 @@ function OutcomeSection() {
               custom systems. The right setup depends on what you need implemented.
             </p>
           </div>
-          <div className="pricing-grid">
-            {pricingCards.map((card) => (
-              <article className={`pricing-card ${card.featured ? "featured" : ""}`} key={card.title} data-reveal>
-                <span className="eyebrow">{card.label}</span>
-                <h3>{card.title}</h3>
-                <strong>{card.price}</strong>
-                <p>{card.text}</p>
-                <ul>
-                  {card.bullets.map((bullet) => (
-                    <li key={bullet}>✓ {bullet}</li>
-                  ))}
-                </ul>
-                <a className={card.featured ? "button button-primary" : "button button-secondary"} href="#cta">
-                  {card.action}
-                </a>
-              </article>
-            ))}
-          </div>
+          <PricingCards />
         </div>
       </div>
     </section>
+  );
+}
+
+// Pricing card CTAs map to the form's "Setup package" radio values by index.
+const packageValues = ["Website and SEO setup", "Tech integration", "Custom systems"];
+
+function selectPackageAndScroll(event: React.MouseEvent, index: number) {
+  event.preventDefault();
+  const value = packageValues[index];
+  if (value) {
+    document.querySelectorAll<HTMLInputElement>('input[name="serviceTier"]').forEach((radio) => {
+      if (radio.value === value) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
+  }
+  document.getElementById("cta")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function PricingCards() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const onScroll = () => {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      Array.from(track.children).forEach((child, index) => {
+        const card = child as HTMLElement;
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(cardCenter - center);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = index;
+        }
+      });
+      setActive(best);
+    };
+
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => track.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const goTo = (index: number) => {
+    const card = trackRef.current?.children[index] as HTMLElement | undefined;
+    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  };
+
+  return (
+    <div className="pricing-carousel">
+      <div className="pricing-grid" ref={trackRef}>
+        {pricingCards.map((card, index) => (
+          <article
+            className={`pricing-card ${card.featured ? "featured" : ""}`}
+            key={card.title}
+            data-reveal
+            style={{ "--reveal-delay": `${index * 120}ms` } as React.CSSProperties}
+          >
+            {card.featured ? <span className="pricing-badge">Most popular</span> : null}
+            <span className="eyebrow">{card.label}</span>
+            <h3>{card.title}</h3>
+            <strong>{card.price}</strong>
+            <p>{card.text}</p>
+            <ul>
+              {card.bullets.map((bullet) => (
+                <li key={bullet}>✓ {bullet}</li>
+              ))}
+            </ul>
+            <a
+              className={`button ${card.featured ? "button-primary" : "button-secondary"}`}
+              href="#cta"
+              onClick={(event) => selectPackageAndScroll(event, index)}
+            >
+              {card.action}
+            </a>
+          </article>
+        ))}
+      </div>
+      <div className="pricing-dots" aria-label="Pricing cards">
+        {pricingCards.map((card, index) => (
+          <button
+            key={card.title}
+            type="button"
+            className={index === active ? "active" : ""}
+            aria-label={`Show ${card.title}`}
+            aria-current={index === active ? "true" : undefined}
+            onClick={() => goTo(index)}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -935,6 +1014,9 @@ function SplashScreen() {
 
   useEffect(() => {
     document.body.classList.add("splash-lock");
+    // This effect runs after the React splash is committed to the DOM (same
+    // frame), so removing the inline boot overlay now hands off seamlessly.
+    document.getElementById("boot-splash")?.remove();
     const timer = window.setTimeout(() => {
       setDone(true);
       document.body.classList.remove("splash-lock");
