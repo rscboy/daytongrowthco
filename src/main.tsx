@@ -2,19 +2,28 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
+  Bell,
+  Calendar,
   CheckCircle2,
+  Database,
   FileInput,
+  FileText,
   Gauge,
-  Layers3,
+  LayoutDashboard,
   LockKeyhole,
+  Mail,
   MapPin,
   PanelTop,
   Phone,
   Radar,
   Route,
+  Search,
   ShieldCheck,
   Sparkles,
+  Workflow,
 } from "lucide-react";
+import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import { ContainerScrollShowcase } from "@/components/ui/container-scroll-showcase";
 import "./index.css";
 
 type WorkflowStep = {
@@ -105,32 +114,32 @@ const features = [
   {
     icon: FileInput,
     title: "Website + SEO Setup",
-    text: "A cleaner website, stronger local search basics, and clear contact or quote paths.",
+    text: "Mobile-friendly website, local SEO basics, and clear contact paths.",
   },
   {
     icon: Radar,
     title: "Tech Integration",
-    text: "Implement a booking page, form flow, calendar connection, notifications, or follow-up system.",
+    text: "Booking, forms, calendars, and follow-up — connected.",
   },
   {
     icon: Route,
     title: "Custom Systems",
-    text: "A custom tool, dashboard, portal, or workflow built around how your business runs.",
+    text: "Custom dashboards, portals, and workflow tools.",
   },
   {
     icon: ShieldCheck,
-    title: "Lead Flow Improvements",
-    text: "Practical follow-up, reminder, and handoff improvements help your team respond faster with less manual work.",
+    title: "Lead Flow",
+    text: "Faster follow-up with less manual work.",
   },
   {
     icon: Gauge,
     title: "Local Visibility",
-    text: "Basic local SEO, Google Maps, and Google Business Profile cleanup options help nearby customers understand and contact you.",
+    text: "Local SEO and Google Business Profile cleanup.",
   },
   {
     icon: LockKeyhole,
-    title: "One-Time Setup Packages",
-    text: "Clear website, form, booking, and lead tracking improvements set up without a required monthly contract.",
+    title: "One-Time Setups",
+    text: "Set up once. No monthly contract.",
   },
 ];
 
@@ -156,8 +165,6 @@ const socialLinks = [
   { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
 ];
-const rotatingAudiences = ["small businesses", "local service pros", "growing brands", "busy founders", "teams that need leads"];
-
 const videos = {
   hero: {
     src: "https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4",
@@ -177,49 +184,46 @@ const pricingCards = [
     label: "Website foundation",
     title: "Website + SEO Setup",
     price: "Website pricing",
-    bestFor: "A business with an outdated site or unclear lead path.",
-    outcome: "Cleaner website, stronger local basics, and an easier way to inquire.",
-    text: "For businesses that need a cleaner website, stronger local search basics, service pages, contact paths, and a more professional online presence.",
+    bestFor: "An outdated or hard-to-use website",
     bullets: [
-      "Mobile-friendly website setup",
+      "Mobile-friendly website",
       "Local SEO basics",
-      "Clear service pages and calls to action",
-      "Contact or quote form setup",
+      "Contact or quote form",
     ],
+    outcome: "A site that earns trust and leads",
     action: "Price My Website",
   },
   {
     label: "Implemented for you",
     title: "Tech Integration",
     price: "Project-based",
-    bestFor: "A business that already knows which process needs to be connected.",
-    outcome: "Forms, booking, calendars, and notifications working together.",
-    text: "For businesses that already know they need a system implemented, like salon booking, intake forms, calendar routing, reminders, or tool connections.",
+    bestFor: "A process to connect or automate",
     bullets: [
-      "Booking page or request flow",
-      "Calendar, form, and CRM connections",
-      "Notifications and follow-up setup",
-      "Testing and launch support",
+      "Booking, forms, calendars",
+      "CRM and tool connections",
+      "Notifications and follow-up",
     ],
+    outcome: "A connected, lower-effort lead flow",
     action: "Implement My System",
   },
   {
     label: "Most flexible",
     title: "Custom Systems",
     price: "Custom quote",
-    bestFor: "A business with a workflow that does not fit a simple setup.",
-    outcome: "A scoped tool, dashboard, portal, or internal workflow built around you.",
-    text: "For more complicated work: custom dashboards, portals, lead systems, internal workflows, and tools built around how your business actually runs.",
+    bestFor: "Work that doesn’t fit a standard setup",
     bullets: [
-      "Custom dashboards or portals",
+      "Dashboards or portals",
       "Workflow automation",
-      "Existing tool integrations",
-      "Built, tested, and launched",
+      "Tool integrations",
     ],
+    outcome: "A tool built around your operations",
     action: "Scope My System",
     featured: true,
   },
 ];
+
+// Completes the rotating hero headline: "Cleaner ___."
+const heroPhrases = ["websites", "lead systems", "follow-up", "booking flows", "local presence"];
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -246,10 +250,22 @@ function Header() {
             Dayton<span>Growth</span><b>Co.</b>
           </span>
         </a>
-        <a className="button button-primary" href="#cta">
-          Start a Project
-          <ArrowRight size={15} aria-hidden="true" />
-        </a>
+        <div className="header-nav" aria-label="Sections">
+          <a href="#platform">Services</a>
+          <a href="#outcomes">Pricing</a>
+          <a href="#about">About</a>
+          <a href="#cta">Contact</a>
+        </div>
+        <div className="header-actions">
+          <a className="header-phone" href="tel:+19373677089">
+            <Phone size={14} aria-hidden="true" />
+            <span>(937) 367-7089</span>
+          </a>
+          <a className="button button-primary" href="#cta">
+            Start a Project
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
       </nav>
     </header>
   );
@@ -429,29 +445,6 @@ function StatusPill({ text, complete = false }: { text: string; complete?: boole
   );
 }
 
-function RotatingAudience() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    const interval = window.setInterval(() => {
-      setIndex((current) => (current + 1) % rotatingAudiences.length);
-    }, 2600);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return (
-    <span className="rotating-audience" aria-live="polite">
-      <span key={rotatingAudiences[index]} className="active">
-        {rotatingAudiences[index]}
-      </span>
-    </span>
-  );
-}
-
 function DottedPanel({
   children,
   className = "",
@@ -471,21 +464,40 @@ function DottedPanel({
 }
 
 function SegmentCard({ segment, index }: { segment: (typeof segments)[number]; index: number }) {
+  const flowLabels =
+    index === 0
+      ? ["Site visit", "Service page", "Lead form"]
+      : ["Form sent", "Calendar", "Follow-up"];
+
   return (
     <a className="segment-card group" href="#workflow">
       <DottedPanel className="segment-stage">
-        <div className="mini-board" aria-hidden="true">
+        <div className={`mini-board mini-system mini-system-${index + 1}`} aria-hidden="true">
           <div className="mini-board-header">
-            <span>{index === 0 ? "Review queue" : "Action lane"}</span>
+            <span>{index === 0 ? "Lead path" : "System route"}</span>
             <Sparkles size={13} aria-hidden="true" />
           </div>
-          <div className="mini-board-rows">
+          <div className="mini-flow">
+            {flowLabels.map((label, flowIndex) => (
+              <React.Fragment key={label}>
+                <span className={`mini-node ${flowIndex === 2 ? "is-final" : ""}`}>
+                  <i />
+                  {label}
+                </span>
+                {flowIndex < flowLabels.length - 1 ? <b /> : null}
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mini-signal-row">
             {segment.items.map((item, itemIndex) => (
-              <span key={item} className="mini-row" style={{ transitionDelay: `${itemIndex * 70}ms` }}>
-                <i />
+              <span key={item} style={{ transitionDelay: `${itemIndex * 70}ms` }}>
                 {item}
               </span>
             ))}
+          </div>
+          <div className="mini-metric-strip">
+            <strong>{index === 0 ? "3.2x" : "24h"}</strong>
+            <span>{index === 0 ? "clearer path" : "response window"}</span>
           </div>
         </div>
       </DottedPanel>
@@ -582,6 +594,161 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
   );
 }
 
+function SystemDashboardPreview() {
+  const pipeline = [
+    { label: "New", value: "Website lead", icon: Sparkles },
+    { label: "Contacted", value: "Auto-reply sent", icon: Mail },
+    { label: "Booked", value: "Calendar request", icon: Calendar },
+    { label: "Followed up", value: "Reminder queued", icon: Bell },
+  ];
+
+  return (
+    <div className="system-dashboard" aria-label="Lead workflow dashboard preview">
+      <header className="system-dashboard-header">
+        <div>
+          <span className="meta-label">Lead system</span>
+          <strong>Website visit to booked lead</strong>
+        </div>
+        <StatusPill text="Workflow live" complete />
+      </header>
+      <div className="system-dashboard-body">
+        <div className="system-lead-card">
+          <span className="meta-label">New website lead</span>
+          <h3>Intake form received</h3>
+          <p>Service request routed to CRM, calendar, and follow-up queue.</p>
+          <div className="system-lead-fields">
+            <span>Source: Service page</span>
+            <span>Need: Website + SEO Setup</span>
+            <span>Status: Ready to contact</span>
+          </div>
+        </div>
+        <div className="system-pipeline">
+          {pipeline.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <article className="system-pipeline-step" key={item.label}>
+                <span aria-hidden="true">
+                  <Icon size={15} strokeWidth={1.9} />
+                </span>
+                <div>
+                  <strong>{item.label}</strong>
+                  <p>{item.value}</p>
+                </div>
+                {index < pipeline.length - 1 ? <i aria-hidden="true" /> : null}
+              </article>
+            );
+          })}
+        </div>
+        <div className="system-dashboard-footer">
+          <div>
+            <span className="meta-label">Next action</span>
+            <strong>Follow-up scheduled for today</strong>
+          </div>
+          <button type="button" className="button button-primary compact">
+            Review flow
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SystemShowcase() {
+  return (
+    <ContainerScrollShowcase
+      kicker="System preview"
+      title="See the system behind the website."
+      text="A cleaner site matters most when the lead path behind it is connected: forms, booking, CRM context, reminders, and follow-up in one practical workflow."
+    >
+      <SystemDashboardPreview />
+    </ContainerScrollShowcase>
+  );
+}
+
+const leadSignals = [
+  { icon: Phone, label: "Missed calls", value: "After hours", tone: "amber" as const },
+  { icon: Bell, label: "Follow-up", value: "Manual", tone: "" as const },
+  { icon: FileText, label: "Website CTA", value: "Unclear", tone: "" as const },
+];
+
+function DecisionSupport() {
+  return (
+    <section className="section-shell decision-section" id="recommendation">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+        <div className="section-heading compact-heading" data-reveal>
+          <span className="section-kicker">How we scope it</span>
+          <h2>
+            We read the signals.
+            <span>Then recommend the setup.</span>
+          </h2>
+          <p>We find where leads slip, then point you at the smallest setup that fixes it.</p>
+        </div>
+
+        <div className="scene-stack is-active" data-reveal>
+          <div className="ghost-card ghost-card-one" aria-hidden="true" />
+          <div className="ghost-card ghost-card-two" aria-hidden="true" />
+          <article className="product-card">
+            <header className="product-card-header">
+              <div className="product-card-title">
+                <span className="source-icon" aria-hidden="true">
+                  <Radar size={15} />
+                </span>
+                <div>
+                  <span className="meta-label">Lead flow review</span>
+                  <strong>Dayton service business</strong>
+                </div>
+              </div>
+              <StatusPill text="Reviewing" />
+            </header>
+
+            <div className="product-card-body">
+              <div className="record-grid">
+                {leadSignals.map((signal) => {
+                  const Icon = signal.icon;
+                  return (
+                    <div className={`record-row ${signal.tone ? `tone-${signal.tone}` : ""}`} key={signal.label}>
+                      <span className="signal-label">
+                        <span className="signal-ico" aria-hidden="true">
+                          <Icon size={13} strokeWidth={1.9} />
+                        </span>
+                        {signal.label}
+                      </span>
+                      <strong>{signal.value}</strong>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="insight-box">
+                <div>
+                  <span className="meta-label">Recommended setup</span>
+                  <strong>Website + SEO Setup</strong>
+                </div>
+                <div className="score-orb">
+                  <span>92%</span>
+                  <small>fit</small>
+                </div>
+              </div>
+            </div>
+
+            <footer className="product-card-footer">
+              <div className="progress-track" aria-hidden="true">
+                <span style={{ width: "92%" }} />
+              </div>
+              <button type="button" className="button button-secondary compact">
+                Adjust
+              </button>
+              <a href="#cta" className="button button-primary compact">
+                Use this setup
+              </a>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Hero() {
   return (
     <section id="top" className="hero-section">
@@ -593,14 +760,14 @@ function Hero() {
         <div className="clay-hero-copy hero-entrance">
           <span className="hero-label">DaytonGrowthCo. / automation system setup</span>
           <h1 className="hero-title">
-            <span data-scroll-words>Automating the workflow</span>{" "}
+            <span data-scroll-words>Cleaner</span>{" "}
             <span className="hero-audience-line">
-              for <RotatingAudience />.
+              <AnimatedHeroPhrase phrases={heroPhrases} />
             </span>
           </h1>
           <p>
-            We turn outdated websites and scattered follow-up into clean systems that help visitors trust you, contact
-            you, and become leads.
+            We build websites and lead systems for Dayton businesses — so visitors trust you, contact you, and become
+            leads.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -611,8 +778,21 @@ function Hero() {
               View One-Time Packages
             </a>
           </div>
+          <ul className="hero-services" aria-label="What we set up">
+            <li>Website + SEO</li>
+            <li>Tech Integration</li>
+            <li>Custom Systems</li>
+          </ul>
         </div>
+      </div>
+    </section>
+  );
+}
 
+function ServiceModes() {
+  return (
+    <section className="service-modes" aria-label="Ways to start">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="segment-grid" aria-label="Product modes">
           {segments.map((segment, index) => (
             <SegmentCard key={segment.label} segment={segment} index={index} />
@@ -807,10 +987,7 @@ function WebsiteTransformation() {
             From outdated site
             <span>to lead-ready system.</span>
           </h2>
-          <p>
-            We turn outdated websites into clean, trust-building systems that make the offer obvious and convert
-            visitors into leads.
-          </p>
+          <p>We turn outdated websites into clean sites that build trust and turn visitors into leads.</p>
         </div>
         <div className="transformation-showcase" data-reveal>
           <div className="comparison-labels" aria-hidden="true">
@@ -826,8 +1003,8 @@ function WebsiteTransformation() {
             <input
               className="comparison-range"
               type="range"
-              min="18"
-              max="82"
+              min="5"
+              max="95"
               value={position}
               aria-label="Compare outdated website and modern website"
               onChange={(event) => setPosition(Number(event.currentTarget.value))}
@@ -845,12 +1022,6 @@ function WebsiteTransformation() {
 }
 
 function AboutSection() {
-  const founderNotes = [
-    "Built in Dayton, Ohio",
-    "Practical systems over bloated marketing",
-    "Websites that help owners follow up faster",
-  ];
-
   return (
     <section className="about-section" id="about">
       <BackgroundVideo className="about-section-video" poster={videos.about.poster} stream={videos.about.stream} />
@@ -865,41 +1036,19 @@ function AboutSection() {
               height="480"
               loading="lazy"
             />
-            <div className="portal-status">
-              <span />
-              <div>
-                <small>Portal Status</small>
-                <strong>100% Operational</strong>
-              </div>
-            </div>
-          </div>
-          <div className="founder-reel" aria-label="Founder focus">
-            {founderNotes.map((note, index) => (
-              <span key={note} style={{ "--reel-index": index } as React.CSSProperties}>
-                {note}
-              </span>
-            ))}
           </div>
         </div>
         <div className="section-heading about-copy" data-reveal>
-          <span className="section-kicker">About DaytonGrowthCo.</span>
+          <span className="section-kicker">About</span>
           <h2>
-            Meet the Founder.
-            <span>Built in Dayton, Ohio.</span>
+            Meet the founder.
+            <span>Built in Dayton.</span>
           </h2>
           <p>
-            Born and raised in Dayton, Ohio, Samuel Caruso has always loved building things. He earned his undergraduate
-            degree in History from the University of Michigan and later completed a Master's in Entrepreneurship and
-            Emerging Technology.
+            Samuel Caruso started DaytonGrowthCo. after watching local businesses get stuck with websites that looked
+            fine but didn’t bring in leads.
           </p>
-          <blockquote>
-            After seeing how many local businesses struggled with outdated websites, Samuel realized the problem was not
-            design. The problem was that their websites did not actually do anything.
-          </blockquote>
-          <p>
-            He founded DaytonGrowthCo. to fix that, giving business owners a reliable partner focused on building
-            practical systems for growth.
-          </p>
+          <p>We build websites and systems Dayton businesses actually use.</p>
         </div>
       </div>
     </section>
@@ -916,11 +1065,7 @@ function FeatureGrid() {
             Simple sites.
             <span>Serious systems.</span>
           </h2>
-          <p>
-            Every business has different bottlenecks. Some need a better website or local SEO cleanup. Others need a
-            booking page, intake flow, dashboard, or a whole operating system that finally matches how the business
-            works.
-          </p>
+          <p>Different businesses, different bottlenecks. Start with a website, add what you need.</p>
         </div>
         <div className="feature-grid">
           {features.map((feature) => {
@@ -949,13 +1094,10 @@ function OutcomeSection() {
           <div className="section-heading compact-heading" data-reveal>
             <span className="section-kicker">Pricing</span>
             <h2>
-              Pricing for websites and systems.
-              <span>Scoped around what you need implemented.</span>
+              Pricing for websites
+              <span>and systems.</span>
             </h2>
-            <p>
-              Some projects are straightforward website and SEO improvements. Others are deeper tech integrations or
-              custom systems. The right setup depends on what you need implemented.
-            </p>
+            <p>Scoped to what you need. Pick a starting point below.</p>
           </div>
           <PricingCards />
         </div>
@@ -998,7 +1140,6 @@ function PricingCards() {
             <span>Best for</span>
             {card.bestFor}
           </p>
-          <p>{card.text}</p>
           <ul>
             {card.bullets.map((bullet) => (
               <li key={bullet}>✓ {bullet}</li>
@@ -1030,10 +1171,7 @@ function ProjectForm() {
 
         <div className="form-step-heading">
           <span>1</span>
-          <div>
-            <strong>Tell us where to reply.</strong>
-            <p>Just the basics so we can understand the business and follow up.</p>
-          </div>
+          <strong>Your details</strong>
         </div>
         <div className="form-grid">
           <label className="form-field" htmlFor="contactName">
@@ -1056,10 +1194,7 @@ function ProjectForm() {
 
         <div className="form-step-heading">
           <span>2</span>
-          <div>
-            <strong>Choose the closest starting point.</strong>
-            <p>You can change direction later. This helps us route the conversation.</p>
-          </div>
+          <strong>What you need</strong>
         </div>
         <fieldset className="form-choice-group">
           <legend>Your main goal *</legend>
@@ -1085,14 +1220,11 @@ function ProjectForm() {
 
         <div className="form-step-heading">
           <span>3</span>
-          <div>
-            <strong>Share the project in plain English.</strong>
-            <p>A sentence or two is enough if you are early.</p>
-          </div>
+          <strong>Project details</strong>
         </div>
         <label className="form-field full" htmlFor="details">
           <span>What do you want implemented?</span>
-          <textarea id="details" name="notes" rows={3} />
+          <textarea id="details" name="notes" rows={2} />
         </label>
 
         <button type="submit" className="button button-primary large form-submit">
@@ -1290,11 +1422,13 @@ function App() {
       <SplashScreen />
       <div id="scroll-progress-bar" aria-hidden="true" />
       <Header />
-      <ScrollDots />
       <main>
         <Hero />
+        <ServiceModes />
         <StickyWorkflow />
+        <SystemShowcase />
         <WebsiteTransformation />
+        <DecisionSupport />
         <FeatureGrid />
         <AboutSection />
         <OutcomeSection />
