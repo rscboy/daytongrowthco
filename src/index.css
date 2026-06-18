@@ -365,10 +365,25 @@
     opacity: 1;
   }
 
-  .hero-product-video-mask,
   .sky-glow,
   .clay-landscape {
     display: none;
+  }
+
+  /* Brand overlay on the hero video: a steel-blue-tinted dark gradient
+     that's strongest on the lower-left (behind the text) and fades to
+     clear on the upper-right so the footage still reads. */
+  .hero-product-video-mask {
+    z-index: 1;
+    background:
+      linear-gradient(
+        100deg,
+        rgba(11, 16, 25, 0.86) 0%,
+        rgba(11, 16, 25, 0.52) 40%,
+        rgba(11, 16, 25, 0.12) 72%,
+        transparent 100%
+      ),
+      radial-gradient(140% 120% at 8% 100%, rgba(63, 100, 145, 0.32), transparent 58%);
   }
 
   .clay-video {
@@ -481,14 +496,14 @@
     padding-top: clamp(1.5rem, 6svh, 4.5rem);
   }
 
-  /* Soft, edgeless scrim so the headline stays high-contrast over the
-     warm background atmosphere. */
+  /* Light edgeless lift behind the headline; the video mask already
+     provides the main dark contrast, so this stays very subtle. */
   .clay-hero-copy::before {
     content: "";
     position: absolute;
     inset: -4rem -8rem -3rem -4rem;
     z-index: -1;
-    background: radial-gradient(120% 95% at 0% 22%, rgba(0, 0, 0, 0.42), transparent 64%);
+    background: radial-gradient(120% 95% at 0% 22%, rgba(0, 0, 0, 0.16), transparent 64%);
     pointer-events: none;
   }
 
@@ -3347,7 +3362,15 @@
 
 @media (max-width: 520px) {
   .hero-section {
-    min-height: auto;
+    min-height: 100svh;
+  }
+
+  /* Fill the viewport and vertically center the hero copy on mobile. */
+  .hero-section > .mx-auto {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .clay-hero-copy {
