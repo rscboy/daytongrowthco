@@ -1,20 +1,30 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
+  Bell,
+  Calendar,
   CheckCircle2,
+  ChevronDown,
+  Database,
   FileInput,
+  FileText,
   Gauge,
-  Layers3,
+  LayoutDashboard,
   LockKeyhole,
+  Mail,
   MapPin,
   PanelTop,
   Phone,
   Radar,
   Route,
+  Search,
   ShieldCheck,
   Sparkles,
+  Workflow,
 } from "lucide-react";
+import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import "./index.css";
 
 type WorkflowStep = {
@@ -23,114 +33,111 @@ type WorkflowStep = {
   description: string;
   status: string;
   output: string;
-  score: string;
+  progress: string;
+  stage: string;
   rows: Array<{ label: string; value: string; tone?: "accent" | "success" | "muted" }>;
 };
 
 const segments = [
   {
-    label: "Website + SEO setup",
-    title: "A clean, mobile-friendly website with clearer service pages, better local search basics, and simple calls to action.",
-    action: "Price my website",
-    items: ["Clear service pages", "Local SEO basics", "Contact paths"],
+    label: "Tools for the work",
+    title: "Phone agents, quote tools, dashboards, portals, and internal systems built around your work.",
+    action: "See how we build",
+    items: ["Calls", "Quotes", "Projects"],
   },
   {
-    label: "Tech integration",
-    title: "Forms, booking pages, notifications, calendars, and follow-up tools connected so the website feeds the business.",
-    action: "Implement my system",
-    items: ["Booking flow", "Notifications", "Follow-up setup"],
+    label: "Tools for the sale",
+    title: "Sales pages, proposal pages, product videos, visuals, and interactive decks.",
+    action: "Explore the tools",
+    items: ["Sales pages", "Videos", "Visuals"],
   },
 ];
 
 const workflowSteps: WorkflowStep[] = [
   {
-    label: "Understand",
-    title: "We learn where leads get lost.",
-    description:
-      "We learn how customers currently contact you and where leads get lost.",
-    status: "Reviewing current flow",
-    output: "Lead gaps mapped",
-    score: "94%",
+    label: "Inputs",
+    title: "Calls, notes, photos, and pricing.",
+    description: "Show us what comes in and what your team does with it.",
+    status: "Inputs mapped",
+    output: "Working specification",
+    progress: "34%",
+    stage: "Mapped",
     rows: [
-      { label: "Business", value: "Dayton service team" },
-      { label: "Updated", value: "Jun 17, 2026" },
-      { label: "Focus", value: "Website + lead flow" },
+      { label: "Incoming", value: "Calls + photos" },
+      { label: "Reference", value: "Price sheet" },
+      { label: "Current file", value: "jobs.xlsx" },
     ],
   },
   {
-    label: "Build",
-    title: "We set up the system you need.",
-    description:
-      "We set up the website, form, booking, notifications, or tracking you need.",
-    status: "Building setup",
-    output: "System in progress",
-    score: "87%",
+    label: "Tool",
+    title: "A quote builder for the estimator.",
+    description: "We define the screens, pricing rules, and connections.",
+    status: "Tool specified",
+    output: "Quote builder",
+    progress: "68%",
+    stage: "Defined",
     rows: [
-      { label: "Website", value: "Service pages", tone: "accent" },
-      { label: "Routing", value: "Forms + calendar" },
-      { label: "Follow-up", value: "Notifications" },
+      { label: "Screen", value: "Estimate builder", tone: "accent" },
+      { label: "Rules", value: "Labor + materials" },
+      { label: "Connects", value: "Customer record" },
     ],
   },
   {
-    label: "Launch",
-    title: "We test the full flow and go live.",
-    description:
-      "We test the full flow and get the system live.",
-    status: "Launch checklist ready",
-    output: "Ready to launch",
-    score: "91%",
+    label: "Output",
+    title: "A ready-to-send estimate.",
+    description: "The tool produces the document, update, or next step your team needs.",
+    status: "Output ready",
+    output: "Shareable estimate",
+    progress: "100%",
+    stage: "Live",
     rows: [
-      { label: "Mobile", value: "Checked", tone: "success" },
-      { label: "Forms", value: "Tested" },
-      { label: "Follow-up", value: "Verified" },
-    ],
-  },
-  {
-    label: "Use it",
-    title: "You leave with a cleaner way to follow up.",
-    description:
-      "You leave with a cleaner way to capture and follow up with leads.",
-    status: "Workflow complete",
-    output: "Lead system live",
-    score: "100%",
-    rows: [
-      { label: "Status", value: "Live", tone: "success" },
-      { label: "Next step", value: "Use it" },
-      { label: "Owner", value: "Your team" },
+      { label: "Format", value: "Proposal page", tone: "success" },
+      { label: "Customer", value: "Review + approve" },
+      { label: "Team", value: "Project created" },
     ],
   },
 ];
 
 const features = [
   {
-    icon: FileInput,
-    title: "Website + SEO Setup",
-    text: "A cleaner website, stronger local search basics, and clear contact or quote paths.",
+    icon: Phone,
+    title: "Phone Agents",
+    text: "Answer calls, collect details, handle common questions, and send clear summaries.",
   },
   {
-    icon: Radar,
-    title: "Tech Integration",
-    text: "Implement a booking page, form flow, calendar connection, notifications, or follow-up system.",
-  },
-  {
-    icon: Route,
-    title: "Custom Systems",
-    text: "A custom tool, dashboard, portal, or workflow built around how your business runs.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Lead Flow Improvements",
-    text: "Practical follow-up, reminder, and handoff improvements help your team respond faster with less manual work.",
+    icon: Workflow,
+    title: "Custom Business Apps",
+    text: "Focused tools built around the way your team already works.",
   },
   {
     icon: Gauge,
-    title: "Local Visibility",
-    text: "Basic local SEO, Google Maps, and Google Business Profile cleanup options help nearby customers understand and contact you.",
+    title: "Quote & Pricing Tools",
+    text: "Calculators, estimate builders, and service pricing your team can use fast.",
   },
   {
-    icon: LockKeyhole,
-    title: "One-Time Setup Packages",
-    text: "Clear website, form, booking, and lead tracking improvements set up without a required monthly contract.",
+    icon: LayoutDashboard,
+    title: "Project Dashboards",
+    text: "Track jobs, notes, photos, files, and status in one view.",
+  },
+  {
+    icon: Database,
+    title: "Customer Portals",
+    text: "Give customers one place for requests, updates, documents, and uploads.",
+  },
+  {
+    icon: FileText,
+    title: "Training Systems",
+    text: "Turn repeat procedures, videos, and SOPs into a library people can find.",
+  },
+  {
+    icon: PanelTop,
+    title: "Sales Materials",
+    text: "Sales pages, proposal pages, pricing pages, and interactive decks.",
+  },
+  {
+    icon: Sparkles,
+    title: "Video & Visual Content",
+    text: "Short videos, product visuals, explainers, and e-commerce content.",
   },
 ];
 
@@ -142,10 +149,10 @@ const metrics = [
 
 const pageSections = [
   { id: "top", label: "Hero" },
-  { id: "workflow", label: "Workflow" },
-  { id: "platform", label: "Platform" },
-  { id: "outcomes", label: "Outcomes" },
-  { id: "cta", label: "Demo" },
+  { id: "platform", label: "What we build" },
+  { id: "outcomes", label: "Examples" },
+  { id: "workflow", label: "How it works" },
+  { id: "cta", label: "Contact" },
 ];
 
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
@@ -156,15 +163,9 @@ const socialLinks = [
   { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
 ];
-const rotatingAudiences = ["small businesses", "local service pros", "growing brands", "busy founders", "teams that need leads"];
-
 const videos = {
   hero: {
     src: "https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4",
-  },
-  about: {
-    poster: "https://image.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU/thumbnail.jpg?time=0",
-    stream: "https://stream.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU.m3u8",
   },
   form: {
     poster: "https://image.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU/thumbnail.jpg?time=0",
@@ -172,54 +173,51 @@ const videos = {
   },
 };
 
-const pricingCards = [
+const buildExamples = [
   {
-    label: "Website foundation",
-    title: "Website + SEO Setup",
-    price: "Website pricing",
-    bestFor: "A business with an outdated site or unclear lead path.",
-    outcome: "Cleaner website, stronger local basics, and an easier way to inquire.",
-    text: "For businesses that need a cleaner website, stronger local search basics, service pages, contact paths, and a more professional online presence.",
-    bullets: [
-      "Mobile-friendly website setup",
-      "Local SEO basics",
-      "Clear service pages and calls to action",
-      "Contact or quote form setup",
-    ],
-    action: "Price My Website",
+    label: "Calls",
+    title: "After-Hours Phone Agent",
+    text: "Answers calls, gathers the reason for the call, and sends your team a summary.",
   },
   {
-    label: "Implemented for you",
-    title: "Tech Integration",
-    price: "Project-based",
-    bestFor: "A business that already knows which process needs to be connected.",
-    outcome: "Forms, booking, calendars, and notifications working together.",
-    text: "For businesses that already know they need a system implemented, like salon booking, intake forms, calendar routing, reminders, or tool connections.",
-    bullets: [
-      "Booking page or request flow",
-      "Calendar, form, and CRM connections",
-      "Notifications and follow-up setup",
-      "Testing and launch support",
-    ],
-    action: "Implement My System",
+    label: "Pricing",
+    title: "Quote Calculator",
+    text: "Builds a fast starting quote for roofing, remodeling, or another service business.",
   },
   {
-    label: "Most flexible",
-    title: "Custom Systems",
-    price: "Custom quote",
-    bestFor: "A business with a workflow that does not fit a simple setup.",
-    outcome: "A scoped tool, dashboard, portal, or internal workflow built around you.",
-    text: "For more complicated work: custom dashboards, portals, lead systems, internal workflows, and tools built around how your business actually runs.",
-    bullets: [
-      "Custom dashboards or portals",
-      "Workflow automation",
-      "Existing tool integrations",
-      "Built, tested, and launched",
-    ],
-    action: "Scope My System",
-    featured: true,
+    label: "Projects",
+    title: "Job Dashboard",
+    text: "Tracks jobs, notes, photos, files, next steps, and project status.",
+  },
+  {
+    label: "Customers",
+    title: "Customer Portal",
+    text: "Keeps requests, updates, approvals, and uploaded files in one place.",
+  },
+  {
+    label: "Team",
+    title: "Training Library",
+    text: "Organizes onboarding, repeat procedures, videos, and SOPs so they are easy to find.",
+  },
+  {
+    label: "Sales",
+    title: "Interactive Proposal Page",
+    text: "Presents scope, options, pricing, and approvals on one web page.",
+  },
+  {
+    label: "Content",
+    title: "Product Visual Kit",
+    text: "Creates product visuals and short videos for an online store or new offer.",
+  },
+  {
+    label: "Workflow",
+    title: "Notes-to-Documents System",
+    text: "Turns job notes, call summaries, photos, or files into usable work documents.",
   },
 ];
+
+// Completes the rotating hero headline: "We build ___."
+const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer portals", "custom apps"];
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -246,10 +244,19 @@ function Header() {
             Dayton<span>Growth</span><b>Co.</b>
           </span>
         </a>
-        <a className="button button-primary" href="#cta">
-          Start a Project
-          <ArrowRight size={15} aria-hidden="true" />
-        </a>
+        <div className="header-nav" aria-label="Sections">
+          <a href="#platform">What We Build</a>
+          <a href="#outcomes">Examples</a>
+          <a href="#workflow">How It Works</a>
+          <a href="/aboutus.html">About</a>
+          <a href="#cta">Contact</a>
+        </div>
+        <div className="header-actions">
+          <a className="button button-primary" href="#cta">
+            Start Building.
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
       </nav>
     </header>
   );
@@ -429,29 +436,6 @@ function StatusPill({ text, complete = false }: { text: string; complete?: boole
   );
 }
 
-function RotatingAudience() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    const interval = window.setInterval(() => {
-      setIndex((current) => (current + 1) % rotatingAudiences.length);
-    }, 2600);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return (
-    <span className="rotating-audience" aria-live="polite">
-      <span key={rotatingAudiences[index]} className="active">
-        {rotatingAudiences[index]}
-      </span>
-    </span>
-  );
-}
-
 function DottedPanel({
   children,
   className = "",
@@ -471,21 +455,40 @@ function DottedPanel({
 }
 
 function SegmentCard({ segment, index }: { segment: (typeof segments)[number]; index: number }) {
+  const flowLabels =
+    index === 0
+      ? ["Call or note", "Useful tool", "Clear next step"]
+      : ["Product info", "Clear story", "Ready to send"];
+
   return (
     <a className="segment-card group" href="#workflow">
       <DottedPanel className="segment-stage">
-        <div className="mini-board" aria-hidden="true">
+        <div className={`mini-board mini-system mini-system-${index + 1}`} aria-hidden="true">
           <div className="mini-board-header">
-            <span>{index === 0 ? "Review queue" : "Action lane"}</span>
+            <span>{index === 0 ? "Business workflow" : "Sales material"}</span>
             <Sparkles size={13} aria-hidden="true" />
           </div>
-          <div className="mini-board-rows">
+          <div className="mini-flow">
+            {flowLabels.map((label, flowIndex) => (
+              <React.Fragment key={label}>
+                <span className={`mini-node ${flowIndex === 2 ? "is-final" : ""}`}>
+                  <i />
+                  {label}
+                </span>
+                {flowIndex < flowLabels.length - 1 ? <b /> : null}
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mini-signal-row">
             {segment.items.map((item, itemIndex) => (
-              <span key={item} className="mini-row" style={{ transitionDelay: `${itemIndex * 70}ms` }}>
-                <i />
+              <span key={item} style={{ transitionDelay: `${itemIndex * 70}ms` }}>
                 {item}
               </span>
             ))}
+          </div>
+          <div className="mini-metric-strip">
+            <strong>{index === 0 ? "1 place" : "Ready"}</strong>
+            <span>{index === 0 ? "for the work" : "to share"}</span>
           </div>
         </div>
       </DottedPanel>
@@ -556,29 +559,192 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
 
           <div className="insight-box">
             <div>
-              <span className="meta-label">System found</span>
+              <span className="meta-label">Build output</span>
               <strong>{step.output}</strong>
             </div>
             <div className="score-orb">
-              <span>{step.score}</span>
-              <small>score</small>
+              <span>{step.stage}</span>
+              <small>stage</small>
             </div>
           </div>
         </div>
 
         <footer className="product-card-footer">
           <div className="progress-track" aria-hidden="true">
-            <span style={{ width: step.score }} />
+            <span style={{ width: step.progress }} />
           </div>
           <button className="button button-secondary" type="button">
-            Review setup
+            View spec
           </button>
           <button className="button button-primary compact" type="button">
-            Launch
+            Open tool
           </button>
         </footer>
       </article>
     </div>
+  );
+}
+
+function SpreadsheetTransformation() {
+  const cells = ["Customer", "Job", "Status", "Price", "Miller", "Roof repair", "New", "$—", "Davis", "Remodel", "Quoted", "$8,450"];
+
+  return (
+    <section className="spreadsheet-transform" aria-labelledby="spreadsheet-transform-heading">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+        <div className="section-heading compact-heading spreadsheet-copy">
+          <h2 id="spreadsheet-transform-heading">
+            The spreadsheet
+            <span>becomes the tool.</span>
+          </h2>
+          <p>For small teams running calls, quotes, projects, and customer work through disconnected files.</p>
+        </div>
+        <div className="transform-stage spreadsheet-reveal" aria-label="Spreadsheet transforming into a project dashboard">
+          <div className="sheet-view">
+            <div className="transform-window-bar"><FileText size={15} /> jobs.xlsx</div>
+            <div className="sheet-grid">
+              {cells.map((cell, index) => <span key={`${cell}-${index}`}>{cell}</span>)}
+            </div>
+          </div>
+          <div className="dashboard-view">
+            <div className="transform-window-bar"><LayoutDashboard size={15} /> Miller roof repair</div>
+            <div className="project-record">
+              <header>
+                <div><span>Customer</span><strong>Chris Miller</strong></div>
+                <div><span>Address</span><strong>1842 Brown St, Dayton</strong></div>
+              </header>
+              <div className="estimate-lines">
+                <p><span>Architectural shingles</span><strong>$5,860</strong></p>
+                <p><span>Underlayment + flashing</span><strong>$1,420</strong></p>
+                <p><span>Labor + disposal</span><strong>$2,170</strong></p>
+              </div>
+              <footer><span>Estimate total</span><strong>$9,450</strong></footer>
+            </div>
+          </div>
+          <div className="transform-caption" aria-hidden="true">
+            <span>Spreadsheet</span><ArrowRight size={15} /><strong>Working dashboard</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const aiQueries = [
+  { topic: "HVAC", q: "Best HVAC repair in Dayton, OH", biz: "Dayton Comfort Co.", domain: "daytoncomfort.co" },
+  { topic: "Plumbing", q: "Emergency plumber near me in Dayton", biz: "Dayton Service Co.", domain: "daytonserviceco.com" },
+  { topic: "Roofing", q: "Top-rated roofer in Dayton, Ohio", biz: "Miami Valley Roofing", domain: "miamivalleyroof.co" },
+];
+
+function AiVisibility() {
+  const [active, setActive] = useState(0);
+  const [optimized, setOptimized] = useState(true);
+  const reduceMotion = useReducedMotion();
+  const query = aiQueries[active];
+
+  return (
+    <section className="section-shell ai-section" id="recommendation">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+        <div className="section-heading compact-heading" data-reveal>
+          <span className="section-kicker">AI search visibility</span>
+          <h2>
+            Show up when customers
+            <span>ask AI.</span>
+          </h2>
+          <p>Customers ask ChatGPT and Google AI for a recommendation. We get your business named as the answer.</p>
+        </div>
+
+        <div className="ai-demo" data-reveal>
+          <div className="ai-demo-bar">
+            <div className="ai-chips" role="tablist" aria-label="Example questions">
+              {aiQueries.map((item, index) => (
+                <button
+                  key={item.topic}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === active}
+                  className={`ai-chip ${index === active ? "is-active" : ""}`}
+                  onClick={() => setActive(index)}
+                >
+                  {item.topic}
+                </button>
+              ))}
+            </div>
+            <div className="ai-toggle" role="group" aria-label="Optimization state">
+              <button type="button" className={!optimized ? "is-on" : ""} aria-pressed={!optimized} onClick={() => setOptimized(false)}>
+                Before
+              </button>
+              <button type="button" className={optimized ? "is-on" : ""} aria-pressed={optimized} onClick={() => setOptimized(true)}>
+                After
+              </button>
+            </div>
+          </div>
+
+          <div className="ai-window">
+            <div className="ai-window-head">
+              <span className="ai-mark" aria-hidden="true">
+                <Sparkles size={13} strokeWidth={2} />
+              </span>
+              <span>AI Assistant</span>
+            </div>
+
+            <div className="ai-prompt">
+              <Search size={14} aria-hidden="true" />
+              <span>{query.q}</span>
+            </div>
+
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                className="ai-answer"
+                key={`${active}-${optimized}`}
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {optimized ? (
+                  <>
+                    <p className="ai-answer-text">
+                      For {query.topic.toLowerCase()} in Dayton, the clear top recommendation is{" "}
+                      <mark>{query.biz}</mark> — trusted locally, with fast scheduling and upfront pricing.
+                    </p>
+                    <div className="ai-citation">
+                      <span className="ai-rank">#1</span>
+                      <div className="ai-citation-name">
+                        <strong>{query.biz}</strong>
+                        <span>{query.domain}</span>
+                      </div>
+                      <span className="ai-cited">
+                        <CheckCircle2 size={13} aria-hidden="true" /> Cited
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="ai-answer-text is-muted">
+                      There are a few {query.topic.toLowerCase()} options around Dayton, but I don’t have clear, current
+                      details to recommend a specific local business.
+                    </p>
+                    <div className="ai-missing" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                      <em>Your business isn’t mentioned</em>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            <footer className="ai-window-foot">
+              <span className="ai-foot-label">{optimized ? "Optimized for AI answers" : "Not yet optimized"}</span>
+              <a href="#cta" className="button button-primary compact">
+                Get cited
+              </a>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -591,28 +757,55 @@ function Hero() {
       <ClayLandscape scene="warm" />
       <div className="mx-auto max-w-7xl px-5 pt-20 sm:px-8 lg:pt-24">
         <div className="clay-hero-copy hero-entrance">
-          <span className="hero-label">DaytonGrowthCo. / automation system setup</span>
+          <span className="hero-label">Tools and digital systems for small businesses</span>
           <h1 className="hero-title">
-            <span data-scroll-words>Automating the workflow</span>{" "}
+            <span data-scroll-words>We build</span>{" "}
             <span className="hero-audience-line">
-              for <RotatingAudience />.
+              <AnimatedHeroPhrase phrases={heroPhrases} />
             </span>
           </h1>
           <p>
-            We turn outdated websites and scattered follow-up into clean systems that help visitors trust you, contact
-            you, and become leads.
+            Phone agents, quote calculators, dashboards, training libraries, sales pages, product visuals, and custom
+            apps—built around the work your business already does.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
-              Start a Project
+              Start Building.
               <ArrowRight size={16} aria-hidden="true" />
             </a>
-            <a className="button button-secondary large" href="#outcomes">
-              View One-Time Packages
+            <a className="button button-secondary large" href="#platform">
+              See the Tools
             </a>
           </div>
+          <ul className="hero-services" aria-label="What we set up">
+            <li>Business Tools</li>
+            <li>Sales Materials</li>
+            <li>Custom Workflows</li>
+          </ul>
         </div>
+      </div>
+    </section>
+  );
+}
 
+function ServiceModes() {
+  return (
+    <section className="service-modes" aria-label="About DaytonGrowthCo">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading" data-reveal>
+          <span className="section-kicker">What DaytonGrowthCo builds</span>
+          <h2>
+            Calls. Quotes. Projects.
+            <span>Built into working systems.</span>
+          </h2>
+          <p>
+            Small businesses run on calls, texts, spreadsheets, PDFs, notes, photos, and files. We turn those inputs
+            into phone agents, calculators, dashboards, portals, training systems, pages, videos, and custom apps.
+          </p>
+          <p>
+            We configure existing software when it fits. We build custom tools when it does not.
+          </p>
+        </div>
         <div className="segment-grid" aria-label="Product modes">
           {segments.map((segment, index) => (
             <SegmentCard key={segment.label} segment={segment} index={index} />
@@ -652,6 +845,8 @@ function useActiveWorkflowStep() {
 function StickyWorkflow() {
   const activeStep = useActiveWorkflowStep();
   const active = workflowSteps[activeStep];
+  const [mobileStep, setMobileStep] = useState(0);
+  const mobileActive = workflowSteps[mobileStep];
 
   return (
     <section id="workflow" className="workflow-section">
@@ -659,7 +854,7 @@ function StickyWorkflow() {
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
             <div className="workflow-copy" aria-live="polite">
-              <span className="section-kicker">Workflow story</span>
+              <span className="section-kicker">How it works</span>
               <p className="step-count">
                 {String(activeStep + 1).padStart(2, "0")} / {String(workflowSteps.length).padStart(2, "0")}
               </p>
@@ -689,23 +884,44 @@ function StickyWorkflow() {
       </div>
 
       <div className="mobile-workflow mx-auto max-w-3xl px-5 sm:px-8">
-        <div className="section-heading" data-reveal>
-          <span className="section-kicker">Workflow story</span>
-          <h2>
-            Simple. Clear.
-            <span>Done for you.</span>
-          </h2>
+        <div className="section-heading">
+          <h2>From input to output.</h2>
         </div>
-        {workflowSteps.map((step, index) => (
-          <article className="mobile-step" key={step.label} data-reveal>
-            <span className="step-count">{String(index + 1).padStart(2, "0")}</span>
-            <h3>{step.title}</h3>
-            <p>{step.description}</p>
-            <DottedPanel className="mobile-stage">
-              <ProductSceneCard step={step} index={index} />
-            </DottedPanel>
-          </article>
-        ))}
+        <div className="mobile-workflow-tabs" role="tablist" aria-label="Build process">
+          {workflowSteps.map((step, index) => (
+            <button
+              key={step.label}
+              type="button"
+              role="tab"
+              aria-selected={mobileStep === index}
+              className={mobileStep === index ? "active" : ""}
+              onClick={() => setMobileStep(index)}
+            >
+              {step.label}
+            </button>
+          ))}
+        </div>
+        <article className="mobile-step mobile-step-active">
+          <h3>{mobileActive.title}</h3>
+          <p>{mobileActive.description}</p>
+          <DottedPanel className="mobile-stage">
+            <div className="mobile-workflow-panel">
+              <header>
+                <span>{mobileActive.label}</span>
+                <strong>{mobileActive.stage}</strong>
+              </header>
+              <div>
+                {mobileActive.rows.map((row) => (
+                  <p key={row.label}><span>{row.label}</span><strong>{row.value}</strong></p>
+                ))}
+              </div>
+              <footer>
+                <span>Output</span>
+                <strong>{mobileActive.output}</strong>
+              </footer>
+            </div>
+          </DottedPanel>
+        </article>
       </div>
     </section>
   );
@@ -786,7 +1002,7 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
           ))}
         </div>
         <footer className="mockup-footer" aria-hidden="true">
-          <span>{isAfter ? "Lead captured + routed" : "Missing CTA"}</span>
+          <span>{isAfter ? "Request captured + routed" : "Missing CTA"}</span>
           <i />
         </footer>
       </div>
@@ -801,18 +1017,14 @@ function WebsiteTransformation() {
     <section className="transformation-section" aria-labelledby="transformation-heading">
       <div className="shader-field" aria-hidden="true" />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-        <div className="section-heading compact-heading" data-reveal>
-          <span className="section-kicker">Website transformation</span>
+        <div className="section-heading compact-heading">
           <h2 id="transformation-heading">
-            From outdated site
-            <span>to lead-ready system.</span>
+            Before.
+            <span>After.</span>
           </h2>
-          <p>
-            We turn outdated websites into clean, trust-building systems that make the offer obvious and convert
-            visitors into leads.
-          </p>
+          <p>We redesign the site, rewrite the pages, and connect the request flow behind it.</p>
         </div>
-        <div className="transformation-showcase" data-reveal>
+        <div className="transformation-showcase">
           <div className="comparison-labels" aria-hidden="true">
             <span>Before</span>
             <span>After</span>
@@ -826,80 +1038,18 @@ function WebsiteTransformation() {
             <input
               className="comparison-range"
               type="range"
-              min="18"
-              max="82"
+              min="5"
+              max="95"
               value={position}
               aria-label="Compare outdated website and modern website"
               onChange={(event) => setPosition(Number(event.currentTarget.value))}
             />
           </div>
           <div className="transformation-notes">
-            <span>Cleaner message</span>
-            <span>Stronger trust</span>
-            <span>Clearer lead path</span>
+            <span>Service pages</span>
+            <span>Quote requests</span>
+            <span>Connected workflow</span>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function AboutSection() {
-  const founderNotes = [
-    "Built in Dayton, Ohio",
-    "Practical systems over bloated marketing",
-    "Websites that help owners follow up faster",
-  ];
-
-  return (
-    <section className="about-section" id="about">
-      <BackgroundVideo className="about-section-video" poster={videos.about.poster} stream={videos.about.stream} />
-      <div className="about-section-video-mask" aria-hidden="true" />
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-        <div className="founder-card" data-reveal>
-          <div className="founder-photo-shell">
-            <img
-              src="/samuel-caruso-320.jpg"
-              alt="Samuel Caruso, Founder of DaytonGrowthCo."
-              width="320"
-              height="480"
-              loading="lazy"
-            />
-            <div className="portal-status">
-              <span />
-              <div>
-                <small>Portal Status</small>
-                <strong>100% Operational</strong>
-              </div>
-            </div>
-          </div>
-          <div className="founder-reel" aria-label="Founder focus">
-            {founderNotes.map((note, index) => (
-              <span key={note} style={{ "--reel-index": index } as React.CSSProperties}>
-                {note}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="section-heading about-copy" data-reveal>
-          <span className="section-kicker">About DaytonGrowthCo.</span>
-          <h2>
-            Meet the Founder.
-            <span>Built in Dayton, Ohio.</span>
-          </h2>
-          <p>
-            Born and raised in Dayton, Ohio, Samuel Caruso has always loved building things. He earned his undergraduate
-            degree in History from the University of Michigan and later completed a Master's in Entrepreneurship and
-            Emerging Technology.
-          </p>
-          <blockquote>
-            After seeing how many local businesses struggled with outdated websites, Samuel realized the problem was not
-            design. The problem was that their websites did not actually do anything.
-          </blockquote>
-          <p>
-            He founded DaytonGrowthCo. to fix that, giving business owners a reliable partner focused on building
-            practical systems for growth.
-          </p>
         </div>
       </div>
     </section>
@@ -907,22 +1057,18 @@ function AboutSection() {
 }
 
 function FeatureGrid() {
+  const [openFeature, setOpenFeature] = useState(-1);
+
   return (
     <section className="section-shell" id="platform">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading" data-reveal>
-          <span className="section-kicker">Types of tools</span>
+        <div className="section-heading">
           <h2>
-            Simple sites.
-            <span>Serious systems.</span>
+            What we build.
           </h2>
-          <p>
-            Every business has different bottlenecks. Some need a better website or local SEO cleanup. Others need a
-            booking page, intake flow, dashboard, or a whole operating system that finally matches how the business
-            works.
-          </p>
+          <p>Phone agents, quote tools, dashboards, portals, internal systems, pages, video, and custom apps.</p>
         </div>
-        <div className="feature-grid">
+        <div className="feature-grid desktop-feature-grid">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
@@ -936,6 +1082,21 @@ function FeatureGrid() {
             );
           })}
         </div>
+        <div className="feature-accordion">
+          {features.map((feature, index) => {
+            const isOpen = openFeature === index;
+            return (
+              <article className={isOpen ? "is-open" : ""} key={feature.title}>
+                <button type="button" onClick={() => setOpenFeature(isOpen ? -1 : index)} aria-expanded={isOpen}>
+                  <span className="feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{feature.title}</strong>
+                  <ChevronDown size={17} aria-hidden="true" />
+                </button>
+                {isOpen ? <p>{feature.text}</p> : null}
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -945,162 +1106,90 @@ function OutcomeSection() {
   return (
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="outcome-grid">
-          <div className="section-heading compact-heading" data-reveal>
-            <span className="section-kicker">Pricing</span>
-            <h2>
-              Pricing for websites and systems.
-              <span>Scoped around what you need implemented.</span>
-            </h2>
-            <p>
-              Some projects are straightforward website and SEO improvements. Others are deeper tech integrations or
-              custom systems. The right setup depends on what you need implemented.
-            </p>
-          </div>
-          <PricingCards />
+        <div className="section-heading">
+          <h2>What we can make.</h2>
         </div>
+        <BuildExampleCards />
       </div>
     </section>
   );
 }
 
-// Pricing card CTAs map to the form's "Setup package" radio values by index.
-const packageValues = ["Website and SEO setup", "Tech integration", "Custom systems"];
+function BuildExampleCards() {
+  const featured = buildExamples[0];
+  const supporting = buildExamples.slice(1, 4);
 
-function selectPackageAndScroll(event: React.MouseEvent, index: number) {
-  event.preventDefault();
-  const value = packageValues[index];
-  if (value) {
-    document.querySelectorAll<HTMLInputElement>('input[name="serviceTier"]').forEach((radio) => {
-      if (radio.value === value) {
-        radio.checked = true;
-        radio.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    });
-  }
-  document.getElementById("cta")?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function PricingCards() {
   return (
-    <div className="pricing-grid">
-      {pricingCards.map((card, index) => (
-        <article
-          className={`pricing-card ${card.featured ? "featured" : ""}`}
-          key={card.title}
-          data-reveal
-          style={{ "--reveal-delay": `${index * 110}ms` } as React.CSSProperties}
-        >
-          <span className="eyebrow">{card.label}</span>
-          <h3>{card.title}</h3>
-          <strong>{card.price}</strong>
-          <p className="pricing-fit">
-            <span>Best for</span>
-            {card.bestFor}
-          </p>
-          <p>{card.text}</p>
-          <ul>
-            {card.bullets.map((bullet) => (
-              <li key={bullet}>✓ {bullet}</li>
-            ))}
-          </ul>
-          <div className="pricing-result">
-            <span>Primary outcome</span>
-            <strong>{card.outcome}</strong>
-          </div>
-          <a
-            className={`button ${card.featured ? "button-primary" : "button-secondary"}`}
-            href="#cta"
-            onClick={(event) => selectPackageAndScroll(event, index)}
+    <>
+      <div className="pricing-grid desktop-build-grid">
+        {buildExamples.map((card, index) => (
+          <article
+            className="pricing-card"
+            key={card.title}
           >
-            {card.action}
-          </a>
+            <div className="build-card-meta">
+              <span className="eyebrow">{card.label}</span>
+              <span className="build-card-index">{String(index + 1).padStart(2, "0")}</span>
+            </div>
+            <h3>{card.title}</h3>
+            <p>{card.text}</p>
+          </article>
+        ))}
+      </div>
+      <div className="mobile-build-editorial">
+        <article className="featured-build">
+          <span>{featured.label}</span>
+          <h3>{featured.title}</h3>
+          <p>{featured.text}</p>
+          <div className="featured-build-call">
+            <Phone size={17} aria-hidden="true" />
+            <div><small>Call summary</small><strong>Roof repair · Dayton, OH</strong></div>
+          </div>
         </article>
-      ))}
-    </div>
+        <div className="supporting-builds">
+          {supporting.map((card, index) => (
+            <article key={card.title}>
+              <span>{String(index + 2).padStart(2, "0")}</span>
+              <div><h3>{card.title}</h3><p>{card.text}</p></div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
 function ProjectForm() {
   return (
-    <div className="form-card" data-reveal>
+    <div className="form-card">
       <form id="auditForm" method="POST" action={formAction} target="hidden_iframe" className="project-form">
         <input type="hidden" id="recaptchaToken" name="recaptchaToken" value="" readOnly />
         <input type="hidden" id="recaptchaAction" name="recaptchaAction" value="quick_recommendation" readOnly />
+        <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
+        <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
 
-        <div className="form-step-heading">
-          <span>1</span>
-          <div>
-            <strong>Tell us where to reply.</strong>
-            <p>Just the basics so we can understand the business and follow up.</p>
-          </div>
-        </div>
-        <div className="form-grid">
-          <label className="form-field" htmlFor="contactName">
-            <span>Your Name *</span>
-            <input id="contactName" name="yourName" type="text" autoComplete="name" required />
-          </label>
-          <label className="form-field" htmlFor="bizName">
-            <span>Business Name *</span>
-            <input id="bizName" name="businessName" type="text" autoComplete="organization" required />
-          </label>
-          <label className="form-field" htmlFor="email">
-            <span>Email Address *</span>
-            <input id="email" name="emailAddress" type="email" autoComplete="email" required />
-          </label>
-          <label className="form-field" htmlFor="website">
-            <span>Current Website</span>
-            <input id="website" name="currentDomain" type="text" inputMode="url" autoComplete="url" />
-          </label>
-        </div>
-
-        <div className="form-step-heading">
-          <span>2</span>
-          <div>
-            <strong>Choose the closest starting point.</strong>
-            <p>You can change direction later. This helps us route the conversation.</p>
-          </div>
-        </div>
-        <fieldset className="form-choice-group">
-          <legend>Your main goal *</legend>
-          {["Build or improve my website", "Improve local SEO", "Implement a system I need", "Build something custom"].map(
-            (goal, index) => (
-              <label className="choice-option" key={goal}>
-                <input name="mainGoal" type="radio" value={goal} required defaultChecked={index === 0} />
-                <span>{goal}</span>
-              </label>
-            ),
-          )}
-        </fieldset>
-
-        <fieldset className="form-choice-group package-group">
-          <legend>Setup package *</legend>
-          {["Website and SEO setup", "Tech integration", "Custom systems"].map((tier, index) => (
-            <label className="choice-option" key={tier}>
-              <input name="serviceTier" type="radio" value={tier} required defaultChecked={index === 1} />
-              <span>{tier}</span>
-            </label>
-          ))}
-        </fieldset>
-
-        <div className="form-step-heading">
-          <span>3</span>
-          <div>
-            <strong>Share the project in plain English.</strong>
-            <p>A sentence or two is enough if you are early.</p>
-          </div>
-        </div>
+        <label className="form-field" htmlFor="contactName">
+          <span>Name *</span>
+          <input id="contactName" name="yourName" type="text" autoComplete="name" required />
+        </label>
+        <label className="form-field" htmlFor="email">
+          <span>Email *</span>
+          <input id="email" name="emailAddress" type="email" autoComplete="email" required />
+        </label>
         <label className="form-field full" htmlFor="details">
-          <span>What do you want implemented?</span>
-          <textarea id="details" name="notes" rows={3} />
+          <span>What should we build? *</span>
+          <textarea id="details" name="notes" rows={3} required />
         </label>
 
         <button type="submit" className="button button-primary large form-submit">
-          Start a Project
+          Start Building.
           <ArrowRight size={16} aria-hidden="true" />
         </button>
         <div id="auditStatus" aria-live="polite" className="form-status" />
-        <p className="form-microcopy">Response guaranteed within 24 hours</p>
+        <p className="form-microcopy">
+          <CheckCircle2 size={14} aria-hidden="true" />
+          Response within 24 hours
+        </p>
       </form>
       <iframe name="hidden_iframe" title="Form submission status" className="hidden-iframe" />
     </div>
@@ -1114,15 +1203,14 @@ function FinalCTA() {
       <div className="form-video-mask" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
-          <span className="section-kicker">Start a project</span>
-          <h2>Let’s build the system your business needs.</h2>
+          <h2>Bring us the process. We’ll build the tool.</h2>
           <p>
-            Website and SEO improvements, tech integrations, and custom systems — built around how your business runs.
+            Tell us what comes in, what your team does with it, and what needs to come out.
           </p>
           <ul className="intake-list" aria-label="What we set up">
-            <li>Website + SEO Setup</li>
-            <li>Tech Integration</li>
-            <li>Custom Systems</li>
+            <li>Map the inputs</li>
+            <li>Define the tool</li>
+            <li>Build the system</li>
           </ul>
           <a className="text-link phone-link" href="tel:+19373677089">
             (937) 367-7089
@@ -1290,14 +1378,13 @@ function App() {
       <SplashScreen />
       <div id="scroll-progress-bar" aria-hidden="true" />
       <Header />
-      <ScrollDots />
       <main>
         <Hero />
-        <StickyWorkflow />
-        <WebsiteTransformation />
+        <SpreadsheetTransformation />
         <FeatureGrid />
-        <AboutSection />
         <OutcomeSection />
+        <WebsiteTransformation />
+        <StickyWorkflow />
         <FinalCTA />
       </main>
       <footer className="site-footer">
@@ -1307,7 +1394,7 @@ function App() {
               <img src={logoUrl} alt="" width="32" height="32" />
               <span>Dayton<span>Growth</span><b>Co.</b></span>
             </a>
-            <p>A Dayton vibecoding firm helping local businesses improve websites, local SEO, tech integrations, and the systems behind daily work.</p>
+            <p>DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps for small businesses.</p>
             <a
               className="client-portal-link"
               href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00"
@@ -1325,13 +1412,15 @@ function App() {
             </div>
           </div>
           <nav className="footer-links" aria-label="Services">
-            <a href="/website-design/">Website Design</a>
-            <a href="/local-seo/">Local SEO</a>
-            <a href="/website-maintenance/">Maintenance</a>
-            <a href="/aboutus.html">About Us</a>
+            <span className="footer-column-label">Explore</span>
+            <a href="#platform">What We Build</a>
+            <a href="#outcomes">Examples</a>
             <a href="#workflow">How It Works</a>
+            <a href="/aboutus.html">About Us</a>
+            <a href="#cta">Start a Conversation</a>
           </nav>
           <nav className="footer-links" aria-label="Legal and contact">
+            <span className="footer-column-label">Contact</span>
             <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
             <a href="tel:+19373677089">(937) 367-7089</a>
             <a href="/privacy-policy/">Privacy</a>
