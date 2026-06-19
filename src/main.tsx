@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import {
   AppWindow,
   ArrowRight,
@@ -1826,6 +1827,7 @@ function App() {
         </div>
         <div className="footer-bottom">© {year} DaytonGrowthCo. All rights reserved.</div>
       </footer>
+      <Analytics />
     </>
   );
 }
