@@ -4675,23 +4675,64 @@
   .founder-preview {
     border-top: 1px solid rgba(24, 32, 24, 0.1);
     border-bottom: 1px solid rgba(24, 32, 24, 0.1);
-    padding-block: clamp(1.6rem, 2.8vw, 2.4rem);
+    padding-block: clamp(2.4rem, 4vw, 3.8rem);
     background:
       radial-gradient(circle at 16% 24%, rgba(240, 208, 176, 0.28), transparent 22rem),
       #ece9e1;
   }
 
-  .founder-preview img {
-    width: 8.5rem;
-    aspect-ratio: 1 / 1;
-    border: 1px solid rgba(24, 32, 24, 0.13);
-    border-radius: 10px;
-    object-fit: cover;
-    object-position: center 20%;
-    box-shadow: 0 12px 30px rgba(24, 32, 24, 0.1);
+  .founder-preview-layout {
+    display: grid;
+    grid-template-columns: 10.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(1.6rem, 3.2vw, 3.4rem);
   }
 
-  .founder-preview span {
+  .founder-profile {
+    margin: 0;
+  }
+
+  .founder-photo-frame {
+    padding: 0.32rem;
+    border: 1px solid rgba(24, 32, 24, 0.13);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.36);
+    box-shadow: 0 18px 42px rgba(24, 32, 24, 0.11);
+  }
+
+  .founder-preview img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 9px;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+
+  .founder-profile figcaption {
+    margin-top: 0.7rem;
+  }
+
+  .founder-profile figcaption strong,
+  .founder-profile figcaption span {
+    display: block;
+  }
+
+  .founder-profile figcaption strong {
+    color: #182018;
+    font-size: 0.78rem;
+    font-weight: 680;
+  }
+
+  .founder-profile figcaption span {
+    margin-top: 0.1rem;
+    color: #77716a;
+    font-size: 0.67rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .founder-eyebrow {
     color: #7b756d;
     font-size: 0.65rem;
     font-weight: 720;
@@ -4710,16 +4751,28 @@
   }
 
   .founder-preview p {
-    max-width: 38rem;
+    max-width: 42rem;
     margin-top: 0.48rem;
     color: #625e57;
     font-size: 0.9rem;
     line-height: 1.5;
   }
 
+  .founder-preview blockquote {
+    max-width: 42rem;
+    margin: 0.9rem 0 0;
+    border-left: 2px solid rgba(16, 16, 72, 0.52);
+    padding: 0.18rem 0 0.18rem 0.85rem;
+    color: #4f4b45;
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    font-style: italic;
+    line-height: 1.42;
+  }
+
   .founder-preview-link {
     display: inline-flex;
-    min-height: 2.8rem;
+    min-height: 3rem;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -4731,11 +4784,22 @@
     font-weight: 650;
     text-decoration: none;
     white-space: nowrap;
+    transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
   }
 
   .founder-preview-link:hover {
     border-color: #182018;
     background: rgba(255, 255, 255, 0.34);
+    transform: translateY(-1px);
+  }
+
+  .founder-preview-link svg {
+    transition: transform 160ms ease;
+  }
+
+  .founder-preview-link:hover svg,
+  .founder-preview-link:focus-visible svg {
+    transform: translateX(2px);
   }
 
   @keyframes form-submit-spin {
@@ -5329,6 +5393,15 @@
 }
 
 @media (max-width: 900px) {
+  .founder-preview-layout {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+
+  .founder-preview-link {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+
   .hero-product-float {
     display: none;
   }
@@ -6406,32 +6479,64 @@
     padding-inline: 0.2rem;
   }
 
-  .founder-preview > div {
-    grid-template-columns: 4.6rem 1fr;
-    gap: 0.85rem;
+  .founder-preview {
+    padding-block: 2rem;
   }
 
-  .founder-preview {
-    padding-block: 1.6rem;
+  .founder-preview-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .founder-profile {
+    display: grid;
+    grid-template-columns: 5.4rem 1fr;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .founder-photo-frame {
+    padding: 0.22rem;
+    border-radius: 10px;
   }
 
   .founder-preview img {
-    width: 4.6rem;
-    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    border-radius: 7px;
+    object-position: center 18%;
+  }
+
+  .founder-profile figcaption {
+    margin-top: 0;
+  }
+
+  .founder-profile figcaption strong {
+    font-size: 0.86rem;
+  }
+
+  .founder-profile figcaption span {
+    font-size: 0.7rem;
   }
 
   .founder-preview h2 {
-    font-size: 1.32rem;
+    margin-top: 0.42rem;
+    font-size: 1.65rem;
   }
 
   .founder-preview p {
-    font-size: 0.78rem;
-    line-height: 1.42;
+    margin-top: 0.55rem;
+    font-size: 0.84rem;
+    line-height: 1.48;
+  }
+
+  .founder-preview blockquote {
+    margin-top: 0.85rem;
+    font-size: 0.82rem;
   }
 
   .founder-preview-link {
-    grid-column: 1 / -1;
     width: 100%;
+    min-height: 3.15rem;
   }
 
   [data-reveal] {
