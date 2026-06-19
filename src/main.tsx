@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
+  AppWindow,
   ArrowRight,
   Bell,
   Calendar,
@@ -114,6 +115,11 @@ const features = [
     text: "Focused tools built around the way your team already works.",
   },
   {
+    icon: AppWindow,
+    title: "App Development",
+    text: "Web and mobile apps built for customers, staff, or a specific business process.",
+  },
+  {
     icon: Gauge,
     title: "Quote & Pricing Tools",
     text: "Calculators, estimate builders, and service pricing your team can use fast.",
@@ -172,6 +178,33 @@ const features = [
     icon: TrendingUp,
     title: "Campaign Analytics",
     text: "Connected measurement that shows which pages, searches, and campaigns are creating results.",
+  },
+];
+
+const featureCategories = [
+  {
+    icon: LayoutDashboard,
+    title: "Business Tools",
+    text: "Tools for calls, quotes, projects, customers, training, and daily work.",
+    examples: ["Phone Agents", "Quote & Pricing Tools", "Project Dashboards", "Customer Portals", "Training Systems"],
+  },
+  {
+    icon: AppWindow,
+    title: "Apps & Websites",
+    text: "Focused apps and modern websites built around a clear job.",
+    examples: ["Custom Business Apps", "App Development", "Modern Websites"],
+  },
+  {
+    icon: PanelTop,
+    title: "Content & Sales",
+    text: "Pages, proposals, videos, and visuals your business can send or publish.",
+    examples: ["Sales Materials", "Video & Visual Content"],
+  },
+  {
+    icon: Search,
+    title: "Search & Campaigns",
+    text: "Search clarity, campaign execution, site care, and connected reporting.",
+    examples: ["SEO", "AEO", "Social Media Campaigns", "Website Care", "Campaign Analytics"],
   },
 ];
 
@@ -1167,46 +1200,72 @@ function WebsiteTransformation() {
 
 function FeatureGrid() {
   const [openFeature, setOpenFeature] = useState(-1);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
 
   return (
-    <section className="section-shell" id="platform">
+    <section className="section-shell platform-section" id="platform">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>
-            What we build.
-          </h2>
-          <p>
-            Business tools, websites, SEO, AEO, and social media campaigns, all powered by a modern tech stack.
-          </p>
+          <h2>Built around the work.</h2>
+          <p>Tools, apps, content, and search systems for small businesses.</p>
         </div>
-        <div className="feature-grid desktop-feature-grid">
-          {features.map((feature) => {
-            const Icon = feature.icon;
+        <div className="feature-category-grid">
+          {featureCategories.map((category) => {
+            const Icon = category.icon;
             return (
-              <article className="feature-cell" key={feature.title}>
-                <span className="feature-icon" aria-hidden="true">
+              <article className="feature-category-card" key={category.title}>
+                <span className="feature-category-icon" aria-hidden="true">
                   <Icon size={18} strokeWidth={1.8} />
                 </span>
-                <h3 data-scroll-words>{feature.title}</h3>
-                <p>{feature.text}</p>
+                <h3>{category.title}</h3>
+                <p>{category.text}</p>
+                <ul aria-label={`${category.title} capabilities`}>
+                  {category.examples.slice(0, 3).map((example) => <li key={example}>{example}</li>)}
+                </ul>
               </article>
             );
           })}
         </div>
-        <div className="feature-accordion">
-          {features.map((feature, index) => {
-            const isOpen = openFeature === index;
-            return (
-              <article className={isOpen ? "is-open" : ""} key={feature.title}>
-                <button type="button" onClick={() => setOpenFeature(isOpen ? -1 : index)} aria-expanded={isOpen}>
-                  <span className="feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{feature.title}</strong>
-                  <ChevronDown size={17} aria-hidden="true" />
-                </button>
-                {isOpen ? <p>{feature.text}</p> : null}
-              </article>
-            );
-          })}
+        <button
+          className="feature-view-all"
+          type="button"
+          aria-expanded={showAllFeatures}
+          aria-controls="all-capabilities"
+          onClick={() => setShowAllFeatures((current) => !current)}
+        >
+          {showAllFeatures ? "Hide capabilities" : "View all capabilities"}
+          <ChevronDown size={16} aria-hidden="true" />
+        </button>
+        <div id="all-capabilities" className={`feature-all ${showAllFeatures ? "is-open" : ""}`}>
+          <div className="feature-grid desktop-feature-grid">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <article className="feature-cell" key={feature.title}>
+                  <span className="feature-icon" aria-hidden="true">
+                    <Icon size={18} strokeWidth={1.8} />
+                  </span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.text}</p>
+                </article>
+              );
+            })}
+          </div>
+          <div className="feature-accordion">
+            {features.map((feature, index) => {
+              const isOpen = openFeature === index;
+              return (
+                <article className={isOpen ? "is-open" : ""} key={feature.title}>
+                  <button type="button" onClick={() => setOpenFeature(isOpen ? -1 : index)} aria-expanded={isOpen}>
+                    <span className="feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{feature.title}</strong>
+                    <ChevronDown size={17} aria-hidden="true" />
+                  </button>
+                  {isOpen ? <p>{feature.text}</p> : null}
+                </article>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -1367,13 +1426,31 @@ function FounderPreview() {
 }
 
 function SplashScreen() {
-  const [done, setDone] = useState(false);
+  const [skipSplash] = useState(() => {
+    try {
+      return window.sessionStorage.getItem("dgc:splash-seen") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [done, setDone] = useState(skipSplash);
 
   useEffect(() => {
+    document.getElementById("boot-splash")?.remove();
+    if (skipSplash) {
+      document.documentElement.classList.add("dgc-splash-seen");
+      document.body.classList.remove("splash-lock");
+      return;
+    }
+
+    try {
+      window.sessionStorage.setItem("dgc:splash-seen", "1");
+    } catch {
+      /* Continue showing the splash when storage is unavailable. */
+    }
     document.body.classList.add("splash-lock");
     // This effect runs after the React splash is committed to the DOM (same
     // frame), so removing the inline boot overlay now hands off seamlessly.
-    document.getElementById("boot-splash")?.remove();
     const timer = window.setTimeout(() => {
       setDone(true);
       document.body.classList.remove("splash-lock");
@@ -1382,7 +1459,9 @@ function SplashScreen() {
       window.clearTimeout(timer);
       document.body.classList.remove("splash-lock");
     };
-  }, []);
+  }, [skipSplash]);
+
+  if (skipSplash) return null;
 
   return (
     <div className={`splash-screen ${done ? "is-done" : ""}`} aria-hidden="true">
