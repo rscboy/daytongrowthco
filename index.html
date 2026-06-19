@@ -290,6 +290,15 @@
       });
     </script>
 
+    <script>
+      try {
+        if (sessionStorage.getItem("dgc:splash-seen") === "1") {
+          document.documentElement.classList.add("dgc-splash-seen");
+        }
+      } catch {
+        /* Storage can be unavailable in restrictive browser modes. */
+      }
+    </script>
     <style id="boot-splash-style">
       /* Paint the brand splash on the very first frame so the unstyled SEO
          fallback never flashes before the app bundle loads and mounts. */
@@ -307,6 +316,12 @@
           radial-gradient(circle at 55% 58%, rgba(168, 85, 247, 0.1), transparent 36%),
           linear-gradient(180deg, #05070d 0%, #070a12 52%, #050505 100%);
         font-family: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      html.dgc-splash-seen {
+        background: #fbfbf9;
+      }
+      html.dgc-splash-seen #boot-splash {
+        display: none;
       }
     </style>
     <noscript>
