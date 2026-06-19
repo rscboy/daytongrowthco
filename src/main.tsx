@@ -1825,7 +1825,7 @@ function App() {
             <a href="/accessibility/">Accessibility</a>
           </nav>
         </div>
-        <div className="footer-bottom">© {year} DaytonGrowthCo. All rights reserved.</div>
+        <div className="footer-bottom">© {year} DaytonGrowthCo. LLC. All rights reserved.</div>
       </footer>
       <Analytics />
     </>
