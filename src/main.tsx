@@ -11,10 +11,12 @@ import {
   FileInput,
   FileText,
   Gauge,
+  Globe2,
   LayoutDashboard,
   LockKeyhole,
   Mail,
   MapPin,
+  Megaphone,
   PanelTop,
   Phone,
   Radar,
@@ -22,7 +24,9 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  TrendingUp,
   Workflow,
+  Wrench,
 } from "lucide-react";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import "./index.css";
@@ -84,7 +88,7 @@ const workflowSteps: WorkflowStep[] = [
   },
   {
     label: "Output",
-    title: "A ready-to-send estimate.",
+    title: "An estimate that is ready to send.",
     description: "The tool produces the document, update, or next step your team needs.",
     status: "Output ready",
     output: "Shareable estimate",
@@ -137,12 +141,42 @@ const features = [
   {
     icon: Sparkles,
     title: "Video & Visual Content",
-    text: "Short videos, product visuals, explainers, and e-commerce content.",
+    text: "Short videos, product visuals, explainers, and ecommerce content.",
+  },
+  {
+    icon: Globe2,
+    title: "Modern Websites",
+    text: "Fast, polished websites built with a modern tech stack to turn visits into real opportunities.",
+  },
+  {
+    icon: Search,
+    title: "SEO",
+    text: "Technical and local search improvements that help customers find your business.",
+  },
+  {
+    icon: Radar,
+    title: "AEO",
+    text: "Clear, structured content that helps your business appear in AI answers and recommendation tools.",
+  },
+  {
+    icon: Megaphone,
+    title: "Social Media Campaigns",
+    text: "Focused social campaigns with modern creative, landing pages, tracking, and reporting.",
+  },
+  {
+    icon: Wrench,
+    title: "Website Care",
+    text: "Ongoing updates, performance improvements, and technical support that keep your website dependable.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Campaign Analytics",
+    text: "Connected measurement that shows which pages, searches, and campaigns are creating results.",
   },
 ];
 
 const metrics = [
-  { value: "Dayton", label: "based in Ohio", detail: "Built for Dayton-area small and mid-sized businesses" },
+  { value: "Dayton", label: "based in Ohio", detail: "Built for small and midsized businesses in the Dayton area" },
   { value: "24h", label: "response window", detail: "Response guaranteed within 24 hours" },
   { value: "3", label: "setup paths", detail: "Website + SEO Setup, Tech Integration, and Custom Systems" },
 ];
@@ -176,7 +210,7 @@ const videos = {
 const buildExamples = [
   {
     label: "Calls",
-    title: "After-Hours Phone Agent",
+    title: "After Hours Phone Agent",
     text: "Answers calls, gathers the reason for the call, and sends your team a summary.",
   },
   {
@@ -211,7 +245,7 @@ const buildExamples = [
   },
   {
     label: "Workflow",
-    title: "Notes-to-Documents System",
+    title: "Notes to Documents System",
     text: "Turns job notes, call summaries, photos, or files into usable work documents.",
   },
 ];
@@ -586,7 +620,7 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
 }
 
 function SpreadsheetTransformation() {
-  const cells = ["Customer", "Job", "Status", "Price", "Miller", "Roof repair", "New", "$—", "Davis", "Remodel", "Quoted", "$8,450"];
+  const cells = ["Customer", "Job", "Status", "Price", "Miller", "Roof repair", "New", "Pending", "Davis", "Remodel", "Quoted", "$8,450"];
 
   return (
     <section className="spreadsheet-transform" aria-labelledby="spreadsheet-transform-heading">
@@ -705,7 +739,7 @@ function AiVisibility() {
                   <>
                     <p className="ai-answer-text">
                       For {query.topic.toLowerCase()} in Dayton, the clear top recommendation is{" "}
-                      <mark>{query.biz}</mark> — trusted locally, with fast scheduling and upfront pricing.
+                      <mark>{query.biz}</mark>, a locally trusted business with fast scheduling and upfront pricing.
                     </p>
                     <div className="ai-citation">
                       <span className="ai-rank">#1</span>
@@ -766,7 +800,7 @@ function Hero() {
           </h1>
           <p>
             Phone agents, quote calculators, dashboards, training libraries, sales pages, product visuals, and custom
-            apps—built around the work your business already does.
+            apps, all built around the work your business already does.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -1066,7 +1100,9 @@ function FeatureGrid() {
           <h2>
             What we build.
           </h2>
-          <p>Phone agents, quote tools, dashboards, portals, internal systems, pages, video, and custom apps.</p>
+          <p>
+            Business tools, websites, SEO, AEO, and social media campaigns, all powered by a modern tech stack.
+          </p>
         </div>
         <div className="feature-grid desktop-feature-grid">
           {features.map((feature) => {
