@@ -3791,6 +3791,72 @@
     display: none;
   }
 
+  .founder-preview {
+    border-top: 1px solid rgba(24, 32, 24, 0.1);
+    border-bottom: 1px solid rgba(24, 32, 24, 0.1);
+    padding-block: clamp(1.25rem, 2.5vw, 2rem);
+    background:
+      radial-gradient(circle at 16% 24%, rgba(240, 208, 176, 0.28), transparent 22rem),
+      #ece9e1;
+  }
+
+  .founder-preview img {
+    width: 8.5rem;
+    aspect-ratio: 1 / 1;
+    border: 1px solid rgba(24, 32, 24, 0.13);
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: center 20%;
+    box-shadow: 0 12px 30px rgba(24, 32, 24, 0.1);
+  }
+
+  .founder-preview span {
+    color: #7b756d;
+    font-size: 0.65rem;
+    font-weight: 720;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .founder-preview h2 {
+    margin-top: 0.38rem;
+    color: #182018;
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+
+  .founder-preview p {
+    max-width: 38rem;
+    margin-top: 0.48rem;
+    color: #625e57;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .founder-preview-link {
+    display: inline-flex;
+    min-height: 2.8rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(24, 32, 24, 0.24);
+    border-radius: 8px;
+    padding-inline: 1rem;
+    color: #182018;
+    font-size: 0.84rem;
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .founder-preview-link:hover {
+    border-color: #182018;
+    background: rgba(255, 255, 255, 0.34);
+  }
+
   @keyframes form-submit-spin {
     to {
       transform: rotate(360deg);
@@ -5217,6 +5283,30 @@
 
   .form-trust-cues > p:last-child::before {
     display: none;
+  }
+
+  .founder-preview > div {
+    grid-template-columns: 4.6rem 1fr;
+    gap: 0.85rem;
+  }
+
+  .founder-preview img {
+    width: 4.6rem;
+    border-radius: 8px;
+  }
+
+  .founder-preview h2 {
+    font-size: 1.32rem;
+  }
+
+  .founder-preview p {
+    font-size: 0.78rem;
+    line-height: 1.42;
+  }
+
+  .founder-preview-link {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 
   [data-reveal] {

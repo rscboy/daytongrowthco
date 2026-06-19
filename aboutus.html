@@ -38,6 +38,231 @@
             background-image: radial-gradient(#3B82F6 1px, transparent 1px);
             background-size: 32px 32px;
         }
+
+        .about-site-header {
+            position: fixed;
+            inset: 0 0 auto;
+            z-index: 50;
+            border-bottom: 1px solid rgba(24, 32, 24, 0.09);
+            background:
+                radial-gradient(circle at 18% 30%, rgba(240, 208, 176, 0.14), transparent 28rem),
+                linear-gradient(180deg, rgba(243, 241, 234, 0.97), rgba(235, 232, 224, 0.97));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .about-nav-inner {
+            display: flex;
+            width: 100%;
+            max-width: 80rem;
+            height: 4rem;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-inline: auto;
+            padding-inline: 2rem;
+        }
+
+        .about-wordmark {
+            display: inline-flex;
+            align-items: baseline;
+            color: inherit;
+            font-family: 'Geist', sans-serif;
+            font-size: 1rem;
+            letter-spacing: -0.025em;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .about-wordmark-dayton { color: #182018; font-size: 1.08em; font-weight: 650; }
+        .about-wordmark-growth { color: #7a766f; font-weight: 450; }
+        .about-wordmark-co { color: #5796C8; font-weight: 800; }
+
+        .about-nav-links {
+            display: none;
+            align-items: center;
+            gap: 1.7rem;
+            margin-left: auto;
+        }
+
+        .about-nav-links a {
+            color: #4a4640;
+            font-size: 0.86rem;
+            font-weight: 550;
+            text-decoration: none;
+        }
+
+        .about-nav-links a[aria-current="page"] { color: #182018; }
+
+        .about-nav-cta {
+            display: inline-flex;
+            min-height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            border: 1px solid #182018;
+            border-radius: 8px;
+            padding-inline: 0.95rem;
+            color: #fff;
+            background: #20231f;
+            box-shadow: 0 4px 12px rgba(24, 32, 24, 0.12);
+            font-size: 0.88rem;
+            font-weight: 650;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .about-page-intro { padding-top: 8rem; }
+
+        .about-return-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 2rem;
+            color: #625e57;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .about-return-link:hover { color: #182018; }
+
+        .about-page-intro,
+        .about-mission {
+            background:
+                radial-gradient(circle at 12% 18%, rgba(240, 208, 176, 0.2), transparent 24rem),
+                #f0f0e8;
+        }
+
+        .about-page-intro .about-kicker,
+        .about-mission .about-kicker {
+            color: #716b63 !important;
+            border-color: rgba(24, 32, 24, 0.18) !important;
+        }
+
+        .about-title-accent { color: #5796C8; }
+
+        .about-page-intro i { color: #101048 !important; }
+
+        .about-portrait-glow {
+            background: linear-gradient(135deg, rgba(240, 208, 176, 0.72), rgba(216, 232, 248, 0.78)) !important;
+        }
+
+        .about-portrait-frame { border-color: rgba(16, 16, 72, 0.22) !important; }
+
+        .about-quote-line {
+            background: linear-gradient(to bottom, #f0d0b0, #5796c8) !important;
+        }
+
+        .about-highlight {
+            color: #101048 !important;
+            background: none !important;
+            -webkit-text-fill-color: currentColor !important;
+        }
+
+        .about-mission {
+            border-color: rgba(24, 32, 24, 0.1) !important;
+        }
+
+        .about-mission-card {
+            border: 1px solid rgba(24, 32, 24, 0.11) !important;
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.42) !important;
+            box-shadow: 0 14px 40px rgba(24, 32, 24, 0.07) !important;
+        }
+
+        .about-mission-card li {
+            border-color: rgba(24, 32, 24, 0.1) !important;
+            border-radius: 8px !important;
+            background: rgba(255, 255, 255, 0.62) !important;
+        }
+
+        .about-mission i { color: #101048 !important; }
+
+        .about-closing {
+            padding: 4.5rem 1.5rem;
+            color: #fff;
+            text-align: center;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(240, 208, 176, 0.17), transparent 34rem),
+                #05070c;
+        }
+
+        .about-closing h2 {
+            color: #fff;
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            line-height: 1.02;
+        }
+
+        .about-closing p {
+            max-width: 36rem;
+            margin: 0.9rem auto 0;
+            color: #b9bec8;
+            line-height: 1.55;
+        }
+
+        .about-closing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.6rem;
+        }
+
+        .about-closing-actions a {
+            display: inline-flex;
+            min-height: 3rem;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: 8px;
+            padding-inline: 1.15rem;
+            color: #fff;
+            font-size: 0.88rem;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        .about-closing-actions a:first-child {
+            border-color: #f0d0b0;
+            color: #182018;
+            background: #f0d0b0;
+        }
+
+        .about-footer { background: #05070c !important; }
+        .about-footer i { color: #d8e8f8 !important; }
+        .about-footer > div:first-child {
+            background: linear-gradient(to right, transparent, rgba(240, 208, 176, 0.34), transparent) !important;
+        }
+
+        @media (min-width: 900px) {
+            .about-nav-links { display: flex; }
+        }
+
+        @media (max-width: 640px) {
+            .about-nav-inner {
+                height: 3.5rem;
+                gap: 0.6rem;
+                padding-inline: 1.25rem;
+            }
+
+            .about-wordmark { min-width: 0; font-size: 0.82rem; }
+
+            .about-nav-cta {
+                flex: 0 0 auto;
+                min-height: 2.15rem;
+                border-radius: 7px;
+                padding-inline: 0.72rem;
+                font-size: 0.76rem;
+                font-weight: 620;
+            }
+
+            .about-page-intro { padding-top: 7.25rem; }
+
+            .about-closing-actions a { width: 100%; }
+        }
     </style>
     <script>
         tailwind.config = {
@@ -90,49 +315,38 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-[0.03] mask-image:linear-gradient(to_bottom,white,transparent)"></div>
     </div>
 
-    <!-- Premium SaaS Header -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-saas-border transition-all duration-150">
-        <div class="max-w-[1280px] mx-auto px-6 lg:px-10 h-[80px] flex items-center justify-between">
-            
-            <!-- Logo Wordmark -->
-            <div class="flex items-center">
-                <a href="/" class="text-[22px] tracking-tight flex items-center" style="font-family:'Geist', sans-serif; letter-spacing:-0.01em;">
-                    <span style="color:#182018; font-weight:650;">Dayton</span><span style="color:#7a766f; font-weight:450;">Growth</span><span style="color:#5796C8; font-weight:800;">Co.</span>
-                </a>
+    <header class="about-site-header">
+        <nav class="about-nav-inner" aria-label="Primary">
+            <a href="/" class="about-wordmark" aria-label="DaytonGrowthCo home">
+                <span class="about-wordmark-dayton">Dayton</span><span class="about-wordmark-growth">Growth</span><span class="about-wordmark-co">Co.</span>
+            </a>
+            <div class="about-nav-links">
+                <a href="/#platform">What We Build</a>
+                <a href="/#outcomes">Examples</a>
+                <a href="/#workflow">How It Works</a>
+                <a href="/aboutus.html" aria-current="page">About</a>
+                <a href="/#cta">Contact</a>
             </div>
-
-            <!-- Desktop Navigation Links -->
-            <div class="hidden md:flex items-center ml-auto mr-10 gap-[36px]">
-                <a href="/" class="text-saas-textMuted hover:text-saas-textDark text-[15px] font-[500] transition-colors duration-150 ease-out">Home</a>
-                <a href="/#platform" class="text-saas-textMuted hover:text-saas-textDark text-[15px] font-[500] transition-colors duration-150 ease-out">What We Build</a>
-                <a href="#" class="text-saas-textDark text-[15px] font-[500]">About Us</a>
-            </div>
-
-            <!-- Primary CTA -->
-            <div class="hidden md:block">
-                <a href="/#cta" class="bg-[linear-gradient(90deg,#3B82F6,#9B6BFF)] text-white px-[22px] py-[12px] rounded-lg font-[600] text-[15px] shadow-cta hover:shadow-cta-hover hover:-translate-y-[2px] transition-all duration-200 ease-out inline-block">
-                    Start Building.
-                </a>
-            </div>
-
-            <!-- Mobile menu button -->
-            <div class="flex items-center md:hidden">
-                <button class="text-saas-textMuted hover:text-saas-textDark">
-                    <i data-lucide="menu" class="w-6 h-6" stroke-width="1.5"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
+            <a href="/#cta" class="about-nav-cta">
+                Start Building.
+                <i data-lucide="arrow-right" class="w-[15px] h-[15px]" stroke-width="2"></i>
+            </a>
+        </nav>
+    </header>
 
     <!-- Page Intro & Meet the Founder -->
-    <section class="pt-[60px] pb-[80px] lg:pt-[80px] lg:pb-[100px]">
+    <section class="about-page-intro pb-[80px] lg:pb-[100px]">
         <div class="max-w-[1000px] mx-auto px-6 lg:px-8">
+            <a href="/#platform" class="about-return-link">
+                <i data-lucide="arrow-left" class="w-4 h-4" stroke-width="1.8"></i>
+                Back to What We Build
+            </a>
             
             <!-- Tighter Intro -->
             <div class="text-center mb-[60px] lg:mb-[80px] reveal">
-                <span class="inline-block pb-1 text-saas-blue text-[13px] font-[600] tracking-micro uppercase mb-4 border-b border-saas-blue/30">Our Story</span>
+                <span class="about-kicker inline-block pb-1 text-saas-blue text-[13px] font-[600] tracking-micro uppercase mb-4 border-b border-saas-blue/30">Our Story</span>
                 <h1 class="text-[36px] md:text-[52px] font-[800] text-saas-textDark leading-[1.1] tracking-tight mb-5">
-                    About <span class="text-transparent bg-clip-text bg-[linear-gradient(90deg,#3B82F6,#9B6BFF)]">Us</span>
+                    About <span class="about-title-accent">Us</span>
                 </h1>
             </div>
 
@@ -142,10 +356,10 @@
                 <!-- Refined, Smaller Portrait with Accent -->
                 <div class="relative w-full max-w-[280px] md:max-w-[320px] shrink-0 mx-auto md:mx-0">
                     <!-- Colorful Background Glow -->
-                    <div class="absolute -inset-4 bg-[linear-gradient(135deg,#3B82F6,#9B6BFF)] opacity-20 rounded-[20px] blur-[24px] animate-float z-0"></div>
+                    <div class="about-portrait-glow absolute -inset-4 bg-[linear-gradient(135deg,#3B82F6,#9B6BFF)] opacity-20 rounded-[20px] blur-[24px] animate-float z-0"></div>
                     
                     <!-- Offset Accent Box -->
-                    <div class="absolute top-[16px] -right-[16px] w-full h-full border-2 border-saas-violet/30 rounded-[16px] z-0 animate-float-delayed"></div>
+                    <div class="about-portrait-frame absolute top-[16px] -right-[16px] w-full h-full border-2 border-saas-violet/30 rounded-[16px] z-0 animate-float-delayed"></div>
                     <div class="absolute -bottom-[16px] -left-[16px] w-[60%] h-[60%] bg-saas-blue/10 rounded-bl-[16px] rounded-tr-[40px] z-0"></div>
 
                     <!-- Main Image -->
@@ -170,7 +384,7 @@
                         
                         <!-- Accent Quote Block -->
                         <div class="relative pl-6 py-2 my-8 border-l-[3px] border-transparent">
-                            <div class="absolute left-[-3px] top-0 h-full w-[3px] bg-[linear-gradient(to_bottom,#3B82F6,#9B6BFF)] rounded-full"></div>
+                            <div class="about-quote-line absolute left-[-3px] top-0 h-full w-[3px] bg-[linear-gradient(to_bottom,#3B82F6,#9B6BFF)] rounded-full"></div>
                             <div class="absolute top-0 left-4 w-8 h-8 bg-saas-blue/5 rounded-full blur-md -z-10"></div>
                             <p class="text-[18px] text-saas-textDark font-[500] italic leading-relaxed">
                                 "Most small businesses do not need more software. They need the right tool built around the work."
@@ -178,7 +392,7 @@
                         </div>
                         
                         <p>
-                            Samuel founded DaytonGrowthCo. to build phone agents, quote tools, dashboards, portals, sales materials, and custom apps for small businesses. <strong class="text-transparent bg-clip-text bg-[linear-gradient(90deg,#2F6FEA,#9B6BFF)] font-[700]">The work starts with the process, then becomes a tool the team can use.</strong>
+                            Samuel founded DaytonGrowthCo. to build phone agents, quote tools, dashboards, portals, sales materials, and custom apps for small businesses. <strong class="about-highlight text-transparent bg-clip-text bg-[linear-gradient(90deg,#2F6FEA,#9B6BFF)] font-[700]">The work starts with the process, then becomes a tool the team can use.</strong>
                         </p>
                     </div>
                 </div>
@@ -188,7 +402,7 @@
     </section>
 
     <!-- Consolidated Mission & Difference Section -->
-    <section class="py-[80px] lg:py-[100px] bg-white border-t border-saas-border relative overflow-hidden">
+    <section class="about-mission py-[80px] lg:py-[100px] bg-white border-t border-saas-border relative overflow-hidden">
         
         <!-- Subtle background accent -->
         <div class="absolute right-0 bottom-0 w-[600px] h-[600px] bg-saas-blue/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
@@ -198,13 +412,13 @@
                 
                 <!-- The Mission & Problem -->
                 <div class="reveal">
-                    <span class="text-saas-blue font-[700] tracking-micro uppercase text-[12px] mb-3 block">Why We Exist</span>
+                    <span class="about-kicker text-saas-blue font-[700] tracking-micro uppercase text-[12px] mb-3 block">Why We Exist</span>
                     <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">Our Mission</h3>
                     <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
                         To build the digital tools small businesses need for calls, quotes, projects, customers, staff, sales, and internal work.
                     </p>
                     
-                    <div class="bg-gradient-to-br from-[#FAFBFF] to-[#F5F8FF] rounded-[20px] p-8 border border-saas-blue/10 shadow-soft hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                    <div class="about-mission-card bg-gradient-to-br from-[#FAFBFF] to-[#F5F8FF] rounded-[20px] p-8 border border-saas-blue/10 shadow-soft hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                         <p class="font-[600] text-saas-textDark mb-4 text-[16px] flex items-center gap-2">
                             <i data-lucide="trending-up" class="w-5 h-5 text-saas-violet" stroke-width="2"></i>
                             What we build:
@@ -228,7 +442,7 @@
 
                 <!-- The Difference -->
                 <div class="reveal delay-200">
-                    <span class="text-saas-violet font-[700] tracking-micro uppercase text-[12px] mb-3 block">The Solution</span>
+                    <span class="about-kicker text-saas-violet font-[700] tracking-micro uppercase text-[12px] mb-3 block">The Solution</span>
                     <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">What Makes Us Different</h3>
                     <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
                         We do not stop at websites, ads, or software recommendations. We configure existing tools when they fit and build custom tools when they do not.
@@ -266,8 +480,17 @@
         </div>
     </section>
 
+    <section class="about-closing">
+        <h2>See the work. Or start with yours.</h2>
+        <p>Explore the tools DaytonGrowthCo builds, or tell us what your team is still handling by hand.</p>
+        <div class="about-closing-actions">
+            <a href="/#platform">See What We Build</a>
+            <a href="/#cta">Start Building.</a>
+        </div>
+    </section>
+
     <!-- Cinematic Dark Footer -->
-    <footer class="bg-saas-dark1 pt-[80px] lg:pt-[100px] pb-[32px] lg:pb-[40px] relative overflow-hidden">
+    <footer class="about-footer bg-saas-dark1 pt-[80px] lg:pt-[100px] pb-[32px] lg:pb-[40px] relative overflow-hidden">
         
         <!-- Subtle footer glow -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[1px] bg-gradient-to-r from-transparent via-saas-blue/30 to-transparent"></div>

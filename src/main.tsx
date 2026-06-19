@@ -1344,6 +1344,28 @@ function FinalCTA() {
   );
 }
 
+function FounderPreview() {
+  return (
+    <section className="founder-preview" aria-labelledby="founder-preview-title">
+      <div className="mx-auto grid max-w-7xl items-center gap-6 px-5 sm:px-8 md:grid-cols-[8.5rem_1fr_auto]">
+        <img
+          src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg"
+          alt="Samuel Caruso, founder of DaytonGrowthCo"
+        />
+        <div>
+          <span>Built in Dayton</span>
+          <h2 id="founder-preview-title">The person behind the tools.</h2>
+          <p>Meet Samuel Caruso and read why DaytonGrowthCo starts with the way a business actually works.</p>
+        </div>
+        <a className="founder-preview-link" href="/aboutus.html">
+          About DaytonGrowthCo
+          <ArrowRight size={16} aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function SplashScreen() {
   const [done, setDone] = useState(false);
 
@@ -1508,6 +1530,7 @@ function App() {
         <OutcomeSection />
         <WebsiteTransformation />
         <StickyWorkflow />
+        <FounderPreview />
         <FinalCTA />
       </main>
       <footer className="site-footer">
