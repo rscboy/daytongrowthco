@@ -244,6 +244,7 @@ const toolScenarios = [
   {
     id: "calendar",
     label: "Plan our content",
+    hint: "A month mapped out",
     need: "We need a content calendar.",
     title: "A month of content takes shape.",
     icon: Calendar,
@@ -251,6 +252,7 @@ const toolScenarios = [
   {
     id: "calls",
     label: "Answer after hours",
+    hint: "Never miss a call",
     need: "We need to respond to customers after hours.",
     title: "A call system comes online.",
     icon: Phone,
@@ -258,6 +260,7 @@ const toolScenarios = [
   {
     id: "social",
     label: "Create social posts",
+    hint: "Show up everywhere",
     need: "We need a stronger social media presence.",
     title: "Content starts publishing.",
     icon: Megaphone,
@@ -265,6 +268,7 @@ const toolScenarios = [
   {
     id: "search",
     label: "Show up in AI",
+    hint: "Found in AI answers",
     need: "We need our company to appear in AI answers.",
     title: "The business becomes easier to find.",
     icon: Search,
@@ -343,13 +347,16 @@ function Header() {
   );
 }
 
-function useRecaptchaProtection() {
+function useTurnstileProtection() {
   useEffect(() => {
     const form = document.getElementById("auditForm") as HTMLFormElement | null;
-    const key = document.querySelector<HTMLMetaElement>('meta[name="recaptcha-site-key"]')?.content.trim();
-    if (!form || !key) return;
+    const key = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content.trim();
+    const container = document.getElementById("turnstileWidget");
+    if (!form || !key || !container) return;
+
     const submitButton = form.querySelector<HTMLButtonElement>(".form-submit");
     const submitLabel = submitButton?.querySelector<HTMLElement>(".form-submit-label");
+    const getStatus = () => document.getElementById("auditStatus");
 
     const setSubmitting = (isSubmitting: boolean) => {
       if (!submitButton) return;
@@ -359,89 +366,96 @@ function useRecaptchaProtection() {
       if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Start Building";
     };
 
-    const loadRecaptcha = () =>
-      new Promise<any>((resolve, reject) => {
-        const win = window as unknown as { grecaptcha?: any };
-        if (win.grecaptcha?.execute) {
-          resolve(win.grecaptcha);
+    type Turnstile = {
+      render: (el: HTMLElement, options: Record<string, unknown>) => string;
+      getResponse: (id?: string) => string | undefined;
+      reset: (id?: string) => void;
+      remove: (id?: string) => void;
+    };
+
+    const loadTurnstile = () =>
+      new Promise<Turnstile>((resolve, reject) => {
+        const win = window as unknown as { turnstile?: Turnstile };
+        if (win.turnstile) {
+          resolve(win.turnstile);
           return;
         }
 
-        const existing = document.querySelector<HTMLScriptElement>("script[data-dgc-recaptcha]");
+        const existing = document.querySelector<HTMLScriptElement>("script[data-dgc-turnstile]");
         if (existing) {
-          existing.addEventListener("load", () => resolve(win.grecaptcha), { once: true });
+          existing.addEventListener("load", () => win.turnstile && resolve(win.turnstile), { once: true });
           existing.addEventListener("error", reject, { once: true });
           return;
         }
 
         const script = document.createElement("script");
-        script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(key)}`;
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
         script.async = true;
         script.defer = true;
-        script.dataset.dgcRecaptcha = "true";
-        script.onload = () => resolve(win.grecaptcha);
+        script.dataset.dgcTurnstile = "true";
+        script.onload = () => (win.turnstile ? resolve(win.turnstile) : reject(new Error("Turnstile unavailable")));
         script.onerror = reject;
         document.head.appendChild(script);
       });
 
+    let cancelled = false;
+    let widgetId: string | undefined;
+    let turnstileApi: Turnstile | undefined;
+
+    loadTurnstile()
+      .then((turnstile) => {
+        if (cancelled) return;
+        turnstileApi = turnstile;
+        widgetId = turnstile.render(container, {
+          sitekey: key,
+          action: "quick_recommendation",
+          theme: "light",
+        });
+      })
+      .catch(() => {
+        const status = getStatus();
+        if (status) status.textContent = "Verification failed to load. Please refresh and try again.";
+      });
+
     let submittingWithToken = false;
     let submittedToIframe = false;
-    const onSubmit = async (event: SubmitEvent) => {
+    const onSubmit = (event: SubmitEvent) => {
       if (submittingWithToken) {
         submittingWithToken = false;
         return;
       }
 
       event.preventDefault();
-      const tokenField = document.getElementById("recaptchaToken") as HTMLInputElement | null;
-      const actionField = document.getElementById("recaptchaAction") as HTMLInputElement | null;
-      const status = document.getElementById("auditStatus");
-      setSubmitting(true);
-      if (status) status.textContent = "Preparing your request…";
-
-      try {
-        const grecaptcha = await loadRecaptcha();
-        grecaptcha.ready(async () => {
-          try {
-            const token = await grecaptcha.execute(key, { action: "quick_recommendation" });
-            if (tokenField) tokenField.value = token;
-            if (actionField) actionField.value = "quick_recommendation";
-            if (status) status.textContent = "Sending…";
-            submittingWithToken = true;
-            submittedToIframe = true;
-            form.requestSubmit();
-          } catch {
-            if (status) status.textContent = "Sending…";
-            submittingWithToken = true;
-            submittedToIframe = true;
-            form.requestSubmit();
-          }
-        });
-      } catch {
-        try {
-          if (status) status.textContent = "Sending...";
-          submittingWithToken = true;
-          submittedToIframe = true;
-          form.requestSubmit();
-        } catch {
-          setSubmitting(false);
-          if (status) status.textContent = "Please try again.";
-        }
+      const status = getStatus();
+      const token = turnstileApi?.getResponse(widgetId);
+      if (!token) {
+        if (status) status.textContent = "Please complete the verification below.";
+        return;
       }
+
+      setSubmitting(true);
+      if (status) status.textContent = "Sending…";
+      submittingWithToken = true;
+      submittedToIframe = true;
+      form.requestSubmit();
     };
 
     const iframe = document.querySelector<HTMLIFrameElement>('iframe[name="hidden_iframe"]');
     const onIframeLoad = () => {
       if (!submittedToIframe) return;
-      const status = document.getElementById("auditStatus");
+      const status = getStatus();
       if (status) status.textContent = "Request received. We’ll reply with next steps.";
+      setSubmitting(false);
+      turnstileApi?.reset(widgetId);
     };
 
     form.addEventListener("submit", onSubmit);
     iframe?.addEventListener("load", onIframeLoad);
     return () => {
+      cancelled = true;
       form.removeEventListener("submit", onSubmit);
       iframe?.removeEventListener("load", onIframeLoad);
+      if (turnstileApi && widgetId !== undefined) turnstileApi.remove(widgetId);
     };
   }, []);
 }
@@ -1325,9 +1339,12 @@ function ToolScenarioDemo() {
               onClick={() => chooseScenario(index)}
               key={item.label}
             >
-              <span className="scenario-tab-icon"><Icon size={16} aria-hidden="true" /></span>
-              <strong>{item.label}</strong>
-              <ArrowRight size={16} aria-hidden="true" />
+              <span className="scenario-tab-icon"><Icon size={15} aria-hidden="true" /></span>
+              <span className="scenario-tab-text">
+                <strong>{item.label}</strong>
+                <small>{item.hint}</small>
+              </span>
+              <ArrowRight size={14} aria-hidden="true" />
             </button>
             );
           })}
@@ -1476,8 +1493,6 @@ function ProjectForm() {
   return (
     <div className="form-card">
       <form id="auditForm" method="POST" action={formAction} target="hidden_iframe" className="project-form">
-        <input type="hidden" id="recaptchaToken" name="recaptchaToken" value="" readOnly />
-        <input type="hidden" id="recaptchaAction" name="recaptchaAction" value="quick_recommendation" readOnly />
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
 
@@ -1501,6 +1516,8 @@ function ProjectForm() {
             required
           />
         </label>
+
+        <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
 
         <button type="submit" className="button button-primary large form-submit">
           <span className="form-submit-label">Start Building</span>
@@ -1738,7 +1755,7 @@ function App() {
   const [footerWordmarkCompact, setFooterWordmarkCompact] = useState(false);
   useMotionSystem();
   useMuxVideos();
-  useRecaptchaProtection();
+  useTurnstileProtection();
 
   return (
     <>
