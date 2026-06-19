@@ -593,6 +593,39 @@
       );
   }
 
+  @media (min-width: 1024px) {
+    .hero-product-video-mask {
+      background:
+        radial-gradient(
+          66% 78% at 21% 49%,
+          rgba(0, 0, 8, 0.5) 0%,
+          rgba(0, 0, 8, 0.42) 38%,
+          rgba(0, 0, 8, 0.16) 72%,
+          transparent 100%
+        ),
+        radial-gradient(
+          118% 96% at 52% 45%,
+          transparent 42%,
+          rgba(0, 0, 8, 0.1) 72%,
+          rgba(0, 0, 8, 0.3) 100%
+        ),
+        linear-gradient(
+          102deg,
+          rgba(0, 0, 8, 0.5) 0%,
+          rgba(5, 5, 12, 0.38) 38%,
+          rgba(5, 5, 12, 0.12) 68%,
+          rgba(0, 0, 8, 0.18) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(0, 0, 8, 0.12) 0%,
+          rgba(0, 0, 8, 0.02) 38%,
+          rgba(0, 0, 8, 0.26) 74%,
+          rgba(0, 0, 8, 0.62) 100%
+        );
+    }
+  }
+
   .hero-scroll-cue {
     display: none;
   }
@@ -787,22 +820,15 @@
     vertical-align: baseline;
   }
 
-  .animated-hero-phrase > span,
-  .rotating-audience > span {
+  /* Layout only — framer-motion drives the opacity/transform animation.
+     A CSS transition here double-animates on iOS Safari (the reported
+     "double flash"), so it is intentionally omitted. */
+  .animated-hero-phrase > span {
     grid-area: 1 / 1;
     display: block !important;
     white-space: nowrap;
-    transform: translateY(0.32em);
-    filter: none;
-    transition:
-      opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .rotating-audience > span.active {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .display-cards.hero-activity-stack {
@@ -3971,11 +3997,13 @@
   .splash-wordmark .sp-rest {
     display: inline-block;
     flex: 0 0 auto;
-    max-width: 6em;
+    max-width: 4.2em;
     overflow: hidden;
     white-space: nowrap;
-    /* DaytonGrowthCo. -> D G C -> DGC */
-    animation: dgc-collapse 900ms cubic-bezier(0.65, 0, 0.35, 1) 1300ms both;
+    will-change: max-width, opacity;
+    /* One smooth glide: the letters fade out as the spacing closes
+       (DaytonGrowthCo. -> D G C -> DGC) with no intermediate holds. */
+    animation: dgc-collapse 1050ms cubic-bezier(0.7, 0, 0.26, 1) 1250ms both;
   }
 
   .splash-wordmark .sp-growth {
@@ -4093,18 +4121,10 @@
 /* DaytonGrowthCo. -> (rest fades) D G C -> (spacing tightens) DGC */
 @keyframes dgc-collapse {
   0% {
-    max-width: 6em;
+    max-width: 4.2em;
     opacity: 1;
   }
-  30% {
-    opacity: 0;
-  }
-  46% {
-    max-width: 0.4em;
-    opacity: 0;
-  }
-  64% {
-    max-width: 0.4em;
+  42% {
     opacity: 0;
   }
   100% {
@@ -4339,6 +4359,41 @@
 @media (max-width: 520px) {
   .hero-section {
     min-height: 100svh;
+  }
+
+  .hero-product-video {
+    object-position: 68% 50%;
+  }
+
+  .hero-product-video-mask {
+    background:
+      radial-gradient(
+        92% 74% at 18% 44%,
+        rgba(0, 0, 8, 0.48) 0%,
+        rgba(0, 0, 8, 0.38) 42%,
+        rgba(0, 0, 8, 0.12) 76%,
+        transparent 100%
+      ),
+      radial-gradient(
+        112% 92% at 54% 45%,
+        transparent 36%,
+        rgba(0, 0, 8, 0.12) 70%,
+        rgba(0, 0, 8, 0.38) 100%
+      ),
+      linear-gradient(
+        104deg,
+        rgba(0, 0, 8, 0.54) 0%,
+        rgba(5, 5, 12, 0.34) 44%,
+        rgba(5, 5, 12, 0.08) 72%,
+        rgba(0, 0, 8, 0.16) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 8, 0.1) 0%,
+        rgba(0, 0, 8, 0.02) 38%,
+        rgba(0, 0, 8, 0.28) 72%,
+        rgba(0, 0, 8, 0.7) 100%
+      );
   }
 
   /* Pull the mobile composition upward so the message lands earlier. */
