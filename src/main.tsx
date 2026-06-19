@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -253,30 +253,56 @@ const buildExamples = [
 // Completes the rotating hero headline: "We build ___."
 const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer portals", "custom apps"];
 
+function InteractiveWordmark({ compact = false }: { compact?: boolean }) {
+  return (
+    <span className={`nav-wordmark interactive-wordmark ${compact ? "is-compact" : ""}`} aria-hidden="true">
+      <span className="nav-wordmark-dayton">
+        <span className="wordmark-initial">D</span><span className="wordmark-rest">ayton</span>
+      </span>
+      <span className="nav-wordmark-growth">
+        <span className="wordmark-initial">G</span><span className="wordmark-rest">rowth</span>
+      </span>
+      <b>
+        <span className="wordmark-initial">C</span><span className="wordmark-rest">o.</span>
+      </b>
+    </span>
+  );
+}
+
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [wordmarkCompact, setWordmarkCompact] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => {
+      const isScrolled = window.scrollY > 12;
+      setScrolled(isScrolled);
+      if (isScrolled) setWordmarkCompact(false);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const onWordmarkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const isMobile = window.innerWidth <= 640;
+    const isAtTop = window.scrollY <= 12;
+    if (!isMobile || !isAtTop) return;
+    event.preventDefault();
+    setWordmarkCompact((current) => !current);
+  };
+
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
-        <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
-          <img
-            className="logo-image"
-            src={logoUrl}
-            alt=""
-            width="32"
-            height="32"
-          />
-          <span>
-            Dayton<span>Growth</span><b>Co.</b>
-          </span>
+        <a
+          href="#top"
+          className="logo-lockup"
+          aria-label={wordmarkCompact ? "Expand DaytonGrowthCo wordmark" : "Collapse DaytonGrowthCo wordmark"}
+          aria-expanded={!wordmarkCompact}
+          onClick={onWordmarkClick}
+        >
+          <InteractiveWordmark compact={wordmarkCompact} />
         </a>
         <div className="header-nav" aria-label="Sections">
           <a href="#platform">What We Build</a>
@@ -301,9 +327,19 @@ function useRecaptchaProtection() {
     const form = document.getElementById("auditForm") as HTMLFormElement | null;
     const key = document.querySelector<HTMLMetaElement>('meta[name="recaptcha-site-key"]')?.content.trim();
     if (!form || !key) return;
+    const submitButton = form.querySelector<HTMLButtonElement>(".form-submit");
+    const submitLabel = submitButton?.querySelector<HTMLElement>(".form-submit-label");
+
+    const setSubmitting = (isSubmitting: boolean) => {
+      if (!submitButton) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.dataset.loading = String(isSubmitting);
+      submitButton.setAttribute("aria-busy", String(isSubmitting));
+      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Start Building";
+    };
 
     const loadRecaptcha = () =>
-      new Promise<any>((resolve) => {
+      new Promise<any>((resolve, reject) => {
         const win = window as unknown as { grecaptcha?: any };
         if (win.grecaptcha?.execute) {
           resolve(win.grecaptcha);
@@ -313,6 +349,7 @@ function useRecaptchaProtection() {
         const existing = document.querySelector<HTMLScriptElement>("script[data-dgc-recaptcha]");
         if (existing) {
           existing.addEventListener("load", () => resolve(win.grecaptcha), { once: true });
+          existing.addEventListener("error", reject, { once: true });
           return;
         }
 
@@ -322,6 +359,7 @@ function useRecaptchaProtection() {
         script.defer = true;
         script.dataset.dgcRecaptcha = "true";
         script.onload = () => resolve(win.grecaptcha);
+        script.onerror = reject;
         document.head.appendChild(script);
       });
 
@@ -337,32 +375,45 @@ function useRecaptchaProtection() {
       const tokenField = document.getElementById("recaptchaToken") as HTMLInputElement | null;
       const actionField = document.getElementById("recaptchaAction") as HTMLInputElement | null;
       const status = document.getElementById("auditStatus");
-      if (status) status.textContent = "Securing submission...";
+      setSubmitting(true);
+      if (status) status.textContent = "Preparing your request…";
 
-      const grecaptcha = await loadRecaptcha();
-      grecaptcha.ready(async () => {
+      try {
+        const grecaptcha = await loadRecaptcha();
+        grecaptcha.ready(async () => {
+          try {
+            const token = await grecaptcha.execute(key, { action: "quick_recommendation" });
+            if (tokenField) tokenField.value = token;
+            if (actionField) actionField.value = "quick_recommendation";
+            if (status) status.textContent = "Sending…";
+            submittingWithToken = true;
+            submittedToIframe = true;
+            form.requestSubmit();
+          } catch {
+            if (status) status.textContent = "Sending…";
+            submittingWithToken = true;
+            submittedToIframe = true;
+            form.requestSubmit();
+          }
+        });
+      } catch {
         try {
-          const token = await grecaptcha.execute(key, { action: "quick_recommendation" });
-          if (tokenField) tokenField.value = token;
-          if (actionField) actionField.value = "quick_recommendation";
           if (status) status.textContent = "Sending...";
           submittingWithToken = true;
           submittedToIframe = true;
           form.requestSubmit();
         } catch {
-          if (status) status.textContent = "Sending...";
-          submittingWithToken = true;
-          submittedToIframe = true;
-          form.requestSubmit();
+          setSubmitting(false);
+          if (status) status.textContent = "Please try again.";
         }
-      });
+      }
     };
 
     const iframe = document.querySelector<HTMLIFrameElement>('iframe[name="hidden_iframe"]');
     const onIframeLoad = () => {
       if (!submittedToIframe) return;
       const status = document.getElementById("auditStatus");
-      if (status) status.textContent = "Request received. We will respond within 24 hours.";
+      if (status) status.textContent = "Request received. We’ll reply with next steps.";
     };
 
     form.addEventListener("submit", onSubmit);
@@ -439,14 +490,34 @@ function BackgroundVideo({
   src,
   poster,
   stream,
+  playbackRate,
 }: {
   className: string;
   src?: string;
   poster?: string;
   stream?: string;
+  playbackRate?: number;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !playbackRate) return;
+    const applyRate = () => {
+      try {
+        video.playbackRate = playbackRate;
+      } catch {
+        /* ignore */
+      }
+    };
+    applyRate(); // metadata may already be loaded
+    video.addEventListener("loadedmetadata", applyRate);
+    return () => video.removeEventListener("loadedmetadata", applyRate);
+  }, [playbackRate]);
+
   return (
     <video
+      ref={videoRef}
       className={className}
       src={src}
       poster={poster}
@@ -785,11 +856,11 @@ function AiVisibility() {
 function Hero() {
   return (
     <section id="top" className="hero-section">
-      <BackgroundVideo className="hero-product-video" src={videos.hero.src} />
-      <div className="hero-product-video-mask" aria-hidden="true" />
-      <div className="sky-glow" aria-hidden="true" />
-      <ClayLandscape scene="warm" />
-      <div className="mx-auto max-w-7xl px-5 pt-20 sm:px-8 lg:pt-24">
+      <div className="hero-media" aria-hidden="true">
+        <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} />
+        <div className="hero-product-video-mask" />
+      </div>
+      <div className="hero-content mx-auto max-w-7xl px-5 pt-20 sm:px-8 lg:pt-24">
         <div className="clay-hero-copy hero-entrance">
           <span className="hero-label">Tools and digital systems for small businesses</span>
           <h1 className="hero-title">
@@ -799,8 +870,8 @@ function Hero() {
             </span>
           </h1>
           <p>
-            Phone agents, quote calculators, dashboards, training libraries, sales pages, product visuals, and custom
-            apps, all built around the work your business already does.
+            Phone agents, quote calculators, dashboards, sales pages, training tools, and custom apps — built around
+            the way your business already works.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -817,6 +888,10 @@ function Hero() {
             <li>Custom Workflows</li>
           </ul>
         </div>
+        <a className="hero-scroll-cue" href="#platform" aria-label="Continue to what we build">
+          <span>Explore</span>
+          <i aria-hidden="true" />
+        </a>
       </div>
     </section>
   );
@@ -1206,26 +1281,37 @@ function ProjectForm() {
 
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
-          <input id="contactName" name="yourName" type="text" autoComplete="name" required />
+          <input id="contactName" name="yourName" type="text" autoComplete="name" placeholder="Jane Smith" required />
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
-          <input id="email" name="emailAddress" type="email" autoComplete="email" required />
+          <input id="email" name="emailAddress" type="email" autoComplete="email" placeholder="jane@company.com" required />
         </label>
         <label className="form-field full" htmlFor="details">
           <span>What should we build? *</span>
-          <textarea id="details" name="notes" rows={3} required />
+          <small id="detailsHelp">Describe what comes in, what your team does, and what should come out.</small>
+          <textarea
+            id="details"
+            name="notes"
+            rows={5}
+            placeholder="We receive X, our team does Y, and we need Z automated."
+            aria-describedby="detailsHelp"
+            required
+          />
         </label>
 
         <button type="submit" className="button button-primary large form-submit">
-          Start Building.
+          <span className="form-submit-label">Start Building</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
         <div id="auditStatus" aria-live="polite" className="form-status" />
-        <p className="form-microcopy">
-          <CheckCircle2 size={14} aria-hidden="true" />
-          Response within 24 hours
-        </p>
+        <div className="form-trust-cues" aria-label="What to expect">
+          <p className="form-microcopy">
+            <CheckCircle2 size={14} aria-hidden="true" />
+            Response within 24 hours.
+          </p>
+          <p>We’ll reply with next steps.</p>
+        </div>
       </form>
       <iframe name="hidden_iframe" title="Form submission status" className="hidden-iframe" />
     </div>
@@ -1269,7 +1355,7 @@ function SplashScreen() {
     const timer = window.setTimeout(() => {
       setDone(true);
       document.body.classList.remove("splash-lock");
-    }, 1650);
+    }, 2550);
     return () => {
       window.clearTimeout(timer);
       document.body.classList.remove("splash-lock");
@@ -1283,7 +1369,7 @@ function SplashScreen() {
           <img src={logoUrl} alt="" className="splash-logo" />
         </div>
         <div className="splash-wordmark">
-          Dayton<span className="splash-growth">Growth</span><span className="splash-co">Co.</span>
+          <span className="sp-ini">D</span><span className="sp-rest">ayton</span><span className="sp-ini sp-growth">G</span><span className="sp-rest sp-growth">rowth</span><span className="sp-ini sp-co">C</span><span className="sp-rest sp-co">o.</span>
         </div>
       </div>
     </div>
@@ -1405,6 +1491,7 @@ function useMuxVideos() {
 
 function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
+  const [footerWordmarkCompact, setFooterWordmarkCompact] = useState(false);
   useMotionSystem();
   useMuxVideos();
   useRecaptchaProtection();
@@ -1416,8 +1503,8 @@ function App() {
       <Header />
       <main>
         <Hero />
-        <SpreadsheetTransformation />
         <FeatureGrid />
+        <SpreadsheetTransformation />
         <OutcomeSection />
         <WebsiteTransformation />
         <StickyWorkflow />
@@ -1426,9 +1513,19 @@ function App() {
       <footer className="site-footer">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="footer-brand">
-            <a href="#top" className="footer-logo" aria-label="DaytonGrowthCo home">
+            <a
+              href="#top"
+              className="footer-logo"
+              aria-label={footerWordmarkCompact ? "Expand DaytonGrowthCo wordmark" : "Collapse DaytonGrowthCo wordmark"}
+              aria-expanded={!footerWordmarkCompact}
+              onClick={(event) => {
+                if (window.innerWidth > 640) return;
+                event.preventDefault();
+                setFooterWordmarkCompact((current) => !current);
+              }}
+            >
               <img src={logoUrl} alt="" width="32" height="32" />
-              <span>Dayton<span>Growth</span><b>Co.</b></span>
+              <InteractiveWordmark compact={footerWordmarkCompact} />
             </a>
             <p>DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps for small businesses.</p>
             <a
