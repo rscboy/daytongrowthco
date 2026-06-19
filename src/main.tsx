@@ -1506,7 +1506,7 @@ function ProjectForm() {
           <span>Email *</span>
           <input id="email" name="emailAddress" type="email" autoComplete="email" placeholder="jane@company.com" required />
         </label>
-        <label className="form-field full" htmlFor="details">
+        <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
           <small id="detailsHelp">Describe what comes in, what your team does, and what should come out.</small>
           <textarea
@@ -1529,9 +1529,8 @@ function ProjectForm() {
         <div className="form-trust-cues" aria-label="What to expect">
           <p className="form-microcopy">
             <CheckCircle2 size={14} aria-hidden="true" />
-            Response within 24 hours.
+            <span>Response within 24 hours · We’ll review your process and reply with next steps.</span>
           </p>
-          <p>We’ll reply with next steps.</p>
         </div>
       </form>
       <iframe name="hidden_iframe" title="Form submission status" className="hidden-iframe" />
@@ -1555,9 +1554,6 @@ function FinalCTA() {
             <li>Define the tool</li>
             <li>Build the system</li>
           </ul>
-          <a className="text-link phone-link" href="tel:+19373677089">
-            (937) 367-7089
-          </a>
         </div>
         <ProjectForm />
       </div>
