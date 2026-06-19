@@ -240,46 +240,34 @@ const videos = {
   },
 };
 
-const buildExamples = [
+const toolScenarios = [
   {
-    label: "Calls",
-    title: "After Hours Phone Agent",
-    text: "Answers calls, gathers the reason for the call, and sends your team a summary.",
+    id: "calendar",
+    label: "Plan our content",
+    need: "We need a content calendar.",
+    title: "A month of content takes shape.",
+    icon: Calendar,
   },
   {
-    label: "Pricing",
-    title: "Quote Calculator",
-    text: "Builds a fast starting quote for roofing, remodeling, or another service business.",
+    id: "calls",
+    label: "Answer after hours",
+    need: "We need to respond to customers after hours.",
+    title: "A call system comes online.",
+    icon: Phone,
   },
   {
-    label: "Projects",
-    title: "Job Dashboard",
-    text: "Tracks jobs, notes, photos, files, next steps, and project status.",
+    id: "social",
+    label: "Create social posts",
+    need: "We need a stronger social media presence.",
+    title: "Content starts publishing.",
+    icon: Megaphone,
   },
   {
-    label: "Customers",
-    title: "Customer Portal",
-    text: "Keeps requests, updates, approvals, and uploaded files in one place.",
-  },
-  {
-    label: "Team",
-    title: "Training Library",
-    text: "Organizes onboarding, repeat procedures, videos, and SOPs so they are easy to find.",
-  },
-  {
-    label: "Sales",
-    title: "Interactive Proposal Page",
-    text: "Presents scope, options, pricing, and approvals on one web page.",
-  },
-  {
-    label: "Content",
-    title: "Product Visual Kit",
-    text: "Creates product visuals and short videos for an online store or new offer.",
-  },
-  {
-    label: "Workflow",
-    title: "Notes to Documents System",
-    text: "Turns job notes, call summaries, photos, or files into usable work documents.",
+    id: "search",
+    label: "Show up in AI",
+    need: "We need our company to appear in AI answers.",
+    title: "The business becomes easier to find.",
+    icon: Search,
   },
 ];
 
@@ -1206,7 +1194,7 @@ function FeatureGrid() {
     <section className="section-shell platform-section" id="platform">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>Built around the work.</h2>
+          <h2>What we can build.</h2>
           <p>Tools, apps, content, and search systems for small businesses.</p>
         </div>
         <div className="feature-category-grid">
@@ -1277,55 +1265,210 @@ function OutcomeSection() {
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>What we can make.</h2>
+          <h2>See one tool work.</h2>
+          <p>Start with what the business needs. Watch the right system take shape.</p>
         </div>
-        <BuildExampleCards />
+        <ToolScenarioDemo />
       </div>
     </section>
   );
 }
 
-function BuildExampleCards() {
-  const featured = buildExamples[0];
-  const supporting = buildExamples.slice(1, 4);
+function ToolScenarioDemo() {
+  const [activeScenario, setActiveScenario] = useState(0);
+  const [isResetting, setIsResetting] = useState(false);
+  const resetTimer = useRef<number | null>(null);
+  const reduceMotion = useReducedMotion();
+  const scenario = toolScenarios[activeScenario];
+
+  useEffect(() => () => {
+    if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);
+  }, []);
+
+  const chooseScenario = (index: number) => {
+    if (index === activeScenario || isResetting) return;
+    if (reduceMotion) {
+      setActiveScenario(index);
+      return;
+    }
+
+    setIsResetting(true);
+    resetTimer.current = window.setTimeout(() => {
+      setActiveScenario(index);
+      setIsResetting(false);
+      resetTimer.current = null;
+    }, 320);
+  };
 
   return (
-    <>
-      <div className="pricing-grid desktop-build-grid">
-        {buildExamples.map((card, index) => (
-          <article
-            className="pricing-card"
-            key={card.title}
-          >
-            <div className="build-card-meta">
-              <span className="eyebrow">{card.label}</span>
-              <span className="build-card-index">{String(index + 1).padStart(2, "0")}</span>
-            </div>
-            <h3>{card.title}</h3>
-            <p>{card.text}</p>
-          </article>
-        ))}
+    <div className="phone-agent-demo">
+      <div className="phone-agent-demo-header">
+        <div>
+          <span>Choose a need</span>
+          <h3>{scenario.need}</h3>
+        </div>
+        <small>Need → system</small>
       </div>
-      <div className="mobile-build-editorial">
-        <article className="featured-build">
-          <span>{featured.label}</span>
-          <h3>{featured.title}</h3>
-          <p>{featured.text}</p>
-          <div className="featured-build-call">
-            <Phone size={17} aria-hidden="true" />
-            <div><small>Call summary</small><strong>Roof repair · Dayton, OH</strong></div>
+
+      <div className="phone-agent-demo-layout">
+        <div className="phone-agent-steps" role="tablist" aria-label="Business needs">
+          {toolScenarios.map((item, index) => {
+            const Icon = item.icon;
+            return (
+            <button
+              type="button"
+              role="tab"
+              id={`tool-scenario-${index}`}
+              aria-controls="tool-scenario-screen"
+              aria-selected={activeScenario === index}
+              className={activeScenario === index ? "is-active" : ""}
+              onClick={() => chooseScenario(index)}
+              key={item.label}
+            >
+              <span className="scenario-tab-icon"><Icon size={16} aria-hidden="true" /></span>
+              <strong>{item.label}</strong>
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+            );
+          })}
+        </div>
+
+        <div
+          className={`phone-agent-screen scenario-screen scenario-${scenario.id} ${isResetting ? "is-resetting" : ""}`}
+          id="tool-scenario-screen"
+          role="tabpanel"
+          aria-labelledby={`tool-scenario-${activeScenario}`}
+          aria-live="polite"
+        >
+          <div className="phone-agent-screen-bar">
+            <div>
+              <span className="phone-agent-signal" aria-hidden="true" />
+              <strong>{isResetting ? "Clearing workspace" : "System ready"}</strong>
+            </div>
+            <small>{scenario.label}</small>
           </div>
-        </article>
-        <div className="supporting-builds">
-          {supporting.map((card, index) => (
-            <article key={card.title}>
-              <span>{String(index + 2).padStart(2, "0")}</span>
-              <div><h3>{card.title}</h3><p>{card.text}</p></div>
-            </article>
-          ))}
+
+          {isResetting ? (
+            <div className="scenario-reset" aria-label="Preparing the selected system">
+              <span />
+              <strong>Building…</strong>
+            </div>
+          ) : null}
+
+          {!isResetting && scenario.id === "calendar" ? (
+            <div className="scenario-calendar">
+              <div className="scenario-calendar-head">
+                <div><small>Content plan</small><strong>June</strong></div>
+                <span>12 posts ready</span>
+              </div>
+              <div className="scenario-weekdays" aria-hidden="true">
+                {["M", "T", "W", "T", "F"].map((day, index) => <span key={`${day}-${index}`}>{day}</span>)}
+              </div>
+              <div className="scenario-calendar-grid">
+                {[
+                  ["03", "Project video", "video"],
+                  ["05", "Customer tip", "tip"],
+                  ["09", "Before / after", "visual"],
+                  ["12", "Team story", "story"],
+                  ["17", "Service explainer", "video"],
+                  ["20", "FAQ post", "tip"],
+                  ["24", "Job spotlight", "visual"],
+                  ["27", "Monthly recap", "story"],
+                ].map(([date, title, tone]) => (
+                  <div className={`scenario-calendar-item is-${tone}`} key={date}>
+                    <span>{date}</span><strong>{title}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {!isResetting && scenario.id === "calls" ? (
+            <div className="scenario-call-flow">
+              <div className="phone-agent-call">
+                <span className="phone-agent-call-icon"><Phone size={18} aria-hidden="true" /></span>
+                <div>
+                  <small>8:42 PM · Incoming call</small>
+                  <strong>New customer request</strong>
+                  <p>“There’s water coming through the ceiling near our back bedroom.”</p>
+                </div>
+              </div>
+              <div className="phone-agent-capture is-visible">
+                <div><span>Service</span><strong>Roof repair</strong></div>
+                <div><span>Urgency</span><strong>Active leak</strong></div>
+                <div><span>Location</span><strong>Dayton, OH</strong></div>
+                <div><span>Status</span><strong>Ready for team</strong></div>
+              </div>
+              <div className="phone-agent-summary is-visible">
+                <div className="phone-agent-summary-title">
+                  <CheckCircle2 size={17} aria-hidden="true" />
+                  <div><small>Call handled</small><strong>Summary sent to estimator</strong></div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {!isResetting && scenario.id === "social" ? (
+            <div className="scenario-social">
+              <div className="scenario-social-copy">
+                <small>Publishing this week</small>
+                <strong>Six pieces of content. One clear voice.</strong>
+              </div>
+              <div className="scenario-post-stack">
+                {[
+                  ["Project walkthrough", "1.8k", "86"],
+                  ["Three things to check", "2.4k", "124"],
+                  ["Before and after", "3.1k", "208"],
+                ].map(([title, views, clicks], index) => (
+                  <article style={{ "--post-index": index } as React.CSSProperties} key={title}>
+                    <div className="scenario-post-visual"><span>{String(index + 1).padStart(2, "0")}</span></div>
+                    <strong>{title}</strong>
+                    <div><span>{views} views</span><span>{clicks} clicks</span></div>
+                  </article>
+                ))}
+              </div>
+              <div className="scenario-click-chart">
+                <span>Site clicks</span>
+                <div aria-label="Clicks increasing across published content">
+                  {[24, 38, 34, 58, 76, 92, 118, 146].map((height, index) => (
+                    <i style={{ height: `${height / 1.7}px`, "--bar-index": index } as React.CSSProperties} key={height} />
+                  ))}
+                </div>
+                <strong>+184%</strong>
+              </div>
+            </div>
+          ) : null}
+
+          {!isResetting && scenario.id === "search" ? (
+            <div className="scenario-search">
+              <div className="scenario-question">
+                <span>Customer asks</span>
+                <strong>“Who builds custom quote tools for small businesses near Dayton?”</strong>
+              </div>
+              <div className="scenario-answer">
+                <div className="scenario-answer-mark"><Sparkles size={18} aria-hidden="true" /></div>
+                <div>
+                  <small>AI answer</small>
+                  <p><strong>DaytonGrowthCo</strong> builds quote calculators, dashboards, phone agents, and custom business apps for small businesses in the Dayton area.</p>
+                  <div className="scenario-source">
+                    <Globe2 size={14} aria-hidden="true" />
+                    <span>daytongrowthco.com</span>
+                    <CheckCircle2 size={14} aria-hidden="true" />
+                  </div>
+                </div>
+              </div>
+              <div className="scenario-search-signals">
+                <span>Clear services</span><span>Useful pages</span><span>Trusted sources</span>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="phone-agent-screen-footer">
+            <strong>{scenario.title}</strong>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
