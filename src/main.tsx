@@ -1564,18 +1564,32 @@ function FinalCTA() {
 function FounderPreview() {
   return (
     <section className="founder-preview" aria-labelledby="founder-preview-title">
-      <div className="mx-auto grid max-w-7xl items-center gap-6 px-5 sm:px-8 md:grid-cols-[8.5rem_1fr_auto]">
-        <img
-          src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg"
-          alt="Samuel Caruso, founder of DaytonGrowthCo"
-        />
-        <div>
-          <span>Built in Dayton</span>
+      <div className="founder-preview-layout mx-auto max-w-7xl px-5 sm:px-8">
+        <figure className="founder-profile">
+          <div className="founder-photo-frame">
+            <img
+              src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg"
+              alt="Samuel Caruso, founder of DaytonGrowthCo"
+            />
+          </div>
+          <figcaption>
+            <strong>Samuel Caruso</strong>
+            <span>Founder, DaytonGrowthCo.</span>
+          </figcaption>
+        </figure>
+        <div className="founder-preview-copy">
+          <span className="founder-eyebrow">Built in Dayton</span>
           <h2 id="founder-preview-title">The person behind the tools.</h2>
-          <p>Meet Samuel Caruso and read why DaytonGrowthCo starts with the way a business actually works.</p>
+          <p>
+            Meet Samuel Caruso, founder of DaytonGrowthCo. He builds practical systems around the way your business
+            already works—so your team can move faster without forcing a new process.
+          </p>
+          <blockquote>
+            “Most businesses don’t need more software. They need tools that fit the process they already trust.”
+          </blockquote>
         </div>
         <a className="founder-preview-link" href="/aboutus.html">
-          About DaytonGrowthCo
+          Read the founder story
           <ArrowRight size={16} aria-hidden="true" />
         </a>
       </div>
