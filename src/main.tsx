@@ -419,16 +419,10 @@ function useTurnstileProtection() {
         if (status) status.textContent = "Verification failed to load. Please refresh and try again.";
       });
 
-    let submittingWithToken = false;
-    let submittedToIframe = false;
     const onSubmit = (event: SubmitEvent) => {
-      if (submittingWithToken) {
-        submittingWithToken = false;
-        return;
-      }
-
       event.preventDefault();
       const status = getStatus();
+
       const token = turnstileApi?.getResponse(widgetId);
       if (!token) {
         if (status) status.textContent = "Please complete the verification below.";
@@ -437,26 +431,34 @@ function useTurnstileProtection() {
 
       setSubmitting(true);
       if (status) status.textContent = "Sending…";
-      submittingWithToken = true;
-      submittedToIframe = true;
-      form.requestSubmit();
-    };
 
-    const iframe = document.querySelector<HTMLIFrameElement>('iframe[name="hidden_iframe"]');
-    const onIframeLoad = () => {
-      if (!submittedToIframe) return;
-      const status = getStatus();
-      if (status) status.textContent = "Request received. We’ll reply with next steps.";
-      setSubmitting(false);
-      turnstileApi?.reset(widgetId);
+      // Apps Script answers a POST with a 302 to a Google page served with
+      // X-Frame-Options: SAMEORIGIN, which the browser refuses to render in a
+      // hidden iframe (the navigation is aborted and its load event never
+      // fires). A no-cors fetch delivers the data without needing to read the
+      // framed response, so the UI can resolve on the request settling instead.
+      const payload = new FormData(form);
+      payload.set("cf-turnstile-response", token);
+
+      fetch(form.action, { method: "POST", mode: "no-cors", body: payload })
+        .then(() => {
+          if (status) status.textContent = "Request received. We’ll reply with next steps.";
+          form.reset();
+        })
+        .catch(() => {
+          if (status)
+            status.textContent = "Something went wrong. Please email help@daytongrowth.co and we’ll follow up.";
+        })
+        .finally(() => {
+          setSubmitting(false);
+          turnstileApi?.reset(widgetId);
+        });
     };
 
     form.addEventListener("submit", onSubmit);
-    iframe?.addEventListener("load", onIframeLoad);
     return () => {
       cancelled = true;
       form.removeEventListener("submit", onSubmit);
-      iframe?.removeEventListener("load", onIframeLoad);
       if (turnstileApi && widgetId !== undefined) turnstileApi.remove(widgetId);
     };
   }, []);
@@ -1494,7 +1496,7 @@ function ToolScenarioDemo() {
 function ProjectForm() {
   return (
     <div className="form-card">
-      <form id="auditForm" method="POST" action={formAction} target="hidden_iframe" className="project-form">
+      <form id="auditForm" method="POST" action={formAction} className="project-form">
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
 
@@ -1533,7 +1535,6 @@ function ProjectForm() {
           </p>
         </div>
       </form>
-      <iframe name="hidden_iframe" title="Form submission status" className="hidden-iframe" />
     </div>
   );
 }
