@@ -103,6 +103,17 @@
     --section-title-leading: 0.98;
     --brand-grid-light: rgba(24, 23, 77, 0.045);
     --brand-grid-white: rgba(255, 255, 255, 0.05);
+    /* Warm, indigo-tinted elevation system (not flat gray) so cards read as
+       "designed" rather than templated. Resting -> hover -> active. */
+    --shadow-rest: 0 1px 2px rgba(24, 23, 77, 0.04), 0 8px 24px rgba(24, 23, 77, 0.05);
+    --shadow-hover: 0 2px 4px rgba(24, 23, 77, 0.06), 0 18px 44px rgba(24, 23, 77, 0.1);
+    --shadow-active: 0 1px 2px rgba(24, 23, 77, 0.08), 0 4px 12px rgba(24, 23, 77, 0.12);
+    /* Soft brand washes for section-to-section rhythm. */
+    --wash-peach: rgba(241, 208, 177, 0.16);
+    --wash-blue: rgba(221, 233, 252, 0.34);
+    /* Editorial italic accent used on the second line of section titles. */
+    --accent-ink: #2a2880;
+    --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
   }
   * {
     border-color: var(--border);
@@ -351,6 +362,34 @@
 
   .button:hover {
     transform: translateY(-1px);
+  }
+
+  /* The trailing arrow glides forward on hover/focus for a sense of momentum. */
+  .button svg {
+    transition: transform 220ms var(--ease-out-soft);
+  }
+
+  .button:hover svg,
+  .button:focus-visible svg {
+    transform: translateX(3px);
+  }
+
+  .link-arrow svg,
+  .section-detail-link svg,
+  .homepage-preview-copy > a svg,
+  .homepage-preview-link svg,
+  .service-detail-grid article > a svg,
+  .founder-preview-link svg {
+    transition: transform 220ms var(--ease-out-soft);
+  }
+
+  .link-arrow:hover svg,
+  .section-detail-link:hover svg,
+  .homepage-preview-copy > a:hover svg,
+  .homepage-preview-link:hover svg,
+  .service-detail-grid article > a:hover svg,
+  .founder-preview-link:hover svg {
+    transform: translateX(4px);
   }
 
   .button-primary {
@@ -770,6 +809,23 @@
   .section-heading h2 span {
     display: block;
     color: #6a665f;
+  }
+
+  /* Editorial flourish: the emphasized second line of section titles renders
+     in Fraunces italic with a soft indigo accent, giving the page a print-like
+     rhythm. Applies everywhere section/dedicated/preview headings split a span. */
+  .section-heading h2 span,
+  .workflow-copy h2 span,
+  .final-cta h2 span,
+  .homepage-preview-copy h2 span,
+  .homepage-preview-heading h2 span,
+  .dedicated-heading h2 span,
+  .business-journey-heading h2 span,
+  .page-hero h1 span {
+    font-style: italic;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+    color: var(--accent-ink);
   }
 
   /* Let the hero headline flow as one balanced block so it breaks into a few
@@ -2083,6 +2139,7 @@
     background: rgba(255, 255, 255, 0.67);
     box-shadow: 0 24px 70px rgba(39, 39, 37, 0.08);
     backdrop-filter: blur(12px);
+    counter-reset: journey;
   }
 
   .business-journey-card {
@@ -2091,6 +2148,74 @@
     min-height: 19rem;
     padding: clamp(1.15rem, 1.8vw, 1.5rem);
     border-right: 1px solid rgba(24, 23, 77, 0.14);
+    counter-increment: journey;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 60%);
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, background-color 220ms ease;
+  }
+
+  /* Oversized ghosted numeral, kept in sync via CSS counters. */
+  .business-journey-card > header::before {
+    content: counter(journey, decimal-leading-zero);
+    position: absolute;
+    top: clamp(0.1rem, 0.4vw, 0.4rem);
+    right: clamp(0.6rem, 1.2vw, 1.1rem);
+    z-index: 0;
+    color: rgba(24, 23, 77, 0.07);
+    font-family: var(--font-serif);
+    font-size: clamp(4.5rem, 7vw, 6.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    transition: color 220ms ease;
+  }
+
+  .business-journey-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .business-journey-card:nth-child(1) {
+    background: linear-gradient(180deg, rgba(241, 208, 177, 0.22), rgba(255, 255, 255, 0) 58%);
+  }
+
+  .business-journey-card:nth-child(2) {
+    background: linear-gradient(180deg, rgba(221, 233, 252, 0.4), rgba(255, 255, 255, 0) 58%);
+  }
+
+  .business-journey-card:nth-child(3) {
+    background: linear-gradient(180deg, rgba(221, 233, 252, 0.26), rgba(255, 255, 255, 0) 58%);
+  }
+
+  .business-journey-card:nth-child(4) {
+    background: linear-gradient(180deg, rgba(241, 208, 177, 0.16), rgba(255, 255, 255, 0) 58%);
+  }
+
+  /* Animated accent bar that wipes in on hover. */
+  .business-journey-card::after {
+    content: "";
+    position: absolute;
+    inset: -1px -1px auto -1px;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(90deg, var(--brand-peach), var(--brand-indigo));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .business-journey-card:hover {
+    z-index: 3;
+    transform: translateY(-4px);
+    box-shadow: 0 22px 48px rgba(24, 23, 77, 0.16);
+  }
+
+  .business-journey-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  .business-journey-card:hover > header::before {
+    color: rgba(24, 23, 77, 0.12);
   }
 
   .business-journey-card:last-child {
@@ -5933,7 +6058,10 @@
   .connected-system,
   .engagement-process,
   .quote-workflow-example,
-  .engagement-notes {
+  .engagement-notes,
+  .build-principles,
+  .how-faq,
+  .case-study-future {
     padding-block: clamp(3.5rem, 6vw, 5.5rem);
   }
 
@@ -6344,6 +6472,168 @@
     margin-top: 1.5rem;
   }
 
+  /* How It Works: build principles */
+  .build-principles {
+    background: #fbfbf9;
+  }
+
+  .build-principles-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .build-principles-list li {
+    display: flex;
+    gap: 0.9rem;
+    border: 1px solid rgba(24, 23, 77, 0.13);
+    border-radius: 10px;
+    padding: 1.2rem;
+    background: #fff;
+  }
+
+  .build-principles-list li > span {
+    flex: 0 0 auto;
+    color: var(--brand-accent);
+    font-size: 0.74rem;
+    font-weight: 760;
+    letter-spacing: 0.04em;
+  }
+
+  .build-principles-list strong {
+    display: block;
+    color: #202027;
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    font-weight: 540;
+    line-height: 1.2;
+  }
+
+  .build-principles-list p {
+    margin: 0.4rem 0 0;
+    color: #66646b;
+    font-size: 0.84rem;
+    line-height: 1.58;
+  }
+
+  /* How It Works: discovery & diagnosis reuses .engagement-process layout */
+  .discovery-diagnosis {
+    background: #fbfbf9;
+  }
+
+  /* How It Works: client inputs checklist */
+  .engagement-inputs {
+    margin-top: 1.8rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.14);
+    padding-top: 1.5rem;
+  }
+
+  .engagement-inputs-label {
+    display: block;
+    margin-bottom: 1rem;
+    color: #817c74;
+    font-size: 0.66rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .engagement-inputs ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem 1.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .engagement-inputs li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #34343b;
+    font-size: 0.88rem;
+    font-weight: 540;
+  }
+
+  .engagement-inputs li svg {
+    flex: 0 0 auto;
+    color: var(--brand-accent);
+  }
+
+  /* How It Works: FAQ */
+  .how-faq {
+    background: #f7f6f1;
+  }
+
+  .how-faq .engagement-faq {
+    margin-top: 2.2rem;
+  }
+
+  /* Examples: future case-study area */
+  .case-study-future {
+    background: #fbfbf9;
+  }
+
+  .case-study-future-card {
+    border: 1px solid rgba(24, 23, 77, 0.13);
+    border-radius: 14px;
+    padding: clamp(1.8rem, 4vw, 3rem);
+    background:
+      radial-gradient(circle at 8% 12%, rgba(221, 233, 252, 0.6), transparent 22rem),
+      #fff;
+  }
+
+  .case-study-future-tag {
+    display: inline-flex;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(24, 23, 77, 0.16);
+    border-radius: 999px;
+    padding: 0.34rem 0.7rem;
+    color: var(--brand-accent);
+    font-size: 0.66rem;
+    font-weight: 720;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .case-study-future-card h2 {
+    max-width: 20ch;
+    margin: 0;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 540;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .case-study-future-card p {
+    max-width: 48rem;
+    margin: 1rem 0 0;
+    color: #5f5e65;
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .case-study-future-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    color: var(--brand-accent);
+    font-size: 0.9rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .case-study-future-card a:hover {
+    color: var(--brand-accent-hover);
+  }
+
   .site-footer a {
     color: rgba(255, 255, 255, 0.78);
     font-size: 0.86rem;
@@ -6606,6 +6896,23 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
+  /* Staggered card entrances: children of [data-stagger] cascade in once the
+     container scrolls into view. --stagger-index is set per child in JS. */
+  [data-stagger] > * {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 640ms var(--ease-out-soft),
+      transform 640ms var(--ease-out-soft);
+    transition-delay: calc(var(--stagger-index, 0) * 80ms);
+    will-change: opacity, transform;
+  }
+
+  [data-stagger].stagger-in > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-slide-up-scale {
@@ -6815,6 +7122,15 @@
 
   .engagement-notes-grid {
     grid-template-columns: 1fr;
+  }
+
+  .build-principles-list {
+    grid-template-columns: 1fr;
+  }
+
+  .engagement-inputs ul {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
   }
 
   .connected-system ol,
@@ -8640,7 +8956,8 @@
 
   .hero-entrance,
   [data-reveal],
-  .scroll-word {
+  .scroll-word,
+  [data-stagger] > * {
     opacity: 1;
     transform: none;
     filter: none;

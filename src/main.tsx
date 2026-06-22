@@ -1219,7 +1219,7 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
           </div>
         </div>
 
-        <div className="business-journey-grid" aria-label="Four connected stages of the business">
+        <div className="business-journey-grid" aria-label="Four connected stages of the business" data-stagger>
           {businessJourney.map((stage, index) => {
             const Icon = stage.icon;
             return (
@@ -2069,6 +2069,14 @@ function useMotionSystem() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const revealTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     const wordTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll-words]"));
+    const staggerTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-stagger]"));
+
+    // Index each direct child so its entrance can cascade via CSS.
+    staggerTargets.forEach((group) => {
+      Array.from(group.children).forEach((child, index) => {
+        (child as HTMLElement).style.setProperty("--stagger-index", String(index));
+      });
+    });
 
     wordTargets.forEach((target) => {
       if (target.dataset.scrollWordsReady === "true") return;
@@ -2092,23 +2100,42 @@ function useMotionSystem() {
     if (reduceMotion || !("IntersectionObserver" in window)) {
       revealTargets.forEach((target) => target.classList.add("visible"));
       wordTargets.forEach((target) => target.classList.add("scroll-words-visible"));
+      staggerTargets.forEach((target) => target.classList.add("stagger-in"));
       return;
     }
+
+    const reveal = (target: Element) => {
+      target.classList.add("visible");
+      target.classList.add("scroll-words-visible");
+      target.classList.add("stagger-in");
+    };
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          entry.target.classList.add("visible");
-          entry.target.classList.add("scroll-words-visible");
+          reveal(entry.target);
           observer.unobserve(entry.target);
         });
       },
       { threshold: 0.14, rootMargin: "0px 0px -8% 0px" },
     );
 
-    [...revealTargets, ...wordTargets].forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
+    const allTargets = [...revealTargets, ...wordTargets, ...staggerTargets];
+    allTargets.forEach((target) => observer.observe(target));
+
+    // Fail open: never leave content stuck invisible if the observer misfires
+    // (e.g. a section scrolled past before paint, or layout shifts mid-load).
+    const failOpen = window.setTimeout(() => {
+      allTargets.forEach((target) => {
+        if (!target.classList.contains("visible")) reveal(target);
+      });
+    }, 3000);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(failOpen);
+    };
   }, []);
 }
 
@@ -2337,7 +2364,7 @@ function HowWeWorkPreview() {
           <h2 id="how-preview-title">How we work.</h2>
           <p>We map the process, identify the smallest useful fix, and build only where the workflow requires it.</p>
         </div>
-        <ol className="how-preview-steps">
+        <ol className="how-preview-steps" data-stagger>
           {steps.map((step) => {
             const Icon = step.icon;
             return (
@@ -2393,7 +2420,7 @@ function ServiceArchitecture() {
           <h2 id="service-architecture-title">Start with the business problem.</h2>
           <p>Each engagement begins with the constraint, then moves to the appropriate tool or setup.</p>
         </div>
-        <div className="service-detail-grid">
+        <div className="service-detail-grid" data-stagger>
           {serviceDetails.map((item, index) => (
             <article key={item.title}>
               <span>{String(index + 1).padStart(2, "0")}</span>
@@ -2481,11 +2508,80 @@ function QuoteWorkflowExample() {
   );
 }
 
+function BuildPrinciples() {
+  const principles = [
+    ["Fix the expensive bottleneck first.", "We start where the current process costs the most in time, errors, or lost work."],
+    ["Use existing software when it fits.", "If a tool you already trust can do the job, the right move is to set it up well, not rebuild it."],
+    ["Build custom only where your process creates an advantage.", "Custom tools are reserved for the steps where the way you work is genuinely different."],
+    ["Measure time removed, errors avoided, and capacity recovered.", "Success is a process that is faster and cleaner, not a longer list of features."],
+  ];
+
+  return (
+    <section className="build-principles" aria-labelledby="build-principles-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="build-principles-title">A few principles decide what gets built.</h2>
+          <p>The right answer may be existing software, a focused automation, or a custom tool. These keep that decision honest.</p>
+        </div>
+        <ol className="build-principles-list">
+          {principles.map(([title, text], index) => (
+            <li key={title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <strong>{title}</strong>
+                <p>{text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function DiscoveryDiagnosis() {
+  const steps = [
+    "Identify the expensive or frustrating constraint",
+    "Map what comes in",
+    "Map what the team currently does",
+    "Define the required output",
+    "Estimate the cost of the current process",
+    "Determine whether existing software fits",
+    "Recommend the smallest useful fix",
+  ];
+
+  return (
+    <section className="engagement-process discovery-diagnosis" aria-labelledby="discovery-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="discovery-title">How we evaluate a process before building anything.</h2>
+          <p>Diagnosis comes before tooling. We look at the real work first, then decide what, if anything, to build.</p>
+        </div>
+        <ol>
+          {steps.map((step, index) => (
+            <li key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 function EngagementNotes() {
   const inputs = [
     ["A real process", "Bring the workflow that currently causes delay, repeated entry, or inconsistent handoffs."],
     ["The people doing the work", "We learn from the team members who know where the process bends and breaks."],
     ["Useful examples", "Existing forms, spreadsheets, quotes, and screenshots help us understand the work quickly."],
+  ];
+
+  const helpful = [
+    "Current spreadsheets or forms",
+    "Pricing sheets",
+    "Sample calls, notes, or requests",
+    "A list of the software you use today",
+    "A short description of the current workflow",
+    "The output you actually want",
+    "Team members who can help test it",
   ];
 
   return (
@@ -2495,7 +2591,7 @@ function EngagementNotes() {
           <h2 id="engagement-notes-title">What we need from your team.</h2>
           <p>You do not need a technical specification. We need a clear view of the work and access to the people who understand it.</p>
         </div>
-        <div className="engagement-notes-grid">
+        <div className="engagement-notes-grid" data-stagger>
           {inputs.map(([title, text], index) => (
             <article key={title}>
               <span>{String(index + 1).padStart(2, "0")}</span>
@@ -2504,19 +2600,66 @@ function EngagementNotes() {
             </article>
           ))}
         </div>
+        <div className="engagement-inputs">
+          <span className="engagement-inputs-label">Helpful to have on hand</span>
+          <ul>
+            {helpful.map((item) => (
+              <li key={item}><CheckCircle2 size={16} aria-hidden="true" />{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksFaq() {
+  const faqs = [
+    ["Do we need custom software?", "Often no. Many problems are solved by setting up or connecting tools you already have. Custom is for the steps where your process is genuinely different."],
+    ["Can you configure existing software?", "Yes. Configuring and connecting trusted tools is frequently the fastest, lowest-risk fix and is where we look first."],
+    ["Can we start with one small process?", "Yes. A focused first build is usually the best way to prove value and learn what should come next."],
+    ["Do we need to replace our current tools?", "No. We aim to remove the friction around your tools, not force a migration you did not ask for."],
+    ["How involved does our team need to be?", "Light but real involvement. Short feedback loops with the people who do the work keep the tool grounded and make adoption easier."],
+    ["What happens after launch?", "We test with real work, fix what the first weeks reveal, and improve the tool as the process settles in."],
+    ["Can the system grow later?", "Yes. We build the first useful piece in a way that leaves room for the next system when you are ready."],
+    ["How do you decide whether a project is worth building?", "We estimate what the current process costs and compare it to the build. If the economics do not work, we tell you."],
+  ];
+
+  return (
+    <section className="how-faq" aria-labelledby="how-faq-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="how-faq-title">Questions we hear before a build.</h2>
+          <p>Straight answers about scope, tools, and what an engagement actually requires.</p>
+        </div>
         <div className="engagement-faq">
-          <details>
-            <summary>Do we need to replace the software we already use?</summary>
-            <p>No. We first look for a better setup or a clean connection between the tools your team already trusts.</p>
-          </details>
-          <details>
-            <summary>Can we start with one small workflow?</summary>
-            <p>Yes. A focused first build is often the best way to prove value and learn what should come next.</p>
-          </details>
-          <details>
-            <summary>Will our team be involved during the build?</summary>
-            <p>Yes. Short feedback loops keep the tool grounded in the real process and make adoption easier at launch.</p>
-          </details>
+          {faqs.map(([q, a]) => (
+            <details key={q}>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CaseStudyFuture() {
+  return (
+    <section className="case-study-future" aria-labelledby="case-study-future-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="case-study-future-card">
+          <span className="case-study-future-tag">Case studies</span>
+          <h2 id="case-study-future-title">Documented client results, coming soon.</h2>
+          <p>
+            The systems above are interactive demonstrations and representative builds. As current engagements
+            reach measurable outcomes, we will publish them here as full case studies with real numbers.
+          </p>
+          <a href="/#cta">
+            Talk to us about your process
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>
@@ -2625,6 +2768,7 @@ function ExamplesPage() {
         <SpreadsheetTransformation />
         <QuoteWorkflowExample />
         <AdvancedSystemPreview sectionId="connected-example" />
+        <CaseStudyFuture />
         <PageCTA />
       </main>
       <SiteFooter />
@@ -2639,10 +2783,13 @@ function HowItWorksPage() {
       <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.howItWorks} />
+        <BuildPrinciples />
+        <DiscoveryDiagnosis />
         <StickyWorkflow />
         <EngagementProcess />
         <LaborCostCalculator />
         <EngagementNotes />
+        <HowItWorksFaq />
         <PageCTA />
       </main>
       <SiteFooter />

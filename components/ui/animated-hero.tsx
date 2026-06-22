@@ -30,13 +30,13 @@ export function AnimatedHeroPhrase({ phrases, suffix = ".", className }: Animate
 
   return (
     <span className={cn("animated-hero-phrase", className)} aria-live="polite">
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} mode="wait">
         <motion.span
           key={phrases[index]}
-          initial={reduceMotion ? false : { opacity: 0, y: "0.12em" }}
+          initial={reduceMotion ? false : { opacity: 0, y: "0.5em" }}
           animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "-0.08em" }}
-          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "-0.5em" }}
+          transition={{ duration: reduceMotion ? 0.2 : 0.42, ease: [0.16, 1, 0.3, 1] }}
         >
           {phrases[index]}
           {suffix}
