@@ -22,7 +22,8 @@ export default defineConfig({
         disclaimer: resolve(__dirname, 'disclaimer/index.html'),
         watsonRoofing: resolve(__dirname, 'watson-roofing.html'),
         amp: resolve(__dirname, 'amp.html'),
-        cinematic: resolve(__dirname, 'cinematic.html')
+        cinematic: resolve(__dirname, 'cinematic.html'),
+        systemsThatPay: resolve(__dirname, 'systems-that-pay/index.html')
       }
     }
   }
