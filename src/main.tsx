@@ -2440,18 +2440,38 @@ function ServiceArchitecture() {
 }
 
 function ConnectedSystem() {
-  const items = ["Website request", "Phone agent", "Appointment", "Quote", "Project dashboard", "Customer updates"];
+  const items = [
+    { label: "Website request", icon: Globe2 },
+    { label: "Phone agent", icon: Phone },
+    { label: "Appointment", icon: Calendar },
+    { label: "Quote", icon: Gauge },
+    { label: "Project dashboard", icon: LayoutDashboard },
+    { label: "Customer updates", icon: Bell },
+  ];
   return (
     <section className="connected-system" aria-labelledby="connected-system-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="connected-system-title">The parts can work together.</h2>
+          <h2 id="connected-system-title">
+            The parts can
+            <span>work together.</span>
+          </h2>
           <p>A customer request should not need to be rebuilt at every step.</p>
         </div>
-        <ol>
-          {items.map((item, index) => (
-            <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>
-          ))}
+        <ol className="connected-flow" data-stagger>
+          {items.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.label} className="connected-node">
+                <span className="connected-node-rail" aria-hidden="true" />
+                <span className="connected-node-orb" aria-hidden="true">
+                  <Icon size={17} strokeWidth={1.75} />
+                  <i>{String(index + 1).padStart(2, "0")}</i>
+                </span>
+                <strong>{item.label}</strong>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>
