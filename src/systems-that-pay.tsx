@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, PenTool, Phone, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import "./systems-that-pay.css";
 
 const formAction =
@@ -56,10 +56,16 @@ function SiteHeader() {
           <a href="/aboutus.html">About</a>
           <a href="/#cta">Contact</a>
         </nav>
-        <a className="lp-button" href="#free-redesign">
-          Get my free redesign
-          <ArrowRight size={15} aria-hidden="true" />
-        </a>
+        <div className="lp-header-actions">
+          <a className="lp-header-phone" href="tel:+19373677089">
+            <Phone size={15} aria-hidden="true" />
+            (937) 367-7089
+          </a>
+          <a className="lp-button" href="#free-redesign">
+            Get my free redesign
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </header>
   );
@@ -239,7 +245,7 @@ function FreeRedesignOffer() {
           <div className="lp-success" role="status">
             <span><CheckCircle2 size={30} /></span>
             <h2>Your site is in the redesign queue.</h2>
-            <p>We’ll review it and follow up by email with the next step.</p>
+            <p>We’ll review it and follow up by email within 2 business days with the next step.</p>
           </div>
         ) : (
           <form onSubmit={submit}>
@@ -278,7 +284,9 @@ function FreeRedesignOffer() {
               {status === "sending" ? "Sending…" : "Get my free redesign"}
               {status !== "sending" ? <ArrowRight size={16} /> : null}
             </button>
-            <p className="lp-privacy"><ShieldCheck size={13} /> Your information stays private.</p>
+            <p className="lp-privacy">
+              <ShieldCheck size={13} /> Your information stays private. <a href="/privacy-policy/">Privacy policy</a>
+            </p>
           </form>
         )}
       </div>

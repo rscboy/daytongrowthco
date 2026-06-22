@@ -89,6 +89,25 @@ button, input { font: inherit; }
 .lp-nav a:hover { color: #1a1a1a; }
 .lp-nav a:hover::after { transform: scaleX(1); }
 
+.lp-header-actions { display: inline-flex; align-items: center; gap: 1.1rem; }
+.lp-header-phone {
+  display: none;
+  align-items: center;
+  gap: 0.42rem;
+  color: #4a4640;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease;
+}
+.lp-header-phone svg { flex: 0 0 auto; color: var(--indigo); }
+.lp-header-phone:hover { color: var(--indigo); }
+
+@media (min-width: 700px) {
+  .lp-header-phone { display: inline-flex; }
+}
+
 @media (min-width: 900px) {
   .lp-nav { display: flex; }
 }
@@ -250,6 +269,7 @@ button, input { font: inherit; }
 .lp-card button:disabled { cursor: wait; opacity: 0.55; }
 .lp-privacy {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 0.4rem;
@@ -257,6 +277,8 @@ button, input { font: inherit; }
   color: var(--muted);
   font-size: 0.66rem;
 }
+.lp-privacy a { color: var(--indigo); text-decoration: underline; text-underline-offset: 2px; }
+.lp-privacy a:hover { color: var(--indigo-hover); }
 .lp-error { margin: 0; color: #a12828; font-size: 0.74rem; font-weight: 600; }
 .lp-success {
   display: grid;
