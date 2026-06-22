@@ -371,7 +371,6 @@ function Header() {
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <a className="site-offer-banner" href="/systems-that-pay/">
-        <span className="site-offer-label">Limited local offer</span>
         <span className="site-offer-copy">
           <strong>We’ll redesign your homepage. Free.</strong>
           <span>Custom concept · No obligation</span>
@@ -1203,7 +1202,7 @@ function ServiceModes() {
   );
 }
 
-function BusinessJourney() {
+function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }) {
   return (
     <section className="business-journey" id="platform" aria-labelledby="business-journey-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -1250,6 +1249,12 @@ function BusinessJourney() {
           These stages can work independently. When they connect, information moves from the first customer touchpoint
           into the systems your team uses to deliver the work.
         </p>
+        {showDetailLink ? (
+          <a className="section-detail-link" href="/what-we-build/">
+            Explore what we build
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        ) : null}
       </div>
     </section>
   );
@@ -1466,7 +1471,7 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
   );
 }
 
-function WebsiteTransformation() {
+function WebsiteTransformation({ showDetailLink = true }: { showDetailLink?: boolean }) {
   const [position, setPosition] = useState(50);
   const [interacted, setInteracted] = useState(false);
   const [nudging, setNudging] = useState(false);
@@ -1576,6 +1581,12 @@ function WebsiteTransformation() {
             <span>Quote requests</span>
             <span>Connected workflow</span>
           </div>
+          {showDetailLink ? (
+            <a className="section-detail-link transformation-detail-link" href="/examples/">
+              Explore more working examples
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          ) : null}
         </div>
       </div>
     </section>
@@ -1708,10 +1719,8 @@ function ToolScenarioDemo() {
     <div className="phone-agent-demo">
       <div className="phone-agent-demo-header">
         <div>
-          <span>Choose a need</span>
           <h3>{scenario.need}</h3>
         </div>
-        <small>Need → system</small>
       </div>
 
       <div className="phone-agent-demo-layout">
@@ -2231,6 +2240,29 @@ function AdvancedSystemPreview({
   linkLabel?: string;
   sectionId?: string;
 }) {
+  const stages = [
+    {
+      title: "Customer request",
+      detail: "A call or form captures the right details once, while the customer is ready to move.",
+      result: "Clean intake",
+      icon: Phone,
+    },
+    {
+      title: "Quote prepared",
+      detail: "Approved pricing rules and customer information come together in a consistent quote.",
+      result: "Faster response",
+      icon: Gauge,
+    },
+    {
+      title: "Project created",
+      detail: "Accepted work becomes a usable project record without another round of manual entry.",
+      result: "Clear handoff",
+      icon: LayoutDashboard,
+    },
+  ];
+  const [activeStage, setActiveStage] = useState(0);
+  const ActiveIcon = stages[activeStage].icon;
+
   return (
     <section className="homepage-preview advanced-preview" id={sectionId} aria-labelledby={`${sectionId}-title`}>
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
@@ -2245,12 +2277,34 @@ function AdvancedSystemPreview({
             <ArrowRight size={15} aria-hidden="true" />
           </a>
         </div>
-        <div className="advanced-preview-flow" aria-label="A request moving through a connected business system">
-          <div><Phone size={18} aria-hidden="true" /><span>Customer request</span></div>
-          <ArrowRight size={16} aria-hidden="true" />
-          <div><Gauge size={18} aria-hidden="true" /><span>Quote prepared</span></div>
-          <ArrowRight size={16} aria-hidden="true" />
-          <div><LayoutDashboard size={18} aria-hidden="true" /><span>Project created</span></div>
+        <div className="advanced-preview-console">
+          <div className="advanced-preview-flow" role="tablist" aria-label="Connected business workflow">
+            {stages.map((stage, index) => {
+              const Icon = stage.icon;
+              return (
+                <React.Fragment key={stage.title}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeStage === index}
+                    className={activeStage === index ? "is-active" : ""}
+                    onClick={() => setActiveStage(index)}
+                  >
+                    <Icon size={18} aria-hidden="true" />
+                    <span>{stage.title}</span>
+                  </button>
+                  {index < stages.length - 1 ? <ArrowRight size={16} aria-hidden="true" /> : null}
+                </React.Fragment>
+              );
+            })}
+          </div>
+          <div className="advanced-preview-detail" role="tabpanel" aria-live="polite">
+            <span className="advanced-preview-detail-icon"><ActiveIcon size={19} aria-hidden="true" /></span>
+            <div>
+              <strong>{stages[activeStage].result}</strong>
+              <p>{stages[activeStage].detail}</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -2259,9 +2313,21 @@ function AdvancedSystemPreview({
 
 function HowWeWorkPreview() {
   const steps = [
-    ["Map", "Understand what comes in, what the team does, and where time is being lost."],
-    ["Define", "Choose the smallest useful fix and decide whether existing software can handle it."],
-    ["Build", "Set up, test, and improve the tool with the people who will use it."],
+    {
+      title: "Map",
+      text: "Understand what comes in, what the team does, and where time is being lost.",
+      icon: Route,
+    },
+    {
+      title: "Define",
+      text: "Choose the smallest useful fix and decide whether existing software can handle it.",
+      icon: Search,
+    },
+    {
+      title: "Build",
+      text: "Set up, test, and improve the tool with the people who will use it.",
+      icon: Wrench,
+    },
   ];
 
   return (
@@ -2272,13 +2338,16 @@ function HowWeWorkPreview() {
           <p>We map the process, identify the smallest useful fix, and build only where the workflow requires it.</p>
         </div>
         <ol className="how-preview-steps">
-          {steps.map(([title, text], index) => (
-            <li key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </li>
-          ))}
+          {steps.map((step) => {
+            const Icon = step.icon;
+            return (
+              <li key={step.title}>
+                <span className="how-preview-icon"><Icon size={18} aria-hidden="true" /></span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </li>
+            );
+          })}
         </ol>
         <a className="homepage-preview-link" href="/how-it-works/">
           See how an engagement works
@@ -2532,7 +2601,7 @@ function WhatWeBuildPage() {
       <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.whatWeBuild} />
-        <BusinessJourney />
+        <BusinessJourney showDetailLink={false} />
         <ServiceArchitecture />
         <FeatureGrid />
         <ConnectedSystem />
@@ -2550,7 +2619,7 @@ function ExamplesPage() {
       <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.examples} />
-        <WebsiteTransformation />
+        <WebsiteTransformation showDetailLink={false} />
         <AiVisibility />
         <OutcomeSection />
         <SpreadsheetTransformation />

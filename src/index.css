@@ -736,8 +736,6 @@
   }
 
   .hero-label,
-  .section-kicker,
-  .eyebrow,
   .meta-label {
     display: block;
     color: #8a857d;
@@ -745,6 +743,11 @@
     font-weight: 700;
     letter-spacing: 0.11em;
     text-transform: uppercase;
+  }
+
+  .section-kicker,
+  .eyebrow {
+    display: none !important;
   }
 
   .clay-hero-copy h1 {
@@ -2186,6 +2189,35 @@
     text-align: right;
   }
 
+  .section-detail-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    border: 1px solid rgba(24, 23, 77, 0.18);
+    border-radius: 8px;
+    padding-inline: 0.95rem;
+    color: #18174d;
+    background: rgba(255, 255, 255, 0.58);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+  }
+
+  .section-detail-link:hover,
+  .section-detail-link:focus-visible {
+    border-color: rgba(24, 23, 77, 0.42);
+    background: #fff;
+    transform: translateY(-1px);
+  }
+
+  .business-journey .section-detail-link {
+    margin-left: auto;
+  }
+
   .difference-section {
     border-top: 1px solid #e4e3dd;
     background: #f0f0e8;
@@ -3046,6 +3078,12 @@
     background: rgba(255, 255, 255, 0.62);
     box-shadow: 0 20px 60px rgba(39, 39, 37, 0.07);
     backdrop-filter: blur(16px);
+  }
+
+  .transformation-detail-link {
+    width: fit-content;
+    margin-top: 0.85rem;
+    margin-left: auto;
   }
 
   .comparison-labels,
@@ -5904,6 +5942,15 @@
     background: #f7f6f1;
   }
 
+  .advanced-preview,
+  .how-preview {
+    background-color: #f7f6f1;
+    background-image:
+      linear-gradient(rgba(24, 23, 77, 0.026) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(24, 23, 77, 0.026) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
   .homepage-preview-copy h2,
   .homepage-preview-heading h2,
   .dedicated-heading h2,
@@ -5940,19 +5987,25 @@
     text-decoration: none;
   }
 
+  .advanced-preview-console {
+    overflow: hidden;
+    border: 1px solid rgba(24, 23, 77, 0.14);
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.76);
+    background-image: radial-gradient(rgba(24, 23, 77, 0.11) 0.65px, transparent 0.65px);
+    background-size: 14px 14px;
+    box-shadow: 0 18px 52px rgba(39, 39, 37, 0.08);
+  }
+
   .advanced-preview-flow {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
     align-items: center;
     gap: 0.8rem;
     padding: clamp(1rem, 2.5vw, 1.6rem);
-    border: 1px solid rgba(24, 23, 77, 0.14);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.68);
-    box-shadow: 0 18px 52px rgba(39, 39, 37, 0.08);
   }
 
-  .advanced-preview-flow > div {
+  .advanced-preview-flow > button {
     display: grid;
     min-height: 7.2rem;
     place-items: center;
@@ -5962,7 +6015,18 @@
     padding: 1rem;
     color: #18174d;
     background: #fff;
+    font: inherit;
     text-align: center;
+    cursor: pointer;
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+
+  .advanced-preview-flow > button:hover,
+  .advanced-preview-flow > button:focus-visible,
+  .advanced-preview-flow > button.is-active {
+    border-color: rgba(24, 23, 77, 0.46);
+    box-shadow: 0 8px 22px rgba(24, 23, 77, 0.1);
+    transform: translateY(-2px);
   }
 
   .advanced-preview-flow span {
@@ -5970,6 +6034,42 @@
     font-size: 0.8rem;
     font-weight: 680;
     line-height: 1.35;
+  }
+
+  .advanced-preview-detail {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.85rem;
+    min-height: 6rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.12);
+    padding: 1rem 1.2rem;
+    background: rgba(247, 246, 241, 0.88);
+  }
+
+  .advanced-preview-detail-icon {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border-radius: 8px;
+    color: #18174d;
+    background: #e9eef9;
+  }
+
+  .advanced-preview-detail strong {
+    color: #222229;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 560;
+  }
+
+  .advanced-preview-detail p {
+    max-width: 33rem;
+    margin: 0.25rem 0 0;
+    color: #66646b;
+    font-size: 0.8rem;
+    line-height: 1.5;
   }
 
   .homepage-preview-heading,
@@ -5983,23 +6083,26 @@
   .how-preview-steps {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
     margin: 2rem 0 0;
     padding: 0;
-    border-top: 1px solid rgba(24, 23, 77, 0.18);
     list-style: none;
   }
 
   .how-preview-steps li {
-    padding: 1.35rem 1.3rem 1.4rem 0;
-    border-right: 1px solid rgba(24, 23, 77, 0.12);
+    position: relative;
+    min-height: 12rem;
+    border: 1px solid rgba(24, 23, 77, 0.13);
+    border-radius: 10px;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 12px 32px rgba(39, 39, 37, 0.045);
+    transition: border-color 160ms ease, transform 160ms ease;
   }
 
-  .how-preview-steps li + li {
-    padding-left: 1.3rem;
-  }
-
-  .how-preview-steps li:last-child {
-    border-right: 0;
+  .how-preview-steps li:hover {
+    border-color: rgba(24, 23, 77, 0.34);
+    transform: translateY(-2px);
   }
 
   .how-preview-steps span,
@@ -6014,11 +6117,22 @@
   }
 
   .how-preview-steps h3 {
-    margin: 0.55rem 0 0;
+    margin: 1.2rem 0 0;
     color: #1e1e24;
     font-family: var(--font-serif);
     font-size: 1.45rem;
     font-weight: 540;
+  }
+
+  .how-preview-icon {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border: 1px solid rgba(24, 23, 77, 0.14);
+    border-radius: 8px;
+    color: #18174d;
+    background: #edf1fa;
   }
 
   .how-preview-steps p {
@@ -7256,11 +7370,19 @@
     transform: rotate(90deg);
   }
 
-  .advanced-preview-flow > div {
+  .advanced-preview-flow > button {
     min-height: 5.2rem;
     grid-template-columns: auto 1fr;
     justify-items: start;
     text-align: left;
+  }
+
+  .section-detail-link,
+  .business-journey .section-detail-link,
+  .transformation-detail-link {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
   }
 
   .how-preview-steps {
@@ -7269,13 +7391,14 @@
 
   .how-preview-steps li,
   .how-preview-steps li + li {
-    padding: 1.1rem 0;
-    border-right: 0;
-    border-bottom: 1px solid rgba(24, 23, 77, 0.12);
+    min-height: 0;
+    padding: 1.1rem;
+    border-right: 1px solid rgba(24, 23, 77, 0.13);
+    border-bottom: 1px solid rgba(24, 23, 77, 0.13);
   }
 
   .how-preview-steps li:last-child {
-    border-bottom: 0;
+    border-bottom: 1px solid rgba(24, 23, 77, 0.13);
   }
 
   .service-detail-grid {

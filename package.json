@@ -6,7 +6,7 @@
   "main": "spa-router.js",
   "scripts": {
     "dev": "vite --host=0.0.0.0",
-    "build": "vite build && node scripts/generate-markdown.mjs",
+    "build": "vite build && node scripts/create-spa-routes.mjs && node scripts/generate-markdown.mjs",
     "markdown": "node scripts/generate-markdown.mjs",
     "preview": "vite preview --host=0.0.0.0",
     "test": "npm run build"
