@@ -5858,6 +5858,378 @@
     background: #05070c;
   }
 
+  .page-hero {
+    padding: clamp(9.5rem, 16vw, 12rem) 0 clamp(4rem, 7vw, 6rem);
+    border-bottom: 1px solid rgba(24, 23, 77, 0.1);
+    background:
+      radial-gradient(circle at 12% 16%, rgba(241, 208, 177, 0.48), transparent 25rem),
+      radial-gradient(circle at 88% 78%, rgba(221, 233, 252, 0.62), transparent 28rem),
+      #f7f6f1;
+  }
+
+  .page-hero h1 {
+    max-width: 17ch;
+    margin: 0;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(2.65rem, 5.2vw, 4.8rem);
+    font-weight: 520;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  .page-hero p {
+    max-width: 43rem;
+    margin: 1.3rem 0 0;
+    color: #5f5e65;
+    font-size: clamp(1rem, 1.35vw, 1.16rem);
+    line-height: 1.65;
+  }
+
+  .page-hero .button {
+    margin-top: 1.65rem;
+  }
+
+  .homepage-preview,
+  .service-architecture,
+  .connected-system,
+  .engagement-process,
+  .quote-workflow-example,
+  .engagement-notes {
+    padding-block: clamp(3.5rem, 6vw, 5.5rem);
+  }
+
+  .homepage-preview {
+    border-block: 1px solid rgba(24, 23, 77, 0.09);
+    background: #f7f6f1;
+  }
+
+  .homepage-preview-copy h2,
+  .homepage-preview-heading h2,
+  .dedicated-heading h2,
+  .page-cta h2 {
+    margin: 0;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.8vw, 3.55rem);
+    font-weight: 520;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .homepage-preview-copy p,
+  .homepage-preview-heading p,
+  .dedicated-heading p {
+    max-width: 42rem;
+    margin: 1rem 0 0;
+    color: #62616a;
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .homepage-preview-copy > a,
+  .homepage-preview-link,
+  .service-detail-grid article > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.3rem;
+    color: #18174d;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .advanced-preview-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0.8rem;
+    padding: clamp(1rem, 2.5vw, 1.6rem);
+    border: 1px solid rgba(24, 23, 77, 0.14);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 18px 52px rgba(39, 39, 37, 0.08);
+  }
+
+  .advanced-preview-flow > div {
+    display: grid;
+    min-height: 7.2rem;
+    place-items: center;
+    gap: 0.65rem;
+    border: 1px solid rgba(24, 23, 77, 0.12);
+    border-radius: 9px;
+    padding: 1rem;
+    color: #18174d;
+    background: #fff;
+    text-align: center;
+  }
+
+  .advanced-preview-flow span {
+    color: #34343b;
+    font-size: 0.8rem;
+    font-weight: 680;
+    line-height: 1.35;
+  }
+
+  .homepage-preview-heading,
+  .dedicated-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .how-preview-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 2rem 0 0;
+    padding: 0;
+    border-top: 1px solid rgba(24, 23, 77, 0.18);
+    list-style: none;
+  }
+
+  .how-preview-steps li {
+    padding: 1.35rem 1.3rem 1.4rem 0;
+    border-right: 1px solid rgba(24, 23, 77, 0.12);
+  }
+
+  .how-preview-steps li + li {
+    padding-left: 1.3rem;
+  }
+
+  .how-preview-steps li:last-child {
+    border-right: 0;
+  }
+
+  .how-preview-steps span,
+  .service-detail-grid article > span,
+  .connected-system li span,
+  .engagement-process li span {
+    color: #817c74;
+    font-family: "Geist Variable", ui-monospace, monospace;
+    font-size: 0.66rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+  }
+
+  .how-preview-steps h3 {
+    margin: 0.55rem 0 0;
+    color: #1e1e24;
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-weight: 540;
+  }
+
+  .how-preview-steps p {
+    margin: 0.5rem 0 0;
+    color: #66646b;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .service-architecture {
+    background: #fbfbf9;
+  }
+
+  .service-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2.2rem;
+  }
+
+  .service-detail-grid article {
+    border: 1px solid rgba(24, 23, 77, 0.13);
+    border-radius: 12px;
+    padding: clamp(1.2rem, 2.4vw, 1.7rem);
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  .service-detail-grid h3 {
+    margin: 0.65rem 0 0;
+    color: #202027;
+    font-family: var(--font-serif);
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    font-weight: 540;
+    letter-spacing: -0.035em;
+  }
+
+  .service-detail-grid dl {
+    display: grid;
+    gap: 0.9rem;
+    margin: 1.2rem 0 0;
+  }
+
+  .service-detail-grid dl div {
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.09);
+  }
+
+  .service-detail-grid dt {
+    color: #18174d;
+    font-size: 0.72rem;
+    font-weight: 720;
+  }
+
+  .service-detail-grid dd {
+    margin: 0.3rem 0 0;
+    color: #66646b;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .connected-system {
+    color: #fff;
+    background: #101119;
+  }
+
+  .connected-system .dedicated-heading h2,
+  .connected-system .dedicated-heading p {
+    color: #fff;
+  }
+
+  .connected-system .dedicated-heading p {
+    color: rgba(255, 255, 255, 0.64);
+  }
+
+  .connected-system ol,
+  .engagement-process ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .connected-system li,
+  .engagement-process li {
+    display: flex;
+    min-height: 4.3rem;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    padding: 0.9rem 1rem;
+    color: rgba(255, 255, 255, 0.86);
+    background: rgba(255, 255, 255, 0.045);
+    font-size: 0.84rem;
+    font-weight: 620;
+  }
+
+  .engagement-process {
+    background: #f7f6f1;
+  }
+
+  .quote-workflow-example {
+    background: #fbfbf9;
+  }
+
+  .quote-workflow-demo {
+    min-width: 0;
+  }
+
+  .quote-workflow-demo .product-scene {
+    min-height: min(35rem, 70vh);
+  }
+
+  .engagement-notes {
+    background: #fbfbf9;
+  }
+
+  .engagement-notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .engagement-notes-grid article {
+    border: 1px solid rgba(24, 23, 77, 0.13);
+    border-radius: 10px;
+    padding: 1.2rem;
+    background: #fff;
+  }
+
+  .engagement-notes-grid span {
+    color: #817c74;
+    font-size: 0.66rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+  }
+
+  .engagement-notes-grid h3 {
+    margin: 0.6rem 0 0;
+    color: #202027;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 540;
+  }
+
+  .engagement-notes-grid p,
+  .engagement-faq p {
+    margin: 0.45rem 0 0;
+    color: #66646b;
+    font-size: 0.84rem;
+    line-height: 1.58;
+  }
+
+  .engagement-faq {
+    max-width: 52rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.14);
+  }
+
+  .engagement-faq details {
+    border-bottom: 1px solid rgba(24, 23, 77, 0.14);
+    padding: 1rem 0;
+  }
+
+  .engagement-faq summary {
+    color: #282830;
+    font-size: 0.9rem;
+    font-weight: 680;
+    cursor: pointer;
+  }
+
+  .engagement-faq p {
+    max-width: 42rem;
+  }
+
+  .engagement-process li {
+    border-color: rgba(24, 23, 77, 0.13);
+    color: #34343b;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .page-cta {
+    padding: clamp(4rem, 7vw, 6.5rem) 1.25rem;
+    color: #fff;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(241, 208, 177, 0.14), transparent 30rem),
+      #05070c;
+    text-align: center;
+  }
+
+  .page-cta h2 {
+    max-width: 17ch;
+    margin-inline: auto;
+    color: #fff;
+  }
+
+  .page-cta p {
+    max-width: 42rem;
+    margin: 1rem auto 0;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .page-cta .button {
+    margin-top: 1.5rem;
+  }
+
   .site-footer a {
     color: rgba(255, 255, 255, 0.78);
     font-size: 0.86rem;
@@ -6317,6 +6689,25 @@
 }
 
 @media (max-width: 900px) {
+  .homepage-preview-heading,
+  .dedicated-heading {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .service-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .engagement-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .connected-system ol,
+  .engagement-process ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .business-journey-heading {
     grid-template-columns: 1fr;
     gap: 0.8rem;
@@ -6785,6 +7176,104 @@
 }
 
 @media (max-width: 640px) {
+  .page-hero {
+    padding: 8.8rem 0 3.5rem;
+  }
+
+  .page-hero h1 {
+    max-width: 14ch;
+    font-size: clamp(2.35rem, 11vw, 3.2rem);
+    line-height: 1;
+  }
+
+  .page-hero p {
+    font-size: 0.94rem;
+    line-height: 1.58;
+  }
+
+  .page-hero .button {
+    width: 100%;
+  }
+
+  .homepage-preview,
+  .service-architecture,
+  .connected-system,
+  .engagement-process,
+  .quote-workflow-example,
+  .engagement-notes {
+    padding-block: 3.2rem;
+  }
+
+  .homepage-preview-copy h2,
+  .homepage-preview-heading h2,
+  .dedicated-heading h2,
+  .page-cta h2 {
+    font-size: clamp(2rem, 9.2vw, 2.65rem);
+    line-height: 1.02;
+  }
+
+  .advanced-preview-flow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .advanced-preview-flow > svg {
+    transform: rotate(90deg);
+  }
+
+  .advanced-preview-flow > div {
+    min-height: 5.2rem;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .how-preview-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .how-preview-steps li,
+  .how-preview-steps li + li {
+    padding: 1.1rem 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(24, 23, 77, 0.12);
+  }
+
+  .how-preview-steps li:last-child {
+    border-bottom: 0;
+  }
+
+  .service-detail-grid {
+    margin-top: 1.5rem;
+  }
+
+  .connected-system ol,
+  .engagement-process ol {
+    grid-template-columns: 1fr;
+    margin-top: 1.5rem;
+  }
+
+  .connected-system li,
+  .engagement-process li {
+    min-height: 3.8rem;
+  }
+
+  .page-cta {
+    padding-block: 4rem;
+  }
+
+  .page-cta .button {
+    width: 100%;
+  }
+
+  .quote-workflow-demo .product-scene {
+    min-height: 28rem;
+  }
+
+  .engagement-notes-grid {
+    margin-top: 1.5rem;
+  }
+
   :root {
     --section-title-size: clamp(2.15rem, 10.5vw, 3rem);
     --section-title-size-compact: clamp(1.65rem, 7vw, 2.1rem);

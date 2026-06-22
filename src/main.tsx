@@ -357,6 +357,7 @@ function InteractiveWordmark() {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const isHome = window.location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => {
@@ -381,18 +382,18 @@ function Header() {
         </span>
       </a>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
-        <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
+        <a href={isHome ? "#top" : "/"} className="logo-lockup" aria-label="DaytonGrowthCo home">
           <InteractiveWordmark />
         </a>
         <div className="header-nav" aria-label="Sections">
-          <a href="#platform">What We Build</a>
-          <a href="#outcomes">Examples</a>
-          <a href="#workflow">How It Works</a>
+          <a href="/what-we-build/">What We Build</a>
+          <a href="/examples/">Examples</a>
+          <a href="/how-it-works/">How It Works</a>
           <a href="/aboutus.html">About</a>
-          <a href="#cta">Contact</a>
+          <a href={isHome ? "#cta" : "/#cta"}>Contact</a>
         </div>
         <div className="header-actions">
-          <a className="button button-primary" href="#cta">
+          <a className="button button-primary" href={isHome ? "#cta" : "/#cta"}>
             Start Building.
             <ArrowRight size={15} aria-hidden="true" />
           </a>
@@ -708,7 +709,7 @@ function SegmentCard({ segment, index }: { segment: (typeof segments)[number]; i
       : ["Product info", "Clear story", "Ready to send"];
 
   return (
-    <a className="segment-card group" href="#workflow">
+    <a className="segment-card group" href="/how-it-works/">
       <DottedPanel className="segment-stage">
         <div className={`mini-board mini-system mini-system-${index + 1}`} aria-hidden="true">
           <div className="mini-board-header">
@@ -2191,13 +2192,318 @@ function useScrollProgressFallback() {
   }, []);
 }
 
-function App() {
-  const year = useMemo(() => new Date().getFullYear(), []);
-  useMotionSystem();
-  useMuxVideos();
-  useTurnstileProtection();
-  useScrollProgressFallback();
+const pageCopy = {
+  whatWeBuild: {
+    title: "From online presence to the systems behind the work.",
+    text: "We help Dayton-area businesses improve how customers find them, how requests are handled, and how the team delivers the work.",
+  },
+  examples: {
+    title: "Choose a need. See the system take shape.",
+    text: "These working demonstrations show how a specific business problem can become a focused, usable tool. Each one is built to make the idea concrete before a full engagement begins.",
+  },
+  howItWorks: {
+    title: "Start with the constraint. Not the trend.",
+    text: "We map the work, measure what the current process costs, and choose the smallest useful fix before recommending a custom build.",
+  },
+};
 
+function PageHero({ title, text }: { title: string; text: string }) {
+  return (
+    <section className="page-hero" id="top">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <h1>{title}</h1>
+        <p>{text}</p>
+        <a className="button button-primary" href="#cta">
+          Start a conversation
+          <ArrowRight size={15} aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function AdvancedSystemPreview({
+  linkHref = "/examples/",
+  linkLabel = "Explore more examples",
+  sectionId = "outcomes",
+}: {
+  linkHref?: string;
+  linkLabel?: string;
+  sectionId?: string;
+}) {
+  return (
+    <section className="homepage-preview advanced-preview" id={sectionId} aria-labelledby={`${sectionId}-title`}>
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+        <div className="homepage-preview-copy">
+          <h2 id={`${sectionId}-title`}>A focused tool for the work between the work.</h2>
+          <p>
+            Calls, pricing rules, customer details, and project updates often live in separate places. We connect the
+            parts that create repeated entry, slow handoffs, or missed context.
+          </p>
+          <a href={linkHref}>
+            {linkLabel}
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
+        <div className="advanced-preview-flow" aria-label="A request moving through a connected business system">
+          <div><Phone size={18} aria-hidden="true" /><span>Customer request</span></div>
+          <ArrowRight size={16} aria-hidden="true" />
+          <div><Gauge size={18} aria-hidden="true" /><span>Quote prepared</span></div>
+          <ArrowRight size={16} aria-hidden="true" />
+          <div><LayoutDashboard size={18} aria-hidden="true" /><span>Project created</span></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowWeWorkPreview() {
+  const steps = [
+    ["Map", "Understand what comes in, what the team does, and where time is being lost."],
+    ["Define", "Choose the smallest useful fix and decide whether existing software can handle it."],
+    ["Build", "Set up, test, and improve the tool with the people who will use it."],
+  ];
+
+  return (
+    <section className="homepage-preview how-preview" id="workflow" aria-labelledby="how-preview-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="homepage-preview-heading">
+          <h2 id="how-preview-title">How we work.</h2>
+          <p>We map the process, identify the smallest useful fix, and build only where the workflow requires it.</p>
+        </div>
+        <ol className="how-preview-steps">
+          {steps.map(([title, text], index) => (
+            <li key={title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
+        <a className="homepage-preview-link" href="/how-it-works/">
+          See how an engagement works
+          <ArrowRight size={15} aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  );
+}
+
+const serviceDetails = [
+  {
+    title: "Build your presence",
+    problem: "The business is difficult to understand or does not look as capable online as it is in person.",
+    builds: "Modern websites, service pages, sales pages, and ongoing website care.",
+    outcome: "A credible foundation that explains the offer and gives customers a clear next step.",
+  },
+  {
+    title: "Get discovered",
+    problem: "The right customers are searching, but the business is hard to find or hard for AI systems to interpret.",
+    builds: "SEO, AEO, local search improvements, useful content, and focused campaigns.",
+    outcome: "More qualified discovery without relying entirely on paid attention.",
+  },
+  {
+    title: "Capture and schedule",
+    problem: "Calls go unanswered, intake is inconsistent, or details are lost before the work is booked.",
+    builds: "Phone agents, request forms, scheduling flows, and practical follow-up systems.",
+    outcome: "Faster response and cleaner information before a team member takes over.",
+  },
+  {
+    title: "Run the work",
+    problem: "Quotes, files, customer updates, and project details are spread across too many tools.",
+    builds: "Quote builders, dashboards, customer portals, training systems, and custom apps.",
+    outcome: "Less repeated entry, clearer handoffs, and more capacity for customer work.",
+  },
+];
+
+function ServiceArchitecture() {
+  return (
+    <section className="service-architecture" aria-labelledby="service-architecture-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="service-architecture-title">Start with the business problem.</h2>
+          <p>Each engagement begins with the constraint, then moves to the appropriate tool or setup.</p>
+        </div>
+        <div className="service-detail-grid">
+          {serviceDetails.map((item, index) => (
+            <article key={item.title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <dl>
+                <div><dt>Common problem</dt><dd>{item.problem}</dd></div>
+                <div><dt>What we build</dt><dd>{item.builds}</dd></div>
+                <div><dt>Business outcome</dt><dd>{item.outcome}</dd></div>
+              </dl>
+              <a href="/#cta">Discuss this stage <ArrowRight size={14} aria-hidden="true" /></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ConnectedSystem() {
+  const items = ["Website request", "Phone agent", "Appointment", "Quote", "Project dashboard", "Customer updates"];
+  return (
+    <section className="connected-system" aria-labelledby="connected-system-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="connected-system-title">The parts can work together.</h2>
+          <p>A customer request should not need to be rebuilt at every step.</p>
+        </div>
+        <ol>
+          {items.map((item, index) => (
+            <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function EngagementProcess() {
+  const stages = [
+    "Initial conversation",
+    "Process mapping",
+    "Recommendation",
+    "Build or setup",
+    "Team testing",
+    "Launch",
+    "Ongoing improvement",
+  ];
+  return (
+    <section className="engagement-process" aria-labelledby="engagement-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="engagement-title">A practical engagement from first conversation to launch.</h2>
+          <p>You will know what is being decided, what we need from your team, and what happens next.</p>
+        </div>
+        <ol>
+          {stages.map((stage, index) => (
+            <li key={stage}><span>{String(index + 1).padStart(2, "0")}</span><strong>{stage}</strong></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function QuoteWorkflowExample() {
+  return (
+    <section className="quote-workflow-example" aria-labelledby="quote-workflow-title">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+        <div className="homepage-preview-copy">
+          <h2 id="quote-workflow-title">Turn pricing rules into a send-ready quote.</h2>
+          <p>
+            A focused quote builder can bring customer details, approved pricing, and scope options into one clear
+            workflow. The team spends less time rebuilding documents and more time reviewing the work itself.
+          </p>
+          <a href="/#cta">
+            Discuss your quoting process
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
+        <div className="quote-workflow-demo">
+          <ProductSceneCard step={workflowSteps[1]} index={1} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function EngagementNotes() {
+  const inputs = [
+    ["A real process", "Bring the workflow that currently causes delay, repeated entry, or inconsistent handoffs."],
+    ["The people doing the work", "We learn from the team members who know where the process bends and breaks."],
+    ["Useful examples", "Existing forms, spreadsheets, quotes, and screenshots help us understand the work quickly."],
+  ];
+
+  return (
+    <section className="engagement-notes" aria-labelledby="engagement-notes-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading">
+          <h2 id="engagement-notes-title">What we need from your team.</h2>
+          <p>You do not need a technical specification. We need a clear view of the work and access to the people who understand it.</p>
+        </div>
+        <div className="engagement-notes-grid">
+          {inputs.map(([title, text], index) => (
+            <article key={title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="engagement-faq">
+          <details>
+            <summary>Do we need to replace the software we already use?</summary>
+            <p>No. We first look for a better setup or a clean connection between the tools your team already trusts.</p>
+          </details>
+          <details>
+            <summary>Can we start with one small workflow?</summary>
+            <p>Yes. A focused first build is often the best way to prove value and learn what should come next.</p>
+          </details>
+          <details>
+            <summary>Will our team be involved during the build?</summary>
+            <p>Yes. Short feedback loops keep the tool grounded in the real process and make adoption easier at launch.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PageCTA() {
+  return (
+    <section className="page-cta" id="cta">
+      <h2>Bring us the process that is still being handled by hand.</h2>
+      <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
+      <a className="button button-primary large" href="/#cta">Start Building <ArrowRight size={16} aria-hidden="true" /></a>
+    </section>
+  );
+}
+
+function SiteFooter() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="site-footer">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
+        <div className="footer-brand">
+          <a href="/" className="footer-logo" aria-label="DaytonGrowthCo home">
+            <img src={logoUrl} alt="" width="32" height="32" />
+            <InteractiveWordmark />
+          </a>
+          <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
+          <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
+          <div className="social-links" aria-label="Social media">
+            {socialLinks.map((link) => <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">{link.label}</a>)}
+          </div>
+        </div>
+        <nav className="footer-links" aria-label="Explore">
+          <span className="footer-column-label">Explore</span>
+          <a href="/what-we-build/">What We Build</a>
+          <a href="/examples/">Examples</a>
+          <a href="/how-it-works/">How It Works</a>
+          <a href="/aboutus.html">About Us</a>
+          <a href="/#cta">Start a Conversation</a>
+        </nav>
+        <nav className="footer-links" aria-label="Legal and contact">
+          <span className="footer-column-label">Contact</span>
+          <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
+          <a href="tel:+19373677089">(937) 367-7089</a>
+          <a href="/privacy-policy/">Privacy</a>
+          <a href="/terms-of-service/">Terms</a>
+          <a href="/disclaimer/">Disclaimer</a>
+          <a href="/accessibility/">Accessibility</a>
+        </nav>
+      </div>
+      <div className="footer-bottom">© {year} DaytonGrowthCo. LLC. All rights reserved.</div>
+    </footer>
+  );
+}
+
+function Homepage() {
   return (
     <>
       <SplashScreen />
@@ -2208,64 +2514,102 @@ function App() {
         <Hero />
         <BusinessJourney />
         <WebsiteTransformation />
-        <AiVisibility />
-        <OutcomeSection />
-        <SpreadsheetTransformation />
-        <FeatureGrid />
+        <AdvancedSystemPreview linkHref="/how-it-works/" linkLabel="See how we build connected systems" />
         <EconomicCase />
-        <LaborCostCalculator />
-        <StickyWorkflow />
+        <HowWeWorkPreview />
         <FounderPreview />
         <FinalCTA />
       </main>
-      <footer className="site-footer">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
-          <div className="footer-brand">
-            <a href="#top" className="footer-logo" aria-label="DaytonGrowthCo home">
-              <img src={logoUrl} alt="" width="32" height="32" />
-              <InteractiveWordmark />
-            </a>
-            <p>DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps for small businesses.</p>
-            <a
-              className="client-portal-link"
-              href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Client Portal
-            </a>
-            <div className="social-links" aria-label="Social media">
-              {socialLinks.map((link) => (
-                <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <nav className="footer-links" aria-label="Services">
-            <span className="footer-column-label">Explore</span>
-            <a href="#platform">What We Build</a>
-            <a href="#outcomes">Examples</a>
-            <a href="#workflow">How It Works</a>
-            <a href="/aboutus.html">About Us</a>
-            <a href="#cta">Start a Conversation</a>
-          </nav>
-          <nav className="footer-links" aria-label="Legal and contact">
-            <span className="footer-column-label">Contact</span>
-            <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
-            <a href="tel:+19373677089">(937) 367-7089</a>
-            <a href="/privacy-policy/">Privacy</a>
-            <a href="/terms-of-service/">Terms</a>
-            <a href="/disclaimer/">Disclaimer</a>
-            <a href="/accessibility/">Accessibility</a>
-          </nav>
-        </div>
-        <div className="footer-bottom">© {year} DaytonGrowthCo. LLC. All rights reserved.</div>
-      </footer>
-      <Analytics />
-      <SpeedInsights />
+      <SiteFooter />
     </>
   );
+}
+
+function WhatWeBuildPage() {
+  return (
+    <>
+      <div id="scroll-progress-bar" aria-hidden="true" />
+      <Header />
+      <main className="dedicated-page">
+        <PageHero {...pageCopy.whatWeBuild} />
+        <BusinessJourney />
+        <ServiceArchitecture />
+        <FeatureGrid />
+        <ConnectedSystem />
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+function ExamplesPage() {
+  return (
+    <>
+      <div id="scroll-progress-bar" aria-hidden="true" />
+      <Header />
+      <main className="dedicated-page">
+        <PageHero {...pageCopy.examples} />
+        <WebsiteTransformation />
+        <AiVisibility />
+        <OutcomeSection />
+        <SpreadsheetTransformation />
+        <QuoteWorkflowExample />
+        <AdvancedSystemPreview sectionId="connected-example" />
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+function HowItWorksPage() {
+  return (
+    <>
+      <div id="scroll-progress-bar" aria-hidden="true" />
+      <Header />
+      <main className="dedicated-page">
+        <PageHero {...pageCopy.howItWorks} />
+        <StickyWorkflow />
+        <EngagementProcess />
+        <LaborCostCalculator />
+        <EngagementNotes />
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+function App() {
+  useMotionSystem();
+  useMuxVideos();
+  useTurnstileProtection();
+  useScrollProgressFallback();
+
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  useEffect(() => {
+    if (path !== "/") {
+      document.getElementById("boot-splash")?.remove();
+      document.documentElement.classList.add("dgc-splash-seen");
+      document.body.classList.remove("splash-lock");
+    }
+
+    const titles: Record<string, string> = {
+      "/": "DaytonGrowthCo. | Practical Business Tools and Digital Systems",
+      "/what-we-build": "What We Build | DaytonGrowthCo.",
+      "/examples": "Examples | DaytonGrowthCo.",
+      "/how-it-works": "How It Works | DaytonGrowthCo.",
+    };
+    document.title = titles[path] || titles["/"];
+  }, [path]);
+
+  let page: React.ReactNode = <Homepage />;
+  if (path === "/what-we-build") page = <WhatWeBuildPage />;
+  if (path === "/examples") page = <ExamplesPage />;
+  if (path === "/how-it-works") page = <HowItWorksPage />;
+
+  return <>{page}<Analytics /><SpeedInsights /></>;
 }
 
 createRoot(document.getElementById("root")!).render(
