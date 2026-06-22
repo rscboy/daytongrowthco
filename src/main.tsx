@@ -1872,10 +1872,19 @@ function FinalCTA() {
       <div className="form-video-mask" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
-          <h2>Bring us the process. We’ll build the tool.</h2>
+          <span className="final-cta-kicker">The smallest useful fix</span>
+          <h2>
+            The question is not whether the old way still works.
+            <span>It is whether you should keep paying for it.</span>
+          </h2>
           <p>
-            Tell us what comes in, what your team does with it, and what needs to come out.
+            Show us the task your team repeats, the handoff that breaks, or the system everyone works around. We will
+            help you price the drag and identify the smallest useful fix.
           </p>
+          <a className="final-cta-start" href="#contactName">
+            Start building
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
           <ul className="intake-list" aria-label="What we set up">
             <li>Map the inputs</li>
             <li>Define the tool</li>

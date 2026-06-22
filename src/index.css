@@ -4914,10 +4914,62 @@
     letter-spacing: -0.035em;
   }
 
+  .final-cta-kicker {
+    display: block;
+    margin-bottom: 0.9rem;
+    color: #f1d0b1;
+    font-size: 0.64rem;
+    font-weight: 780;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .final-cta-copy h2 span {
+    display: block;
+    margin-top: 0.28em;
+    color: #f1d0b1;
+    font-style: italic;
+  }
+
   .final-cta-copy p {
     margin-top: 0.9rem;
     max-width: 31rem;
     line-height: 1.55;
+  }
+
+  .final-cta-start {
+    display: inline-flex;
+    min-height: 2.8rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 1.25rem;
+    border: 1px solid rgba(241, 208, 177, 0.7);
+    border-radius: 8px;
+    padding-inline: 1rem;
+    color: #171821;
+    background: #f1d0b1;
+    font-size: 0.78rem;
+    font-weight: 740;
+    text-decoration: none;
+    transition:
+      transform 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .final-cta-start:hover {
+    transform: translateY(-2px);
+    border-color: #f7ddc4;
+    background: #f7ddc4;
+  }
+
+  .final-cta-start svg {
+    transition: transform 160ms ease;
+  }
+
+  .final-cta-start:hover svg {
+    transform: translateX(3px);
   }
 
   .cta-heading-short {
