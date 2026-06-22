@@ -6,14 +6,12 @@ import {
   Calculator,
   Check,
   CheckCircle2,
-  ChevronRight,
   Clock3,
   FileSpreadsheet,
   Globe2,
   PhoneCall,
   Search,
   ShieldCheck,
-  TrendingDown,
   Wrench,
 } from "lucide-react";
 import "./systems-that-pay.css";
@@ -234,7 +232,7 @@ function FreeRedesignOffer() {
   };
 
   return (
-    <section className="redesign-offer" id="free-redesign" aria-labelledby="redesign-title">
+    <section className="redesign-offer redesign-hero" id="free-redesign" aria-labelledby="redesign-title">
       <div className="redesign-copy">
         <span className="offer-tag">Limited local offer · $0</span>
         <p className="section-kicker">Free website redesign concept</p>
@@ -298,47 +296,6 @@ function App() {
         <div className="header-context"><Wrench size={14} /> Built in Dayton for businesses that build things</div>
         <a className="header-link" href="#free-redesign">Free redesign <ArrowRight size={15} /></a>
       </header>
-
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">An operating case for modern systems</p>
-          <h1>Your best people are too expensive for <em>copy, paste, repeat.</em></h1>
-          <p className="hero-lede">
-            We help Dayton-area trades replace slow quoting, scattered job information, constant call
-            interruptions, and disconnected marketing with systems that recover time and protect margin.
-          </p>
-          <div className="hero-actions">
-            <a className="primary-cta" href="#free-redesign">Get a free redesign <ArrowRight size={17} /></a>
-            <a className="text-link" href="#model">Calculate the drag <ChevronRight size={16} /></a>
-          </div>
-          <p className="quiet-proof">Local strategy. Technical execution. No software theater.</p>
-        </div>
-
-        <div className="cost-sheet" aria-label="Example cost of a manual quoting process">
-          <div className="sheet-top">
-            <span>PROCESS COST SHEET</span>
-            <span>DGC / 001</span>
-          </div>
-          <div className="sheet-title">
-            <span>Example: manual quoting</span>
-            <small>Conservative operating estimate</small>
-          </div>
-          <div className="sheet-row"><span>3 people</span><span>affected</span></div>
-          <div className="sheet-row"><span>5 hrs / week</span><span>rework + entry</span></div>
-          <div className="sheet-row"><span>$38 / hour</span><span>loaded labor</span></div>
-          <div className="sheet-rule" />
-          <div className="sheet-total">
-            <span>Annual drag</span>
-            <strong>$28,500</strong>
-          </div>
-          <div className="sheet-recovery">
-            <TrendingDown size={17} />
-            <span>Recover half the time:</span>
-            <b>$14,250 / year</b>
-          </div>
-          <p>Before counting faster quotes, fewer errors, or additional jobs handled.</p>
-        </div>
-      </section>
 
       <FreeRedesignOffer />
 
