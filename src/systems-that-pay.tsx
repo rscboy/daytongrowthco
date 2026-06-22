@@ -1,20 +1,25 @@
-import React, { useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
   Bot,
   Calculator,
   Check,
+  CheckCircle2,
   ChevronRight,
   Clock3,
   FileSpreadsheet,
   Globe2,
   PhoneCall,
   Search,
+  ShieldCheck,
   TrendingDown,
   Wrench,
 } from "lucide-react";
 import "./systems-that-pay.css";
+
+const formAction =
+  "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -143,6 +148,146 @@ function RoiModel() {
   );
 }
 
+type TurnstileApi = {
+  render: (element: HTMLElement, options: Record<string, unknown>) => string;
+  reset: (widgetId?: string) => void;
+  remove: (widgetId?: string) => void;
+};
+
+function FreeRedesignOffer() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [token, setToken] = useState("");
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const turnstileRef = useRef<TurnstileApi>();
+  const widgetIdRef = useRef<string>();
+
+  useEffect(() => {
+    let cancelled = false;
+    const siteKey = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content;
+
+    const renderWidget = () => {
+      const api = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+      if (!api || !widgetRef.current || !siteKey || cancelled || widgetIdRef.current) return;
+      turnstileRef.current = api;
+      widgetIdRef.current = api.render(widgetRef.current, {
+        sitekey: siteKey,
+        action: "free_website_redesign",
+        theme: "light",
+        callback: (value: string) => setToken(value),
+        "expired-callback": () => setToken(""),
+      });
+    };
+
+    if ((window as unknown as { turnstile?: TurnstileApi }).turnstile) {
+      renderWidget();
+    } else {
+      const existing = document.querySelector<HTMLScriptElement>("script[data-redesign-turnstile]");
+      if (existing) {
+        existing.addEventListener("load", renderWidget, { once: true });
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+        script.async = true;
+        script.defer = true;
+        script.dataset.redesignTurnstile = "true";
+        script.addEventListener("load", renderWidget, { once: true });
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      cancelled = true;
+      if (turnstileRef.current && widgetIdRef.current) turnstileRef.current.remove(widgetIdRef.current);
+    };
+  }, []);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!token || status === "sending") return;
+    const form = event.currentTarget;
+    const input = new FormData(form);
+    const website = String(input.get("websiteUrl") || "");
+    const business = String(input.get("businessName") || "");
+    const payload = new FormData();
+    payload.set("yourName", String(input.get("yourName") || ""));
+    payload.set("emailAddress", String(input.get("emailAddress") || ""));
+    payload.set("mainGoal", "Free website redesign");
+    payload.set("serviceTier", "Systems That Pay campaign");
+    payload.set("businessName", business);
+    payload.set("websiteUrl", website);
+    payload.set(
+      "notes",
+      `Free website redesign request\nBusiness: ${business}\nCurrent website: ${website}\nSource: Systems That Pay landing page`,
+    );
+    payload.set("cf-turnstile-response", token);
+
+    setStatus("sending");
+    try {
+      await fetch(formAction, { method: "POST", mode: "no-cors", body: payload });
+      form.reset();
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+      setToken("");
+      turnstileRef.current?.reset(widgetIdRef.current);
+    }
+  };
+
+  return (
+    <section className="redesign-offer" id="free-redesign" aria-labelledby="redesign-title">
+      <div className="redesign-copy">
+        <span className="offer-tag">Limited local offer · $0</span>
+        <p className="section-kicker">Free website redesign concept</p>
+        <h2 id="redesign-title">We’ll redesign your website. Free.</h2>
+        <p className="redesign-lede">
+          Send us your current site. We’ll create a custom homepage direction that makes the business clearer,
+          more credible, and easier to contact.
+        </p>
+        <ul>
+          <li><Check size={16} /> A redesigned homepage concept</li>
+          <li><Check size={16} /> Stronger message, structure, and call to action</li>
+          <li><Check size={16} /> Mobile-first recommendations</li>
+          <li><Check size={16} /> No obligation and no automatic sales call</li>
+        </ul>
+        <p className="offer-fineprint">
+          This is a custom visual concept and strategic direction—not a complete production website.
+        </p>
+      </div>
+
+      <div className="redesign-card">
+        {status === "sent" ? (
+          <div className="redesign-success" role="status">
+            <span><CheckCircle2 size={32} /></span>
+            <p className="section-kicker">Request received</p>
+            <h3>Your site is in the redesign queue.</h3>
+            <p>We’ll review it and follow up by email with the next step.</p>
+          </div>
+        ) : (
+          <form onSubmit={submit}>
+            <div className="redesign-form-head">
+              <span>DGC / FREE REDESIGN</span>
+              <strong>Claim your concept</strong>
+            </div>
+            <div className="redesign-field-pair">
+              <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Jane Smith" required /></label>
+              <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Smith HVAC" required /></label>
+            </div>
+            <label><span>Current website</span><input name="websiteUrl" type="url" placeholder="https://yourbusiness.com" required /></label>
+            <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="jane@yourbusiness.com" required /></label>
+            <div ref={widgetRef} className="redesign-turnstile" aria-label="Security verification" />
+            {status === "error" ? <p className="redesign-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
+            <button type="submit" disabled={!token || status === "sending"}>
+              {status === "sending" ? "Sending…" : "Get my free redesign"}
+              {status !== "sending" ? <ArrowRight size={17} /> : null}
+            </button>
+            <p className="redesign-privacy"><ShieldCheck size={13} /> Your information stays private.</p>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function App() {
   return (
     <main>
@@ -151,7 +296,7 @@ function App() {
           <span>Dayton</span><b>Growth</b><span>Co.</span>
         </a>
         <div className="header-context"><Wrench size={14} /> Built in Dayton for businesses that build things</div>
-        <a className="header-link" href="/#cta">Start building <ArrowRight size={15} /></a>
+        <a className="header-link" href="#free-redesign">Free redesign <ArrowRight size={15} /></a>
       </header>
 
       <section className="hero">
@@ -163,7 +308,7 @@ function App() {
             interruptions, and disconnected marketing with systems that recover time and protect margin.
           </p>
           <div className="hero-actions">
-            <a className="primary-cta" href="/#cta">Start building <ArrowRight size={17} /></a>
+            <a className="primary-cta" href="#free-redesign">Get a free redesign <ArrowRight size={17} /></a>
             <a className="text-link" href="#model">Calculate the drag <ChevronRight size={16} /></a>
           </div>
           <p className="quiet-proof">Local strategy. Technical execution. No software theater.</p>
@@ -194,6 +339,8 @@ function App() {
           <p>Before counting faster quotes, fewer errors, or additional jobs handled.</p>
         </div>
       </section>
+
+      <FreeRedesignOffer />
 
       <section className="thesis">
         <span className="section-kicker">The economic argument</span>
@@ -266,13 +413,12 @@ function App() {
 
       <section className="final">
         <div className="final-mark"><Clock3 size={26} /></div>
-        <p className="eyebrow">The question is not whether the old way still works.</p>
-        <h2>It is whether you should keep paying for it.</h2>
+        <p className="eyebrow">See the difference before you spend.</p>
+        <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
         <p>
-          Show us the task your team repeats, the handoff that breaks, or the system everyone works around.
-          We will help you price the drag and identify the smallest useful fix.
+          One custom concept. Clearer positioning. A stronger path to contact. No obligation.
         </p>
-        <a className="primary-cta light" href="/#cta">Start building <ArrowRight size={17} /></a>
+        <a className="primary-cta light" href="#free-redesign">Get my free redesign <ArrowRight size={17} /></a>
       </section>
 
       <footer>
