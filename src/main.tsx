@@ -108,6 +108,13 @@ const workflowSteps: WorkflowStep[] = [
   },
 ];
 
+const buildPrinciples = [
+  "Fix the expensive bottleneck first.",
+  "Use existing software when it fits.",
+  "Build custom only where your process creates an advantage.",
+  "Measure time removed, errors avoided, and capacity recovered.",
+];
+
 const features = [
   {
     icon: Phone,
@@ -1162,7 +1169,7 @@ function useActiveWorkflowStep() {
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    const section = document.querySelector<HTMLElement>("#workflow");
+    const section = document.querySelector<HTMLElement>("#workflow .desktop-workflow");
     if (!section) return;
 
     const onScroll = () => {
@@ -1192,6 +1199,25 @@ function StickyWorkflow() {
 
   return (
     <section id="workflow" className="workflow-section">
+      <div className="workflow-principles">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+          <div className="workflow-principles-heading" data-reveal>
+            <span className="section-kicker">How we decide what to build</span>
+            <h2>Start with the constraint. Not the trend.</h2>
+            <p>
+              The right answer may be existing software, a focused automation, or a custom tool. The economics decide.
+            </p>
+          </div>
+          <ul className="workflow-principles-list" data-reveal>
+            {buildPrinciples.map((principle) => (
+              <li key={principle}>
+                <CheckCircle2 size={18} strokeWidth={2} aria-hidden="true" />
+                <span>{principle}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
       <div className="desktop-workflow">
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
@@ -1227,6 +1253,7 @@ function StickyWorkflow() {
 
       <div className="mobile-workflow mx-auto max-w-3xl px-5 sm:px-8">
         <div className="section-heading">
+          <span className="section-kicker">The build process</span>
           <h2>From input to output.</h2>
         </div>
         <div className="mobile-workflow-tabs" role="tablist" aria-label="Build process">
@@ -1556,8 +1583,8 @@ function OutcomeSection() {
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>Start with the constraint. Not the trend.</h2>
-          <p>Choose the bottleneck. Watch a focused system take shape around what the business actually needs.</p>
+          <h2>Choose a need. Build the right system.</h2>
+          <p>Watch a focused tool take shape around what the business actually needs.</p>
         </div>
         <ToolScenarioDemo />
       </div>
