@@ -28,6 +28,7 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  TrendingDown,
   TrendingUp,
   Workflow,
   Wrench,
@@ -823,24 +824,39 @@ function EconomicCase() {
               Skilled time should go toward judgment, customer work, and decisions—not rebuilding the same quote,
               moving the same details, or searching for the same file.
             </p>
-          </div>
-
-          <div className="economic-cost-sheet" data-reveal>
             <blockquote>
               Old systems do not look expensive because their invoice is hidden in payroll.
             </blockquote>
-            <div className="economic-cost-question">
-              <span>Run the operating math</span>
-              <h3>What does the old way cost every year?</h3>
-            </div>
-            <div className="economic-formula" aria-label="Annual process cost formula">
-              <span>People affected</span>
-              <i>×</i>
-              <span>Hours lost</span>
-              <i>×</i>
-              <span>Loaded labor</span>
-              <i>×</i>
-              <span>50 weeks</span>
+          </div>
+
+          <div className="homepage-cost-sheet-wrap" data-reveal>
+            <p className="homepage-cost-prompt">What does the old way cost every year?</p>
+            <div className="homepage-cost-sheet" aria-label="Example annual cost of a manual quoting process">
+              <div className="homepage-sheet-top">
+                <span>Process cost sheet</span>
+                <span>DGC / 001</span>
+              </div>
+              <div className="homepage-sheet-title">
+                <h3>Example: manual quoting</h3>
+                <p>Conservative operating estimate</p>
+              </div>
+              <dl className="homepage-sheet-inputs">
+                <div><dt>3 people</dt><dd>affected</dd></div>
+                <div><dt>5 hrs / week</dt><dd>rework + entry</dd></div>
+                <div><dt>$38 / hour</dt><dd>loaded labor</dd></div>
+              </dl>
+              <div className="homepage-sheet-total">
+                <span>Annual drag</span>
+                <strong>$28,500</strong>
+              </div>
+              <div className="homepage-sheet-recovery">
+                <TrendingDown size={18} aria-hidden="true" />
+                <span>Recover half the time:</span>
+                <strong>$14,250 / year</strong>
+              </div>
+              <p className="homepage-sheet-note">
+                Before counting faster quotes, fewer errors, or additional jobs handled.
+              </p>
             </div>
             <a className="economic-case-link" href="#cta">
               Show us the expensive task
