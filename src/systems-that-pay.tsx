@@ -1,145 +1,226 @@
-import React, { useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
-  Bot,
-  Calculator,
   Check,
-  ChevronRight,
-  Clock3,
-  FileSpreadsheet,
+  CheckCircle2,
+  Gauge,
   Globe2,
-  PhoneCall,
+  LoaderCircle,
+  MapPin,
   Search,
+  ShieldCheck,
+  Sparkles,
   TrendingDown,
-  Wrench,
 } from "lucide-react";
 import "./systems-that-pay.css";
 
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
+const formAction =
+  "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
 
-const systems = [
+type TurnstileApi = {
+  render: (element: HTMLElement, options: Record<string, unknown>) => string;
+  reset: (widgetId?: string) => void;
+  remove: (widgetId?: string) => void;
+};
+
+function AuditForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [token, setToken] = useState("");
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const turnstileRef = useRef<TurnstileApi>();
+  const widgetIdRef = useRef<string>();
+
+  useEffect(() => {
+    let cancelled = false;
+    const siteKey = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content;
+
+    const renderWidget = () => {
+      const api = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+      if (!api || !widgetRef.current || !siteKey || cancelled || widgetIdRef.current) return;
+      turnstileRef.current = api;
+      widgetIdRef.current = api.render(widgetRef.current, {
+        sitekey: siteKey,
+        action: "free_website_audit",
+        theme: "light",
+        callback: (value: string) => setToken(value),
+        "expired-callback": () => setToken(""),
+      });
+    };
+
+    if ((window as unknown as { turnstile?: TurnstileApi }).turnstile) {
+      renderWidget();
+    } else {
+      const existing = document.querySelector<HTMLScriptElement>("script[data-audit-turnstile]");
+      if (existing) {
+        existing.addEventListener("load", renderWidget, { once: true });
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+        script.async = true;
+        script.defer = true;
+        script.dataset.auditTurnstile = "true";
+        script.addEventListener("load", renderWidget, { once: true });
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      cancelled = true;
+      if (turnstileRef.current && widgetIdRef.current) {
+        turnstileRef.current.remove(widgetIdRef.current);
+      }
+    };
+  }, []);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!token || status === "sending") return;
+
+    const form = event.currentTarget;
+    const input = new FormData(form);
+    const businessName = String(input.get("businessName") || "");
+    const websiteUrl = String(input.get("websiteUrl") || "");
+    const concern = String(input.get("auditConcern") || "");
+
+    const payload = new FormData();
+    payload.set("yourName", String(input.get("yourName") || ""));
+    payload.set("emailAddress", String(input.get("emailAddress") || ""));
+    payload.set("mainGoal", "Free website audit");
+    payload.set("serviceTier", "Campaign lead magnet");
+    payload.set(
+      "notes",
+      `Business: ${businessName}\nWebsite: ${websiteUrl}\nMain concern: ${concern || "Not provided"}\nSource: Systems That Pay landing page`,
+    );
+    payload.set("businessName", businessName);
+    payload.set("websiteUrl", websiteUrl);
+    payload.set("cf-turnstile-response", token);
+
+    setStatus("sending");
+    try {
+      await fetch(formAction, { method: "POST", mode: "no-cors", body: payload });
+      form.reset();
+      setStatus("sent");
+      setToken("");
+    } catch {
+      setStatus("error");
+      turnstileRef.current?.reset(widgetIdRef.current);
+      setToken("");
+    }
+  };
+
+  if (status === "sent") {
+    return (
+      <div className="audit-success" role="status">
+        <span><CheckCircle2 size={30} /></span>
+        <p className="form-kicker">Request received</p>
+        <h2>Your audit is in the queue.</h2>
+        <p>We’ll review the site and send the findings to your email. No sales call is required.</p>
+        <a href="/">Explore DaytonGrowthCo. <ArrowRight size={15} /></a>
+      </div>
+    );
+  }
+
+  return (
+    <form className="audit-form" onSubmit={submit}>
+      <div className="form-head">
+        <p className="form-kicker">Free website audit</p>
+        <h2>Find out where your site is costing you.</h2>
+        <p>Four quick details. We’ll do the technical review.</p>
+      </div>
+
+      <div className="field-pair">
+        <label>
+          <span>Your name</span>
+          <input name="yourName" autoComplete="name" placeholder="Jane Smith" required />
+        </label>
+        <label>
+          <span>Business name</span>
+          <input name="businessName" autoComplete="organization" placeholder="Smith HVAC" required />
+        </label>
+      </div>
+      <label>
+        <span>Website URL</span>
+        <input name="websiteUrl" type="url" inputMode="url" placeholder="https://yourbusiness.com" required />
+      </label>
+      <label>
+        <span>Email for the audit</span>
+        <input name="emailAddress" type="email" autoComplete="email" placeholder="jane@yourbusiness.com" required />
+      </label>
+      <label>
+        <span>What concerns you most? <small>Optional</small></span>
+        <select name="auditConcern" defaultValue="">
+          <option value="">Choose one</option>
+          <option>Not enough calls or quote requests</option>
+          <option>The site looks outdated</option>
+          <option>We are hard to find on Google</option>
+          <option>The site is slow or confusing</option>
+          <option>I am not sure what is wrong</option>
+        </select>
+      </label>
+
+      <div ref={widgetRef} className="turnstile-slot" aria-label="Security verification" />
+      {status === "error" ? (
+        <p className="form-error">The request did not send. Try again or email help@daytongrowth.co.</p>
+      ) : null}
+      <button type="submit" disabled={!token || status === "sending"}>
+        {status === "sending" ? <LoaderCircle className="spin" size={17} /> : null}
+        {status === "sending" ? "Requesting audit…" : "Get my free audit"}
+        {status !== "sending" ? <ArrowRight size={17} /> : null}
+      </button>
+      <p className="privacy-note"><ShieldCheck size={13} /> No spam. No automatic sales call. Your audit arrives by email.</p>
+    </form>
+  );
+}
+
+const auditItems = [
   {
-    icon: Calculator,
-    label: "Quoting",
-    waste: "Rebuilding the same estimate from notes, price sheets, and memory.",
-    system: "A guided quote builder that applies your pricing logic and produces a send-ready estimate.",
-    return: "Faster response, consistent margins, less estimator time.",
-  },
-  {
-    icon: PhoneCall,
-    label: "Call agents",
-    waste: "Owners and field staff stopping work to answer routine calls or losing after-hours context.",
-    system: "A phone agent that answers, qualifies, documents, and routes calls using your rules.",
-    return: "Fewer interruptions and cleaner handoffs without adding a full shift.",
-  },
-  {
-    icon: FileSpreadsheet,
-    label: "Operating systems",
-    waste: "Copying details between texts, spreadsheets, PDFs, inboxes, and job folders.",
-    system: "One focused workflow for intake, job data, approvals, files, and next actions.",
-    return: "Less double entry, fewer missed details, more visible work.",
-  },
-  {
-    icon: Bot,
-    label: "Practical AI",
-    waste: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
-    system: "AI embedded at specific bottlenecks—with human review where judgment matters.",
-    return: "Lower administrative load without handing control to a black box.",
-  },
-  {
-    icon: Globe2,
-    label: "Website + ads",
-    waste: "Sending paid traffic to an old site that makes the company look smaller or harder to trust.",
-    system: "A fast website and campaign pages aligned to the service, location, and buyer’s decision.",
-    return: "More value from the traffic you already pay to earn.",
+    icon: Gauge,
+    title: "Speed + mobile",
+    copy: "Where slow loading, layout shifts, or weak mobile behavior create friction before a customer calls.",
   },
   {
     icon: Search,
-    label: "SEO + AEO",
-    waste: "Depending entirely on paid media while search engines and AI answers cannot interpret your expertise.",
-    system: "Technical structure, local pages, useful content, and machine-readable business signals.",
-    return: "A compounding discovery channel that reduces reliance on rented attention.",
+    title: "Search visibility",
+    copy: "What keeps Google from understanding your services, locations, authority, and most valuable pages.",
+  },
+  {
+    icon: Sparkles,
+    title: "AI answer readiness",
+    copy: "Whether ChatGPT, Google AI, and other answer engines can interpret and confidently reference the business.",
+  },
+  {
+    icon: Globe2,
+    title: "Conversion clarity",
+    copy: "Where unclear services, weak proof, hidden calls to action, or trust gaps suppress quote requests.",
   },
 ];
 
-const principles = [
-  "Fix the expensive bottleneck first.",
-  "Use existing software when it fits.",
-  "Build custom only where your process creates an advantage.",
-  "Measure time removed, errors avoided, and capacity recovered.",
-];
-
-function RoiModel() {
-  const [people, setPeople] = useState(3);
-  const [hours, setHours] = useState(5);
-  const [rate, setRate] = useState(38);
-  const [recovery, setRecovery] = useState(50);
-
-  const result = useMemo(() => {
-    const annualDrag = people * hours * rate * 50;
-    const recoverable = annualDrag * (recovery / 100);
-    const monthly = recoverable / 12;
-    return { annualDrag, recoverable, monthly };
-  }, [people, hours, rate, recovery]);
-
+function SampleAudit() {
   return (
-    <section className="roi-model" id="model" aria-labelledby="model-title">
-      <div className="model-intro">
-        <span className="section-kicker">Run the labor math</span>
-        <h2 id="model-title">What does the old way cost every year?</h2>
-        <p>
-          This model values only recoverable labor. It does not count faster response, fewer pricing errors,
-          better close rates, or work completed with the capacity you get back.
-        </p>
-        <div className="formula" aria-label="Calculation formula">
-          People × weekly hours lost × loaded hourly cost × 50 working weeks
-        </div>
+    <div className="sample-audit" aria-label="Example website audit report">
+      <div className="report-top"><span>Website audit</span><span>DGC / FREE</span></div>
+      <div className="report-title">
+        <span>Sample finding report</span>
+        <h3>Local trade company</h3>
+        <p>Technical + conversion review</p>
       </div>
-
-      <div className="model-console">
-        <div className="control-grid">
-          <label>
-            <span><b>People affected</b><output>{people}</output></span>
-            <input type="range" min="1" max="20" value={people} onChange={(e) => setPeople(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Hours lost / person / week</b><output>{hours}</output></span>
-            <input type="range" min="1" max="20" value={hours} onChange={(e) => setHours(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Loaded hourly cost</b><output>{money.format(rate)}</output></span>
-            <input type="range" min="20" max="100" step="2" value={rate} onChange={(e) => setRate(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Realistic time recovered</b><output>{recovery}%</output></span>
-            <input type="range" min="20" max="80" step="5" value={recovery} onChange={(e) => setRecovery(Number(e.target.value))} />
-          </label>
-        </div>
-
-        <div className="result-ledger">
-          <div>
-            <span>Annual process drag</span>
-            <strong>{money.format(result.annualDrag)}</strong>
-          </div>
-          <div className="result-primary">
-            <span>Potential annual capacity recovered</span>
-            <strong>{money.format(result.recoverable)}</strong>
-          </div>
-          <div>
-            <span>Monthly break-even ceiling</span>
-            <strong>{money.format(result.monthly)}</strong>
-          </div>
-        </div>
-        <p className="model-note">
-          Directional estimate, not a guarantee. We validate assumptions against your actual workflow before recommending a build.
-        </p>
+      <div className="score-row">
+        <div><span>Performance</span><strong>54</strong><i className="is-warning" /></div>
+        <div><span>Search structure</span><strong>61</strong><i className="is-warning" /></div>
+        <div><span>Conversion clarity</span><strong>48</strong><i className="is-risk" /></div>
       </div>
-    </section>
+      <div className="finding-list">
+        <p><span>01</span><strong>Primary services are unclear above the fold.</strong><em>High impact</em></p>
+        <p><span>02</span><strong>Mobile quote path requires too many decisions.</strong><em>High impact</em></p>
+        <p><span>03</span><strong>Location and expertise signals are incomplete.</strong><em>Medium</em></p>
+      </div>
+      <div className="report-priority">
+        <TrendingDown size={18} />
+        <span>First priority</span>
+        <strong>Clarify service + quote path</strong>
+      </div>
+    </div>
   );
 }
 
@@ -150,135 +231,89 @@ function App() {
         <a className="wordmark" href="/" aria-label="Dayton Growth Company home">
           <span>Dayton</span><b>Growth</b><span>Co.</span>
         </a>
-        <div className="header-context"><Wrench size={14} /> Built in Dayton for businesses that build things</div>
-        <a className="header-link" href="/#cta">Start building <ArrowRight size={15} /></a>
+        <p><MapPin size={13} /> Dayton, Ohio</p>
+        <a href="/">Visit our main site</a>
       </header>
 
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">An operating case for modern systems</p>
-          <h1>Your best people are too expensive for <em>copy, paste, repeat.</em></h1>
-          <p className="hero-lede">
-            We help Dayton-area trades replace slow quoting, scattered job information, constant call
-            interruptions, and disconnected marketing with systems that recover time and protect margin.
+      <section className="lead-hero" id="audit">
+        <div className="lead-copy">
+          <p className="eyebrow">For Dayton-area trades and service businesses</p>
+          <h1>Your website may be quietly costing you work.</h1>
+          <p className="lead-intro">
+            Get a free, human-reviewed website audit that shows where your site is losing speed, search visibility,
+            trust, and quote requests—and what to fix first.
           </p>
-          <div className="hero-actions">
-            <a className="primary-cta" href="/#cta">Start building <ArrowRight size={17} /></a>
-            <a className="text-link" href="#model">Calculate the drag <ChevronRight size={16} /></a>
+          <ul className="offer-list">
+            <li><Check size={16} /> Technical and mobile review</li>
+            <li><Check size={16} /> Google + AI visibility check</li>
+            <li><Check size={16} /> Conversion and trust assessment</li>
+            <li><Check size={16} /> Prioritized recommendations in plain English</li>
+          </ul>
+          <div className="offer-meta">
+            <span><strong>$0</strong> cost</span>
+            <span><strong>Human</strong> reviewed</span>
+            <span><strong>No</strong> sales call required</span>
           </div>
-          <p className="quiet-proof">Local strategy. Technical execution. No software theater.</p>
         </div>
-
-        <div className="cost-sheet" aria-label="Example cost of a manual quoting process">
-          <div className="sheet-top">
-            <span>PROCESS COST SHEET</span>
-            <span>DGC / 001</span>
-          </div>
-          <div className="sheet-title">
-            <span>Example: manual quoting</span>
-            <small>Conservative operating estimate</small>
-          </div>
-          <div className="sheet-row"><span>3 people</span><span>affected</span></div>
-          <div className="sheet-row"><span>5 hrs / week</span><span>rework + entry</span></div>
-          <div className="sheet-row"><span>$38 / hour</span><span>loaded labor</span></div>
-          <div className="sheet-rule" />
-          <div className="sheet-total">
-            <span>Annual drag</span>
-            <strong>$28,500</strong>
-          </div>
-          <div className="sheet-recovery">
-            <TrendingDown size={17} />
-            <span>Recover half the time:</span>
-            <b>$14,250 / year</b>
-          </div>
-          <p>Before counting faster quotes, fewer errors, or additional jobs handled.</p>
-        </div>
+        <AuditForm />
       </section>
 
-      <section className="thesis">
-        <span className="section-kicker">The economic argument</span>
-        <div className="thesis-grid">
-          <h2>Old systems do not look expensive because their invoice is hidden in payroll.</h2>
-          <div>
-            <p>
-              The cost shows up as estimator hours, owner interruptions, duplicate entry, missed context,
-              slow follow-up, and skilled employees doing clerical work.
-            </p>
-            <p>
-              A useful system does not need to replace people. It needs to stop buying the same low-value task
-              from them every week.
-            </p>
+      <section className="deliverable">
+        <div className="deliverable-copy">
+          <p className="section-kicker">What you receive</p>
+          <h2>Not a generic score. A short list of what matters.</h2>
+          <p>
+            Automated reports produce dozens of warnings. We interpret the site like a customer, a search engine,
+            and an operator—then separate meaningful problems from technical noise.
+          </p>
+          <div className="delivery-note">
+            <CheckCircle2 size={18} />
+            <span><strong>Delivered by email.</strong> Clear findings, screenshots where useful, and the first fixes we would make.</span>
           </div>
         </div>
+        <SampleAudit />
       </section>
 
-      <RoiModel />
-
-      <section className="systems" aria-labelledby="systems-title">
-        <div className="section-heading">
-          <span className="section-kicker">Where margin leaks</span>
-          <h2 id="systems-title">Modernize the work around the work.</h2>
-          <p>Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets, and grows.</p>
+      <section className="audit-scope" aria-labelledby="scope-title">
+        <div className="scope-heading">
+          <p className="section-kicker">The review</p>
+          <h2 id="scope-title">Four places an old website leaks value.</h2>
         </div>
-        <div className="system-table">
-          <div className="system-head"><span>Area</span><span>Current cost</span><span>Better system</span><span>Business return</span></div>
-          {systems.map(({ icon: Icon, label, waste, system, return: roi }) => (
-            <article className="system-row" key={label}>
-              <h3><Icon size={18} />{label}</h3>
-              <p>{waste}</p>
-              <p>{system}</p>
-              <p className="return-copy">{roi}</p>
+        <div className="scope-grid">
+          {auditItems.map(({ icon: Icon, title, copy }) => (
+            <article key={title}>
+              <Icon size={19} />
+              <h3>{title}</h3>
+              <p>{copy}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="decision">
+      <section className="roi-reminder">
         <div>
-          <span className="section-kicker">How we decide what to build</span>
-          <h2>Start with the constraint. Not the trend.</h2>
+          <p className="section-kicker">The economic case</p>
+          <h2>Paid traffic is expensive. Sending it to a weak website is more expensive.</h2>
         </div>
-        <ol>
-          {principles.map((principle) => <li key={principle}><Check size={16} />{principle}</li>)}
-        </ol>
-      </section>
-
-      <section className="proof" aria-labelledby="proof-title">
-        <div className="proof-copy">
-          <span className="section-kicker">See the standard</span>
-          <h2 id="proof-title">The work should feel specific to the business.</h2>
+        <div>
           <p>
-            We combine operating logic, interface design, automation, and clear customer-facing communication.
-            Explore a recent trade-business project or see the broader portfolio on our main site.
+            An outdated site can make good advertising, referrals, and local reputation work harder than necessary.
+            The audit identifies the highest-friction points before you spend more on traffic or rebuild blindly.
           </p>
-        </div>
-        <div className="proof-links">
-          <a href="/watson-roofing.html">
-            <span>Trade business project</span>
-            <strong>Watson Roofing <ArrowRight size={18} /></strong>
-          </a>
-          <a href="/#outcomes">
-            <span>Capabilities + examples</span>
-            <strong>View our work <ArrowRight size={18} /></strong>
-          </a>
+          <a href="#audit">Get the free website audit <ArrowRight size={16} /></a>
         </div>
       </section>
 
-      <section className="final">
-        <div className="final-mark"><Clock3 size={26} /></div>
-        <p className="eyebrow">The question is not whether the old way still works.</p>
-        <h2>It is whether you should keep paying for it.</h2>
-        <p>
-          Show us the task your team repeats, the handoff that breaks, or the system everyone works around.
-          We will help you price the drag and identify the smallest useful fix.
-        </p>
-        <a className="primary-cta light" href="/#cta">Start building <ArrowRight size={17} /></a>
+      <section className="final-cta">
+        <p className="eyebrow">Free website audit</p>
+        <h2>See what your website is asking customers to work around.</h2>
+        <a href="#audit">Request my audit <ArrowRight size={17} /></a>
       </section>
 
       <footer>
         <a className="wordmark footer-wordmark" href="/"><span>Dayton</span><b>Growth</b><span>Co.</span></a>
-        <p>Business systems, websites, search, and practical AI for Dayton-area companies.</p>
-        <a href="/">Visit daytongrowth.co</a>
+        <p>Websites, search, and business systems for Dayton-area companies.</p>
+        <a href="/">daytongrowth.co</a>
       </footer>
     </main>
   );
