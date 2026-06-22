@@ -4638,6 +4638,82 @@
     text-align: center;
   }
 
+  .form-status[data-variant="pending"] {
+    color: #f8fafc;
+    font-weight: 620;
+  }
+
+  .form-status[data-variant="error"] {
+    color: #fecaca;
+    font-size: 0.82rem;
+    font-weight: 620;
+  }
+
+  .form-status[data-variant="success"] {
+    color: #6ee7a8;
+    font-size: 0.86rem;
+    font-weight: 660;
+  }
+
+  .form-success {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    padding: clamp(1.4rem, 3vw, 2.1rem) clamp(1rem, 2vw, 1.5rem);
+    text-align: center;
+    animation: form-success-in 0.32s ease-out both;
+  }
+
+  .form-success:focus {
+    outline: none;
+  }
+
+  .form-success-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 3.4rem;
+    height: 3.4rem;
+    margin-bottom: 0.25rem;
+    border-radius: 999px;
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.14);
+    box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.32) inset;
+  }
+
+  .form-success-title {
+    margin: 0;
+    color: #f8fafc;
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    font-weight: 720;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  .form-success-message {
+    margin: 0;
+    max-width: 26rem;
+    color: rgba(229, 230, 235, 0.82);
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  @keyframes form-success-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .form-success {
+      animation: none;
+    }
+  }
+
   .form-trust-cues {
     display: block;
     color: rgba(229, 230, 235, 0.68);

@@ -425,12 +425,18 @@ function useTurnstileProtection() {
 
       const token = turnstileApi?.getResponse(widgetId);
       if (!token) {
-        if (status) status.textContent = "Please complete the verification below.";
+        if (status) {
+          status.dataset.variant = "error";
+          status.textContent = "Please complete the verification below.";
+        }
         return;
       }
 
       setSubmitting(true);
-      if (status) status.textContent = "Sending…";
+      if (status) {
+        status.dataset.variant = "pending";
+        status.textContent = "Sending…";
+      }
 
       // Apps Script answers a POST with a 302 to a Google page served with
       // X-Frame-Options: SAMEORIGIN, which the browser refuses to render in a
@@ -442,12 +448,28 @@ function useTurnstileProtection() {
 
       fetch(form.action, { method: "POST", mode: "no-cors", body: payload })
         .then(() => {
-          if (status) status.textContent = "Request received. We’ll reply with next steps.";
           form.reset();
+          if (status) {
+            status.dataset.variant = "";
+            status.textContent = "";
+          }
+          // Swap the form out for a prominent confirmation so it's unmistakable
+          // that the request went through, and move focus there for a11y.
+          const success = document.getElementById("formSuccess");
+          if (success) {
+            form.hidden = true;
+            success.hidden = false;
+            success.focus();
+          } else if (status) {
+            status.dataset.variant = "success";
+            status.textContent = "Request received. We’ll reply with next steps.";
+          }
         })
         .catch(() => {
-          if (status)
+          if (status) {
+            status.dataset.variant = "error";
             status.textContent = "Something went wrong. Please email help@daytongrowth.co and we’ll follow up.";
+          }
         })
         .finally(() => {
           setSubmitting(false);
@@ -1535,6 +1557,15 @@ function ProjectForm() {
           </p>
         </div>
       </form>
+      <div id="formSuccess" className="form-success" role="status" tabIndex={-1} hidden>
+        <span className="form-success-icon" aria-hidden="true">
+          <CheckCircle2 size={34} strokeWidth={2.25} />
+        </span>
+        <h3 className="form-success-title">Request received</h3>
+        <p className="form-success-message">
+          Thanks — we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+        </p>
+      </div>
     </div>
   );
 }
@@ -1763,22 +1794,48 @@ function useMuxVideos() {
   }, []);
 }
 
+function useScrollProgressFallback() {
+  useEffect(() => {
+    const bar = document.getElementById("scroll-progress-bar");
+    if (!bar) return;
+    // Supporting browsers drive the bar purely in CSS via animation-timeline:
+    // scroll(); only browsers without it need this JS fallback.
+    if (window.CSS?.supports?.("animation-timeline: scroll()")) return;
+
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? window.scrollY / max : 0;
+      bar.style.transform = `scaleX(${Math.min(1, Math.max(0, ratio))})`;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+}
+
 function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
   const [footerWordmarkCompact, setFooterWordmarkCompact] = useState(false);
   useMotionSystem();
   useMuxVideos();
   useTurnstileProtection();
+  useScrollProgressFallback();
 
   return (
     <>
       <SplashScreen />
       <div id="scroll-progress-bar" aria-hidden="true" />
+      <ScrollDots />
       <Header />
       <main>
         <Hero />
-        <FeatureGrid />
         <SpreadsheetTransformation />
+        <FeatureGrid />
         <OutcomeSection />
         <WebsiteTransformation />
         <StickyWorkflow />
