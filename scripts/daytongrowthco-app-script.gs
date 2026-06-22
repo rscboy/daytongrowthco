@@ -1,14 +1,14 @@
 // DaytonGrowthCo website forms — Google Apps Script web-app handler
-const TO_EMAIL = "sgcaruso@umich.edu";
+const TO_EMAIL = "sam@daytongrowth.co";
 
 // Inbox identity
 const FROM_NAME = "DaytonGrowthCo.";
-const FROM_ALIAS = "help@daytongrowth.co";   // used only if it's a verified "Send mail as" alias
+const FROM_ALIAS = "sam@daytongrowth.co";   // must be configured in Gmail under "Send mail as"
 
 // Brand
 const LOGO_URL   = "https://www.daytongrowth.co/favicon.png?v=2";
 const SITE_URL   = "https://www.daytongrowth.co/";
-const REPLY_TO   = "help@daytongrowth.co";
+const REPLY_TO   = "sam@daytongrowth.co";
 const PHONE      = "(937) 367-7089";
 const C_BLUE     = "#2563EB";
 const C_DARK     = "#0A0E1A";
@@ -428,6 +428,13 @@ function authorizeOnce() {
     payload: { secret: "test", response: "test" },
     muteHttpExceptions: true
   });
-  GmailApp.getAliases();
-  Logger.log("Authorized.");
+  const aliases = GmailApp.getAliases();
+  Logger.log("Authorized. Available send-as aliases: " + aliases.join(", "));
+  if (aliases.indexOf(FROM_ALIAS) === -1) {
+    throw new Error(
+      FROM_ALIAS +
+      ' is not configured as a Gmail "Send mail as" alias for the account running this script.'
+    );
+  }
+  Logger.log("Authorized and sender alias confirmed: " + FROM_ALIAS);
 }
