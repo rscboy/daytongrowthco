@@ -10,6 +10,7 @@ import {
   Calendar,
   CheckCircle2,
   ChevronDown,
+  ChevronsLeftRight,
   Database,
   FileInput,
   FileText,
@@ -280,9 +281,9 @@ const toolScenarios = [
 // Completes the rotating hero headline: "We build ___."
 const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer portals", "custom apps"];
 
-function InteractiveWordmark({ compact = false }: { compact?: boolean }) {
+function InteractiveWordmark() {
   return (
-    <span className={`nav-wordmark interactive-wordmark ${compact ? "is-compact" : ""}`} aria-hidden="true">
+    <span className="nav-wordmark interactive-wordmark" aria-hidden="true">
       <span className="nav-wordmark-dayton">
         <span className="wordmark-initial">D</span><span className="wordmark-rest">ayton</span>
       </span>
@@ -298,38 +299,21 @@ function InteractiveWordmark({ compact = false }: { compact?: boolean }) {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [wordmarkCompact, setWordmarkCompact] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
-      const isScrolled = window.scrollY > 12;
-      setScrolled(isScrolled);
-      if (isScrolled) setWordmarkCompact(false);
+      setScrolled(window.scrollY > 12);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const onWordmarkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const isMobile = window.innerWidth <= 640;
-    const isAtTop = window.scrollY <= 12;
-    if (!isMobile || !isAtTop) return;
-    event.preventDefault();
-    setWordmarkCompact((current) => !current);
-  };
-
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
-        <a
-          href="#top"
-          className="logo-lockup"
-          aria-label={wordmarkCompact ? "Expand DaytonGrowthCo wordmark" : "Collapse DaytonGrowthCo wordmark"}
-          aria-expanded={!wordmarkCompact}
-          onClick={onWordmarkClick}
-        >
-          <InteractiveWordmark compact={wordmarkCompact} />
+        <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
+          <InteractiveWordmark />
         </a>
         <div className="header-nav" aria-label="Sections">
           <a href="#platform">What We Build</a>
@@ -1181,7 +1165,63 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
 }
 
 function WebsiteTransformation() {
-  const [position, setPosition] = useState(58);
+  const [position, setPosition] = useState(50);
+  const [interacted, setInteracted] = useState(false);
+  const [nudging, setNudging] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const frameRef = useRef<HTMLDivElement>(null);
+  const interactedRef = useRef(false);
+
+  const markInteracted = () => {
+    if (interactedRef.current) return;
+    interactedRef.current = true;
+    setInteracted(true);
+    setNudging(false);
+  };
+
+  // On first scroll into view, wiggle the split once so it reads as draggable.
+  // Skipped under reduced motion and cancelled the moment the user takes over.
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame || reduceMotion) return;
+
+    const timers: number[] = [];
+    let started = false;
+    const runNudge = () => {
+      if (started || interactedRef.current) return;
+      started = true;
+      setNudging(true);
+      const steps = [38, 62, 50];
+      steps.forEach((value, index) => {
+        timers.push(
+          window.setTimeout(() => {
+            if (!interactedRef.current) setPosition(value);
+          }, 360 + index * 460),
+        );
+      });
+      timers.push(window.setTimeout(() => setNudging(false), 360 + steps.length * 460));
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            runNudge();
+            observer.disconnect();
+          }
+        }),
+      { threshold: 0.4 },
+    );
+    observer.observe(frame);
+    return () => {
+      observer.disconnect();
+      timers.forEach(window.clearTimeout);
+    };
+  }, [reduceMotion]);
+
+  const frameClassName = `comparison-frame ${nudging ? "is-hinting" : ""} ${
+    interacted ? "is-interacted" : ""
+  }`;
 
   return (
     <section className="transformation-section" aria-labelledby="transformation-heading">
@@ -1199,12 +1239,21 @@ function WebsiteTransformation() {
             <span>Before</span>
             <span>After</span>
           </div>
-          <div className="comparison-frame" style={{ "--split": `${position}%` } as React.CSSProperties}>
+          <div ref={frameRef} className={frameClassName} style={{ "--split": `${position}%` } as React.CSSProperties}>
             <WebsiteMockup variant="before" />
             <div className="after-layer" aria-hidden="true">
               <WebsiteMockup variant="after" />
             </div>
-            <div className="comparison-handle" aria-hidden="true" />
+            <div className="comparison-handle" aria-hidden="true">
+              <span className="comparison-grip">
+                <ChevronsLeftRight size={15} aria-hidden="true" />
+              </span>
+            </div>
+            {!interacted ? (
+              <span className="comparison-hint" aria-hidden="true">
+                Drag to compare
+              </span>
+            ) : null}
             <input
               className="comparison-range"
               type="range"
@@ -1212,7 +1261,12 @@ function WebsiteTransformation() {
               max="95"
               value={position}
               aria-label="Compare outdated website and modern website"
-              onChange={(event) => setPosition(Number(event.currentTarget.value))}
+              onPointerDown={markInteracted}
+              onKeyDown={markInteracted}
+              onChange={(event) => {
+                markInteracted();
+                setPosition(Number(event.currentTarget.value));
+              }}
             />
           </div>
           <div className="transformation-notes">
@@ -1820,7 +1874,6 @@ function useScrollProgressFallback() {
 
 function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
-  const [footerWordmarkCompact, setFooterWordmarkCompact] = useState(false);
   useMotionSystem();
   useMuxVideos();
   useTurnstileProtection();
@@ -1845,19 +1898,9 @@ function App() {
       <footer className="site-footer">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="footer-brand">
-            <a
-              href="#top"
-              className="footer-logo"
-              aria-label={footerWordmarkCompact ? "Expand DaytonGrowthCo wordmark" : "Collapse DaytonGrowthCo wordmark"}
-              aria-expanded={!footerWordmarkCompact}
-              onClick={(event) => {
-                if (window.innerWidth > 640) return;
-                event.preventDefault();
-                setFooterWordmarkCompact((current) => !current);
-              }}
-            >
+            <a href="#top" className="footer-logo" aria-label="DaytonGrowthCo home">
               <img src={logoUrl} alt="" width="32" height="32" />
-              <InteractiveWordmark compact={footerWordmarkCompact} />
+              <InteractiveWordmark />
             </a>
             <p>DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps for small businesses.</p>
             <a
