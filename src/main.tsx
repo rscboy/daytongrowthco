@@ -186,30 +186,48 @@ const features = [
   },
 ];
 
-const featureCategories = [
+const marginLeaks = [
   {
-    icon: LayoutDashboard,
-    title: "Business Tools",
-    text: "Tools for calls, quotes, projects, customers, training, and daily work.",
-    examples: ["Phone Agents", "Quote & Pricing Tools", "Project Dashboards", "Customer Portals", "Training Systems"],
+    icon: Gauge,
+    area: "Quoting",
+    cost: "Rebuilding the same estimate from notes, price sheets, and memory.",
+    system: "A guided quote builder that applies your pricing logic and produces a send-ready estimate.",
+    return: "Faster response, consistent margins, less estimator time.",
   },
   {
-    icon: AppWindow,
-    title: "Apps & Websites",
-    text: "Focused apps and modern websites built around a clear job.",
-    examples: ["Custom Business Apps", "App Development", "Modern Websites"],
+    icon: Phone,
+    area: "Call agents",
+    cost: "Owners and field staff stopping work to answer routine calls or losing after-hours context.",
+    system: "A phone agent that answers, qualifies, documents, and routes calls using your rules.",
+    return: "Fewer interruptions and cleaner handoffs without adding a full shift.",
   },
   {
-    icon: PanelTop,
-    title: "Content & Sales",
-    text: "Pages, proposals, videos, and visuals your business can send or publish.",
-    examples: ["Sales Materials", "Video & Visual Content"],
+    icon: Workflow,
+    area: "Operating systems",
+    cost: "Copying details between texts, spreadsheets, PDFs, inboxes, and job folders.",
+    system: "One focused workflow for intake, job data, approvals, files, and next actions.",
+    return: "Less double entry, fewer missed details, more visible work.",
+  },
+  {
+    icon: Sparkles,
+    area: "Practical AI",
+    cost: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
+    system: "AI embedded at specific bottlenecks—with human review where judgment matters.",
+    return: "Lower administrative load without handing control to a black box.",
+  },
+  {
+    icon: Globe2,
+    area: "Website + ads",
+    cost: "Sending paid traffic to an old site that makes the company look smaller or harder to trust.",
+    system: "A fast website and campaign pages aligned to the service, location, and buyer’s decision.",
+    return: "More value from the traffic you already pay to earn.",
   },
   {
     icon: Search,
-    title: "Search & Campaigns",
-    text: "Search clarity, campaign execution, site care, and connected reporting.",
-    examples: ["SEO", "AEO", "Social Media Campaigns", "Website Care", "Campaign Analytics"],
+    area: "SEO + AEO",
+    cost: "Depending on paid media while search engines and AI answers cannot interpret your expertise.",
+    system: "Technical structure, local pages, useful content, and machine-readable business signals.",
+    return: "A compounding discovery channel that reduces reliance on rented attention.",
   },
 ];
 
@@ -1457,25 +1475,32 @@ function FeatureGrid() {
   return (
     <section className="section-shell platform-section" id="platform">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading">
+        <div className="margin-leak-heading">
+          <span className="section-kicker">Where margin leaks</span>
           <h2>Modernize the work around the work.</h2>
           <p>
-            Tools, apps, content, and search systems that reduce the administrative drag around serving customers.
+            Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets,
+            and grows.
           </p>
         </div>
-        <div className="feature-category-grid">
-          {featureCategories.map((category) => {
-            const Icon = category.icon;
+        <div className="margin-leak-table">
+          <div className="margin-leak-head" aria-hidden="true">
+            <span>Area</span>
+            <span>Current cost</span>
+            <span>Better system</span>
+            <span>Business return</span>
+          </div>
+          {marginLeaks.map((item) => {
+            const Icon = item.icon;
             return (
-              <article className="feature-category-card" key={category.title}>
-                <span className="feature-category-icon" aria-hidden="true">
-                  <Icon size={18} strokeWidth={1.8} />
-                </span>
-                <h3>{category.title}</h3>
-                <p>{category.text}</p>
-                <ul aria-label={`${category.title} capabilities`}>
-                  {category.examples.slice(0, 3).map((example) => <li key={example}>{example}</li>)}
-                </ul>
+              <article className="margin-leak-row" key={item.area}>
+                <h3>
+                  <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                  {item.area}
+                </h3>
+                <div><span>Current cost</span><p>{item.cost}</p></div>
+                <div><span>Better system</span><p>{item.system}</p></div>
+                <div className="margin-return"><span>Business return</span><p>{item.return}</p></div>
               </article>
             );
           })}

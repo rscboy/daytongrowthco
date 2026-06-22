@@ -3701,6 +3701,107 @@
     z-index: 1;
   }
 
+  .margin-leak-heading {
+    display: grid;
+    grid-template-columns: 0.6fr 1.5fr 0.8fr;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .margin-leak-heading .section-kicker {
+    margin-top: 0.6rem;
+    color: #18174d;
+  }
+
+  .margin-leak-heading h2 {
+    margin: 0;
+    max-width: 12ch;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 5.4vw, 5.5rem);
+    font-weight: 520;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
+  }
+
+  .margin-leak-heading > p {
+    margin: 0.8rem 0 0;
+    color: #66666e;
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .margin-leak-table {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    border-top: 2px solid #171821;
+  }
+
+  .margin-leak-head,
+  .margin-leak-row {
+    display: grid;
+    grid-template-columns: 0.72fr 1.08fr 1.08fr 0.88fr;
+    gap: clamp(1rem, 2.2vw, 2rem);
+  }
+
+  .margin-leak-head {
+    padding: 0.85rem 0;
+    color: #77767d;
+    font-size: 0.6rem;
+    font-weight: 790;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .margin-leak-row {
+    align-items: start;
+    padding: 1.8rem 0;
+    border-top: 1px solid rgba(24, 23, 77, 0.15);
+  }
+
+  .margin-leak-row h3 {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin: 0;
+    color: #18174d;
+    font-size: 0.9rem;
+    font-weight: 740;
+    line-height: 1.35;
+  }
+
+  .margin-leak-row h3 svg {
+    flex: 0 0 auto;
+  }
+
+  .margin-leak-row div > span {
+    display: none;
+    color: #77767d;
+    font-size: 0.58rem;
+    font-weight: 780;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .margin-leak-row p {
+    margin: 0;
+    color: #5e5e67;
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .margin-leak-row .margin-return p {
+    color: #23232b;
+    font-weight: 690;
+  }
+
+  .margin-leak-row {
+    transition: background-color 160ms ease;
+  }
+
+  .margin-leak-row:hover {
+    background: rgba(255, 255, 255, 0.42);
+  }
+
   .feature-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -5832,6 +5933,52 @@
 }
 
 @media (max-width: 900px) {
+  .margin-leak-heading {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .margin-leak-heading .section-kicker {
+    margin: 0;
+  }
+
+  .margin-leak-heading h2 {
+    max-width: 14ch;
+  }
+
+  .margin-leak-heading > p {
+    max-width: 38rem;
+    margin-top: 0.2rem;
+  }
+
+  .margin-leak-head {
+    display: none;
+  }
+
+  .margin-leak-table {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .margin-leak-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.4rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.15);
+    border-right: 1px solid rgba(24, 23, 77, 0.15);
+  }
+
+  .margin-leak-row:nth-child(2n + 1) {
+    border-right: 0;
+  }
+
+  .margin-leak-row div > span {
+    display: block;
+    margin-bottom: 0.28rem;
+  }
+
   .labor-calculator-copy h2 {
     max-width: 13ch;
   }
@@ -6206,6 +6353,23 @@
 }
 
 @media (max-width: 640px) {
+  .margin-leak-heading h2 {
+    font-size: clamp(2.65rem, 13vw, 4rem);
+  }
+
+  .margin-leak-table {
+    grid-template-columns: 1fr;
+  }
+
+  .margin-leak-row,
+  .margin-leak-row:nth-child(2n + 1) {
+    border-right: 0;
+  }
+
+  .margin-leak-row {
+    padding: 1.25rem 0.2rem;
+  }
+
   .labor-calculator {
     padding-block: 3.7rem;
   }
