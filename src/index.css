@@ -4682,6 +4682,11 @@
     font-weight: 660;
   }
 
+  .project-form[hidden],
+  .form-success[hidden] {
+    display: none !important;
+  }
+
   .form-success {
     display: grid;
     justify-items: center;
@@ -4689,6 +4694,59 @@
     padding: clamp(1.4rem, 3vw, 2.1rem) clamp(1rem, 2vw, 1.5rem);
     text-align: center;
     animation: form-success-in 0.32s ease-out both;
+  }
+
+  .form-success-dialog {
+    position: fixed;
+    width: min(28rem, calc(100vw - 2rem));
+    margin: auto;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    background:
+      linear-gradient(145deg, rgba(32, 34, 50, 0.98), rgba(16, 18, 31, 0.98));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+    color: #f8fafc;
+    padding: 2.2rem 1.5rem 1.7rem;
+    text-align: center;
+  }
+
+  .form-success-dialog[open] {
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    animation: form-success-in 0.24s ease-out both;
+  }
+
+  .form-success-dialog::backdrop {
+    background: rgba(5, 7, 16, 0.7);
+    backdrop-filter: blur(5px);
+  }
+
+  .form-success-close {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    display: inline-grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(248, 250, 252, 0.82);
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+
+  .form-success-close:hover,
+  .form-success-close:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .form-success-close:focus-visible {
+    outline: 2px solid #f0d0b0;
+    outline-offset: 2px;
   }
 
   .form-success:focus {

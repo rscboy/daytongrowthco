@@ -31,6 +31,7 @@ import {
   TrendingUp,
   Workflow,
   Wrench,
+  X,
 } from "lucide-react";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import "./index.css";
@@ -343,6 +344,9 @@ function useTurnstileProtection() {
     const submitButton = form.querySelector<HTMLButtonElement>(".form-submit");
     const submitLabel = submitButton?.querySelector<HTMLElement>(".form-submit-label");
     const getStatus = () => document.getElementById("auditStatus");
+    const successDialog = document.getElementById("formSuccessDialog") as HTMLDialogElement | null;
+    const successPanel = document.getElementById("formSuccess");
+    const closeSuccessDialog = document.getElementById("closeFormSuccess");
 
     const setSubmitting = (isSubmitting: boolean) => {
       if (!submitButton) return;
@@ -387,6 +391,27 @@ function useTurnstileProtection() {
     let cancelled = false;
     let widgetId: string | undefined;
     let turnstileApi: Turnstile | undefined;
+
+    const showCompletedState = () => {
+      if (!successPanel) return;
+      successPanel.hidden = false;
+      successPanel.focus();
+    };
+
+    const onDialogClose = () => {
+      showCompletedState();
+    };
+
+    const dismissSuccessDialog = () => {
+      if (successDialog?.open) {
+        successDialog.close();
+      } else {
+        showCompletedState();
+      }
+    };
+
+    successDialog?.addEventListener("close", onDialogClose);
+    closeSuccessDialog?.addEventListener("click", dismissSuccessDialog);
 
     loadTurnstile()
       .then((turnstile) => {
@@ -437,13 +462,15 @@ function useTurnstileProtection() {
             status.dataset.variant = "";
             status.textContent = "";
           }
-          // Swap the form out for a prominent confirmation so it's unmistakable
-          // that the request went through, and move focus there for a11y.
-          const success = document.getElementById("formSuccess");
-          if (success) {
-            form.hidden = true;
-            success.hidden = false;
-            success.focus();
+          // Keep the confirmation hidden until the request has settled
+          // successfully. Show it as a dismissible modal first, then leave the
+          // compact completed state in the form section after dismissal.
+          form.hidden = true;
+          if (successDialog?.showModal) {
+            successDialog.showModal();
+            closeSuccessDialog?.focus();
+          } else if (successPanel) {
+            showCompletedState();
           } else if (status) {
             status.dataset.variant = "success";
             status.textContent = "Request received. We’ll reply with next steps.";
@@ -465,6 +492,8 @@ function useTurnstileProtection() {
     return () => {
       cancelled = true;
       form.removeEventListener("submit", onSubmit);
+      successDialog?.removeEventListener("close", onDialogClose);
+      closeSuccessDialog?.removeEventListener("click", dismissSuccessDialog);
       if (turnstileApi && widgetId !== undefined) turnstileApi.remove(widgetId);
     };
   }, []);
@@ -1611,11 +1640,28 @@ function ProjectForm() {
           </p>
         </div>
       </form>
+      <dialog
+        id="formSuccessDialog"
+        className="form-success-dialog"
+        aria-labelledby="formSuccessDialogTitle"
+        aria-describedby="formSuccessDialogMessage"
+      >
+        <button id="closeFormSuccess" className="form-success-close" type="button" aria-label="Close confirmation">
+          <X size={20} aria-hidden="true" />
+        </button>
+        <span className="form-success-icon" aria-hidden="true">
+          <CheckCircle2 size={34} strokeWidth={2.25} />
+        </span>
+        <h3 id="formSuccessDialogTitle" className="form-success-title">Received</h3>
+        <p id="formSuccessDialogMessage" className="form-success-message">
+          Thanks — we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+        </p>
+      </dialog>
       <div id="formSuccess" className="form-success" role="status" tabIndex={-1} hidden>
         <span className="form-success-icon" aria-hidden="true">
           <CheckCircle2 size={34} strokeWidth={2.25} />
         </span>
-        <h3 className="form-success-title">Request received</h3>
+        <h3 className="form-success-title">Received</h3>
         <p className="form-success-message">
           Thanks — we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
         </p>
