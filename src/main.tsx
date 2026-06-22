@@ -270,7 +270,7 @@ const marginLeaks = [
 ];
 
 const metrics = [
-  { value: "Dayton", label: "based in Ohio", detail: "Built for small and midsized businesses in the Dayton area" },
+  { value: "Nationwide", label: "Dayton roots", detail: "Built for small and midsized businesses across the United States" },
   { value: "24h", label: "response window", detail: "Response guaranteed within 24 hours" },
   { value: "3", label: "setup paths", detail: "Website + SEO Setup, Tech Integration, and Custom Systems" },
 ];
@@ -1952,13 +1952,13 @@ function ToolScenarioDemo() {
             <div className="scenario-search">
               <div className="scenario-question">
                 <span>Customer asks</span>
-                <strong>“Who builds custom quote tools for small businesses near Dayton?”</strong>
+                <strong>“Who builds custom quote tools for small businesses?”</strong>
               </div>
               <div className="scenario-answer">
                 <div className="scenario-answer-mark"><Sparkles size={18} aria-hidden="true" /></div>
                 <div>
                   <small>AI answer</small>
-                  <p><strong>DaytonGrowthCo</strong> builds quote calculators, dashboards, phone agents, and custom business apps for small businesses in the Dayton area.</p>
+                  <p><strong>DaytonGrowthCo</strong> builds quote calculators, dashboards, phone agents, and custom business apps for small businesses nationwide.</p>
                   <div className="scenario-source">
                     <Globe2 size={14} aria-hidden="true" />
                     <span>daytongrowthco.com</span>
@@ -2323,29 +2323,49 @@ function useScrollProgressFallback() {
 
 const pageCopy = {
   whatWeBuild: {
+    kicker: "What we build",
     title: "From online presence to the systems behind the work.",
-    text: "We help Dayton-area businesses improve how customers find them, how requests are handled, and how the team delivers the work.",
+    text: "We help small and midsized businesses nationwide improve how customers find them, how requests are handled, and how the team delivers the work.",
   },
   examples: {
+    kicker: "Examples",
     title: "Choose a need. See the system take shape.",
     text: "These working demonstrations show how a specific business problem can become a focused, usable tool. Each one is built to make the idea concrete before a full engagement begins.",
   },
   howItWorks: {
+    kicker: "How it works",
     title: "Start with the constraint. Not the trend.",
     text: "We map the work, measure what the current process costs, and choose the smallest useful fix before recommending a custom build.",
   },
 };
 
-function PageHero({ title, text }: { title: string; text: string }) {
+const pageHeroTrust = ["Dayton, Ohio", "24-hour response", "No obligation"];
+
+function PageHero({ title, text, kicker }: { title: string; text: string; kicker?: string }) {
   return (
     <section className="page-hero" id="top">
+      <div className="page-hero-field" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        {kicker ? (
+          <span className="page-hero-kicker">
+            <Sparkles size={13} aria-hidden="true" />
+            {kicker}
+          </span>
+        ) : null}
         <h1>{title}</h1>
         <p>{text}</p>
-        <a className="button button-primary" href="#cta">
+        <a className="button button-primary large" href="#cta">
           Start a conversation
           <ArrowRight size={15} aria-hidden="true" />
         </a>
+        <ul className="page-hero-trust" aria-label="Why work with us">
+          {pageHeroTrust.map((item) => (
+            <li key={item}>
+              <CheckCircle2 size={14} aria-hidden="true" />
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
@@ -2786,9 +2806,15 @@ function CaseStudyFuture() {
 function PageCTA() {
   return (
     <section className="page-cta" id="cta">
+      <span className="page-cta-kicker">Start a conversation</span>
       <h2>Bring us the process that is still being handled by hand.</h2>
       <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
       <a className="button button-primary large" href="/#cta">Start Building <ArrowRight size={16} aria-hidden="true" /></a>
+      <ul className="page-cta-trust" aria-label="What to expect">
+        <li>Dayton roots, nationwide reach</li>
+        <li>Reply within 24 hours</li>
+        <li>No obligation</li>
+      </ul>
     </section>
   );
 }
@@ -2832,6 +2858,24 @@ function SiteFooter() {
   );
 }
 
+function MetricsStrip() {
+  return (
+    <section className="metrics-strip" aria-label="At a glance">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <ul data-stagger>
+          {metrics.map((metric) => (
+            <li key={metric.label}>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+              <small>{metric.detail}</small>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 function Homepage() {
   return (
     <>
@@ -2843,9 +2887,10 @@ function Homepage() {
         <Hero />
         <BusinessJourney />
         <WebsiteTransformation />
-        <AdvancedSystemPreview linkHref="/how-it-works/" linkLabel="See how we build connected systems" />
+        <AiVisibility />
         <EconomicCase />
         <HowWeWorkPreview />
+        <MetricsStrip />
         <FounderPreview />
         <FinalCTA />
       </main>

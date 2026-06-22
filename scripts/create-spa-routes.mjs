@@ -9,7 +9,7 @@ const routes = {
   "what-we-build": {
     title: "What We Build | DaytonGrowthCo.",
     description:
-      "From websites and local discovery to phone agents, quote tools, dashboards, and custom apps — see the full range of systems DaytonGrowthCo builds for Dayton-area businesses.",
+      "From websites and local discovery to phone agents, quote tools, dashboards, and custom apps — see the full range of systems DaytonGrowthCo builds for small and midsized businesses nationwide.",
   },
   examples: {
     title: "Examples | DaytonGrowthCo.",

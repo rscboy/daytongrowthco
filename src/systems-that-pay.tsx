@@ -223,7 +223,7 @@ function FreeRedesignOffer() {
   return (
     <section className="lp-hero" id="free-redesign" aria-labelledby="redesign-title">
       <div className="lp-hero-copy">
-        <span className="lp-tag">Free for Dayton-area businesses · $0</span>
+        <span className="lp-tag">Free for small and midsized businesses · $0</span>
         <h1 id="redesign-title">We’ll redesign your website. Free.</h1>
         <p className="lp-lede">
           Send us your current site and we’ll create a custom homepage direction that makes the business clearer,

@@ -127,6 +127,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Subtle film grain over the whole page kills the flat-screen look and reads
+     premium/print. Fixed, non-interactive, and tucked under the header (z-50). */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
   html {
     overflow-x: clip;
     @apply font-sans;
@@ -2151,10 +2164,13 @@
     margin-top: clamp(2.2rem, 3.8vw, 3.25rem);
     border: 1px solid rgba(24, 23, 77, 0.14);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.67);
+    background-color: rgba(255, 255, 255, 0.62);
+    background-image: radial-gradient(rgba(24, 23, 77, 0.1) 0.85px, transparent 0.85px);
+    background-size: 16px 16px;
     box-shadow: 0 24px 70px rgba(39, 39, 37, 0.08);
     backdrop-filter: blur(12px);
     counter-reset: journey;
+    overflow: hidden;
   }
 
   .business-journey-card {
@@ -2382,22 +2398,14 @@
   .economic-case {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(3.8rem, 6vw, 5.6rem);
+    /* Extra top padding clears the fixed header (offer banner + nav) so the
+       large heading's first line is never tucked under it when the section is
+       scrolled to the top of the viewport. */
+    padding: clamp(6.5rem, 9vw, 7.5rem) 0 clamp(3.8rem, 6vw, 5.6rem);
     color: #ffffff;
     background:
       radial-gradient(circle at 12% 18%, rgba(240, 208, 176, 0.14), transparent 28rem),
       linear-gradient(145deg, #19184f 0%, #10102f 62%, #090a14 100%);
-  }
-
-  .economic-case::before {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-    background-size: 32px 32px;
-    content: "";
-    pointer-events: none;
   }
 
   /* Soft transition bands so the navy block eases into the cream sections
@@ -6126,12 +6134,76 @@
   }
 
   .page-hero {
+    position: relative;
+    overflow: hidden;
     padding: clamp(9.5rem, 16vw, 12rem) 0 clamp(4rem, 7vw, 6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.1);
     background:
       radial-gradient(circle at 12% 16%, rgba(241, 208, 177, 0.48), transparent 25rem),
       radial-gradient(circle at 88% 78%, rgba(221, 233, 252, 0.62), transparent 28rem),
       #f7f6f1;
+  }
+
+  /* A faint, slowly-drifting aurora field gives the subpage hero the same depth
+     as the homepage hero instead of a flat gradient. */
+  .page-hero-field {
+    position: absolute;
+    inset: -20% -10% auto;
+    height: 90%;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 60% at 30% 20%, rgba(87, 150, 200, 0.18), transparent 70%),
+      radial-gradient(40% 60% at 75% 35%, rgba(42, 40, 128, 0.12), transparent 70%);
+    filter: blur(8px);
+    opacity: 0.9;
+    animation: page-hero-drift 18s ease-in-out infinite alternate;
+  }
+
+  .page-hero > .mx-auto {
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.1rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(24, 23, 77, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--brand-indigo);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .page-hero-kicker svg {
+    color: #5796c8;
+  }
+
+  .page-hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    margin: 1.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .page-hero-trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #4c4b53;
+    font-size: 0.85rem;
+    font-weight: 560;
+  }
+
+  .page-hero-trust svg {
+    color: #2f8f6b;
   }
 
   .page-hero h1 {
@@ -6778,9 +6850,20 @@
     padding: clamp(4rem, 7vw, 6.5rem) 1.25rem;
     color: #fff;
     background:
+      radial-gradient(circle at 22% 0%, rgba(42, 40, 128, 0.4), transparent 42%),
       radial-gradient(circle at 50% 0%, rgba(241, 208, 177, 0.14), transparent 30rem),
       #05070c;
     text-align: center;
+  }
+
+  .page-cta-kicker {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: var(--brand-peach);
+    font-size: 0.74rem;
+    font-weight: 720;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   .page-cta h2 {
@@ -6799,6 +6882,99 @@
 
   .page-cta .button {
     margin-top: 1.5rem;
+  }
+
+  .page-cta-trust {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem 1.5rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .page-cta-trust li {
+    position: relative;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.82rem;
+    font-weight: 540;
+  }
+
+  .page-cta-trust li:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    left: -0.78rem;
+    top: 50%;
+    width: 3px;
+    height: 3px;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background: var(--brand-peach);
+    opacity: 0.6;
+  }
+
+  /* "At a glance" metrics strip: three big figures with supporting detail. */
+  .metrics-strip {
+    padding-block: clamp(2.5rem, 4.5vw, 3.75rem);
+    background:
+      radial-gradient(circle at 80% 10%, var(--wash-blue), transparent 55%),
+      #fbfbf9;
+    border-block: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .metrics-strip ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .metrics-strip li {
+    position: relative;
+    padding: 1.2rem 1.4rem;
+    border-radius: 14px;
+    border: 1px solid rgba(24, 23, 77, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-rest);
+  }
+
+  .metrics-strip li::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    border-radius: 14px 0 0 14px;
+    background: linear-gradient(180deg, var(--brand-indigo), #5796c8);
+  }
+
+  .metrics-strip strong {
+    display: block;
+    color: #161627;
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 4vw, 3.1rem);
+    font-weight: 540;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .metrics-strip span {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--brand-indigo);
+    font-size: 0.82rem;
+    font-weight: 720;
+    letter-spacing: 0.02em;
+  }
+
+  .metrics-strip small {
+    display: block;
+    margin-top: 0.4rem;
+    color: #65646c;
+    font-size: 0.8rem;
+    line-height: 1.5;
   }
 
   /* How It Works: build principles */
@@ -7249,8 +7425,6 @@
      color rules defined earlier. The hero h1 span is excluded (kept white). */
   .section-heading h2 span,
   .workflow-copy h2 span,
-  .final-cta-copy h2 span,
-  .economic-case-thesis h2 span,
   .homepage-preview-copy h2 span,
   .homepage-preview-heading h2 span,
   .dedicated-heading h2 span,
@@ -7260,6 +7434,14 @@
     font-optical-sizing: auto;
     font-variation-settings: "SOFT" 60, "WONK" 1;
     color: var(--accent-ink);
+  }
+
+  /* Dark sections keep their own light italic accent; the indigo --accent-ink
+     above would sink into the background. "copy, paste, repeat." lives here. */
+  .economic-case-thesis h2 span {
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+    color: var(--brand-peach);
   }
 
   /* On the dark connected-system panel the accent needs to lift, not sink. */
@@ -7276,6 +7458,15 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes page-hero-drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
   }
 }
 
@@ -7721,6 +7912,10 @@
 }
 
 @media (max-width: 900px) {
+  .metrics-strip ul {
+    grid-template-columns: 1fr;
+  }
+
   .founder-preview-layout {
     grid-template-columns: 9rem minmax(0, 1fr);
   }
@@ -8156,6 +8351,13 @@
     border-bottom: 1px solid rgba(24, 23, 77, 0.14);
   }
 
+  /* In the compact mobile layout the header collapses to a narrow left column,
+     which would anchor the oversized ghost numeral off the left edge. The small
+     "01" badge already carries the number here, so hide the big numeral. */
+  .business-journey-card > header::before {
+    display: none;
+  }
+
   .business-journey-card:nth-child(-n + 2) {
     border-bottom: 1px solid rgba(24, 23, 77, 0.14);
   }
@@ -8312,15 +8514,43 @@
   }
 
   .economic-case {
-    padding-block: 2.9rem;
+    padding: 5.5rem 0 2.6rem;
   }
 
   .economic-case-thesis h2 {
-    font-size: clamp(2.25rem, 11vw, 3.2rem);
+    max-width: 16ch;
+    font-size: clamp(1.85rem, 8vw, 2.45rem);
+    letter-spacing: -0.04em;
+    line-height: 0.98;
   }
 
   .economic-case-thesis > p {
-    font-size: 0.86rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .economic-case-thesis blockquote {
+    margin-top: 1.1rem;
+    padding-left: 0.85rem;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .homepage-cost-prompt {
+    font-size: 0.74rem;
+  }
+
+  .homepage-sheet-title h3 {
+    font-size: 1.5rem;
+  }
+
+  .homepage-sheet-total strong {
+    font-size: 2.3rem;
+  }
+
+  .homepage-sheet-inputs > div {
+    padding: 0.7rem 0.25rem;
   }
 
   .homepage-cost-sheet-wrap {
