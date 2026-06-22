@@ -875,6 +875,63 @@ function SpreadsheetTransformation() {
   );
 }
 
+// Animates an integer up from zero the first time it scrolls into view.
+// Falls back to the final value immediately under reduced motion.
+function CountUp({
+  value,
+  prefix = "",
+  suffix = "",
+  duration = 1300,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const [display, setDisplay] = useState(value);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setDisplay(value);
+      return;
+    }
+    setDisplay(0);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || started.current) return;
+          started.current = true;
+          const start = performance.now();
+          const tick = (now: number) => {
+            const progress = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setDisplay(Math.round(value * eased));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        });
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value, duration, reduceMotion]);
+
+  return (
+    <span ref={ref}>
+      {prefix}
+      {display.toLocaleString("en-US")}
+      {suffix}
+    </span>
+  );
+}
+
 function EconomicCase() {
   return (
     <section className="economic-case" aria-labelledby="economic-case-title">
@@ -912,12 +969,12 @@ function EconomicCase() {
               </dl>
               <div className="homepage-sheet-total">
                 <span>Annual drag</span>
-                <strong>$28,500</strong>
+                <strong><CountUp value={28500} prefix="$" /></strong>
               </div>
               <div className="homepage-sheet-recovery">
                 <TrendingDown size={18} aria-hidden="true" />
                 <span>Recover half the time:</span>
-                <strong>$14,250 / year</strong>
+                <strong><CountUp value={14250} prefix="$" suffix=" / year" /></strong>
               </div>
               <p className="homepage-sheet-note">
                 Before counting faster quotes, fewer errors, or additional jobs handled.
@@ -1132,9 +1189,45 @@ function AiVisibility() {
 }
 
 function Hero() {
+  const reduceMotion = useReducedMotion();
+  const mediaRef = useRef<HTMLDivElement>(null);
+
+  // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
+  // disabled under reduced motion. The media is scaled slightly so the
+  // small translate never exposes an edge.
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media || reduceMotion) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+
+    let raf = 0;
+    const onMove = (event: PointerEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const x = (event.clientX / window.innerWidth - 0.5) * 2;
+        const y = (event.clientY / window.innerHeight - 0.5) * 2;
+        media.style.transform = `scale(1.06) translate(${x * -1.4}%, ${y * -1.4}%)`;
+      });
+    };
+    const onLeave = () => {
+      cancelAnimationFrame(raf);
+      media.style.transform = "scale(1.06)";
+    };
+
+    media.style.transform = "scale(1.06)";
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
+      media.style.transform = "";
+    };
+  }, [reduceMotion]);
+
   return (
     <section id="top" className="hero-section">
-      <div className="hero-media" aria-hidden="true">
+      <div className="hero-media" aria-hidden="true" ref={mediaRef}>
         <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} />
         <div className="hero-product-video-mask" />
       </div>
@@ -2305,6 +2398,10 @@ function AdvancedSystemPreview({
           </a>
         </div>
         <div className="advanced-preview-console">
+          <div className="advanced-preview-tag" aria-hidden="true">
+            <span>Connected workflow</span>
+            <span>DGC / 002</span>
+          </div>
           <div className="advanced-preview-flow" role="tablist" aria-label="Connected business workflow">
             {stages.map((stage, index) => {
               const Icon = stage.icon;
@@ -2422,7 +2519,7 @@ function ServiceArchitecture() {
         </div>
         <div className="service-detail-grid" data-stagger>
           {serviceDetails.map((item, index) => (
-            <article key={item.title}>
+            <article key={item.title} data-index={String(index + 1).padStart(2, "0")}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{item.title}</h3>
               <dl>

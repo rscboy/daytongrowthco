@@ -541,6 +541,15 @@
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    will-change: transform;
+    transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media {
+      transition: none;
+      transform: none !important;
+    }
   }
 
   .hero-content {
@@ -832,23 +841,6 @@
   .section-heading h2 span {
     display: block;
     color: #6a665f;
-  }
-
-  /* Editorial flourish: the emphasized second line of section titles renders
-     in Fraunces italic with a soft indigo accent, giving the page a print-like
-     rhythm. Applies everywhere section/dedicated/preview headings split a span. */
-  .section-heading h2 span,
-  .workflow-copy h2 span,
-  .final-cta h2 span,
-  .homepage-preview-copy h2 span,
-  .homepage-preview-heading h2 span,
-  .dedicated-heading h2 span,
-  .business-journey-heading h2 span,
-  .page-hero h1 span {
-    font-style: italic;
-    font-optical-sizing: auto;
-    font-variation-settings: "SOFT" 60, "WONK" 1;
-    color: var(--accent-ink);
   }
 
   /* Let the hero headline flow as one balanced block so it breaks into a few
@@ -2406,6 +2398,19 @@
     background-size: 32px 32px;
     content: "";
     pointer-events: none;
+  }
+
+  /* Soft transition bands so the navy block eases into the cream sections
+     above and below instead of hard-cutting at the seam. */
+  .economic-case::after {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(247, 246, 241, 0.5), transparent 9%),
+      linear-gradient(0deg, rgba(247, 246, 241, 0.5), transparent 9%);
+    content: "";
+    pointer-events: none;
+    z-index: 0;
   }
 
   .economic-case > .mx-auto {
@@ -4316,9 +4321,31 @@
     line-height: 1.55;
   }
 
+  /* The payoff column is visually rewarded: a soft green field with a leading
+     up-trend marker, so the eye lands on the business return, not the cost. */
+  .margin-leak-row .margin-return {
+    position: relative;
+    align-self: stretch;
+    border-radius: 10px;
+    padding: 0.6rem 0.85rem 0.6rem 1.7rem;
+    background: linear-gradient(180deg, rgba(47, 143, 107, 0.1), rgba(47, 143, 107, 0.04));
+    box-shadow: inset 2px 0 0 rgba(47, 143, 107, 0.55);
+  }
+
+  .margin-leak-row .margin-return::before {
+    content: "↗";
+    position: absolute;
+    top: 0.6rem;
+    left: 0.7rem;
+    color: #2f8f6b;
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.55;
+  }
+
   .margin-leak-row .margin-return p {
-    color: #23232b;
-    font-weight: 690;
+    color: #1f4d3c;
+    font-weight: 660;
   }
 
   .margin-leak-row {
@@ -5294,6 +5321,23 @@
     font-size: clamp(1.9rem, 2.5vw, 2.65rem);
   }
 
+  /* The Before/After heading anchors a large interactive slider, so it earns
+     a more confident display size and a warm accent on the second word. */
+  .transformation-section .section-heading h2 {
+    font-size: clamp(2.6rem, 4.4vw, 4.1rem);
+    font-weight: 520;
+    letter-spacing: -0.04em;
+    line-height: 0.96;
+  }
+
+  .transformation-section .section-heading h2 span {
+    display: block;
+    background: linear-gradient(90deg, #c98a4e, var(--brand-indigo));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .metric-grid {
     display: grid;
     gap: 1rem;
@@ -6039,10 +6083,46 @@
   }
 
   .site-footer {
+    position: relative;
+    overflow: hidden;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     color: #aab2bd;
     font-family: "Geist Variable", sans-serif;
-    background: #05070c;
+    background:
+      radial-gradient(circle at 85% 0%, rgba(42, 40, 128, 0.32), transparent 45%),
+      #05070c;
+  }
+
+  /* A thin brand gradient rule lifts the footer away from the page above it. */
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--brand-indigo), #5796c8 45%, var(--brand-peach));
+    opacity: 0.7;
+  }
+
+  /* Oversized ghosted wordmark watermark anchored to the lower edge. */
+  .site-footer::after {
+    content: "DaytonGrowthCo.";
+    position: absolute;
+    right: -0.5rem;
+    bottom: -1.6rem;
+    color: #ffffff;
+    font-family: "Geist Variable", sans-serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    opacity: 0.03;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .site-footer > * {
+    position: relative;
+    z-index: 1;
   }
 
   .page-hero {
@@ -6091,7 +6171,10 @@
 
   .homepage-preview {
     border-block: 1px solid rgba(24, 23, 77, 0.09);
-    background: #f7f6f1;
+    background-color: #f7f6f1;
+    background-image:
+      radial-gradient(circle at 8% 0%, rgba(241, 208, 177, 0.28), transparent 24rem),
+      radial-gradient(circle at 92% 100%, rgba(221, 233, 252, 0.4), transparent 26rem);
   }
 
   .advanced-preview,
@@ -6149,6 +6232,23 @@
     box-shadow: 0 18px 52px rgba(39, 39, 37, 0.08);
   }
 
+  /* Shared document-spec tag, echoing the navy cost sheet's header so the
+     two data panels read as part of one system. */
+  .advanced-preview-tag {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.6rem);
+    border-bottom: 1px solid rgba(24, 23, 77, 0.12);
+    color: #6a6781;
+    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.62rem;
+    font-weight: 760;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
   .advanced-preview-flow {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -6179,6 +6279,37 @@
     border-color: rgba(24, 23, 77, 0.46);
     box-shadow: 0 8px 22px rgba(24, 23, 77, 0.1);
     transform: translateY(-2px);
+  }
+
+  /* Connector arrows pulse left-to-right to suggest information flowing
+     between the connected stages. The second arrow trails the first. */
+  .advanced-preview-flow > svg {
+    color: rgba(24, 23, 77, 0.32);
+    animation: advanced-flow-pulse 2.4s ease-in-out infinite;
+  }
+
+  .advanced-preview-flow > svg ~ svg {
+    animation-delay: 0.5s;
+  }
+
+  @keyframes advanced-flow-pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: translateX(-2px);
+      color: rgba(24, 23, 77, 0.32);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(2px);
+      color: var(--brand-indigo);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .advanced-preview-flow > svg {
+      animation: none;
+    }
   }
 
   .advanced-preview-flow span {
@@ -6305,10 +6436,64 @@
   }
 
   .service-detail-grid article {
+    position: relative;
+    overflow: hidden;
     border: 1px solid rgba(24, 23, 77, 0.13);
-    border-radius: 12px;
-    padding: clamp(1.2rem, 2.4vw, 1.7rem);
-    background: rgba(255, 255, 255, 0.78);
+    border-radius: 14px;
+    padding: clamp(1.4rem, 2.4vw, 1.9rem);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: var(--shadow-rest);
+    transition:
+      transform 240ms var(--ease-out-soft),
+      box-shadow 240ms var(--ease-out-soft),
+      border-color 240ms var(--ease-out-soft);
+  }
+
+  /* Each stage gets its own accent so the four cards stop reading as identical
+     gray blocks: a colored top edge + a large ghosted index number. */
+  .service-detail-grid article::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--card-accent, var(--brand-indigo));
+    opacity: 0.85;
+  }
+
+  .service-detail-grid article::after {
+    content: attr(data-index);
+    position: absolute;
+    top: -1.6rem;
+    right: -0.4rem;
+    color: var(--card-accent, var(--brand-indigo));
+    font-family: var(--font-serif);
+    font-size: 7rem;
+    font-weight: 560;
+    line-height: 1;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .service-detail-grid article:nth-child(1) {
+    --card-accent: #18174d;
+  }
+
+  .service-detail-grid article:nth-child(2) {
+    --card-accent: #2f6fb0;
+  }
+
+  .service-detail-grid article:nth-child(3) {
+    --card-accent: #b9763c;
+  }
+
+  .service-detail-grid article:nth-child(4) {
+    --card-accent: #2f8f6b;
+  }
+
+  .service-detail-grid article:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--card-accent, var(--brand-indigo)) 45%, transparent);
+    box-shadow: var(--shadow-hover);
   }
 
   .service-detail-grid h3 {
@@ -6551,9 +6736,42 @@
   }
 
   .engagement-process li {
-    border-color: rgba(24, 23, 77, 0.13);
+    position: relative;
+    border-color: rgba(24, 23, 77, 0.12);
     color: #34343b;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: var(--shadow-rest);
+    box-shadow: inset 3px 0 0 rgba(24, 23, 77, 0.22), var(--shadow-rest);
+    transition:
+      transform 200ms var(--ease-out-soft),
+      box-shadow 200ms var(--ease-out-soft),
+      border-color 200ms var(--ease-out-soft);
+  }
+
+  .engagement-process li:hover {
+    transform: translateY(-3px);
+    border-color: rgba(24, 23, 77, 0.28);
+    box-shadow: inset 3px 0 0 var(--brand-indigo), var(--shadow-hover);
+  }
+
+  /* The leading index becomes a circular brand badge. */
+  .engagement-process li span {
+    display: grid;
+    flex: 0 0 auto;
+    width: 1.85rem;
+    height: 1.85rem;
+    place-items: center;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--brand-indigo);
+    font-family: "Geist Variable", ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 740;
+    letter-spacing: 0;
+  }
+
+  .engagement-process li strong {
+    font-weight: 640;
   }
 
   .page-cta {
@@ -6964,7 +7182,7 @@
     z-index: 9998;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #2563eb, #60a5fa);
+    background: linear-gradient(90deg, var(--brand-peach), var(--brand-indigo) 70%, #4f4dad);
     transform: scaleX(0);
     transform-origin: left center;
   }
@@ -7023,6 +7241,30 @@
   [data-stagger].stagger-in > * {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* Editorial flourish: the emphasized second line of section titles renders in
+     Fraunces italic with a soft indigo accent, giving the page a print-like
+     rhythm. Placed at the end of the layer so it wins over the per-section span
+     color rules defined earlier. The hero h1 span is excluded (kept white). */
+  .section-heading h2 span,
+  .workflow-copy h2 span,
+  .final-cta-copy h2 span,
+  .economic-case-thesis h2 span,
+  .homepage-preview-copy h2 span,
+  .homepage-preview-heading h2 span,
+  .dedicated-heading h2 span,
+  .business-journey-heading h2 span,
+  .connected-system .dedicated-heading h2 span {
+    font-style: italic;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+    color: var(--accent-ink);
+  }
+
+  /* On the dark connected-system panel the accent needs to lift, not sink. */
+  .connected-system .dedicated-heading h2 span {
+    color: #b9b7ff;
   }
 }
 
