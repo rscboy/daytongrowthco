@@ -2161,6 +2161,160 @@
     transform: translateX(3px);
   }
 
+  .labor-calculator {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4.8rem, 8vw, 7.5rem);
+    border-bottom: 1px solid #e4e3dd;
+    background-color: #f5f3ec;
+    background-image:
+      linear-gradient(rgba(24, 23, 77, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(24, 23, 77, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .labor-calculator::before {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 82% 18%, rgba(216, 232, 248, 0.5), transparent 30rem);
+    content: "";
+    pointer-events: none;
+  }
+
+  .labor-calculator > .mx-auto {
+    position: relative;
+    z-index: 1;
+  }
+
+  .labor-calculator-copy .section-kicker {
+    color: #18174d;
+  }
+
+  .labor-calculator-copy h2 {
+    margin: 0;
+    max-width: 11ch;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 5.6vw, 5.8rem);
+    font-weight: 520;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
+  }
+
+  .labor-calculator-copy > p {
+    max-width: 35rem;
+    margin: 1.5rem 0 0;
+    color: #66666e;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .labor-formula {
+    margin-top: 1.8rem;
+    padding: 1rem 1.1rem;
+    border-left: 3px solid #18174d;
+    color: #292932;
+    background: rgba(24, 23, 77, 0.055);
+    font-size: 0.74rem;
+    font-weight: 680;
+    line-height: 1.45;
+  }
+
+  .labor-console {
+    padding: clamp(1.4rem, 3.5vw, 2.8rem);
+    border: 1px solid rgba(24, 23, 77, 0.16);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 28px 70px rgba(39, 39, 37, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .labor-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.8rem;
+  }
+
+  .labor-controls label > span {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #292932;
+    font-size: 0.76rem;
+  }
+
+  .labor-controls label b {
+    font-weight: 720;
+  }
+
+  .labor-controls output {
+    color: #18174d;
+    font-weight: 800;
+  }
+
+  .labor-controls input {
+    width: 100%;
+    margin-top: 0.85rem;
+    accent-color: #18174d;
+    cursor: pointer;
+  }
+
+  .labor-results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 2.5rem;
+    border: 1px solid rgba(24, 23, 77, 0.16);
+  }
+
+  .labor-results > div {
+    display: flex;
+    min-height: 10rem;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.2rem;
+  }
+
+  .labor-results > div + div {
+    border-left: 1px solid rgba(24, 23, 77, 0.16);
+  }
+
+  .labor-results span {
+    color: #6b6b74;
+    font-size: 0.63rem;
+    font-weight: 760;
+    letter-spacing: 0.025em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .labor-results strong {
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3vw, 2.7rem);
+    font-weight: 620;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .labor-results .is-primary {
+    color: #ffffff;
+    background: #18174d;
+  }
+
+  .labor-results .is-primary span {
+    color: rgba(255, 255, 255, 0.64);
+  }
+
+  .labor-results .is-primary strong {
+    color: #ffffff;
+  }
+
+  .labor-disclaimer {
+    margin: 1rem 0 0;
+    color: #77767d;
+    font-size: 0.66rem;
+    line-height: 1.45;
+  }
+
   .transform-stage {
     position: relative;
     min-height: 23rem;
@@ -5678,6 +5832,10 @@
 }
 
 @media (max-width: 900px) {
+  .labor-calculator-copy h2 {
+    max-width: 13ch;
+  }
+
   .economic-case-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -6048,6 +6206,40 @@
 }
 
 @media (max-width: 640px) {
+  .labor-calculator {
+    padding-block: 3.7rem;
+  }
+
+  .labor-calculator-copy h2 {
+    font-size: clamp(2.65rem, 13vw, 4rem);
+  }
+
+  .labor-calculator-copy > p {
+    font-size: 0.92rem;
+  }
+
+  .labor-console {
+    padding: 1.1rem;
+  }
+
+  .labor-controls,
+  .labor-results {
+    grid-template-columns: 1fr;
+  }
+
+  .labor-controls {
+    gap: 1.5rem;
+  }
+
+  .labor-results > div {
+    min-height: 7.5rem;
+  }
+
+  .labor-results > div + div {
+    border-top: 1px solid rgba(24, 23, 77, 0.16);
+    border-left: 0;
+  }
+
   .economic-case {
     padding-block: 3.7rem;
   }

@@ -869,6 +869,86 @@ function EconomicCase() {
   );
 }
 
+const laborMoney = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
+function LaborCostCalculator() {
+  const [people, setPeople] = useState(3);
+  const [hours, setHours] = useState(5);
+  const [rate, setRate] = useState(24);
+  const [recovery, setRecovery] = useState(50);
+
+  const results = useMemo(() => {
+    const annualDrag = people * hours * rate * 50;
+    const recoverable = annualDrag * (recovery / 100);
+    return {
+      annualDrag,
+      recoverable,
+      monthlyCeiling: recoverable / 12,
+    };
+  }, [hours, people, rate, recovery]);
+
+  return (
+    <section className="labor-calculator" aria-labelledby="labor-calculator-title">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+        <div className="labor-calculator-copy" data-reveal>
+          <span className="section-kicker">Run the labor math</span>
+          <h2 id="labor-calculator-title">What does the old way cost every year?</h2>
+          <p>
+            This model values only recoverable labor. It does not count faster response, fewer pricing errors,
+            better close rates, or work completed with the capacity you get back.
+          </p>
+          <div className="labor-formula">
+            People × weekly hours lost × loaded hourly cost × 50 working weeks
+          </div>
+        </div>
+
+        <div className="labor-console" data-reveal>
+          <div className="labor-controls">
+            <label>
+              <span><b>People affected</b><output>{people}</output></span>
+              <input type="range" min="1" max="20" value={people} onChange={(event) => setPeople(Number(event.target.value))} />
+            </label>
+            <label>
+              <span><b>Hours lost / person / week</b><output>{hours}</output></span>
+              <input type="range" min="1" max="20" value={hours} onChange={(event) => setHours(Number(event.target.value))} />
+            </label>
+            <label>
+              <span><b>Loaded hourly cost</b><output>{laborMoney.format(rate)}</output></span>
+              <input type="range" min="20" max="100" step="2" value={rate} onChange={(event) => setRate(Number(event.target.value))} />
+            </label>
+            <label>
+              <span><b>Realistic time recovered</b><output>{recovery}%</output></span>
+              <input type="range" min="20" max="80" step="5" value={recovery} onChange={(event) => setRecovery(Number(event.target.value))} />
+            </label>
+          </div>
+
+          <div className="labor-results" aria-live="polite">
+            <div>
+              <span>Annual process drag</span>
+              <strong>{laborMoney.format(results.annualDrag)}</strong>
+            </div>
+            <div className="is-primary">
+              <span>Potential annual capacity recovered</span>
+              <strong>{laborMoney.format(results.recoverable)}</strong>
+            </div>
+            <div>
+              <span>Monthly break-even ceiling</span>
+              <strong>{laborMoney.format(results.monthlyCeiling)}</strong>
+            </div>
+          </div>
+          <p className="labor-disclaimer">
+            Directional estimate, not a guarantee. We validate assumptions against your actual workflow before recommending a build.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const aiQueries = [
   { topic: "HVAC", q: "Best HVAC repair in Dayton, OH", biz: "Dayton Comfort Co.", domain: "daytoncomfort.co" },
   { topic: "Plumbing", q: "Emergency plumber near me in Dayton", biz: "Dayton Service Co.", domain: "daytonserviceco.com" },
@@ -1998,6 +2078,7 @@ function App() {
         <Hero />
         <SpreadsheetTransformation />
         <EconomicCase />
+        <LaborCostCalculator />
         <FeatureGrid />
         <OutcomeSection />
         <WebsiteTransformation />
