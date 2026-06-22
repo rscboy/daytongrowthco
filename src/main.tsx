@@ -193,6 +193,37 @@ const features = [
   },
 ];
 
+const businessJourney = [
+  {
+    number: "01",
+    icon: Globe2,
+    title: "Build your presence",
+    description: "Create a credible foundation that makes the business easy to understand and trust.",
+    services: ["Modern websites", "Online presence", "Website care"],
+  },
+  {
+    number: "02",
+    icon: Search,
+    title: "Get discovered",
+    description: "Help the right customers find you across search, AI answers, social, and campaigns.",
+    services: ["SEO + AEO", "Social media", "Content + campaigns"],
+  },
+  {
+    number: "03",
+    icon: Phone,
+    title: "Capture and schedule",
+    description: "Respond consistently, collect the right details, and turn demand into booked appointments.",
+    services: ["Phone agents", "Lead intake", "Email + text follow-up"],
+  },
+  {
+    number: "04",
+    icon: Workflow,
+    title: "Run the work",
+    description: "Connect quoting, customer updates, project information, and repeatable internal processes.",
+    services: ["Quote tools", "Dashboards + portals", "Custom systems"],
+  },
+];
+
 const marginLeaks = [
   {
     icon: Gauge,
@@ -205,8 +236,8 @@ const marginLeaks = [
     icon: Phone,
     area: "Call agents",
     cost: "Owners and field staff stopping work to answer routine calls or losing after-hours context.",
-    system: "A phone agent that answers, qualifies, documents, and routes calls using your rules.",
-    return: "Fewer interruptions and cleaner handoffs without adding a full shift.",
+    system: "A phone agent that answers, collects the right details, schedules appointments, and sends a clean summary.",
+    return: "Fewer interruptions and more appointments handled without adding a full shift.",
   },
   {
     icon: Workflow,
@@ -1113,7 +1144,7 @@ function Hero() {
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
         <div className="clay-hero-copy hero-entrance">
-          <span className="hero-label">Tools and digital systems for small businesses</span>
+          <span className="hero-label">Remove the manual work slowing down your business.</span>
           <h1 className="hero-title">
             <span data-scroll-words>We build</span>{" "}
             <span className="hero-audience-line">
@@ -1153,7 +1184,6 @@ function ServiceModes() {
     <section className="service-modes" aria-label="About DaytonGrowthCo">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading" data-reveal>
-          <span className="section-kicker">What DaytonGrowthCo builds</span>
           <h2>
             Calls. Quotes. Projects.
             <span>Built into working systems.</span>
@@ -1171,6 +1201,58 @@ function ServiceModes() {
             <SegmentCard key={segment.label} segment={segment} index={index} />
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function BusinessJourney() {
+  return (
+    <section className="business-journey" id="platform" aria-labelledby="business-journey-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="business-journey-heading" data-reveal>
+          <h2 id="business-journey-title">
+            From online presence
+            <span>to the systems behind the work.</span>
+          </h2>
+          <div>
+            <p>
+              We modernize how small businesses get found, schedule customers, quote work, and run projects.
+            </p>
+            <strong>Start anywhere. We focus first on the constraint costing you the most.</strong>
+          </div>
+        </div>
+
+        <div className="business-journey-grid" aria-label="Four connected stages of the business">
+          {businessJourney.map((stage, index) => {
+            const Icon = stage.icon;
+            return (
+              <article className="business-journey-card" key={stage.title}>
+                <header>
+                  <span className="business-journey-number">{stage.number}</span>
+                  <span className="business-journey-icon" aria-hidden="true">
+                    <Icon size={19} strokeWidth={1.8} />
+                  </span>
+                </header>
+                <h3>{stage.title}</h3>
+                <p>{stage.description}</p>
+                <ul>
+                  {stage.services.map((service) => <li key={service}>{service}</li>)}
+                </ul>
+                {index < businessJourney.length - 1 ? (
+                  <span className="business-journey-connector" aria-hidden="true">
+                    <ArrowRight size={14} />
+                  </span>
+                ) : null}
+              </article>
+            );
+          })}
+        </div>
+
+        <p className="business-journey-note">
+          These stages can work independently. When they connect, information moves from the first customer touchpoint
+          into the systems your team uses to deliver the work.
+        </p>
       </div>
     </section>
   );
@@ -1213,7 +1295,6 @@ function StickyWorkflow() {
       <div className="workflow-principles">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
           <div className="workflow-principles-heading" data-reveal>
-            <span className="section-kicker">How we decide what to build</span>
             <h2>Start with the constraint. Not the trend.</h2>
             <p>
               The right answer may be existing software, a focused automation, or a custom tool. The economics decide.
@@ -1233,7 +1314,6 @@ function StickyWorkflow() {
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
             <div className="workflow-copy" aria-live="polite">
-              <span className="section-kicker">How it works</span>
               <p className="step-count">
                 {String(activeStep + 1).padStart(2, "0")} / {String(workflowSteps.length).padStart(2, "0")}
               </p>
@@ -1264,7 +1344,6 @@ function StickyWorkflow() {
 
       <div className="mobile-workflow mx-auto max-w-3xl px-5 sm:px-8">
         <div className="section-heading">
-          <span className="section-kicker">The build process</span>
           <h2>From input to output.</h2>
         </div>
         <div className="mobile-workflow-tabs" role="tablist" aria-label="Build process">
@@ -1511,11 +1590,11 @@ function FeatureGrid() {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
 
   return (
-    <section className="section-shell platform-section" id="platform">
+    <section className="section-shell platform-section" aria-labelledby="margin-leak-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="margin-leak-heading">
           <span className="section-kicker">Where margin leaks</span>
-          <h2>Modernize the work around the work.</h2>
+          <h2 id="margin-leak-title">Modernize the work around the work.</h2>
           <p>
             Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets,
             and grows.
@@ -1729,12 +1808,12 @@ function ToolScenarioDemo() {
                 <div><span>Service</span><strong>Roof repair</strong></div>
                 <div><span>Urgency</span><strong>Active leak</strong></div>
                 <div><span>Location</span><strong>Dayton, OH</strong></div>
-                <div><span>Status</span><strong>Ready for team</strong></div>
+                <div><span>Appointment</span><strong>Tomorrow · 9:30 AM</strong></div>
               </div>
               <div className="phone-agent-summary is-visible">
                 <div className="phone-agent-summary-title">
                   <CheckCircle2 size={17} aria-hidden="true" />
-                  <div><small>Call handled</small><strong>Summary sent to estimator</strong></div>
+                  <div><small>Appointment scheduled</small><strong>Details sent to the team</strong></div>
                 </div>
               </div>
             </div>
@@ -1883,19 +1962,10 @@ function FinalCTA() {
       <div className="form-video-mask" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
-          <span className="final-cta-kicker">The smallest useful fix</span>
-          <h2>
-            The question is not whether the old way still works.
-            <span>It is whether you should keep paying for it.</span>
-          </h2>
+          <h2>Bring us the process. We’ll build the tool.</h2>
           <p>
-            Show us the task your team repeats, the handoff that breaks, or the system everyone works around. We will
-            help you price the drag and identify the smallest useful fix.
+            Tell us what comes in, what your team does with it, and what needs to come out.
           </p>
-          <a className="final-cta-start" href="#contactName">
-            Start building
-            <ArrowRight size={16} aria-hidden="true" />
-          </a>
           <ul className="intake-list" aria-label="What we set up">
             <li>Map the inputs</li>
             <li>Define the tool</li>
@@ -2148,12 +2218,14 @@ function App() {
       <Header />
       <main>
         <Hero />
+        <BusinessJourney />
+        <WebsiteTransformation />
+        <AiVisibility />
+        <OutcomeSection />
         <SpreadsheetTransformation />
+        <FeatureGrid />
         <EconomicCase />
         <LaborCostCalculator />
-        <FeatureGrid />
-        <OutcomeSection />
-        <WebsiteTransformation />
         <StickyWorkflow />
         <FounderPreview />
         <FinalCTA />
