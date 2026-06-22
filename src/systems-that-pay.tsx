@@ -1,147 +1,108 @@
-import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  ArrowRight,
-  Bot,
-  Calculator,
-  Check,
-  CheckCircle2,
-  Clock3,
-  FileSpreadsheet,
-  Globe2,
-  PhoneCall,
-  Search,
-  ShieldCheck,
-  Wrench,
-} from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import "./systems-that-pay.css";
 
 const formAction =
   "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
 
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
+const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
 
-const systems = [
+const socialLinks = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
+  { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
+];
+
+const steps = [
   {
-    icon: Calculator,
-    label: "Quoting",
-    waste: "Rebuilding the same estimate from notes, price sheets, and memory.",
-    system: "A guided quote builder that applies your pricing logic and produces a send-ready estimate.",
-    return: "Faster response, consistent margins, less estimator time.",
+    icon: Send,
+    title: "Send us your site",
+    body: "Share your current website and a sentence about what the business does. That is all we need to start.",
   },
   {
-    icon: PhoneCall,
-    label: "Call agents",
-    waste: "Owners and field staff stopping work to answer routine calls or losing after-hours context.",
-    system: "A phone agent that answers, qualifies, documents, and routes calls using your rules.",
-    return: "Fewer interruptions and cleaner handoffs without adding a full shift.",
+    icon: PenTool,
+    title: "We design a concept",
+    body: "We build a custom homepage direction that makes the business clearer, more credible, and easier to contact.",
   },
   {
-    icon: FileSpreadsheet,
-    label: "Operating systems",
-    waste: "Copying details between texts, spreadsheets, PDFs, inboxes, and job folders.",
-    system: "One focused workflow for intake, job data, approvals, files, and next actions.",
-    return: "Less double entry, fewer missed details, more visible work.",
-  },
-  {
-    icon: Bot,
-    label: "Practical AI",
-    waste: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
-    system: "AI embedded at specific bottlenecks, with human review where judgment matters.",
-    return: "Lower administrative load without handing control to a black box.",
-  },
-  {
-    icon: Globe2,
-    label: "Website + ads",
-    waste: "Sending paid traffic to an old site that makes the company look smaller or harder to trust.",
-    system: "A fast website and campaign pages aligned to the service, location, and buyer’s decision.",
-    return: "More value from the traffic you already pay to earn.",
-  },
-  {
-    icon: Search,
-    label: "SEO + AEO",
-    waste: "Depending entirely on paid media while search engines and AI answers cannot interpret your expertise.",
-    system: "Technical structure, local pages, useful content, and machine-readable business signals.",
-    return: "A compounding discovery channel that reduces reliance on rented attention.",
+    icon: ThumbsUp,
+    title: "You decide",
+    body: "Review the concept on your own time. No obligation and no automatic sales call. Keep it or take it further with us.",
   },
 ];
 
-const principles = [
-  "Fix the expensive bottleneck first.",
-  "Use existing software when it fits.",
-  "Build custom only where your process creates an advantage.",
-  "Measure time removed, errors avoided, and capacity recovered.",
-];
-
-function RoiModel() {
-  const [people, setPeople] = useState(3);
-  const [hours, setHours] = useState(5);
-  const [rate, setRate] = useState(38);
-  const [recovery, setRecovery] = useState(50);
-
-  const result = useMemo(() => {
-    const annualDrag = people * hours * rate * 50;
-    const recoverable = annualDrag * (recovery / 100);
-    const monthly = recoverable / 12;
-    return { annualDrag, recoverable, monthly };
-  }, [people, hours, rate, recovery]);
-
+function Wordmark({ className = "" }: { className?: string }) {
   return (
-    <section className="roi-model" id="model" aria-labelledby="model-title">
-      <div className="model-intro">
-        <h2 id="model-title">What does the old way cost every year?</h2>
-        <p>
-          This model values only recoverable labor. It does not count faster response, fewer pricing errors,
-          better close rates, or work completed with the capacity you get back.
-        </p>
-        <div className="formula" aria-label="Calculation formula">
-          People × weekly hours lost × loaded hourly cost × 50 working weeks
-        </div>
-      </div>
+    <span className={`lp-wordmark ${className}`.trim()}>
+      <span className="wm-dayton">Dayton</span>
+      <span className="wm-growth">Growth</span>
+      <b>Co.</b>
+    </span>
+  );
+}
 
-      <div className="model-console">
-        <div className="control-grid">
-          <label>
-            <span><b>People affected</b><output>{people}</output></span>
-            <input type="range" min="1" max="20" value={people} onChange={(e) => setPeople(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Hours lost / person / week</b><output>{hours}</output></span>
-            <input type="range" min="1" max="20" value={hours} onChange={(e) => setHours(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Loaded hourly cost</b><output>{money.format(rate)}</output></span>
-            <input type="range" min="20" max="100" step="2" value={rate} onChange={(e) => setRate(Number(e.target.value))} />
-          </label>
-          <label>
-            <span><b>Realistic time recovered</b><output>{recovery}%</output></span>
-            <input type="range" min="20" max="80" step="5" value={recovery} onChange={(e) => setRecovery(Number(e.target.value))} />
-          </label>
-        </div>
-
-        <div className="result-ledger">
-          <div>
-            <span>Annual process drag</span>
-            <strong>{money.format(result.annualDrag)}</strong>
-          </div>
-          <div className="result-primary">
-            <span>Potential annual capacity recovered</span>
-            <strong>{money.format(result.recoverable)}</strong>
-          </div>
-          <div>
-            <span>Monthly break-even ceiling</span>
-            <strong>{money.format(result.monthly)}</strong>
-          </div>
-        </div>
-        <p className="model-note">
-          Directional estimate, not a guarantee. We validate assumptions against your actual workflow before recommending a build.
-        </p>
+function SiteHeader() {
+  return (
+    <header className="lp-header">
+      <div className="lp-header-inner">
+        <a className="lp-logo" href="/" aria-label="DaytonGrowthCo home">
+          <Wordmark />
+        </a>
+        <nav className="lp-nav" aria-label="Primary">
+          <a href="/what-we-build/">What We Build</a>
+          <a href="/examples/">Examples</a>
+          <a href="/how-it-works/">How It Works</a>
+          <a href="/aboutus.html">About</a>
+          <a href="/#cta">Contact</a>
+        </nav>
+        <a className="lp-button" href="#free-redesign">
+          Get my free redesign
+          <ArrowRight size={15} aria-hidden="true" />
+        </a>
       </div>
-    </section>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="lp-footer">
+      <div className="lp-footer-inner">
+        <div className="lp-footer-brand">
+          <a className="lp-footer-logo" href="/" aria-label="DaytonGrowthCo home">
+            <img src={logoUrl} alt="" width={32} height={32} />
+            <Wordmark />
+          </a>
+          <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
+          <div className="lp-social" aria-label="Social media">
+            {socialLinks.map((link) => (
+              <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+        <nav className="lp-footer-col" aria-label="Explore">
+          <span className="lp-footer-label">Explore</span>
+          <a href="/what-we-build/">What We Build</a>
+          <a href="/examples/">Examples</a>
+          <a href="/how-it-works/">How It Works</a>
+          <a href="/aboutus.html">About Us</a>
+          <a href="/#cta">Start a Conversation</a>
+        </nav>
+        <nav className="lp-footer-col" aria-label="Legal and contact">
+          <span className="lp-footer-label">Contact</span>
+          <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
+          <a href="tel:+19373677089">(937) 367-7089</a>
+          <a href="/privacy-policy/">Privacy</a>
+          <a href="/terms-of-service/">Terms</a>
+          <a href="/accessibility/">Accessibility</a>
+        </nav>
+      </div>
+      <div className="lp-footer-bottom">© {year} DaytonGrowthCo. LLC. All rights reserved.</div>
+    </footer>
   );
 }
 
@@ -229,7 +190,7 @@ function FreeRedesignOffer() {
     payload.set("email", customerEmail);
     payload.set("customerEmail", customerEmail);
     payload.set("mainGoal", "Free website redesign");
-    payload.set("serviceTier", "Systems That Pay campaign");
+    payload.set("serviceTier", "Free website redesign campaign");
     payload.set("requestType", "free_website_redesign");
     payload.set("sendCustomerConfirmation", "true");
     payload.set("customerConfirmationTemplate", "free_website_redesign_received");
@@ -237,7 +198,7 @@ function FreeRedesignOffer() {
     payload.set("websiteUrl", website);
     payload.set(
       "notes",
-      `Free website redesign request\nBusiness: ${business}\nCurrent website: ${website}\nSource: Systems That Pay landing page`,
+      `Free website redesign request\nBusiness: ${business}\nCurrent website: ${website}\nSource: Free website redesign landing page`,
     );
     payload.set("cf-turnstile-response", token);
 
@@ -254,39 +215,39 @@ function FreeRedesignOffer() {
   };
 
   return (
-    <section className="redesign-offer redesign-hero" id="free-redesign" aria-labelledby="redesign-title">
-      <div className="redesign-copy">
-        <span className="offer-tag">Limited local offer · $0</span>
-        <h2 id="redesign-title">We’ll redesign your website. Free.</h2>
-        <p className="redesign-lede">
-          Send us your current site. We’ll create a custom homepage direction that makes the business clearer,
-          more credible, and easier to contact.
+    <section className="lp-hero" id="free-redesign" aria-labelledby="redesign-title">
+      <div className="lp-hero-copy">
+        <span className="lp-tag">Free for Dayton-area businesses · $0</span>
+        <h1 id="redesign-title">We’ll redesign your website. Free.</h1>
+        <p className="lp-lede">
+          Send us your current site and we’ll create a custom homepage direction that makes the business clearer,
+          more credible, and easier to contact. No obligation.
         </p>
-        <ul>
-          <li><Check size={16} /> A redesigned homepage concept</li>
-          <li><Check size={16} /> Stronger message, structure, and call to action</li>
-          <li><Check size={16} /> Mobile-first recommendations</li>
-          <li><Check size={16} /> No obligation and no automatic sales call</li>
+        <ul className="lp-checklist">
+          <li><Check size={15} /> A redesigned homepage concept</li>
+          <li><Check size={15} /> Stronger message, structure, and call to action</li>
+          <li><Check size={15} /> Mobile-first recommendations</li>
+          <li><Check size={15} /> No obligation and no automatic sales call</li>
         </ul>
-        <p className="offer-fineprint">
+        <p className="lp-fineprint">
           This is a custom visual concept and strategic direction, not a complete production website.
         </p>
       </div>
 
-      <div className="redesign-card">
+      <div className="lp-card">
         {status === "sent" ? (
-          <div className="redesign-success" role="status">
-            <span><CheckCircle2 size={32} /></span>
-            <h3>Your site is in the redesign queue.</h3>
+          <div className="lp-success" role="status">
+            <span><CheckCircle2 size={30} /></span>
+            <h2>Your site is in the redesign queue.</h2>
             <p>We’ll review it and follow up by email with the next step.</p>
           </div>
         ) : (
           <form onSubmit={submit}>
-            <div className="redesign-form-head">
-              <span>DGC / FREE REDESIGN</span>
+            <div className="lp-card-head">
+              <span>Free redesign</span>
               <strong>Claim your concept</strong>
             </div>
-            <div className="redesign-field-pair">
+            <div className="lp-field-pair">
               <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Jane Smith" required /></label>
               <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Smith HVAC" required /></label>
             </div>
@@ -311,13 +272,13 @@ function FreeRedesignOffer() {
               <small>No https:// needed.</small>
             </label>
             <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="jane@yourbusiness.com" required /></label>
-            <div ref={widgetRef} className="redesign-turnstile" aria-label="Security verification" />
-            {status === "error" ? <p className="redesign-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
+            <div ref={widgetRef} className="lp-turnstile" aria-label="Security verification" />
+            {status === "error" ? <p className="lp-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
             <button type="submit" disabled={!token || status === "sending"}>
               {status === "sending" ? "Sending…" : "Get my free redesign"}
-              {status !== "sending" ? <ArrowRight size={17} /> : null}
+              {status !== "sending" ? <ArrowRight size={16} /> : null}
             </button>
-            <p className="redesign-privacy"><ShieldCheck size={13} /> Your information stays private.</p>
+            <p className="lp-privacy"><ShieldCheck size={13} /> Your information stays private.</p>
           </form>
         )}
       </div>
@@ -327,97 +288,58 @@ function FreeRedesignOffer() {
 
 function App() {
   return (
-    <main>
-      <header className="campaign-header">
-        <a className="wordmark" href="/" aria-label="Dayton Growth Company home">
-          <span>Dayton</span><b>Growth</b><span>Co.</span>
-        </a>
-        <div className="header-context"><Wrench size={14} /> Built in Dayton for businesses that build things</div>
-        <a className="header-link" href="#free-redesign">Free redesign <ArrowRight size={15} /></a>
-      </header>
+    <>
+      <SiteHeader />
+      <main>
+        <FreeRedesignOffer />
 
-      <FreeRedesignOffer />
+        <section className="lp-steps" aria-labelledby="steps-title">
+          <div className="lp-section-head">
+            <h2 id="steps-title">How the free redesign works.</h2>
+            <p>Three short steps. You stay in control the whole way, and there’s nothing to pay.</p>
+          </div>
+          <ol className="lp-step-grid">
+            {steps.map(({ icon: Icon, title, body }, index) => (
+              <li className="lp-step" key={title}>
+                <span className="lp-step-mark"><Icon size={18} /></span>
+                <span className="lp-step-num">Step {index + 1}</span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-      <section className="thesis">
-        <div className="thesis-grid">
-          <h2>Old systems do not look expensive because their invoice is hidden in payroll.</h2>
-          <div>
+        <section className="lp-proof" aria-labelledby="proof-title">
+          <div className="lp-proof-copy">
+            <h2 id="proof-title">The work should feel specific to the business.</h2>
             <p>
-              The cost shows up as estimator hours, owner interruptions, duplicate entry, missed context,
-              slow follow-up, and skilled employees doing clerical work.
-            </p>
-            <p>
-              A useful system does not need to replace people. It needs to stop buying the same low-value task
-              from them every week.
+              We combine clear messaging, interface design, and customer-facing communication. See a recent
+              trade-business project or the broader portfolio on our main site.
             </p>
           </div>
-        </div>
-      </section>
+          <div className="lp-proof-links">
+            <a href="/watson-roofing.html">
+              <span>Trade business project</span>
+              <strong>Watson Roofing <ArrowRight size={18} /></strong>
+            </a>
+            <a href="/examples/">
+              <span>Capabilities + examples</span>
+              <strong>View our work <ArrowRight size={18} /></strong>
+            </a>
+          </div>
+        </section>
 
-      <RoiModel />
-
-      <section className="systems" aria-labelledby="systems-title">
-        <div className="section-heading">
-          <h2 id="systems-title">Modernize the work around the work.</h2>
-          <p>Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets, and grows.</p>
-        </div>
-        <div className="system-table">
-          <div className="system-head"><span>Area</span><span>Current cost</span><span>Better system</span><span>Business return</span></div>
-          {systems.map(({ icon: Icon, label, waste, system, return: roi }) => (
-            <article className="system-row" key={label}>
-              <h3><Icon size={18} />{label}</h3>
-              <p>{waste}</p>
-              <p>{system}</p>
-              <p className="return-copy">{roi}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="decision">
-        <div>
-          <h2>Start with the constraint. Not the trend.</h2>
-        </div>
-        <ol>
-          {principles.map((principle) => <li key={principle}><Check size={16} />{principle}</li>)}
-        </ol>
-      </section>
-
-      <section className="proof" aria-labelledby="proof-title">
-        <div className="proof-copy">
-          <h2 id="proof-title">The work should feel specific to the business.</h2>
-          <p>
-            We combine operating logic, interface design, automation, and clear customer-facing communication.
-            Explore a recent trade-business project or see the broader portfolio on our main site.
-          </p>
-        </div>
-        <div className="proof-links">
-          <a href="/watson-roofing.html">
-            <span>Trade business project</span>
-            <strong>Watson Roofing <ArrowRight size={18} /></strong>
+        <section className="lp-final">
+          <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
+          <p>One custom concept. Clearer positioning. A stronger path to contact. No obligation.</p>
+          <a className="lp-button lp-button-light" href="#free-redesign">
+            Get my free redesign <ArrowRight size={16} />
           </a>
-          <a href="/#outcomes">
-            <span>Capabilities + examples</span>
-            <strong>View our work <ArrowRight size={18} /></strong>
-          </a>
-        </div>
-      </section>
-
-      <section className="final">
-        <div className="final-mark"><Clock3 size={26} /></div>
-        <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
-        <p>
-          One custom concept. Clearer positioning. A stronger path to contact. No obligation.
-        </p>
-        <a className="primary-cta light" href="#free-redesign">Get my free redesign <ArrowRight size={17} /></a>
-      </section>
-
-      <footer>
-        <a className="wordmark footer-wordmark" href="/"><span>Dayton</span><b>Growth</b><span>Co.</span></a>
-        <p>Business systems, websites, search, and practical AI for Dayton-area companies.</p>
-        <a href="/">Visit daytongrowth.co</a>
-      </footer>
-    </main>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }
 
