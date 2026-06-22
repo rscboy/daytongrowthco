@@ -1405,6 +1405,67 @@
     transform: scale(1.18);
   }
 
+  .site-offer-banner {
+    display: flex;
+    min-height: 2.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 0.38rem 1rem;
+    color: #ffffff;
+    background:
+      linear-gradient(90deg, rgba(241, 208, 177, 0.12), transparent 25%),
+      #18174d;
+    font-size: 0.7rem;
+    text-decoration: none;
+  }
+
+  .site-offer-label {
+    border: 1px solid rgba(241, 208, 177, 0.48);
+    border-radius: 999px;
+    padding: 0.22rem 0.48rem;
+    color: #18174d;
+    background: #f1d0b1;
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .site-offer-copy {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+
+  .site-offer-copy strong {
+    font-weight: 720;
+  }
+
+  .site-offer-copy > span {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.62rem;
+  }
+
+  .site-offer-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #f1d0b1;
+    font-weight: 760;
+    white-space: nowrap;
+  }
+
+  .site-offer-action svg {
+    transition: transform 160ms ease;
+  }
+
+  .site-offer-banner:hover .site-offer-action svg {
+    transform: translateX(3px);
+  }
+
   .segment-card {
     position: relative;
     overflow: hidden;
@@ -6461,6 +6522,38 @@
 }
 
 @media (max-width: 640px) {
+  .site-offer-banner {
+    min-height: 2.2rem;
+    justify-content: space-between;
+    gap: 0.55rem;
+    padding-inline: 0.65rem;
+  }
+
+  .site-offer-copy {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .site-offer-copy strong {
+    font-size: 0.66rem;
+  }
+
+  .site-offer-copy > span {
+    display: none;
+  }
+
+  .site-offer-action {
+    font-size: 0;
+  }
+
+  .site-offer-action::before {
+    font-size: 0.65rem;
+    content: "Claim offer";
+  }
+
   .workflow-principles {
     padding-block: 3.5rem;
   }

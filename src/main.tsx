@@ -338,6 +338,17 @@ function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
+      <a className="site-offer-banner" href="/systems-that-pay/">
+        <span className="site-offer-label">Limited local offer</span>
+        <span className="site-offer-copy">
+          <strong>We’ll redesign your homepage. Free.</strong>
+          <span>Custom concept · No obligation</span>
+        </span>
+        <span className="site-offer-action">
+          Claim free redesign
+          <ArrowRight size={14} aria-hidden="true" />
+        </span>
+      </a>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
         <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
           <InteractiveWordmark />
@@ -1100,7 +1111,7 @@ function Hero() {
         <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} />
         <div className="hero-product-video-mask" />
       </div>
-      <div className="hero-content mx-auto max-w-7xl px-5 pt-20 sm:px-8 lg:pt-24">
+      <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
         <div className="clay-hero-copy hero-entrance">
           <span className="hero-label">Tools and digital systems for small businesses</span>
           <h1 className="hero-title">
