@@ -206,6 +206,11 @@ button, input { font: inherit; }
   font-size: .66rem;
   font-weight: 720;
 }
+.redesign-card label > small {
+  margin-top: -2px;
+  color: var(--muted);
+  font-size: .6rem;
+}
 .redesign-card input {
   width: 100%;
   min-height: 46px;

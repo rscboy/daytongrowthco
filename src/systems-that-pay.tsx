@@ -152,6 +152,12 @@ type TurnstileApi = {
   remove: (widgetId?: string) => void;
 };
 
+function normalizeWebsiteUrl(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 function FreeRedesignOffer() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [token, setToken] = useState("");
@@ -204,13 +210,30 @@ function FreeRedesignOffer() {
     if (!token || status === "sending") return;
     const form = event.currentTarget;
     const input = new FormData(form);
-    const website = String(input.get("websiteUrl") || "");
+    const websiteInput = form.elements.namedItem("websiteUrl") as HTMLInputElement | null;
+    const website = normalizeWebsiteUrl(String(input.get("websiteUrl") || ""));
     const business = String(input.get("businessName") || "");
+    const customerEmail = String(input.get("emailAddress") || "");
+
+    try {
+      new URL(website);
+      websiteInput?.setCustomValidity("");
+    } catch {
+      websiteInput?.setCustomValidity("Enter a website such as yourbusiness.com.");
+      websiteInput?.reportValidity();
+      return;
+    }
+
     const payload = new FormData();
     payload.set("yourName", String(input.get("yourName") || ""));
-    payload.set("emailAddress", String(input.get("emailAddress") || ""));
+    payload.set("emailAddress", customerEmail);
+    payload.set("email", customerEmail);
+    payload.set("customerEmail", customerEmail);
     payload.set("mainGoal", "Free website redesign");
     payload.set("serviceTier", "Systems That Pay campaign");
+    payload.set("requestType", "free_website_redesign");
+    payload.set("sendCustomerConfirmation", "true");
+    payload.set("customerConfirmationTemplate", "free_website_redesign_received");
     payload.set("businessName", business);
     payload.set("websiteUrl", website);
     payload.set(
@@ -270,7 +293,26 @@ function FreeRedesignOffer() {
               <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Jane Smith" required /></label>
               <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Smith HVAC" required /></label>
             </div>
-            <label><span>Current website</span><input name="websiteUrl" type="url" placeholder="https://yourbusiness.com" required /></label>
+            <label>
+              <span>Current website</span>
+              <input
+                name="websiteUrl"
+                type="text"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="yourbusiness.com"
+                onInput={(event) => event.currentTarget.setCustomValidity("")}
+                onBlur={(event) => {
+                  if (event.currentTarget.value.trim()) {
+                    event.currentTarget.value = normalizeWebsiteUrl(event.currentTarget.value);
+                  }
+                }}
+                required
+              />
+              <small>No https:// needed.</small>
+            </label>
             <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="jane@yourbusiness.com" required /></label>
             <div ref={widgetRef} className="redesign-turnstile" aria-label="Security verification" />
             {status === "error" ? <p className="redesign-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
