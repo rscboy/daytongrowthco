@@ -808,6 +808,51 @@ function SpreadsheetTransformation() {
   );
 }
 
+function EconomicCase() {
+  return (
+    <section className="economic-case" aria-labelledby="economic-case-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="economic-case-grid">
+          <div className="economic-case-thesis" data-reveal>
+            <span className="section-kicker">The cost of manual work</span>
+            <h2 id="economic-case-title">
+              Your best people are too expensive for
+              <span>copy, paste, repeat.</span>
+            </h2>
+            <p>
+              Skilled time should go toward judgment, customer work, and decisions—not rebuilding the same quote,
+              moving the same details, or searching for the same file.
+            </p>
+          </div>
+
+          <div className="economic-cost-sheet" data-reveal>
+            <blockquote>
+              Old systems do not look expensive because their invoice is hidden in payroll.
+            </blockquote>
+            <div className="economic-cost-question">
+              <span>Run the operating math</span>
+              <h3>What does the old way cost every year?</h3>
+            </div>
+            <div className="economic-formula" aria-label="Annual process cost formula">
+              <span>People affected</span>
+              <i>×</i>
+              <span>Hours lost</span>
+              <i>×</i>
+              <span>Loaded labor</span>
+              <i>×</i>
+              <span>50 weeks</span>
+            </div>
+            <a className="economic-case-link" href="#cta">
+              Show us the expensive task
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const aiQueries = [
   { topic: "HVAC", q: "Best HVAC repair in Dayton, OH", biz: "Dayton Comfort Co.", domain: "daytoncomfort.co" },
   { topic: "Plumbing", q: "Emergency plumber near me in Dayton", biz: "Dayton Service Co.", domain: "daytonserviceco.com" },
@@ -1317,8 +1362,10 @@ function FeatureGrid() {
     <section className="section-shell platform-section" id="platform">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>What we can build.</h2>
-          <p>Tools, apps, content, and search systems for small businesses.</p>
+          <h2>Modernize the work around the work.</h2>
+          <p>
+            Tools, apps, content, and search systems that reduce the administrative drag around serving customers.
+          </p>
         </div>
         <div className="feature-category-grid">
           {featureCategories.map((category) => {
@@ -1388,8 +1435,8 @@ function OutcomeSection() {
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>See one tool work.</h2>
-          <p>Start with what the business needs. Watch the right system take shape.</p>
+          <h2>Start with the constraint. Not the trend.</h2>
+          <p>Choose the bottleneck. Watch a focused system take shape around what the business actually needs.</p>
         </div>
         <ToolScenarioDemo />
       </div>
@@ -1934,6 +1981,7 @@ function App() {
       <main>
         <Hero />
         <SpreadsheetTransformation />
+        <EconomicCase />
         <FeatureGrid />
         <OutcomeSection />
         <WebsiteTransformation />
