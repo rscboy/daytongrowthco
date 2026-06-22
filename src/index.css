@@ -806,7 +806,7 @@
     vertical-align: baseline;
   }
 
-  /* Layout only — framer-motion drives the opacity/transform animation.
+  /* Layout only. Framer Motion drives the opacity/transform animation.
      A CSS transition here double-animates on iOS Safari (the reported
      "double flash"), so it is intentionally omitted. */
   .animated-hero-phrase > span {
@@ -1331,8 +1331,9 @@
   .score-orb {
     display: grid;
     place-items: center;
-    width: 5.4rem;
-    height: 5.4rem;
+    width: 6rem;
+    height: 6rem;
+    padding: 0.65rem;
     border: 1px solid rgba(24, 23, 77, 0.45);
     border-radius: 50%;
     color: #30495f;
@@ -1340,13 +1341,17 @@
   }
 
   .score-orb span {
+    max-width: 100%;
     font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 1.22rem;
+    font-size: 0.72rem;
     font-weight: 750;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .score-orb small {
-    margin-top: -1.4rem;
+    margin-top: -1rem;
     color: #7d8790;
     font-size: 0.64rem;
     font-weight: 700;
@@ -1712,7 +1717,7 @@
   }
 
   .segment-copy h3 {
-    margin-top: 0.38rem;
+    margin-top: 0;
     max-width: 27rem;
     color: #252522;
     font-size: 0.98rem;
@@ -2153,7 +2158,7 @@
 
   .business-journey-card li::before {
     color: #5796c8;
-    content: "—";
+    content: "•";
   }
 
   .business-journey-connector {
@@ -4043,14 +4048,9 @@
 
   .margin-leak-heading {
     display: grid;
-    grid-template-columns: 0.6fr 1.5fr 0.8fr;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.8fr);
     gap: clamp(1.5rem, 4vw, 4rem);
     align-items: start;
-  }
-
-  .margin-leak-heading .section-kicker {
-    margin-top: 0.6rem;
-    color: #18174d;
   }
 
   .margin-leak-heading h2 {
@@ -4219,7 +4219,7 @@
   .feature-category-card li::before {
     margin-right: 0.42rem;
     color: #5796c8;
-    content: "—";
+    content: "•";
   }
 
   .feature-view-all {
@@ -5783,16 +5783,8 @@
     text-transform: none;
   }
 
-  .founder-eyebrow {
-    color: #7b756d;
-    font-size: 0.65rem;
-    font-weight: 720;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
   .founder-preview h2 {
-    margin-top: 0.38rem;
+    margin-top: 0;
     color: #182018;
     font-family: var(--font-serif);
     font-size: clamp(1.65rem, 3vw, 2.35rem);
@@ -5888,10 +5880,10 @@
   .footer-column-label {
     margin-bottom: 0.28rem;
     color: var(--brand-peach);
-    font-size: 0.66rem;
-    font-weight: 720;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
+    font-size: 0.82rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   .footer-brand {
@@ -6330,7 +6322,6 @@
     gap: 0.8rem;
   }
 
-  .business-journey-heading .section-kicker,
   .business-journey-heading > div {
     margin: 0;
     padding: 0;
@@ -6367,10 +6358,6 @@
   .margin-leak-heading {
     grid-template-columns: 1fr;
     gap: 0.8rem;
-  }
-
-  .margin-leak-heading .section-kicker {
-    margin: 0;
   }
 
   .margin-leak-heading h2 {

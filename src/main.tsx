@@ -250,7 +250,7 @@ const marginLeaks = [
     icon: Sparkles,
     area: "Practical AI",
     cost: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
-    system: "AI embedded at specific bottlenecks—with human review where judgment matters.",
+    system: "AI embedded at specific bottlenecks, with human review where judgment matters.",
     return: "Lower administrative load without handing control to a black box.",
   },
   {
@@ -740,7 +740,6 @@ function SegmentCard({ segment, index }: { segment: (typeof segments)[number]; i
         </div>
       </DottedPanel>
       <div className="segment-copy">
-        <span className="eyebrow">{segment.label}</span>
         <h3>{segment.title}</h3>
         <span className="link-arrow">
           {segment.action}
@@ -882,13 +881,12 @@ function EconomicCase() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="economic-case-grid">
           <div className="economic-case-thesis" data-reveal>
-            <span className="section-kicker">The cost of manual work</span>
             <h2 id="economic-case-title">
               Your best people are too expensive for
               <span>copy, paste, repeat.</span>
             </h2>
             <p>
-              Skilled time should go toward judgment, customer work, and decisions—not rebuilding the same quote,
+              Skilled time should go toward judgment, customer work, and decisions, not rebuilding the same quote,
               moving the same details, or searching for the same file.
             </p>
             <blockquote>
@@ -962,7 +960,6 @@ function LaborCostCalculator() {
     <section className="labor-calculator" aria-labelledby="labor-calculator-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="labor-calculator-copy" data-reveal>
-          <span className="section-kicker">Run the labor math</span>
           <h2 id="labor-calculator-title">What does the old way cost every year?</h2>
           <p>
             This model values only recoverable labor. It does not count faster response, fewer pricing errors,
@@ -1032,7 +1029,6 @@ function AiVisibility() {
     <section className="section-shell ai-section" id="recommendation">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="section-heading compact-heading" data-reveal>
-          <span className="section-kicker">AI search visibility</span>
           <h2>
             Show up when customers
             <span>ask AI.</span>
@@ -1152,7 +1148,7 @@ function Hero() {
             </span>
           </h1>
           <p>
-            Phone agents, quote calculators, dashboards, sales pages, training tools, and custom apps — built around
+            Phone agents, quote calculators, dashboards, sales pages, training tools, and custom apps, built around
             the way your business already works.
           </p>
           <div className="hero-actions">
@@ -1593,7 +1589,6 @@ function FeatureGrid() {
     <section className="section-shell platform-section" aria-labelledby="margin-leak-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="margin-leak-heading">
-          <span className="section-kicker">Where margin leaks</span>
           <h2 id="margin-leak-title">Modernize the work around the work.</h2>
           <p>
             Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets,
@@ -1918,12 +1913,6 @@ function ProjectForm() {
           <ArrowRight size={16} aria-hidden="true" />
         </button>
         <div id="auditStatus" aria-live="polite" className="form-status" />
-        <div className="form-trust-cues" aria-label="What to expect">
-          <p className="form-microcopy">
-            <CheckCircle2 size={14} aria-hidden="true" />
-            <span>Response within 24 hours · We’ll review your process and reply with next steps.</span>
-          </p>
-        </div>
       </form>
       <dialog
         id="formSuccessDialog"
@@ -1939,7 +1928,7 @@ function ProjectForm() {
         </span>
         <h3 id="formSuccessDialogTitle" className="form-success-title">Received</h3>
         <p id="formSuccessDialogMessage" className="form-success-message">
-          Thanks — we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+          Thanks, we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
         </p>
       </dialog>
       <div id="formSuccess" className="form-success" role="status" tabIndex={-1} hidden>
@@ -1948,7 +1937,7 @@ function ProjectForm() {
         </span>
         <h3 className="form-success-title">Received</h3>
         <p className="form-success-message">
-          Thanks — we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+          Thanks, we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
         </p>
       </div>
     </div>
@@ -1995,11 +1984,10 @@ function FounderPreview() {
           </figcaption>
         </figure>
         <div className="founder-preview-copy">
-          <span className="founder-eyebrow">Built in Dayton</span>
           <h2 id="founder-preview-title">The person behind the tools.</h2>
           <p>
             Meet Samuel Caruso, founder of DaytonGrowthCo. He builds practical systems around the way your business
-            already works—so your team can move faster without forcing a new process.
+            already works, so your team can move faster without forcing a new process.
           </p>
           <blockquote>
             “Most businesses don’t need more software. They need tools that fit the process they already trust.”

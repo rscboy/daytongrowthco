@@ -51,7 +51,7 @@ const systems = [
     icon: Bot,
     label: "Practical AI",
     waste: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
-    system: "AI embedded at specific bottlenecks—with human review where judgment matters.",
+    system: "AI embedded at specific bottlenecks, with human review where judgment matters.",
     return: "Lower administrative load without handing control to a black box.",
   },
   {
@@ -93,7 +93,6 @@ function RoiModel() {
   return (
     <section className="roi-model" id="model" aria-labelledby="model-title">
       <div className="model-intro">
-        <span className="section-kicker">Run the labor math</span>
         <h2 id="model-title">What does the old way cost every year?</h2>
         <p>
           This model values only recoverable labor. It does not count faster response, fewer pricing errors,
@@ -258,7 +257,6 @@ function FreeRedesignOffer() {
     <section className="redesign-offer redesign-hero" id="free-redesign" aria-labelledby="redesign-title">
       <div className="redesign-copy">
         <span className="offer-tag">Limited local offer · $0</span>
-        <p className="section-kicker">Free website redesign concept</p>
         <h2 id="redesign-title">We’ll redesign your website. Free.</h2>
         <p className="redesign-lede">
           Send us your current site. We’ll create a custom homepage direction that makes the business clearer,
@@ -271,7 +269,7 @@ function FreeRedesignOffer() {
           <li><Check size={16} /> No obligation and no automatic sales call</li>
         </ul>
         <p className="offer-fineprint">
-          This is a custom visual concept and strategic direction—not a complete production website.
+          This is a custom visual concept and strategic direction, not a complete production website.
         </p>
       </div>
 
@@ -279,7 +277,6 @@ function FreeRedesignOffer() {
         {status === "sent" ? (
           <div className="redesign-success" role="status">
             <span><CheckCircle2 size={32} /></span>
-            <p className="section-kicker">Request received</p>
             <h3>Your site is in the redesign queue.</h3>
             <p>We’ll review it and follow up by email with the next step.</p>
           </div>
@@ -342,7 +339,6 @@ function App() {
       <FreeRedesignOffer />
 
       <section className="thesis">
-        <span className="section-kicker">The economic argument</span>
         <div className="thesis-grid">
           <h2>Old systems do not look expensive because their invoice is hidden in payroll.</h2>
           <div>
@@ -362,7 +358,6 @@ function App() {
 
       <section className="systems" aria-labelledby="systems-title">
         <div className="section-heading">
-          <span className="section-kicker">Where margin leaks</span>
           <h2 id="systems-title">Modernize the work around the work.</h2>
           <p>Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets, and grows.</p>
         </div>
@@ -381,7 +376,6 @@ function App() {
 
       <section className="decision">
         <div>
-          <span className="section-kicker">How we decide what to build</span>
           <h2>Start with the constraint. Not the trend.</h2>
         </div>
         <ol>
@@ -391,7 +385,6 @@ function App() {
 
       <section className="proof" aria-labelledby="proof-title">
         <div className="proof-copy">
-          <span className="section-kicker">See the standard</span>
           <h2 id="proof-title">The work should feel specific to the business.</h2>
           <p>
             We combine operating logic, interface design, automation, and clear customer-facing communication.
@@ -412,7 +405,6 @@ function App() {
 
       <section className="final">
         <div className="final-mark"><Clock3 size={26} /></div>
-        <p className="eyebrow">See the difference before you spend.</p>
         <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
         <p>
           One custom concept. Clearer positioning. A stronger path to contact. No obligation.

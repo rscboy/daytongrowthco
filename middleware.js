@@ -5,8 +5,8 @@ import { next } from '@vercel/edge';
  *
  * When a request for a major public page carries `Accept: text/markdown`, serve
  * the pre-generated Markdown rendering (dist/md/<slug>.md, produced by
- * scripts/generate-markdown.mjs) instead of HTML. Every other request — i.e.
- * normal browser traffic — falls through untouched and still receives HTML.
+ * scripts/generate-markdown.mjs) instead of HTML. Every other request, meaning
+ * normal browser traffic, falls through untouched and still receives HTML.
  *
  * Anything that could break (unknown path, missing/empty Markdown file, fetch
  * error) falls back to the standard HTML response rather than erroring.

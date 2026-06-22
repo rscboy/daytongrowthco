@@ -1,4 +1,4 @@
-// DaytonGrowthCo website forms — Google Apps Script web-app handler
+// DaytonGrowthCo website forms. Google Apps Script web-app handler.
 const TO_EMAIL = "sam@daytongrowth.co";
 
 // Inbox identity
@@ -32,7 +32,7 @@ function doPost(e) {
 
     // 1) Notify the business owner (pretty HTML)
     const isRedesign = isRedesignRequest_(data);
-    const flag = check.status === "ok" ? "" : "⚠️ UNVERIFIED — ";
+    const flag = check.status === "ok" ? "" : "⚠️ UNVERIFIED: ";
     const inquiryLabel = isRedesign ? "Free redesign request" : "New inquiry";
     sendEmail_({
       to: TO_EMAIL,
@@ -42,13 +42,13 @@ function doPost(e) {
       replyTo: data.emailAddress || REPLY_TO
     });
 
-    // 2) Confirmation to the client (pretty HTML) — only if their email looks valid
+    // 2) Confirmation to the client (pretty HTML), only if their email looks valid
     if (isEmail_(data.emailAddress)) {
       sendEmail_({
         to: data.emailAddress,
         subject: isRedesign
           ? "We received your free website redesign request"
-          : "We got your request — DaytonGrowthCo.",
+          : "We got your request | DaytonGrowthCo.",
         html: buildClientHtml_(data),
         text: clientText_(data),
         replyTo: REPLY_TO
@@ -144,7 +144,7 @@ function buildClientHtml_(d) {
              font-size:26px;line-height:54px;color:${C_BLUE};">✓</td></tr></table>
 
     <h1 style="margin:22px 0 10px;font-size:26px;line-height:1.2;color:${C_DARK};font-weight:800;letter-spacing:-0.02em;">
-      Thanks, ${escapeHtml_(first)} — we've got it.</h1>
+      Thanks, ${escapeHtml_(first)}. We've got it.</h1>
     <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#475569;">
       Your request just landed in our inbox. We'll review what you sent and get back to you with a
       recommendation <strong style="color:${C_DARK};">within 24 hours</strong>.</p>
@@ -158,7 +158,7 @@ function buildClientHtml_(d) {
     <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;">What happens next</p>
     ${step_("1", "We review your request and your current setup.")}
     ${step_("2", "We reply with the simplest setup that makes sense for you.")}
-    ${step_("3", "If it's a fit, we get you scheduled — no monthly lock-in.")}
+    ${step_("3", "If it's a fit, we get you scheduled. No monthly lock-in.")}
 
     <div style="text-align:center;margin:30px 0 4px;">
       <a href="${SITE_URL}" style="display:inline-block;background:${C_BLUE};color:#ffffff;text-decoration:none;
@@ -167,7 +167,7 @@ function buildClientHtml_(d) {
     <p style="margin:18px 0 0;font-size:13px;color:#94a3b8;text-align:center;">
       Need to add something? Just reply to this email.</p>`;
 
-  return emailShell_(inner, `Thanks ${first} — we got your request and will reply within 24 hours.`);
+  return emailShell_(inner, `Thanks ${first}. We got your request and will reply within 24 hours.`);
 }
 
 function buildRedesignClientHtml_(d, first, rows) {
@@ -180,7 +180,7 @@ function buildRedesignClientHtml_(d, first, rows) {
       Free website redesign
     </p>
     <h1 style="margin:0 0 10px;font-size:26px;line-height:1.2;color:${C_DARK};font-weight:800;letter-spacing:-0.02em;">
-      Thanks, ${escapeHtml_(first)} — your site is in the queue.</h1>
+      Thanks, ${escapeHtml_(first)}. Your site is in the queue.</h1>
     <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#475569;">
       We received your request for a free homepage redesign concept. We’ll review your current website and
       follow up by email with the next step.</p>
@@ -209,7 +209,7 @@ function buildRedesignClientHtml_(d, first, rows) {
     <p style="margin:18px 0 0;font-size:13px;color:#94a3b8;text-align:center;">
       Need to add something? Just reply to this email.</p>`;
 
-  return emailShell_(inner, `Thanks ${first} — we received your free website redesign request.`);
+  return emailShell_(inner, `Thanks ${first}. We received your free website redesign request.`);
 }
 
 /* ───────────────────────── Owner notification ───────────────────────── */
@@ -256,7 +256,7 @@ function verifyBadge_(check) {
   const color  = ok ? "#047857" : "#B45309";
   const sub    = ok ? "#059669" : "#92400E";
   const icon   = ok ? "✓" : "⚠";
-  const label  = ok ? "Verified human — confirmed via Cloudflare Turnstile"
+  const label  = ok ? "Verified human, confirmed via Cloudflare Turnstile"
                     : "Could not verify this submission";
   return `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;">
@@ -295,9 +295,9 @@ function step_(n, text) {
 function clientText_(d) {
   const first = (d.yourName || "there").split(" ")[0];
   if (isRedesignRequest_(d)) {
-    return `Thanks, ${first} — your site is in the redesign queue.\n\nWe received your request for a free homepage redesign concept for ${d.businessName || "your business"}.\n\nWebsite: ${d.websiteUrl || d.currentDomain || "-"}\n\nWe'll review your current homepage and follow up by email with the next step. There is no obligation and no automatic sales call.\n\nThe free deliverable is a custom visual concept and strategic direction, not a complete production website.\n\n— DaytonGrowthCo.  ${REPLY_TO}  ${PHONE}`;
+    return `Thanks, ${first}. Your site is in the redesign queue.\n\nWe received your request for a free homepage redesign concept for ${d.businessName || "your business"}.\n\nWebsite: ${d.websiteUrl || d.currentDomain || "-"}\n\nWe'll review your current homepage and follow up by email with the next step. There is no obligation and no automatic sales call.\n\nThe free deliverable is a custom visual concept and strategic direction, not a complete production website.\n\nDaytonGrowthCo.  ${REPLY_TO}  ${PHONE}`;
   }
-  return `Thanks, ${first} — we've got it.\n\nYour request just landed in our inbox. We'll get back to you within 24 hours.\n\nBusiness: ${d.businessName || "-"}\nGoal: ${d.mainGoal || "-"}\nInterested in: ${d.serviceTier || "-"}\n\n— DaytonGrowthCo.  ${REPLY_TO}  ${PHONE}`;
+  return `Thanks, ${first}. We've got it.\n\nYour request just landed in our inbox. We'll get back to you within 24 hours.\n\nBusiness: ${d.businessName || "-"}\nGoal: ${d.mainGoal || "-"}\nInterested in: ${d.serviceTier || "-"}\n\nDaytonGrowthCo.  ${REPLY_TO}  ${PHONE}`;
 }
 
 function ownerText_(d, check) {

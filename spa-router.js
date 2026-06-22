@@ -19,7 +19,7 @@
   }
 
   function forceTopAfterPaintAndImages() {
-    // Synchronous first — runs before browser has a chance to restore scroll
+    // Synchronous first, before the browser has a chance to restore scroll
     scrollTopHard();
 
     requestAnimationFrame(() => {

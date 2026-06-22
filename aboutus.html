@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About DaytonGrowthCo. | Tools and Digital Systems</title>
+    <link rel="icon" href="/favicon.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon.png?v=2">
+    <script src="/legal-overlay.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -49,6 +52,50 @@
                 linear-gradient(180deg, rgba(243, 241, 234, 0.97), rgba(235, 232, 224, 0.97));
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
+        }
+
+        .about-offer-banner {
+            display: flex;
+            min-height: 2.25rem;
+            align-items: center;
+            justify-content: center;
+            gap: 0.85rem;
+            padding: 0.42rem 1.25rem;
+            color: #fff;
+            background: #18174d;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.72rem;
+            text-decoration: none;
+        }
+
+        .about-offer-label {
+            border-radius: 999px;
+            padding: 0.22rem 0.58rem;
+            color: #18174d;
+            background: #f1d0b1;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .about-offer-copy {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .about-offer-copy strong { font-weight: 700; }
+        .about-offer-copy span { color: rgba(255, 255, 255, 0.58); }
+
+        .about-offer-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: #f1d0b1;
+            font-weight: 680;
+            white-space: nowrap;
         }
 
         .about-nav-inner {
@@ -114,7 +161,7 @@
             white-space: nowrap;
         }
 
-        .about-page-intro { padding-top: 8rem; }
+        .about-page-intro { padding-top: 10rem; }
 
         .about-return-link {
             display: inline-flex;
@@ -134,12 +181,6 @@
             background:
                 radial-gradient(circle at 12% 18%, rgba(240, 208, 176, 0.2), transparent 24rem),
                 #f0f0e8;
-        }
-
-        .about-page-intro .about-kicker,
-        .about-mission .about-kicker {
-            color: #716b63 !important;
-            border-color: rgba(24, 32, 24, 0.18) !important;
         }
 
         .about-title-accent { color: #5796C8; }
@@ -231,14 +272,114 @@
             background: #f0d0b0;
         }
 
-        .about-footer { background: #05070c !important; }
-        .about-footer i { color: #d8e8f8 !important; }
-        .about-footer > div:first-child {
-            background: linear-gradient(to right, transparent, rgba(240, 208, 176, 0.34), transparent) !important;
+        .about-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            color: #aab2bd;
+            background: #05070c;
+        }
+
+        .about-footer-grid {
+            display: grid;
+            max-width: 80rem;
+            gap: 2rem;
+            margin-inline: auto;
+            padding: 2.5rem 2rem;
+            font-size: 0.875rem;
+        }
+
+        .about-footer-brand {
+            display: grid;
+            gap: 1rem;
+            max-width: 22rem;
+        }
+
+        .about-footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: #fff;
+            font-family: 'Geist', sans-serif;
+            text-decoration: none;
+        }
+
+        .about-footer-logo img {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .about-footer-brand p {
+            max-width: 20rem;
+            margin: 0;
+            color: #949daa;
+            font-size: 0.86rem;
+            line-height: 1.55;
+        }
+
+        .about-client-portal {
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.5rem 0.82rem;
+            color: rgba(255, 255, 255, 0.78);
+            background: rgba(255, 255, 255, 0.04);
+            font-size: 0.86rem;
+            font-weight: 620;
+            text-decoration: none;
+        }
+
+        .about-social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .about-social-links a {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            padding: 0.45rem 0.7rem;
+            color: rgba(255, 255, 255, 0.78);
+            background: rgba(255, 255, 255, 0.035);
+            font-size: 0.76rem;
+            font-weight: 580;
+            text-decoration: none;
+        }
+
+        .about-footer-links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.64rem;
+        }
+
+        .about-footer-links strong {
+            margin-bottom: 0.28rem;
+            color: #f1d0b1;
+            font-size: 0.82rem;
+            font-weight: 650;
+        }
+
+        .about-footer-links a {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.86rem;
+            font-weight: 520;
+            text-decoration: none;
+        }
+
+        .about-footer a:hover { color: #60a5fa; }
+
+        .about-footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 1rem 1.25rem;
+            color: #778293;
+            font-size: 0.72rem;
+            text-align: center;
         }
 
         @media (min-width: 900px) {
             .about-nav-links { display: flex; }
+            .about-footer-grid { grid-template-columns: 1.2fr 0.8fr 0.8fr; }
         }
 
         @media (max-width: 640px) {
@@ -259,9 +400,34 @@
                 font-weight: 620;
             }
 
-            .about-page-intro { padding-top: 7.25rem; }
+            .about-offer-banner {
+                min-height: 2.5rem;
+                justify-content: space-between;
+                gap: 0.55rem;
+                padding-inline: 0.65rem;
+                font-size: 0.64rem;
+            }
+
+            .about-offer-label,
+            .about-offer-copy span {
+                display: none;
+            }
+
+            .about-offer-copy {
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .about-offer-copy strong {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .about-page-intro { padding-top: 9rem; }
 
             .about-closing-actions a { width: 100%; }
+            .about-footer-grid { padding-inline: 1.25rem; }
         }
     </style>
     <script>
@@ -316,6 +482,17 @@
     </div>
 
     <header class="about-site-header">
+        <a class="about-offer-banner" href="/systems-that-pay/">
+            <span class="about-offer-label">Limited local offer</span>
+            <span class="about-offer-copy">
+                <strong>We’ll redesign your homepage. Free.</strong>
+                <span>Custom concept · No obligation</span>
+            </span>
+            <span class="about-offer-action">
+                Claim free redesign
+                <i data-lucide="arrow-right" class="w-[14px] h-[14px]" stroke-width="2"></i>
+            </span>
+        </a>
         <nav class="about-nav-inner" aria-label="Primary">
             <a href="/" class="about-wordmark" aria-label="DaytonGrowthCo home">
                 <span class="about-wordmark-dayton">Dayton</span><span class="about-wordmark-growth">Growth</span><span class="about-wordmark-co">Co.</span>
@@ -344,7 +521,6 @@
             
             <!-- Tighter Intro -->
             <div class="text-center mb-[60px] lg:mb-[80px] reveal">
-                <span class="about-kicker inline-block pb-1 text-saas-blue text-[13px] font-[600] tracking-micro uppercase mb-4 border-b border-saas-blue/30">Our Story</span>
                 <h1 class="text-[36px] md:text-[52px] font-[800] text-saas-textDark leading-[1.1] tracking-tight mb-5">
                     About <span class="about-title-accent">Us</span>
                 </h1>
@@ -412,7 +588,6 @@
                 
                 <!-- The Mission & Problem -->
                 <div class="reveal">
-                    <span class="about-kicker text-saas-blue font-[700] tracking-micro uppercase text-[12px] mb-3 block">Why We Exist</span>
                     <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">Our Mission</h3>
                     <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
                         To build the digital tools small businesses need for calls, quotes, projects, customers, staff, sales, and internal work.
@@ -442,7 +617,6 @@
 
                 <!-- The Difference -->
                 <div class="reveal delay-200">
-                    <span class="about-kicker text-saas-violet font-[700] tracking-micro uppercase text-[12px] mb-3 block">The Solution</span>
                     <h3 class="text-[28px] font-[700] text-saas-textDark mb-5">What Makes Us Different</h3>
                     <p class="text-[16px] text-saas-textMuted mb-8 leading-[1.6]">
                         We do not stop at websites, ads, or software recommendations. We configure existing tools when they fit and build custom tools when they do not.
@@ -489,85 +663,47 @@
         </div>
     </section>
 
-    <!-- Cinematic Dark Footer -->
-    <footer class="about-footer bg-saas-dark1 pt-[80px] lg:pt-[100px] pb-[32px] lg:pb-[40px] relative overflow-hidden">
-        
-        <!-- Subtle footer glow -->
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[1px] bg-gradient-to-r from-transparent via-saas-blue/30 to-transparent"></div>
-        
-        <div class="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10">
-            
-            <!-- Main Footer Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-[80px] lg:gap-[120px] mb-[48px] reveal">
-                
-                <!-- Left Column (Brand Block) -->
-                <div class="flex flex-col">
-                    <a href="/" class="text-[22px] tracking-tight flex items-center mb-5" style="font-family:'Geist', sans-serif; letter-spacing:-0.01em;">
-                        <span style="color:#ffffff; font-weight:650;">Dayton</span><span style="color:#7f8998; font-weight:450;">Growth</span><span style="color:#5796C8; font-weight:800;">Co.</span>
-                    </a>
-                    <p class="text-[#9CA3AF] text-[15px] md:text-[16px] leading-[1.6]">
-                            Phone agents, quote tools, dashboards, portals, sales materials, and custom apps for small businesses.
-                    </p>
-                </div>
-
-                <!-- Center Column (Contact) -->
-                <div class="flex flex-col">
-                    <span class="uppercase tracking-micro text-[12px] text-[#9CA3AF] font-[600] mb-6 block">Contact</span>
-                    <ul class="space-y-[16px]">
-                        <li>
-                            <a href="mailto:help@daytongrowth.co" class="flex items-center gap-3 group">
-                                <i data-lucide="mail" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
-                                <span class="text-[#D1D5DB] text-[15px] group-hover:text-white transition-colors duration-150 ease-out">help@daytongrowth.co</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="tel:+19373677089" class="flex items-center gap-3 group">
-                                <i data-lucide="phone" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
-                                <span class="text-[#D1D5DB] text-[15px] group-hover:text-white transition-colors duration-150 ease-out">(937) 367-7089</span>
-                            </a>
-                        </li>
-                        <li>
-                            <div class="flex items-center gap-3">
-                                <i data-lucide="map-pin" class="w-[18px] h-[18px] text-[#3B82F6]" stroke-width="1.5"></i>
-                                <span class="text-[#D1D5DB] text-[15px]">Dayton, Ohio</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Right Column (Expertise / Links) -->
-                <div class="flex flex-col">
-                    <span class="uppercase tracking-micro text-[12px] text-[#9CA3AF] font-[600] mb-6 block">Expertise</span>
-                    <ul class="space-y-[14px]">
-                        <li><a href="/#platform" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Phone Agents</a></li>
-                        <li><a href="/#platform" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Quote & Pricing Tools</a></li>
-                        <li><a href="/#platform" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Dashboards & Portals</a></li>
-                        <li><a href="/#platform" class="text-[#D1D5DB] text-[15px] md:text-[16px] hover:text-white transition-colors duration-150 ease-out">Custom Apps</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- Divider & Bottom Bar -->
-            <div class="border-t border-white/[0.06] pt-[32px] md:pt-[40px] flex flex-col md:flex-row justify-between items-center gap-6 reveal delay-100">
-                <!-- Left -->
-                <p class="text-[#6B7280] text-[14px]">&copy; 2026 Dayton Growth Co. All rights reserved.</p>
-                
-                <!-- Right -->
-                <div class="flex flex-wrap justify-center gap-[24px] md:gap-[32px]">
-                    <a href="/terms-of-service/" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Terms</a>
-                    <a href="/privacy-policy/" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Privacy</a>
-                    <a href="/disclaimer/" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Disclaimer</a>
-                    <a href="/accessibility/" class="text-[#6B7280] text-[14px] hover:text-white transition-colors duration-150 ease-out">Accessibility</a>
+    <footer class="about-footer">
+        <div class="about-footer-grid">
+            <div class="about-footer-brand">
+                <a href="/" class="about-footer-logo" aria-label="DaytonGrowthCo home">
+                    <img src="/favicon.png?v=2" alt="" width="32" height="32">
+                    <span class="about-wordmark">
+                        <span style="color:#fff;font-weight:650;">Dayton</span><span style="color:#7f8998;font-weight:450;">Growth</span><span style="color:#5796c8;font-weight:800;">Co.</span>
+                    </span>
+                </a>
+                <p>DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps for small businesses.</p>
+                <a class="about-client-portal" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
+                <div class="about-social-links" aria-label="Social media">
+                    <a href="https://www.linkedin.com/company/daytongrowthco/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="https://www.instagram.com/daytongrowthco/" target="_blank" rel="noopener noreferrer">Instagram</a>
                 </div>
             </div>
-
+            <nav class="about-footer-links" aria-label="Explore">
+                <strong>Explore</strong>
+                <a href="/#platform">What We Build</a>
+                <a href="/#outcomes">Examples</a>
+                <a href="/#workflow">How It Works</a>
+                <a href="/aboutus.html">About Us</a>
+                <a href="/#cta">Start a Conversation</a>
+            </nav>
+            <nav class="about-footer-links" aria-label="Contact and legal">
+                <strong>Contact</strong>
+                <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
+                <a href="tel:+19373677089">(937) 367-7089</a>
+                <a href="/privacy-policy/">Privacy</a>
+                <a href="/terms-of-service/">Terms</a>
+                <a href="/disclaimer/">Disclaimer</a>
+                <a href="/accessibility/">Accessibility</a>
+            </nav>
         </div>
+        <div class="about-footer-bottom">&copy; <span id="about-year">2026</span> DaytonGrowthCo. LLC. All rights reserved.</div>
     </footer>
 
     <!-- Initialize Lucide Icons & Animations -->
     <script>
         lucide.createIcons();
+        document.getElementById('about-year').textContent = new Date().getFullYear();
 
         // Scroll Reveal Logic
         document.addEventListener('DOMContentLoaded', () => {

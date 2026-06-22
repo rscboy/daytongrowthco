@@ -75,7 +75,7 @@ const nhm = new NodeHtmlMarkdown({
 
 async function run() {
   if (!existsSync(dist)) {
-    console.error('[generate-markdown] dist/ not found — run vite build first.');
+    console.error('[generate-markdown] dist/ not found. Run vite build first.');
     process.exit(1);
   }
   await mkdir(outDir, { recursive: true });

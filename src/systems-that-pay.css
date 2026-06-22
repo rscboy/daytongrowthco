@@ -71,15 +71,6 @@ button, input { font: inherit; }
   text-decoration: none;
 }
 
-.eyebrow, .section-kicker {
-  display: block;
-  margin: 0 0 18px;
-  color: var(--indigo);
-  font-size: .69rem;
-  font-weight: 780;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-}
 .primary-cta {
   display: inline-flex;
   align-items: center;
@@ -134,7 +125,6 @@ button, input { font: inherit; }
   letter-spacing: .1em;
   text-transform: uppercase;
 }
-.redesign-copy .section-kicker { color: rgba(255,255,255,.58); }
 .redesign-copy h2 {
   max-width: 720px;
   margin: 0;
@@ -269,7 +259,6 @@ button, input { font: inherit; }
   color: #197449;
   background: #def3e7;
 }
-.redesign-success .section-kicker { margin-bottom: 10px; }
 .redesign-success h3 {
   max-width: 420px;
   margin: 0;
@@ -292,7 +281,6 @@ button, input { font: inherit; }
   background: var(--indigo);
   color: white;
 }
-.thesis .section-kicker, .final .eyebrow { color: var(--peach); }
 .thesis-grid {
   display: grid;
   grid-template-columns: 1.25fr .75fr;
@@ -363,8 +351,7 @@ button, input { font: inherit; }
   background: #eeece5;
   border-block: 1px solid var(--line);
 }
-.section-heading { display: grid; grid-template-columns: 1fr 1.3fr .7fr; gap: 40px; align-items: end; margin-bottom: 60px; }
-.section-heading .section-kicker { align-self: start; }
+.section-heading { display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; align-items: end; margin-bottom: 60px; }
 .section-heading h2 { font-size: clamp(2.8rem, 4.5vw, 4.6rem); }
 .section-heading p { margin: 0; }
 .system-table { border-top: 2px solid var(--ink); }
@@ -410,7 +397,7 @@ button, input { font: inherit; }
 .final { padding: 120px 20px; background: #12131b; color: white; text-align: center; }
 .final-mark { display: grid; width: 58px; height: 58px; margin: 0 auto 28px; place-items: center; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; color: var(--peach); }
 .final h2 { max-width: 900px; margin-inline: auto; }
-.final > p:not(.eyebrow) { max-width: 650px; margin: 25px auto 30px; color: rgba(255,255,255,.68); line-height: 1.7; }
+.final > p { max-width: 650px; margin: 25px auto 30px; color: rgba(255,255,255,.68); line-height: 1.7; }
 .primary-cta.light { border-color: var(--peach); background: var(--peach); color: var(--ink); }
 .primary-cta.light:hover { background: #f7ddc4; }
 
@@ -441,7 +428,6 @@ a:focus-visible, input:focus-visible { outline: 3px solid var(--signal); outline
   .redesign-card { width: min(100% - 16px, 580px); }
   .thesis-grid { grid-template-columns: 1fr; gap: 35px; }
   .section-heading { grid-template-columns: 1fr; gap: 12px; }
-  .section-heading .section-kicker { margin-bottom: 5px; }
   .system-head { display: none; }
   .system-row { grid-template-columns: 1fr 1fr; }
   .system-row h3 { grid-column: 1 / -1; }
