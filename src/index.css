@@ -547,7 +547,7 @@
 
   .hero-section {
     position: relative;
-    min-height: 86svh;
+    min-height: max(92svh, 800px);
     overflow: clip;
     isolation: isolate;
     background: #17110d;
@@ -574,7 +574,7 @@
     position: relative;
     z-index: 2;
     display: flex;
-    min-height: 86svh;
+    min-height: max(92svh, 800px);
     align-items: center;
     padding-bottom: clamp(3.5rem, 7svh, 6rem);
     opacity: 1;

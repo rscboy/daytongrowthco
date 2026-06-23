@@ -1622,8 +1622,8 @@ function Hero() {
             </span>
           </h1>
           <p>
-            Custom software used to mean an agency budget. We build it with AI instead, so you get a tool made for
-            exactly how your business works, at up to 70% less than a traditional build.
+            We build software around the way your business actually works, then use AI to do it for up to 70% less
+            than a custom dev shop would charge.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -3112,6 +3112,7 @@ function EngagementNotes() {
 function HowItWorksFaq() {
   const faqs = [
     ["Do we need custom software?", "Often no. Many problems are solved by setting up or connecting tools you already have. Custom is for the steps where your process is genuinely different."],
+    ["How can custom work be this affordable?", "We build with AI, which removes most of the hours a traditional dev shop would bill for. You get the same custom result for up to 70% less."],
     ["Can you configure existing software?", "Yes. Configuring and connecting trusted tools is frequently the fastest, lowest-risk fix and is where we look first."],
     ["Can we start with one small process?", "Yes. A focused first build is usually the best way to prove value and learn what should come next."],
     ["Do we need to replace our current tools?", "No. We aim to remove the friction around your tools, not force a migration you did not ask for."],
