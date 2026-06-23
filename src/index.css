@@ -7557,8 +7557,8 @@
     font-family: "Geist Variable", sans-serif;
     color: #ffffff;
     font-size: clamp(1.55rem, 5.2vw, 2.1rem);
-    font-weight: 650;
-    letter-spacing: normal;
+    font-weight: 450;
+    letter-spacing: -0.025em;
     line-height: 1;
     white-space: nowrap;
     opacity: 0;
@@ -7582,6 +7582,11 @@
     /* One smooth glide: the letters fade out as the spacing closes
        (DaytonGrowthCo. -> D G C -> DGC) with no intermediate holds. */
     animation: dgc-collapse 1050ms cubic-bezier(0.7, 0, 0.26, 1) 1250ms both;
+  }
+
+  .splash-wordmark .sp-dayton {
+    font-size: 1.08em;
+    font-weight: 650;
   }
 
   .splash-wordmark .sp-growth {

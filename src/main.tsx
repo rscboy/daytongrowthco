@@ -2067,11 +2067,6 @@ function FinalCTA() {
           <p>
             Tell us what comes in, what your team does with it, and what needs to come out.
           </p>
-          <ul className="intake-list" aria-label="What we set up">
-            <li>Map the inputs</li>
-            <li>Define the tool</li>
-            <li>Build the system</li>
-          </ul>
         </div>
         <ProjectForm />
       </div>
@@ -2159,7 +2154,7 @@ function SplashScreen() {
           <img src={logoUrl} alt="" className="splash-logo" />
         </div>
         <div className="splash-wordmark">
-          <span className="sp-ini">D</span><span className="sp-rest">ayton</span><span className="sp-ini sp-growth">G</span><span className="sp-rest sp-growth">rowth</span><span className="sp-ini sp-co">C</span><span className="sp-rest sp-co">o.</span>
+          <span className="sp-ini sp-dayton">D</span><span className="sp-rest sp-dayton">ayton</span><span className="sp-ini sp-growth">G</span><span className="sp-rest sp-growth">rowth</span><span className="sp-ini sp-co">C</span><span className="sp-rest sp-co">o.</span>
         </div>
       </div>
     </div>
