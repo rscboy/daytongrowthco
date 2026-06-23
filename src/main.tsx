@@ -24,7 +24,6 @@ import {
   PanelTop,
   Phone,
   Radar,
-  Route,
   Search,
   ShieldCheck,
   Sparkles,
@@ -106,13 +105,6 @@ const workflowSteps: WorkflowStep[] = [
       { label: "Team", value: "Project created" },
     ],
   },
-];
-
-const buildPrinciples = [
-  "Fix the expensive bottleneck first.",
-  "Use existing software when it fits.",
-  "Build custom only where your process creates an advantage.",
-  "Measure time removed, errors avoided, and capacity recovered.",
 ];
 
 const features = [
@@ -1332,7 +1324,7 @@ const laborMoney = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-function LaborCostCalculator() {
+function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
   const { profile } = usePersonalization();
   const [people, setPeople] = useState(() => teamSizeToCount(profile?.teamSize ?? "") ?? 3);
   const [hours, setHours] = useState(5);
@@ -1350,7 +1342,7 @@ function LaborCostCalculator() {
   }, [hours, people, rate, recovery]);
 
   return (
-    <section className="labor-calculator" aria-labelledby="labor-calculator-title">
+    <section className="labor-calculator" id={sectionId} aria-labelledby="labor-calculator-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="labor-calculator-copy" data-reveal>
           <h2 id="labor-calculator-title">What does the old way cost every year?</h2>
@@ -1774,24 +1766,6 @@ function StickyWorkflow() {
 
   return (
     <section id="workflow" className="workflow-section">
-      <div className="workflow-principles">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
-          <div className="workflow-principles-heading" data-reveal>
-            <h2>Start with the constraint. Not the trend.</h2>
-            <p>
-              The right answer may be existing software, a focused automation, or a custom tool. The economics decide.
-            </p>
-          </div>
-          <ul className="workflow-principles-list" data-reveal>
-            {buildPrinciples.map((principle) => (
-              <li key={principle}>
-                <CheckCircle2 size={18} strokeWidth={2} aria-hidden="true" />
-                <span>{principle}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
       <div className="desktop-workflow">
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
@@ -2887,79 +2861,6 @@ function AdvancedSystemPreview({
   );
 }
 
-function HowWeWorkPreview() {
-  const steps = [
-    {
-      title: "Map",
-      text: "Trace what comes in, who touches it, and where time or information gets lost.",
-      icon: Route,
-    },
-    {
-      title: "Define",
-      text: "Separate what can be configured from what genuinely needs a focused custom tool.",
-      icon: Search,
-    },
-    {
-      title: "Build",
-      text: "Build, connect, and test the system with the people who will use it every day.",
-      icon: Wrench,
-    },
-  ];
-
-  return (
-    <section className="homepage-preview how-preview" id="workflow" aria-labelledby="how-preview-title">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="homepage-preview-heading">
-          <div>
-            <h2 id="how-preview-title">How we work.</h2>
-          </div>
-        </div>
-        <div className="how-preview-process" data-reveal>
-          <div className="how-preview-input" aria-label="Typical starting point">
-            <div>
-              <i>Email</i>
-              <i>Calls</i>
-              <i>PDFs</i>
-              <i>Spreadsheets</i>
-            </div>
-          </div>
-          <ol className="how-preview-steps" data-stagger>
-            {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <li key={step.title}>
-                  <div className="how-preview-step-head">
-                    <span className="how-preview-icon"><Icon size={17} aria-hidden="true" /></span>
-                  </div>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
-                  {index < steps.length - 1 ? (
-                    <span className="how-preview-connector" aria-hidden="true"><ArrowRight size={15} /></span>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ol>
-          <div className="how-preview-output">
-            <div>
-              <strong>One working system</strong>
-            </div>
-            <ul>
-              <li><CheckCircle2 size={14} aria-hidden="true" /> Clear ownership</li>
-              <li><CheckCircle2 size={14} aria-hidden="true" /> Less repeated work</li>
-              <li><CheckCircle2 size={14} aria-hidden="true" /> Visible next actions</li>
-            </ul>
-          </div>
-        </div>
-        <a className="homepage-preview-link" href="/how-it-works/">
-          See the full engagement process
-          <ArrowRight size={15} aria-hidden="true" />
-        </a>
-      </div>
-    </section>
-  );
-}
-
 const serviceDetails = [
   {
     title: "Build your presence",
@@ -3360,7 +3261,7 @@ function Homepage() {
         <WebsiteTransformation />
         <AiVisibility />
         <EconomicCase />
-        <HowWeWorkPreview />
+        <LaborCostCalculator sectionId="workflow" />
         <MetricsStrip />
         <FounderPreview />
         <FinalCTA />

@@ -8755,7 +8755,11 @@
   }
 
   .labor-calculator {
-    padding-block: 2.9rem;
+    padding-block: 2.3rem;
+  }
+
+  .labor-calculator > .mx-auto {
+    gap: 1.5rem;
   }
 
   .labor-calculator-copy h2 {
@@ -8763,7 +8767,13 @@
   }
 
   .labor-calculator-copy > p {
+    margin-top: 0.85rem;
     font-size: 0.86rem;
+  }
+
+  .labor-formula {
+    margin-top: 1rem;
+    padding: 0.8rem 0.9rem;
   }
 
   .labor-console {
@@ -8776,16 +8786,43 @@
   }
 
   .labor-controls {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
+  .labor-controls input {
+    margin-top: 0.55rem;
+  }
+
+  .labor-results {
+    margin-top: 1.3rem;
+  }
+
+  /* Collapse the three tall result cards into compact label/value rows. */
   .labor-results > div {
-    min-height: 6.2rem;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 0;
+    padding: 0.85rem 1rem;
+  }
+
+  .labor-results span {
+    flex: 1;
+  }
+
+  .labor-results strong {
+    font-size: 1.5rem;
+    white-space: nowrap;
   }
 
   .labor-results > div + div {
     border-top: 1px solid rgba(24, 23, 77, 0.16);
     border-left: 0;
+  }
+
+  .labor-disclaimer {
+    margin-top: 0.85rem;
   }
 
   .economic-case {
