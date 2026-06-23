@@ -645,7 +645,7 @@ function PersonalizeInvite() {
             type="submit"
             className={`button button-primary large personalize-submit ${isReady ? "is-ready" : ""}`}
           >
-            {isReady ? "You’re all set — personalize" : "Personalize my visit"}
+            {isReady ? "You’re all set, personalize" : "Personalize my visit"}
             {isReady ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
           </button>
           <button type="button" className="personalize-skip" onClick={dismiss}>
@@ -1501,7 +1501,7 @@ function AiVisibility() {
                     <p className="ai-answer-text">
                       {isPersonal ? (
                         <>
-                          When customers ask for a recommendation, the clear top answer is <mark>{query.biz}</mark> — a
+                          When customers ask for a recommendation, the clear top answer is <mark>{query.biz}</mark>, a
                           trusted business with fast scheduling and upfront pricing.
                         </>
                       ) : (
@@ -1622,8 +1622,8 @@ function Hero() {
             </span>
           </h1>
           <p>
-            Phone agents, quote calculators, dashboards, sales pages, training tools, and custom apps, built around
-            the way your business already works.
+            Custom software used to mean an agency budget. We build it with AI instead, so you get a tool made for
+            exactly how your business works, at up to 70% less than a traditional build.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">

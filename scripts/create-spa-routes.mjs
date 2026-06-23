@@ -9,7 +9,7 @@ const routes = {
   "what-we-build": {
     title: "What We Build | DaytonGrowthCo.",
     description:
-      "From websites and local discovery to phone agents, quote tools, dashboards, and custom apps — see the full range of systems DaytonGrowthCo builds for small and midsized businesses nationwide.",
+      "From websites and local discovery to phone agents, quote tools, dashboards, and custom apps. See the full range of systems DaytonGrowthCo builds for small and midsized businesses nationwide.",
   },
   examples: {
     title: "Examples | DaytonGrowthCo.",
@@ -19,7 +19,7 @@ const routes = {
   "how-it-works": {
     title: "How It Works | DaytonGrowthCo.",
     description:
-      "How DaytonGrowthCo diagnoses a process, measures what the current way costs, and builds the smallest useful fix — principles, engagement steps, and a labor-cost calculator.",
+      "How DaytonGrowthCo diagnoses a process, measures what the current way costs, and builds the smallest useful fix: principles, engagement steps, and a labor-cost calculator.",
   },
 };
 
