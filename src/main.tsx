@@ -7,11 +7,13 @@ import {
   AppWindow,
   ArrowRight,
   Bell,
+  Calculator,
   Calendar,
   CheckCircle2,
   ChevronDown,
   ChevronsLeftRight,
   Database,
+  DoorOpen,
   FileInput,
   FileText,
   Gauge,
@@ -34,7 +36,23 @@ import {
   X,
 } from "lucide-react";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./index.css";
+
+// Register ScrollTrigger once for all scroll-driven sections. Safe in this
+// client-rendered SPA (no SSR), and a no-op if called more than once.
+gsap.registerPlugin(ScrollTrigger);
+
+// The five services, in the order they assemble into a working system in the
+// hero. Icons are Lucide; labels match the language used across the site.
+const heroSystemNodes = [
+  { label: "Phone agents", Icon: Phone },
+  { label: "Quote tools", Icon: Calculator },
+  { label: "Dashboards", Icon: LayoutDashboard },
+  { label: "Portals", Icon: DoorOpen },
+  { label: "Custom apps", Icon: AppWindow },
+] as const;
 
 type WorkflowStep = {
   label: string;
@@ -1564,8 +1582,47 @@ function AiVisibility() {
 function Hero() {
   const reduceMotion = useReducedMotion();
   const mediaRef = useRef<HTMLDivElement>(null);
+  const systemRef = useRef<HTMLUListElement>(null);
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
+
+  // "System builder" motion: the listed services assemble into a connected
+  // row, with thin links drawing between them. Restrained timeline, plays
+  // once after the copy entrance. Reduced motion shows the finished state.
+  // Initial hidden state lives in CSS so there is no flash before this runs.
+  useEffect(() => {
+    const scope = systemRef.current;
+    if (!scope) return;
+    const nodes = scope.querySelectorAll(".hero-system__node");
+    const links = scope.querySelectorAll(".hero-system__link");
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set([nodes, links], { autoAlpha: 1, x: 0, scaleX: 1 });
+          return;
+        }
+        const tl = gsap.timeline({ delay: 0.9, defaults: { ease: "power2.out" } });
+        tl.fromTo(
+          nodes,
+          { autoAlpha: 0, x: -8 },
+          { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.12 },
+        );
+        tl.fromTo(
+          links,
+          { autoAlpha: 0, scaleX: 0 },
+          { autoAlpha: 1, scaleX: 1, transformOrigin: "left center", duration: 0.35, stagger: 0.12 },
+          0.3,
+        );
+      },
+    );
+    return () => mm.revert();
+  }, []);
 
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
@@ -1634,6 +1691,17 @@ function Hero() {
               See the Tools
             </a>
           </div>
+          <ul className="hero-system" ref={systemRef} aria-label="The pieces we assemble into one system">
+            {heroSystemNodes.map(({ label, Icon }, index) => (
+              <li className="hero-system__item" key={label}>
+                {index > 0 ? <span className="hero-system__link" aria-hidden="true" /> : null}
+                <span className="hero-system__node">
+                  <Icon size={15} aria-hidden="true" />
+                  <span>{label}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}

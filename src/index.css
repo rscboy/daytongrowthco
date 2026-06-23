@@ -336,6 +336,74 @@
     color: var(--brand-accent);
   }
 
+  /* Hero "system builder": the five services that assemble into one connected
+     row. Initial hidden state lives here so GSAP has nothing to flash; the
+     reduced-motion fallback reveals everything with no movement. */
+  .hero-system {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 0.45rem;
+    margin-top: 1.9rem;
+    padding: 0;
+    max-width: 41rem;
+    list-style: none;
+  }
+
+  .hero-system__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .hero-system__node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    color: #f3f1ea;
+    font-size: 0.82rem;
+    font-weight: 560;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+  }
+
+  .hero-system__node svg {
+    flex: 0 0 auto;
+    color: #f4d1b1;
+  }
+
+  .hero-system__link {
+    width: 1.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(244, 209, 177, 0.7), rgba(244, 209, 177, 0.12));
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-system__node,
+    .hero-system__link {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-system {
+      gap: 0.5rem 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-system__link {
+      display: none;
+    }
+  }
+
   @media (min-width: 900px) {
     .header-nav,
     .header-phone {
