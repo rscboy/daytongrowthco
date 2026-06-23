@@ -555,7 +555,13 @@ function PersonalizeInvite() {
       /* ignore */
     }
     setOpen(false);
+    // Return the visitor to the top so they see the page re-introduce itself,
+    // now personalized.
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // Everything we ask for is filled in — surface that on the submit button.
+  const isReady = name.trim() !== "" && business.trim() !== "" && teamSize !== "";
 
   // Esc to close; a minimal focus trap keeps tabbing inside the card.
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -643,9 +649,12 @@ function PersonalizeInvite() {
               ))}
             </div>
           </div>
-          <button type="submit" className="button button-primary large personalize-submit">
-            Personalize my visit
-            <ArrowRight size={16} aria-hidden="true" />
+          <button
+            type="submit"
+            className={`button button-primary large personalize-submit ${isReady ? "is-ready" : ""}`}
+          >
+            {isReady ? "You’re all set — personalize" : "Personalize my visit"}
+            {isReady ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
           </button>
           <button type="button" className="personalize-skip" onClick={dismiss}>
             Maybe later
@@ -2731,22 +2740,30 @@ function useScrollProgressFallback() {
   useEffect(() => {
     const bar = document.getElementById("scroll-progress-bar");
     if (!bar) return;
-    // Supporting browsers drive the bar purely in CSS via animation-timeline:
-    // scroll(); only browsers without it need this JS fallback.
-    if (window.CSS?.supports?.("animation-timeline: scroll()")) return;
 
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const ratio = max > 0 ? window.scrollY / max : 0;
+    // Drive the bar with JS on every device rather than the CSS scroll-timeline.
+    // On mobile, the scroll-timeline range shifts as the URL bar shows/hides,
+    // which made the bar visibly regress when scrolling stopped. Recomputing the
+    // real ratio inside requestAnimationFrame keeps it accurate and smooth.
+    const doc = document.documentElement;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      const max = doc.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? doc.scrollTop / max : 0;
       bar.style.transform = `scaleX(${Math.min(1, Math.max(0, ratio))})`;
     };
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(apply);
+    };
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    apply();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      if (raf) window.cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, []);
 }

@@ -1657,39 +1657,11 @@
   }
 
   .site-offer-action svg {
-    animation: offer-arrow-nudge 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     transition: transform 160ms ease;
   }
 
   .site-offer-banner:hover .site-offer-action svg {
-    animation-play-state: paused;
     transform: translateX(3px);
-  }
-
-  @keyframes offer-arrow-nudge {
-    0%,
-    72%,
-    100% {
-      transform: translateX(0);
-    }
-    78% {
-      transform: translateX(4px);
-    }
-    83% {
-      transform: translateX(1px);
-    }
-    88% {
-      transform: translateX(3px);
-    }
-    93% {
-      transform: translateX(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .site-offer-action svg {
-      animation: none;
-    }
   }
 
   .segment-card {
@@ -2745,10 +2717,8 @@
     padding-block: clamp(3.8rem, 6vw, 5.6rem);
     border-bottom: 1px solid #e4e3dd;
     background-color: #f5f3ec;
-    background-image:
-      linear-gradient(rgba(24, 23, 77, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(24, 23, 77, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
+    background-image: radial-gradient(rgba(24, 23, 77, 0.085) 0.9px, transparent 0.9px);
+    background-size: 18px 18px;
   }
 
   .labor-calculator::before {
@@ -3150,10 +3120,8 @@
     border-top: 1px solid rgba(24, 23, 77, 0.1);
     border-bottom: 1px solid rgba(24, 23, 77, 0.1);
     background-color: #f5f3ec;
-    background-image:
-      linear-gradient(rgba(24, 23, 77, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(24, 23, 77, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
+    background-image: radial-gradient(rgba(24, 23, 77, 0.085) 0.9px, transparent 0.9px);
+    background-size: 18px 18px;
   }
 
   .workflow-principles-heading h2 {
@@ -4321,10 +4289,8 @@
     overflow: hidden;
     border-block: 1px solid rgba(16, 16, 72, 0.07);
     background-color: #f7f6f1;
-    background-image:
-      linear-gradient(rgba(16, 16, 72, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(16, 16, 72, 0.045) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image: radial-gradient(rgba(16, 16, 72, 0.08) 0.9px, transparent 0.9px);
+    background-size: 18px 18px;
   }
 
   .platform-section::before {
@@ -4617,10 +4583,8 @@
     padding-block: clamp(2.5rem, 3.5vw, 3.4rem);
     border-block: 1px solid rgba(24, 23, 77, 0.08);
     background-color: #f8f8f5;
-    background-image:
-      linear-gradient(rgba(24, 23, 77, 0.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(24, 23, 77, 0.028) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-image: radial-gradient(rgba(24, 23, 77, 0.06) 0.9px, transparent 0.9px);
+    background-size: 18px 18px;
   }
 
   .outcome-section::before {
@@ -4817,10 +4781,9 @@
     overflow: hidden;
     padding: 0.95rem 1rem;
     background:
-      linear-gradient(rgba(16, 16, 72, 0.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(16, 16, 72, 0.028) 1px, transparent 1px),
+      radial-gradient(rgba(16, 16, 72, 0.05) 0.9px, transparent 0.9px),
       #f4f4f1;
-    background-size: 24px 24px;
+    background-size: 18px 18px;
   }
 
   .phone-agent-screen-bar,
@@ -6340,10 +6303,8 @@
 
   .advanced-preview {
     background-color: #f7f6f1;
-    background-image:
-      linear-gradient(rgba(24, 23, 77, 0.026) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(24, 23, 77, 0.026) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background-image: radial-gradient(rgba(24, 23, 77, 0.06) 0.9px, transparent 0.9px);
+    background-size: 18px 18px;
   }
 
   .how-preview {
@@ -7643,16 +7604,13 @@
     z-index: 9998;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, var(--brand-peach), var(--brand-indigo) 70%, #4f4dad);
+    /* One solid color reads cleaner than a gradient. The bar is driven by JS
+       (requestAnimationFrame) on every device so it tracks the real scroll
+       position and never regresses when the mobile URL bar shows/hides. */
+    background: var(--brand-peach);
     transform: scaleX(0);
     transform-origin: left center;
-  }
-
-  @supports (animation-timeline: scroll()) {
-    #scroll-progress-bar {
-      animation: dgc-scroll-progress linear;
-      animation-timeline: scroll(root block);
-    }
+    will-change: transform;
   }
 
   .scroll-word {
@@ -7843,12 +7801,6 @@
   to {
     opacity: 1;
     transform: translateX(-50%) scaleX(1);
-  }
-}
-
-@keyframes dgc-scroll-progress {
-  to {
-    transform: scaleX(1);
   }
 }
 
@@ -8325,7 +8277,7 @@
   }
 
   .clay-hero-copy .hero-label + h1 {
-    margin-top: 1.05rem;
+    margin-top: 1.55rem;
   }
 
   .hero-audience-line {
@@ -8346,15 +8298,15 @@
   }
 
   .clay-hero-copy p {
-    margin-top: 1.15rem;
+    margin-top: 1.65rem;
     font-size: 0.98rem;
     line-height: 1.46;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .hero-actions {
-    gap: 0.72rem;
-    margin-top: 1.5rem;
+    gap: 0.85rem;
+    margin-top: 1.95rem;
   }
 
   .hero-actions .button {
@@ -10060,6 +10012,26 @@ body.personalize-lock {
   width: 100%;
   justify-content: center;
   margin-top: 0.35rem;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 260ms var(--ease-out-soft),
+    transform 150ms ease;
+}
+
+/* All required fields are in — the button shifts to a confident "go" green. */
+.personalize-submit.is-ready,
+.personalize-submit.is-ready:hover {
+  border-color: #1c7a4f;
+  background: linear-gradient(180deg, #2a9466 0%, #1c7a4f 100%);
+  color: #ffffff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 10px 26px rgba(20, 90, 58, 0.34);
+}
+
+.personalize-submit.is-ready svg {
+  color: #ffffff;
 }
 
 .personalize-skip {
@@ -10169,5 +10141,58 @@ body.personalize-lock {
   .personalize-close:hover,
   .personalize-close:focus-visible {
     transform: none;
+  }
+}
+
+/* ===========================================================================
+   Business-journey cards: slide instead of scroll on tablet/mobile
+   On desktop the four stages read as one connected row. Below 900px, rather
+   than stacking into a tall column the visitor scrolls past, they become a
+   horizontal scroll-snap slider you swipe through — one card at a time with a
+   peek of the next, scrollbar hidden.
+   =========================================================================== */
+@media (max-width: 900px) {
+  .business-journey-grid {
+    display: flex;
+    grid-template-columns: none;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .business-journey-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .business-journey-card {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+    border-right: 1px solid rgba(24, 23, 77, 0.14);
+    border-bottom: 0;
+  }
+
+  .business-journey-card:nth-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .business-journey-card:last-child {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .business-journey-card {
+    flex-basis: 86%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-journey-grid {
+    scroll-behavior: auto;
   }
 }
