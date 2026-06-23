@@ -6,13 +6,15 @@
     <title>About DaytonGrowthCo. | Tools and Digital Systems</title>
     <link rel="icon" href="/favicon.png?v=2" type="image/png">
     <link rel="apple-touch-icon" href="/favicon.png?v=2">
+    <link rel="stylesheet" href="/src/about-shared-fonts.css">
     <script src="/legal-overlay.js" defer></script>
+    <script src="/page-transitions.js?v=3"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&display=swap');
         body {
-            font-family: 'Geist', sans-serif;
+            font-family: ui-sans-serif, system-ui, sans-serif;
             background-color: #F0F0E8;
             overflow-x: hidden;
         }
@@ -74,7 +76,7 @@
             background:
                 linear-gradient(90deg, rgba(241, 208, 177, 0.12), transparent 25%),
                 #18174d;
-            font-family: 'Geist', sans-serif;
+            font-family: ui-sans-serif, system-ui, sans-serif;
             font-size: 0.7rem;
             text-decoration: none;
         }
@@ -109,8 +111,26 @@
             white-space: nowrap;
         }
 
-        .about-offer-action i { transition: transform 160ms ease; }
-        .about-offer-banner:hover .about-offer-action i { transform: translateX(3px); }
+        .about-offer-action i {
+            animation: about-offer-arrow-nudge 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+            transition: transform 160ms ease;
+        }
+        .about-offer-banner:hover .about-offer-action i {
+            animation-play-state: paused;
+            transform: translateX(3px);
+        }
+
+        @keyframes about-offer-arrow-nudge {
+            0%, 72%, 100% { transform: translateX(0); }
+            78% { transform: translateX(4px); }
+            83% { transform: translateX(1px); }
+            88% { transform: translateX(3px); }
+            93% { transform: translateX(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .about-offer-action i { animation: none; }
+        }
 
         .about-nav-inner {
             display: flex;
@@ -128,28 +148,27 @@
             display: inline-flex;
             align-items: baseline;
             color: inherit;
-            font-family: 'Geist', sans-serif;
+            font-family: 'Geist Variable', sans-serif;
             font-size: 1rem;
             letter-spacing: -0.025em;
-            line-height: 1;
             text-decoration: none;
             white-space: nowrap;
         }
 
         .about-wordmark-dayton { color: #182018; font-size: 1.08em; font-weight: 650; }
         .about-wordmark-growth { color: #7a766f; font-weight: 450; }
-        .about-wordmark-co { color: #5796C8; font-weight: 800; }
+        .about-wordmark-co { margin-left: 0.02em; color: #5796C8; font-weight: 800; }
 
         .about-nav-links {
             display: none;
             align-items: center;
             gap: 1.7rem;
-            margin-left: auto;
         }
 
         .about-nav-links a {
             position: relative;
             color: #4a4640;
+            font-family: ui-sans-serif, system-ui, sans-serif;
             font-size: 0.86rem;
             font-weight: 550;
             text-decoration: none;
@@ -170,8 +189,7 @@
         }
 
         .about-nav-links a:hover { color: #1a1a1a; }
-        .about-nav-links a:hover::after,
-        .about-nav-links a[aria-current="page"]::after { transform: scaleX(1); }
+        .about-nav-links a:hover::after { transform: scaleX(1); }
 
         .about-nav-cta {
             display: inline-flex;
@@ -185,6 +203,7 @@
             color: #fff;
             background: #20231f;
             box-shadow: 0 4px 12px rgba(24, 32, 24, 0.12);
+            font-family: ui-sans-serif, system-ui, sans-serif;
             font-size: 0.88rem;
             font-weight: 650;
             line-height: 1;
@@ -341,7 +360,7 @@
             align-items: center;
             gap: 0.65rem;
             color: #fff;
-            font-family: 'Geist', sans-serif;
+            font-family: 'Geist Variable', sans-serif;
             text-decoration: none;
         }
 
@@ -591,7 +610,7 @@
         </a>
         <nav class="about-nav-inner" aria-label="Primary">
             <a href="/" class="about-wordmark" aria-label="DaytonGrowthCo home">
-                <span class="about-wordmark-dayton">Dayton</span><span class="about-wordmark-growth">Growth</span><span class="about-wordmark-co">Co.</span>
+                <span class="about-wordmark-dayton"><span>D</span><span>ayton</span></span><span class="about-wordmark-growth"><span>G</span><span>rowth</span></span><span class="about-wordmark-co"><span>C</span><span>o.</span></span>
             </a>
             <div class="about-nav-links">
                 <a href="/what-we-build/">What We Build</a>

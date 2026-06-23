@@ -1657,11 +1657,39 @@
   }
 
   .site-offer-action svg {
+    animation: offer-arrow-nudge 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     transition: transform 160ms ease;
   }
 
   .site-offer-banner:hover .site-offer-action svg {
+    animation-play-state: paused;
     transform: translateX(3px);
+  }
+
+  @keyframes offer-arrow-nudge {
+    0%,
+    72%,
+    100% {
+      transform: translateX(0);
+    }
+    78% {
+      transform: translateX(4px);
+    }
+    83% {
+      transform: translateX(1px);
+    }
+    88% {
+      transform: translateX(3px);
+    }
+    93% {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-offer-action svg {
+      animation: none;
+    }
   }
 
   .segment-card {
@@ -9833,5 +9861,271 @@
     opacity: 1;
     transform: none;
     filter: none;
+  }
+}
+
+/* ===========================================================================
+   Visitor personalization invite + inline accents
+   =========================================================================== */
+body.personalize-lock {
+  overflow: hidden;
+}
+
+.personalize-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(5, 7, 13, 0.58);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  animation: personalize-fade 320ms ease both;
+}
+
+.personalize-card {
+  position: relative;
+  width: min(30rem, 100%);
+  padding: clamp(1.6rem, 3.4vw, 2.25rem);
+  border: 1px solid rgba(241, 208, 177, 0.16);
+  border-radius: 20px;
+  color: #f7f6f2;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(37, 99, 235, 0.2), transparent 60%),
+    linear-gradient(155deg, rgba(28, 26, 74, 0.97), rgba(12, 13, 36, 0.98));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 80px rgba(0, 0, 6, 0.5);
+  animation: personalize-rise 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.personalize-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: inline-grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(247, 246, 242, 0.78);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease, transform 200ms ease;
+}
+
+.personalize-close:hover,
+.personalize-close:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.personalize-close:focus-visible {
+  outline: 2px solid rgba(241, 208, 177, 0.7);
+  outline-offset: 2px;
+}
+
+.personalize-title {
+  margin-top: 0.1rem;
+  padding-right: 2rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3.4vw, 1.95rem);
+  font-weight: 560;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: #fbfaf7;
+}
+
+.personalize-title span {
+  color: #9db8ff;
+}
+
+.personalize-body {
+  margin-top: 0.6rem;
+  color: #b9c0d2;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.personalize-form {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.35rem;
+}
+
+.personalize-field {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.personalize-field > span {
+  color: #b4bac8;
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.personalize-field input {
+  width: 100%;
+  min-height: 2.8rem;
+  border: 1px solid rgba(222, 225, 239, 0.16);
+  border-radius: 11px;
+  background: rgba(2, 3, 18, 0.34);
+  color: #f7f6f2;
+  font-size: 0.96rem;
+  padding: 0.66rem 0.82rem;
+  outline: none;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.personalize-field input::placeholder {
+  color: rgba(203, 207, 218, 0.5);
+}
+
+.personalize-field input:focus {
+  border-color: rgba(241, 208, 177, 0.72);
+  background: rgba(2, 3, 18, 0.5);
+  box-shadow: 0 0 0 3px rgba(241, 208, 177, 0.13);
+}
+
+.personalize-chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.personalize-chip {
+  padding: 0.55rem 0.3rem;
+  border: 1px solid rgba(222, 225, 239, 0.16);
+  border-radius: 10px;
+  background: rgba(2, 3, 18, 0.28);
+  color: #cdd3e0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.personalize-chip:hover {
+  border-color: rgba(241, 208, 177, 0.5);
+  color: #fff;
+}
+
+.personalize-chip.is-active {
+  border-color: rgba(241, 208, 177, 0.85);
+  background: rgba(241, 208, 177, 0.16);
+  color: #fff;
+}
+
+.personalize-submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.35rem;
+}
+
+.personalize-skip {
+  justify-self: center;
+  border: 0;
+  background: transparent;
+  color: #939bad;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  transition: color 150ms ease;
+}
+
+.personalize-skip:hover {
+  color: #d7dce6;
+}
+
+@media (max-width: 600px) {
+  .personalize-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Inline accents where the visitor's details surface in the page itself. */
+.clay-hero-copy .hero-label .hero-personal {
+  font-style: normal;
+  font-weight: 680;
+  color: #ffffff;
+  padding-bottom: 0.05em;
+  border-bottom: 2px solid rgba(244, 209, 177, 0.55);
+}
+
+/* A quiet inline note — deliberately not a badge or pill. */
+.personalize-note {
+  margin-top: 1.4rem;
+  color: rgba(244, 209, 177, 0.86);
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.personalize-note-reset {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(244, 209, 177, 0.45);
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+.personalize-note-reset:hover,
+.personalize-note-reset:focus-visible {
+  color: #ffffff;
+  text-decoration-color: rgba(255, 255, 255, 0.85);
+  outline: none;
+}
+
+.ai-chip.is-personal {
+  border-color: rgba(244, 209, 177, 0.55);
+}
+
+.ai-chip.is-personal.is-active {
+  background: rgba(244, 209, 177, 0.18);
+}
+
+@keyframes personalize-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes personalize-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .personalize-overlay,
+  .personalize-card {
+    animation: none;
+  }
+
+  .personalize-close:hover,
+  .personalize-close:focus-visible {
+    transform: none;
   }
 }

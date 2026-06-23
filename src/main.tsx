@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
@@ -338,6 +338,326 @@ const toolScenarios = [
 
 // Completes the rotating hero headline: "We build ___."
 const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer portals", "custom apps"];
+
+// ---------------------------------------------------------------------------
+// Visitor personalization
+//
+// A one-time, dismissible invitation collects the visitor's name, business,
+// and team size. Once given, a few naturally occurring spots on the site quietly
+// address the visitor and their business by name (the hero line, the AI-answer
+// demo, and the contact form). It is stored in localStorage so the touch
+// persists across the multi-page site and across return visits.
+// ---------------------------------------------------------------------------
+
+type VisitorProfile = {
+  name: string;
+  business: string;
+  teamSize: string;
+};
+
+const PROFILE_STORAGE_KEY = "dgc:visitor-profile";
+const INVITE_DISMISSED_KEY = "dgc:personalize-dismissed";
+// Per-tab flag (sessionStorage): once the invite has surfaced in a session, a
+// refresh won't re-trigger it. A brand-new session/tab can still show it.
+const INVITE_SESSION_KEY = "dgc:personalize-shown-session";
+
+// Captured at module load, before the splash effect writes its session flag, so
+// we can tell a genuine first visit (the splash will play) from a same-session
+// return (it won't), and time the invitation accordingly.
+const splashSeenAtBoot = (() => {
+  try {
+    return window.sessionStorage.getItem("dgc:splash-seen") === "1";
+  } catch {
+    return false;
+  }
+})();
+
+function readStoredProfile(): VisitorProfile | null {
+  try {
+    const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<VisitorProfile>;
+    const name = typeof parsed.name === "string" ? parsed.name.trim() : "";
+    const business = typeof parsed.business === "string" ? parsed.business.trim() : "";
+    if (!name && !business) return null;
+    return { name, business, teamSize: typeof parsed.teamSize === "string" ? parsed.teamSize : "" };
+  } catch {
+    return null;
+  }
+}
+
+function firstNameOf(name: string) {
+  return name.trim().split(/\s+/)[0] ?? "";
+}
+
+// A representative headcount for each friendly team-size band, used to seed the
+// labor calculator. Conservative and clamped to the slider's 1–20 range.
+function teamSizeToCount(teamSize: string): number | null {
+  switch (teamSize) {
+    case "Just me":
+      return 1;
+    case "2–10":
+      return 5;
+    case "11–50":
+      return 18;
+    case "50+":
+      return 20;
+    default:
+      return null;
+  }
+}
+
+// Turns a business name into a plausible domain for the AI-answer demo.
+function businessToDomain(business: string) {
+  const slug = business.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return `${slug || "yourbusiness"}.com`;
+}
+
+type PersonalizationValue = {
+  profile: VisitorProfile | null;
+  save: (profile: VisitorProfile) => void;
+  clear: () => void;
+};
+
+const PersonalizationContext = React.createContext<PersonalizationValue>({
+  profile: null,
+  save: () => {},
+  clear: () => {},
+});
+
+function usePersonalization() {
+  return useContext(PersonalizationContext);
+}
+
+function PersonalizationProvider({ children }: { children: React.ReactNode }) {
+  const [profile, setProfile] = useState<VisitorProfile | null>(() => readStoredProfile());
+
+  const save = useCallback((next: VisitorProfile) => {
+    setProfile(next);
+    try {
+      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      /* Storage unavailable; the personalization lives for this page view only. */
+    }
+  }, []);
+
+  const clear = useCallback(() => {
+    setProfile(null);
+    try {
+      window.localStorage.removeItem(PROFILE_STORAGE_KEY);
+      window.localStorage.removeItem(INVITE_DISMISSED_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const value = useMemo(() => ({ profile, save, clear }), [profile, save, clear]);
+  return <PersonalizationContext.Provider value={value}>{children}</PersonalizationContext.Provider>;
+}
+
+const teamSizeOptions = ["Just me", "2–10", "11–50", "50+"];
+
+function PersonalizeInvite() {
+  const { profile, save } = usePersonalization();
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [teamSize, setTeamSize] = useState("");
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Decide whether, and when, to surface the invitation.
+  useEffect(() => {
+    if (profile) return; // already personalized — never interrupt
+    let dismissed = false;
+    let shownThisSession = false;
+    try {
+      dismissed = window.localStorage.getItem(INVITE_DISMISSED_KEY) === "1";
+      shownThisSession = window.sessionStorage.getItem(INVITE_SESSION_KEY) === "1";
+    } catch {
+      /* ignore */
+    }
+    // Permanently suppressed (dismissed/submitted) or already seen this session
+    // (so a refresh doesn't bring it back).
+    if (dismissed || shownThisSession) return;
+
+    let timer: number | undefined;
+    const reveal = (delay: number) => {
+      timer = window.setTimeout(() => setOpen(true), delay);
+    };
+
+    // On a genuine first visit, wait for the splash to hand off before opening,
+    // then give the hero a beat to settle. Returning visitors get a shorter wait.
+    if (!splashSeenAtBoot && document.body.classList.contains("splash-lock")) {
+      const observer = new MutationObserver(() => {
+        if (!document.body.classList.contains("splash-lock")) {
+          observer.disconnect();
+          reveal(900);
+        }
+      });
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      const fallback = window.setTimeout(() => {
+        observer.disconnect();
+        reveal(0);
+      }, 4200);
+      return () => {
+        observer.disconnect();
+        window.clearTimeout(fallback);
+        window.clearTimeout(timer);
+      };
+    }
+
+    reveal(splashSeenAtBoot ? 1200 : 3400);
+    return () => window.clearTimeout(timer);
+  }, [profile]);
+
+  // Move focus into the dialog when it opens and lock background scroll.
+  useEffect(() => {
+    if (!open) return;
+    // Remember within the session that the invite has appeared, so a refresh
+    // doesn't surface it again.
+    try {
+      window.sessionStorage.setItem(INVITE_SESSION_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.classList.add("personalize-lock");
+    const focusTimer = window.setTimeout(() => nameInputRef.current?.focus(), 80);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.classList.remove("personalize-lock");
+      previouslyFocused?.focus?.();
+    };
+  }, [open]);
+
+  const dismiss = useCallback(() => {
+    setOpen(false);
+    try {
+      window.localStorage.setItem(INVITE_DISMISSED_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const cleanName = name.trim();
+    const cleanBusiness = business.trim();
+    if (!cleanName && !cleanBusiness) {
+      dismiss();
+      return;
+    }
+    save({ name: cleanName, business: cleanBusiness, teamSize });
+    try {
+      window.localStorage.setItem(INVITE_DISMISSED_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    setOpen(false);
+  };
+
+  // Esc to close; a minimal focus trap keeps tabbing inside the card.
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      dismiss();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusables = cardRef.current?.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (!focusables || focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="personalize-overlay"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) dismiss();
+      }}
+    >
+      <div
+        className="personalize-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="personalizeTitle"
+        aria-describedby="personalizeBody"
+        ref={cardRef}
+        onKeyDown={onKeyDown}
+      >
+        <button type="button" className="personalize-close" aria-label="Close" onClick={dismiss}>
+          <X size={18} aria-hidden="true" />
+        </button>
+        <h2 id="personalizeTitle" className="personalize-title">
+          Let’s make this about <span>your business.</span>
+        </h2>
+        <p id="personalizeBody" className="personalize-body">
+          A more personal visit: tell us who you are and we’ll tailor the page to you as you read. It takes about five
+          seconds, and you can close it anytime.
+        </p>
+        <form className="personalize-form" onSubmit={handleSubmit}>
+          <label className="personalize-field">
+            <span>Your name</span>
+            <input
+              ref={nameInputRef}
+              type="text"
+              value={name}
+              autoComplete="given-name"
+              placeholder="Jane"
+              onChange={(event) => setName(event.target.value)}
+            />
+          </label>
+          <label className="personalize-field">
+            <span>Business name</span>
+            <input
+              type="text"
+              value={business}
+              autoComplete="organization"
+              placeholder="Jane’s Plumbing"
+              onChange={(event) => setBusiness(event.target.value)}
+            />
+          </label>
+          <div className="personalize-field">
+            <span>Team size</span>
+            <div className="personalize-chips" role="group" aria-label="Team size">
+              {teamSizeOptions.map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={`personalize-chip ${teamSize === option ? "is-active" : ""}`}
+                  aria-pressed={teamSize === option}
+                  onClick={() => setTeamSize((prev) => (prev === option ? "" : option))}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+          <button type="submit" className="button button-primary large personalize-submit">
+            Personalize my visit
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+          <button type="button" className="personalize-skip" onClick={dismiss}>
+            Maybe later
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 function InteractiveWordmark() {
   return (
@@ -994,7 +1314,8 @@ const laborMoney = new Intl.NumberFormat("en-US", {
 });
 
 function LaborCostCalculator() {
-  const [people, setPeople] = useState(3);
+  const { profile } = usePersonalization();
+  const [people, setPeople] = useState(() => teamSizeToCount(profile?.teamSize ?? "") ?? 3);
   const [hours, setHours] = useState(5);
   const [rate, setRate] = useState(24);
   const [recovery, setRecovery] = useState(50);
@@ -1073,10 +1394,33 @@ const aiQueries = [
 ];
 
 function AiVisibility() {
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
+  const queries = useMemo(() => {
+    if (!business) return aiQueries;
+    return [
+      {
+        topic: business,
+        q: "Who should I hire for the work you do?",
+        biz: business,
+        domain: businessToDomain(business),
+        personal: true,
+      },
+      ...aiQueries,
+    ];
+  }, [business]);
+
   const [active, setActive] = useState(0);
   const [optimized, setOptimized] = useState(true);
   const reduceMotion = useReducedMotion();
-  const query = aiQueries[active];
+
+  // Keep the visitor's own business in focus whenever personalization changes.
+  useEffect(() => {
+    setActive(0);
+  }, [business]);
+
+  const query = queries[Math.min(active, queries.length - 1)];
+  const isPersonal = "personal" in query && query.personal === true;
 
   return (
     <section className="section-shell ai-section" id="recommendation">
@@ -1094,13 +1438,15 @@ function AiVisibility() {
         <div className="ai-demo" data-reveal>
           <div className="ai-demo-bar">
             <div className="ai-chips" role="tablist" aria-label="Example questions">
-              {aiQueries.map((item, index) => (
+              {queries.map((item, index) => (
                 <button
                   key={item.topic}
                   type="button"
                   role="tab"
                   aria-selected={index === active}
-                  className={`ai-chip ${index === active ? "is-active" : ""}`}
+                  className={`ai-chip ${index === active ? "is-active" : ""} ${
+                    "personal" in item && item.personal ? "is-personal" : ""
+                  }`}
                   onClick={() => setActive(index)}
                 >
                   {item.topic}
@@ -1142,8 +1488,17 @@ function AiVisibility() {
                 {optimized ? (
                   <>
                     <p className="ai-answer-text">
-                      For {query.topic.toLowerCase()} in Dayton, the clear top recommendation is{" "}
-                      <mark>{query.biz}</mark>, a locally trusted business with fast scheduling and upfront pricing.
+                      {isPersonal ? (
+                        <>
+                          When customers ask for a recommendation, the clear top answer is <mark>{query.biz}</mark> — a
+                          trusted business with fast scheduling and upfront pricing.
+                        </>
+                      ) : (
+                        <>
+                          For {query.topic.toLowerCase()} in Dayton, the clear top recommendation is{" "}
+                          <mark>{query.biz}</mark>, a locally trusted business with fast scheduling and upfront pricing.
+                        </>
+                      )}
                     </p>
                     <div className="ai-citation">
                       <span className="ai-rank">#1</span>
@@ -1159,14 +1514,23 @@ function AiVisibility() {
                 ) : (
                   <>
                     <p className="ai-answer-text is-muted">
-                      There are a few {query.topic.toLowerCase()} options around Dayton, but I don’t have clear, current
-                      details to recommend a specific local business.
+                      {isPersonal ? (
+                        <>
+                          There are a few options to consider, but I don’t have clear, current details to put{" "}
+                          {query.biz} forward by name.
+                        </>
+                      ) : (
+                        <>
+                          There are a few {query.topic.toLowerCase()} options around Dayton, but I don’t have clear,
+                          current details to recommend a specific local business.
+                        </>
+                      )}
                     </p>
                     <div className="ai-missing" aria-hidden="true">
                       <span />
                       <span />
                       <span />
-                      <em>Your business isn’t mentioned</em>
+                      <em>{isPersonal ? `${query.biz} isn’t mentioned` : "Your business isn’t mentioned"}</em>
                     </div>
                   </>
                 )}
@@ -1189,6 +1553,8 @@ function AiVisibility() {
 function Hero() {
   const reduceMotion = useReducedMotion();
   const mediaRef = useRef<HTMLDivElement>(null);
+  const { profile, clear } = usePersonalization();
+  const business = profile?.business?.trim();
 
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
@@ -1231,7 +1597,13 @@ function Hero() {
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
         <div className="clay-hero-copy hero-entrance">
-          <span className="hero-label">Remove the manual work slowing down your business.</span>
+          <span className="hero-label">
+            {business ? (
+              <>Remove the manual work slowing down <em className="hero-personal">{business}</em>.</>
+            ) : (
+              "Remove the manual work slowing down your business."
+            )}
+          </span>
           <h1 className="hero-title">
             <span data-scroll-words>We build</span>{" "}
             <span className="hero-audience-line">
@@ -1251,6 +1623,14 @@ function Hero() {
               See the Tools
             </a>
           </div>
+          {business ? (
+            <p className="personalize-note">
+              Tailored for {business}.{" "}
+              <button type="button" className="personalize-note-reset" onClick={clear}>
+                Reset
+              </button>
+            </p>
+          ) : null}
         </div>
         <a className="hero-scroll-cue" href="#platform" aria-label="Continue to what we build">
           <span>Explore</span>
@@ -1960,24 +2340,60 @@ function ToolScenarioDemo() {
 }
 
 function ProjectForm() {
+  const { profile } = usePersonalization();
+
+  // Seed the visible fields from the saved profile, but never overwrite what the
+  // visitor types: once a field has been edited by hand it stops syncing.
+  const [name, setName] = useState(profile?.name ?? "");
+  const [business, setBusiness] = useState(profile?.business ?? "");
+  const nameEdited = useRef(false);
+  const businessEdited = useRef(false);
+
+  useEffect(() => {
+    if (profile?.name && !nameEdited.current) setName(profile.name);
+    if (profile?.business && !businessEdited.current) setBusiness(profile.business);
+  }, [profile]);
+
+  const detailsPlaceholder = business.trim()
+    ? `At ${business.trim()}, we receive X, our team does Y, and we need Z automated.`
+    : "We receive X, our team does Y, and we need Z automated.";
+
   return (
     <div className="form-card">
       <form id="auditForm" method="POST" action={formAction} className="project-form">
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
+        <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
 
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
-          <input id="contactName" name="yourName" type="text" autoComplete="name" placeholder="Jane Smith" required />
+          <input
+            id="contactName"
+            name="yourName"
+            type="text"
+            autoComplete="name"
+            placeholder="Jane Smith"
+            value={name}
+            onChange={(event) => {
+              nameEdited.current = true;
+              setName(event.target.value);
+            }}
+            required
+          />
         </label>
         <label className="form-field" htmlFor="businessName">
-          <span>Business Name</span>
+          <span>Business</span>
           <input
             id="businessName"
             name="businessName"
             type="text"
             autoComplete="organization"
-            placeholder="Acme Co."
+            placeholder="Your business"
+            value={business}
+            onChange={(event) => {
+              businessEdited.current = true;
+              setBusiness(event.target.value);
+            }}
           />
         </label>
         <label className="form-field" htmlFor="email">
@@ -1991,7 +2407,7 @@ function ProjectForm() {
             id="details"
             name="notes"
             rows={5}
-            placeholder="We receive X, our team does Y, and we need Z automated."
+            placeholder={detailsPlaceholder}
             aria-describedby="detailsHelp"
             required
           />
@@ -2036,15 +2452,23 @@ function ProjectForm() {
 }
 
 function FinalCTA() {
+  const { profile } = usePersonalization();
+  const firstName = firstNameOf(profile?.name ?? "");
+  const business = profile?.business?.trim();
   return (
     <section id="cta" className="final-cta">
       <BackgroundVideo className="form-background-video" poster={videos.form.poster} stream={videos.form.stream} />
       <div className="form-video-mask" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
-          <h2>Bring us the process. We’ll build the tool.</h2>
+          <h2>
+            {firstName ? `${firstName}, bring us the process. ` : "Bring us the process. "}
+            We’ll build the tool.
+          </h2>
           <p>
-            Tell us what comes in, what your team does with it, and what needs to come out.
+            {business
+              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out.`
+              : "Tell us what comes in, what your team does with it, and what needs to come out."}
           </p>
         </div>
         <ProjectForm />
@@ -2874,6 +3298,7 @@ function Homepage() {
   return (
     <>
       <SplashScreen />
+      <PersonalizeInvite />
       <div id="scroll-progress-bar" aria-hidden="true" />
       <ScrollDots />
       <Header />
@@ -2981,7 +3406,13 @@ function App() {
   if (path === "/examples") page = <ExamplesPage />;
   if (path === "/how-it-works") page = <HowItWorksPage />;
 
-  return <>{page}<Analytics /><SpeedInsights /></>;
+  return (
+    <PersonalizationProvider>
+      {page}
+      <Analytics />
+      <SpeedInsights />
+    </PersonalizationProvider>
+  );
 }
 
 createRoot(document.getElementById("root")!).render(
