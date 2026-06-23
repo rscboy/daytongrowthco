@@ -1,6 +1,22 @@
 (() => {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  // The brand splash should only play on a genuine first arrival at the
+  // homepage. This script loads on every page (home, SPA routes, and the static
+  // sub-pages), so any non-home view marks the splash as already seen. That way
+  // navigating around the site — or landing on a sub-page first — never causes
+  // the homepage to replay the splash later in the same session. The homepage
+  // itself is left untouched here; its own splash sets the flag after it plays.
+  try {
+    const path = window.location.pathname;
+    const isHome = path === "/" || path === "/index.html";
+    if (!isHome && window.sessionStorage.getItem("dgc:splash-seen") !== "1") {
+      window.sessionStorage.setItem("dgc:splash-seen", "1");
+    }
+  } catch {
+    /* Storage can be unavailable in restrictive browser modes. */
+  }
+
   const style = document.createElement("style");
   style.id = "dgc-page-transitions";
   style.textContent = `

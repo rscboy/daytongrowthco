@@ -601,12 +601,9 @@ function PersonalizeInvite() {
         <button type="button" className="personalize-close" aria-label="Close" onClick={dismiss}>
           <X size={18} aria-hidden="true" />
         </button>
-        <h2 id="personalizeTitle" className="personalize-title">
+        <h2 id="personalizeTitle" className="personalize-title">A more personal visit.</h2>
+        <p id="personalizeBody" className="personalize-lead">
           Let’s make this about <span>your business.</span>
-        </h2>
-        <p id="personalizeBody" className="personalize-body">
-          A more personal visit: tell us who you are and we’ll tailor the page to you as you read. It takes about five
-          seconds, and you can close it anytime.
         </p>
         <form className="personalize-form" onSubmit={handleSubmit}>
           <label className="personalize-field">
@@ -1253,6 +1250,19 @@ function CountUp({
 }
 
 function EconomicCase() {
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
+  // Short doc code from the business initials, e.g. "Watson Roofing" -> "WR".
+  const sheetCode =
+    business
+      ? business
+          .split(/\s+/)
+          .map((word) => word[0])
+          .join("")
+          .toUpperCase()
+          .replace(/[^A-Z]/g, "")
+          .slice(0, 3) || "DGC"
+      : "DGC";
   return (
     <section className="economic-case" id="economic-case" aria-labelledby="economic-case-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -1272,11 +1282,11 @@ function EconomicCase() {
             <div className="homepage-cost-sheet" aria-label="Example annual cost of a manual quoting process">
               <div className="homepage-sheet-top">
                 <span>Process cost sheet</span>
-                <span>DGC / 001</span>
+                <span>{sheetCode} / 001</span>
               </div>
               <div className="homepage-sheet-title">
                 <h3>Example: manual quoting</h3>
-                <p>Conservative operating estimate</p>
+                <p>{business ? `For ${business} · conservative estimate` : "Conservative operating estimate"}</p>
               </div>
               <dl className="homepage-sheet-inputs">
                 <div><dt>3 people</dt><dd>affected</dd></div>
@@ -1669,6 +1679,8 @@ function ServiceModes() {
 }
 
 function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }) {
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
   return (
     <section className="business-journey" id="platform" aria-labelledby="business-journey-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -1677,6 +1689,9 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
             From online presence
             <span>to the systems behind the work.</span>
           </h2>
+          {business ? (
+            <p className="business-journey-personal">A connected path, mapped for {business}.</p>
+          ) : null}
         </div>
 
         <div className="business-journey-grid" aria-label="Four connected stages of the business" data-stagger>
@@ -1846,6 +1861,12 @@ function StickyWorkflow() {
 
 function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
   const isAfter = variant === "after";
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
+  // The "after" mockup is the redesigned site. When we know the visitor's
+  // business, show it there instead of the generic placeholder brand.
+  const afterName = business || "Dayton Service Co.";
+  const afterDomain = business ? businessToDomain(business) : "daytonserviceco.com";
   const serviceCards = isAfter
     ? ["Emergency repairs", "Maintenance plans", "Free estimate"]
     : ["Service one", "Service two", "More"];
@@ -1856,11 +1877,11 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
         <span />
         <span />
         <span />
-        <small>{isAfter ? "daytonserviceco.com" : "old-business-site.net"}</small>
+        <small>{isAfter ? afterDomain : "old-business-site.net"}</small>
       </div>
       <div className="mockup-body">
         <header className="mockup-nav">
-          <strong>{isAfter ? "Dayton Service Co." : "ACME HOME SERVICES"}</strong>
+          <strong>{isAfter ? afterName : "ACME HOME SERVICES"}</strong>
           <nav aria-hidden="true">
             <span>{isAfter ? "Services" : ""}</span>
             <span>{isAfter ? "Reviews" : ""}</span>
@@ -2478,6 +2499,8 @@ function FinalCTA() {
 }
 
 function FounderPreview() {
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
   return (
     <section className="founder-preview" aria-labelledby="founder-preview-title">
       <div className="founder-preview-layout mx-auto max-w-7xl px-5 sm:px-8">
@@ -2496,8 +2519,8 @@ function FounderPreview() {
         <div className="founder-preview-copy">
           <h2 id="founder-preview-title">The person behind the tools.</h2>
           <p>
-            Meet Samuel Caruso, founder of DaytonGrowthCo. He builds practical systems around the way your business
-            already works, so your team can move faster without forcing a new process.
+            Meet Samuel Caruso, founder of DaytonGrowthCo. He builds practical systems around the way{" "}
+            {business || "your business"} already works, so your team can move faster without forcing a new process.
           </p>
           <blockquote>
             “Most businesses don’t need more software. They need tools that fit the process they already trust.”
@@ -3239,6 +3262,8 @@ function PageCTA() {
 
 function SiteFooter() {
   const year = new Date().getFullYear();
+  const { profile, clear } = usePersonalization();
+  const business = profile?.business?.trim();
   return (
     <footer className="site-footer">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
@@ -3271,7 +3296,17 @@ function SiteFooter() {
           <a href="/accessibility/">Accessibility</a>
         </nav>
       </div>
-      <div className="footer-bottom">© {year} DaytonGrowthCo. LLC. All rights reserved.</div>
+      <div className="footer-bottom">
+        <span>© {year} DaytonGrowthCo. LLC. All rights reserved.</span>
+        {business ? (
+          <span className="footer-personalized">
+            Personalized for {business}.{" "}
+            <button type="button" className="footer-reset" onClick={clear}>
+              Reset
+            </button>
+          </span>
+        ) : null}
+      </div>
     </footer>
   );
 }

@@ -1153,13 +1153,13 @@
     display: grid;
     gap: 0.85rem;
     width: min(100%, 54rem);
-    margin: 2rem auto 0;
+    margin: 1.35rem auto 0;
   }
 
   .ai-section {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(4rem, 7vw, 6.5rem);
+    padding-block: clamp(3.2rem, 5.5vw, 5rem);
     color: #fff;
     background: #090a14;
   }
@@ -1198,7 +1198,7 @@
 
   .ai-section .ai-section-heading h2 {
     color: #fff;
-    font-size: clamp(2.5rem, 5vw, 4.6rem);
+    font-size: clamp(2.4rem, 4.4vw, 4rem);
   }
 
   .ai-section .ai-section-heading h2 span {
@@ -2187,7 +2187,7 @@
   .business-journey {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(3.2rem, 4.8vw, 4.4rem);
+    padding-block: clamp(2.6rem, 4vw, 3.6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.1);
     background-color: #f7f6f1;
     background-image: radial-gradient(rgba(24, 23, 77, 0.13) 0.75px, transparent 0.75px);
@@ -2490,7 +2490,7 @@
   .economic-case {
     position: relative;
     overflow: hidden;
-    padding: clamp(5.75rem, 7vw, 6.75rem) 0 clamp(3.5rem, 5vw, 4.75rem);
+    padding: clamp(4rem, 5.5vw, 5rem) 0 clamp(2.75rem, 4vw, 3.75rem);
     color: #ffffff;
     background:
       radial-gradient(circle at 12% 22%, rgba(240, 208, 176, 0.1), transparent 24rem),
@@ -3146,7 +3146,7 @@
 
   .workflow-principles {
     position: relative;
-    padding-block: clamp(3.4rem, 5.2vw, 5rem);
+    padding-block: clamp(2.8rem, 4.2vw, 4rem);
     border-top: 1px solid rgba(24, 23, 77, 0.1);
     border-bottom: 1px solid rgba(24, 23, 77, 0.1);
     background-color: #f5f3ec;
@@ -3298,7 +3298,7 @@
   .transformation-section {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(2.9rem, 4.5vw, 4.6rem);
+    padding-block: clamp(2.4rem, 3.8vw, 3.7rem);
   }
 
   .shader-field {
@@ -7483,12 +7483,41 @@
   }
 
   .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem 1.1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     color: #778293;
     font-size: 0.72rem;
     letter-spacing: 0.01em;
     padding: 1rem 1.25rem;
     text-align: center;
+  }
+
+  .footer-personalized {
+    color: #8b96a6;
+  }
+
+  .footer-reset {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: #b9c2d0;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(185, 194, 208, 0.4);
+    transition: color 150ms ease, text-decoration-color 150ms ease;
+  }
+
+  .footer-reset:hover,
+  .footer-reset:focus-visible {
+    color: #ffffff;
+    text-decoration-color: rgba(255, 255, 255, 0.8);
+    outline: none;
   }
 
   .splash-screen {
@@ -9884,19 +9913,22 @@ body.personalize-lock {
   animation: personalize-fade 320ms ease both;
 }
 
+/* Warm peach card — the same color as the hero "Start Building" button and the
+   hero eyebrow line, so the invite feels like part of the hero, not a bolt-on. */
 .personalize-card {
   position: relative;
   width: min(30rem, 100%);
   padding: clamp(1.6rem, 3.4vw, 2.25rem);
-  border: 1px solid rgba(241, 208, 177, 0.16);
+  border: 1px solid rgba(255, 232, 210, 0.9);
   border-radius: 20px;
-  color: #f7f6f2;
+  color: #2a2520;
   background:
-    radial-gradient(120% 80% at 50% -10%, rgba(37, 99, 235, 0.2), transparent 60%),
-    linear-gradient(155deg, rgba(28, 26, 74, 0.97), rgba(12, 13, 36, 0.98));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 32%),
+    linear-gradient(180deg, #f7dec7 0%, #efcfaf 100%);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 30px 80px rgba(0, 0, 6, 0.5);
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -1px 0 rgba(97, 65, 42, 0.08) inset,
+    0 30px 80px rgba(40, 22, 8, 0.36);
   animation: personalize-rise 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -9910,21 +9942,21 @@ body.personalize-lock {
   place-items: center;
   border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(247, 246, 242, 0.78);
+  background: rgba(31, 33, 31, 0.08);
+  color: rgba(40, 33, 28, 0.72);
   cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease, transform 200ms ease;
 }
 
 .personalize-close:hover,
 .personalize-close:focus-visible {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  background: rgba(31, 33, 31, 0.16);
+  color: #1f211f;
   transform: rotate(90deg);
 }
 
 .personalize-close:focus-visible {
-  outline: 2px solid rgba(241, 208, 177, 0.7);
+  outline: 2px solid rgba(24, 23, 77, 0.5);
   outline-offset: 2px;
 }
 
@@ -9932,28 +9964,30 @@ body.personalize-lock {
   margin-top: 0.1rem;
   padding-right: 2rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.5rem, 3.4vw, 1.95rem);
+  font-size: clamp(1.62rem, 3.6vw, 2.05rem);
   font-weight: 560;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  color: #fbfaf7;
+  line-height: 1.05;
+  letter-spacing: -0.014em;
+  color: #201b16;
 }
 
-.personalize-title span {
-  color: #9db8ff;
+.personalize-lead {
+  margin-top: 0.5rem;
+  color: #6c5a47;
+  font-size: 1.04rem;
+  line-height: 1.4;
+  font-weight: 500;
 }
 
-.personalize-body {
-  margin-top: 0.6rem;
-  color: #b9c0d2;
-  font-size: 0.94rem;
-  line-height: 1.5;
+.personalize-lead span {
+  color: var(--brand-indigo);
+  font-weight: 620;
 }
 
 .personalize-form {
   display: grid;
   gap: 0.85rem;
-  margin-top: 1.35rem;
+  margin-top: 1.4rem;
 }
 
 .personalize-field {
@@ -9963,7 +9997,7 @@ body.personalize-lock {
 }
 
 .personalize-field > span {
-  color: #b4bac8;
+  color: #836b52;
   font-size: 0.62rem;
   font-weight: 760;
   letter-spacing: 0.14em;
@@ -9973,10 +10007,10 @@ body.personalize-lock {
 .personalize-field input {
   width: 100%;
   min-height: 2.8rem;
-  border: 1px solid rgba(222, 225, 239, 0.16);
+  border: 1px solid rgba(120, 90, 60, 0.3);
   border-radius: 11px;
-  background: rgba(2, 3, 18, 0.34);
-  color: #f7f6f2;
+  background: rgba(255, 252, 248, 0.86);
+  color: #211c17;
   font-size: 0.96rem;
   padding: 0.66rem 0.82rem;
   outline: none;
@@ -9984,13 +10018,13 @@ body.personalize-lock {
 }
 
 .personalize-field input::placeholder {
-  color: rgba(203, 207, 218, 0.5);
+  color: rgba(98, 80, 62, 0.5);
 }
 
 .personalize-field input:focus {
-  border-color: rgba(241, 208, 177, 0.72);
-  background: rgba(2, 3, 18, 0.5);
-  box-shadow: 0 0 0 3px rgba(241, 208, 177, 0.13);
+  border-color: var(--brand-indigo);
+  background: #fffdfa;
+  box-shadow: 0 0 0 3px rgba(24, 23, 77, 0.13);
 }
 
 .personalize-chips {
@@ -10001,10 +10035,10 @@ body.personalize-lock {
 
 .personalize-chip {
   padding: 0.55rem 0.3rem;
-  border: 1px solid rgba(222, 225, 239, 0.16);
+  border: 1px solid rgba(120, 90, 60, 0.3);
   border-radius: 10px;
-  background: rgba(2, 3, 18, 0.28);
-  color: #cdd3e0;
+  background: rgba(255, 252, 248, 0.55);
+  color: #4a3f33;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -10012,14 +10046,14 @@ body.personalize-lock {
 }
 
 .personalize-chip:hover {
-  border-color: rgba(241, 208, 177, 0.5);
-  color: #fff;
+  border-color: var(--brand-indigo);
+  color: #1f211f;
 }
 
 .personalize-chip.is-active {
-  border-color: rgba(241, 208, 177, 0.85);
-  background: rgba(241, 208, 177, 0.16);
-  color: #fff;
+  border-color: var(--brand-indigo);
+  background: var(--brand-indigo);
+  color: #ffffff;
 }
 
 .personalize-submit {
@@ -10032,7 +10066,7 @@ body.personalize-lock {
   justify-self: center;
   border: 0;
   background: transparent;
-  color: #939bad;
+  color: #836b52;
   font-size: 0.82rem;
   cursor: pointer;
   padding: 0.3rem 0.6rem;
@@ -10040,7 +10074,7 @@ body.personalize-lock {
 }
 
 .personalize-skip:hover {
-  color: #d7dce6;
+  color: #1f211f;
 }
 
 @media (max-width: 600px) {
@@ -10056,6 +10090,14 @@ body.personalize-lock {
   color: #ffffff;
   padding-bottom: 0.05em;
   border-bottom: 2px solid rgba(244, 209, 177, 0.55);
+}
+
+.business-journey-personal {
+  margin-top: 0.7rem;
+  color: var(--brand-indigo);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-weight: 540;
+  letter-spacing: -0.005em;
 }
 
 /* A quiet inline note — deliberately not a badge or pill. */
