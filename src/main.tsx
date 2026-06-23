@@ -934,7 +934,7 @@ function CountUp({
 
 function EconomicCase() {
   return (
-    <section className="economic-case" aria-labelledby="economic-case-title">
+    <section className="economic-case" id="economic-case" aria-labelledby="economic-case-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="economic-case-grid">
           <div className="economic-case-thesis" data-reveal>
@@ -1084,8 +1084,11 @@ function AiVisibility() {
 
   return (
     <section className="section-shell ai-section" id="recommendation">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-        <div className="section-heading compact-heading" data-reveal>
+      <BackgroundVideo className="ai-section-video" poster={videos.form.poster} stream={videos.form.stream} />
+      <div className="ai-section-video-mask" aria-hidden="true" />
+      <div className="ai-section-inner mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="section-heading ai-section-heading" data-reveal>
+          <span className="ai-section-kicker">Recommendation visibility</span>
           <h2>
             Show up when customers
             <span>ask AI.</span>
@@ -1304,11 +1307,17 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
             From online presence
             <span>to the systems behind the work.</span>
           </h2>
+          <p>Four connected places where better tools remove friction and create room to grow.</p>
+        </div>
+
+        <div className="business-journey-brief" data-reveal>
           <div>
-            <p>
-              We modernize how small businesses get found, schedule customers, quote work, and run projects.
-            </p>
-            <strong>Start anywhere. We focus first on the constraint costing you the most.</strong>
+            <span>What we improve</span>
+            <strong>Discovery, scheduling, quoting, and delivery.</strong>
+          </div>
+          <div>
+            <span>Where we begin</span>
+            <strong>The constraint costing your team the most.</strong>
           </div>
         </div>
 
@@ -1316,7 +1325,7 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
           {businessJourney.map((stage, index) => {
             const Icon = stage.icon;
             return (
-              <article className="business-journey-card" key={stage.title}>
+              <article className="business-journey-card" key={stage.title} tabIndex={0}>
                 <header>
                   <span className="business-journey-number">{stage.number}</span>
                   <span className="business-journey-icon" aria-hidden="true">
@@ -2339,33 +2348,18 @@ const pageCopy = {
   },
 };
 
-const pageHeroTrust = ["Dayton, Ohio", "24-hour response", "No obligation"];
-
 function PageHero({ title, text, kicker }: { title: string; text: string; kicker?: string }) {
   return (
     <section className="page-hero" id="top">
       <div className="page-hero-field" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        {kicker ? (
-          <span className="page-hero-kicker">
-            <Sparkles size={13} aria-hidden="true" />
-            {kicker}
-          </span>
-        ) : null}
+        {kicker ? <span className="page-hero-kicker">{kicker}</span> : null}
         <h1>{title}</h1>
         <p>{text}</p>
         <a className="button button-primary large" href="#cta">
           Start a conversation
           <ArrowRight size={15} aria-hidden="true" />
         </a>
-        <ul className="page-hero-trust" aria-label="Why work with us">
-          {pageHeroTrust.map((item) => (
-            <li key={item}>
-              <CheckCircle2 size={14} aria-hidden="true" />
-              {item}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
@@ -2458,18 +2452,24 @@ function AdvancedSystemPreview({
 function HowWeWorkPreview() {
   const steps = [
     {
+      number: "01",
       title: "Map",
-      text: "Understand what comes in, what the team does, and where time is being lost.",
+      label: "See the real work",
+      text: "Trace what comes in, who touches it, and where time or information gets lost.",
       icon: Route,
     },
     {
+      number: "02",
       title: "Define",
-      text: "Choose the smallest useful fix and decide whether existing software can handle it.",
+      label: "Choose the right fix",
+      text: "Separate what can be configured from what genuinely needs a focused custom tool.",
       icon: Search,
     },
     {
+      number: "03",
       title: "Build",
-      text: "Set up, test, and improve the tool with the people who will use it.",
+      label: "Put it into use",
+      text: "Build, connect, and test the system with the people who will use it every day.",
       icon: Wrench,
     },
   ];
@@ -2478,23 +2478,55 @@ function HowWeWorkPreview() {
     <section className="homepage-preview how-preview" id="workflow" aria-labelledby="how-preview-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="homepage-preview-heading">
-          <h2 id="how-preview-title">How we work.</h2>
-          <p>We map the process, identify the smallest useful fix, and build only where the workflow requires it.</p>
+          <div>
+            <span className="how-preview-kicker">From friction to flow</span>
+            <h2 id="how-preview-title">How we work.</h2>
+          </div>
+          <p>We turn a scattered process into one clear, usable system—without rebuilding more than the work requires.</p>
         </div>
-        <ol className="how-preview-steps" data-stagger>
-          {steps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <li key={step.title}>
-                <span className="how-preview-icon"><Icon size={18} aria-hidden="true" /></span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </li>
-            );
-          })}
-        </ol>
+        <div className="how-preview-process" data-reveal>
+          <div className="how-preview-input" aria-label="Typical starting point">
+            <span>What comes in</span>
+            <div>
+              <i>Email</i>
+              <i>Calls</i>
+              <i>PDFs</i>
+              <i>Spreadsheets</i>
+            </div>
+          </div>
+          <ol className="how-preview-steps" data-stagger>
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <li key={step.title}>
+                  <div className="how-preview-step-head">
+                    <span className="how-preview-icon"><Icon size={17} aria-hidden="true" /></span>
+                    <span className="how-preview-number">{step.number}</span>
+                  </div>
+                  <small>{step.label}</small>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                  {index < steps.length - 1 ? (
+                    <span className="how-preview-connector" aria-hidden="true"><ArrowRight size={15} /></span>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+          <div className="how-preview-output">
+            <div>
+              <span>What comes out</span>
+              <strong>One working system</strong>
+            </div>
+            <ul>
+              <li><CheckCircle2 size={14} aria-hidden="true" /> Clear ownership</li>
+              <li><CheckCircle2 size={14} aria-hidden="true" /> Less repeated work</li>
+              <li><CheckCircle2 size={14} aria-hidden="true" /> Visible next actions</li>
+            </ul>
+          </div>
+        </div>
         <a className="homepage-preview-link" href="/how-it-works/">
-          See how an engagement works
+          See the full engagement process
           <ArrowRight size={15} aria-hidden="true" />
         </a>
       </div>
