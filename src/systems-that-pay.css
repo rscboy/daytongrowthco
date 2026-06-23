@@ -149,20 +149,6 @@ button, input { font: inherit; }
   margin: 0 auto;
   padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(3.5rem, 8vw, 6rem);
 }
-.lp-tag {
-  display: inline-flex;
-  align-items: center;
-  margin-bottom: 1.4rem;
-  padding: 7px 11px;
-  border: 1px solid rgba(24, 23, 77, 0.16);
-  border-radius: 999px;
-  background: var(--peach);
-  color: #4a3a1f;
-  font-size: 0.66rem;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
 .lp-hero-copy h1 {
   max-width: 14ch;
   margin: 0;

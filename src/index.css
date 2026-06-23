@@ -2183,10 +2183,7 @@
   }
 
   .business-journey-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.7fr);
-    gap: clamp(1.5rem, 5vw, 5rem);
-    align-items: end;
+    display: block;
   }
 
   .business-journey-heading h2 {
@@ -2205,48 +2202,6 @@
     margin-left: 0.12em;
     color: #6a665f;
     font-style: italic;
-  }
-
-  .business-journey-heading > p {
-    max-width: 29rem;
-    margin: 0;
-    color: #62616a;
-    font-size: 0.84rem;
-    line-height: 1.55;
-  }
-
-  .business-journey-brief {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: min(100%, 46rem);
-    margin: 1.4rem 0 0 auto;
-    border-block: 1px solid rgba(24, 23, 77, 0.12);
-  }
-
-  .business-journey-brief > div {
-    padding: 0.8rem 1rem;
-  }
-
-  .business-journey-brief > div + div {
-    border-left: 1px solid rgba(24, 23, 77, 0.12);
-  }
-
-  .business-journey-brief span {
-    display: block;
-    color: #77737b;
-    font-size: 0.6rem;
-    font-weight: 760;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .business-journey-brief strong {
-    display: block;
-    margin-top: 0.25rem;
-    color: #292932;
-    font-size: 0.76rem;
-    font-weight: 650;
-    line-height: 1.4;
   }
 
   .business-journey-grid {
@@ -5449,6 +5404,8 @@
     font-weight: 520;
     letter-spacing: -0.04em;
     line-height: 0.96;
+    font-variation-settings: "SOFT" 40, "WONK" 0;
+    font-feature-settings: "liga" 0, "clig" 0;
   }
 
   .transformation-section .section-heading h2 span {
@@ -5614,9 +5571,9 @@
 
   .form-card {
     position: relative;
-    width: min(100%, 32.5rem);
+    width: min(100%, 31.75rem);
     justify-self: end;
-    padding: clamp(1.05rem, 2vw, 1.3rem);
+    padding: clamp(1rem, 1.8vw, 1.2rem);
     border: 1px solid rgba(240, 208, 176, 0.11);
     border-radius: 12px;
     background:
@@ -5629,7 +5586,7 @@
 
   .project-form {
     display: grid;
-    gap: 0.78rem;
+    gap: 0.68rem;
   }
 
   .form-step-heading {
@@ -5682,7 +5639,7 @@
 
   .form-field {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.34rem;
     text-align: left;
   }
 
@@ -5729,7 +5686,7 @@
     font-size: 0.92rem;
     line-height: 1.45;
     outline: none;
-    padding: 0.72rem 0.8rem;
+    padding: 0.64rem 0.76rem;
     transition:
       border-color 160ms ease,
       background-color 160ms ease,
@@ -5743,12 +5700,12 @@
   }
 
   .form-field input {
-    min-height: 2.9rem;
+    min-height: 2.72rem;
   }
 
   .form-field textarea {
     resize: vertical;
-    min-height: 6.4rem;
+    min-height: 5.9rem;
   }
 
   .form-field select {
@@ -5841,9 +5798,9 @@
 
   .form-submit {
     width: 100%;
-    min-height: 3.35rem;
-    margin-top: 0.18rem;
-    border-radius: 10px;
+    min-height: 3rem;
+    margin-top: 0.12rem;
+    border-radius: 9px;
     font-weight: 720;
     letter-spacing: -0.01em;
     transition:
@@ -6195,6 +6152,29 @@
   .founder-preview-link:hover svg,
   .founder-preview-link:focus-visible svg {
     transform: translateX(2px);
+  }
+
+  @media (min-width: 1024px) {
+    .founder-preview {
+      padding-block: clamp(5.5rem, 7vw, 7rem);
+    }
+
+    .founder-preview-layout {
+      gap: clamp(2.25rem, 3.5vw, 3.75rem);
+    }
+
+    .founder-preview-copy {
+      padding-block: 0.65rem;
+    }
+
+    .founder-preview p {
+      margin-top: 1rem;
+    }
+
+    .founder-preview blockquote {
+      margin-top: 1.65rem;
+      padding-block: 0.35rem;
+    }
   }
 
   @keyframes form-submit-spin {
@@ -6563,7 +6543,7 @@
   .how-preview-input {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 1rem;
     padding: 0.2rem 0.35rem 0.9rem;
     border-bottom: 1px solid rgba(24, 23, 77, 0.1);
@@ -6581,7 +6561,8 @@
   .how-preview-input div {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
+    width: 100%;
     gap: 0.4rem;
   }
 
@@ -6629,7 +6610,6 @@
     gap: 1rem;
   }
 
-  .how-preview-number,
   .service-detail-grid article > span,
   .engagement-process li span {
     color: #817c74;
@@ -6650,7 +6630,7 @@
   }
 
   .how-preview-steps h3 {
-    margin: 0.3rem 0 0;
+    margin: 1rem 0 0;
     color: #1e1e24;
     font-family: var(--font-serif);
     font-size: 1.65rem;
@@ -7214,7 +7194,7 @@
     display: block;
     max-width: 22rem;
     margin-top: 0.55rem;
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.84);
     font-size: 0.73rem;
     line-height: 1.5;
     margin-top: 0.4rem;
@@ -7949,14 +7929,6 @@
     max-width: 14ch;
   }
 
-  .business-journey-heading > p {
-    max-width: 38rem;
-  }
-
-  .business-journey-brief {
-    margin-left: 0;
-  }
-
   .business-journey-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -8623,28 +8595,11 @@
     font-size: clamp(2rem, 8.5vw, 2.7rem);
   }
 
-  .business-journey-heading > p {
-    font-size: 0.86rem;
-  }
-
   .business-journey-heading h2 span {
     display: block;
     margin: 0.08em 0 0;
   }
 
-  .business-journey-brief {
-    grid-template-columns: 1fr;
-    margin-top: 1rem;
-  }
-
-  .business-journey-brief > div {
-    padding: 0.7rem 0;
-  }
-
-  .business-journey-brief > div + div {
-    border-top: 1px solid rgba(24, 23, 77, 0.12);
-    border-left: 0;
-  }
 
   .business-journey-grid {
     grid-template-columns: 1fr;

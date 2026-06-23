@@ -946,13 +946,9 @@ function EconomicCase() {
               Skilled time should go toward judgment, customer work, and decisions, not rebuilding the same quote,
               moving the same details, or searching for the same file.
             </p>
-            <blockquote>
-              Old systems do not look expensive because their invoice is hidden in payroll.
-            </blockquote>
           </div>
 
           <div className="homepage-cost-sheet-wrap" data-reveal>
-            <p className="homepage-cost-prompt">What does the old way cost every year?</p>
             <div className="homepage-cost-sheet" aria-label="Example annual cost of a manual quoting process">
               <div className="homepage-sheet-top">
                 <span>Process cost sheet</span>
@@ -1088,7 +1084,6 @@ function AiVisibility() {
       <div className="ai-section-video-mask" aria-hidden="true" />
       <div className="ai-section-inner mx-auto max-w-6xl px-5 sm:px-8">
         <div className="section-heading ai-section-heading" data-reveal>
-          <span className="ai-section-kicker">Recommendation visibility</span>
           <h2>
             Show up when customers
             <span>ask AI.</span>
@@ -1256,11 +1251,6 @@ function Hero() {
               See the Tools
             </a>
           </div>
-          <ul className="hero-services" aria-label="What we set up">
-            <li>Business Tools</li>
-            <li>Sales Materials</li>
-            <li>Custom Workflows</li>
-          </ul>
         </div>
         <a className="hero-scroll-cue" href="#platform" aria-label="Continue to what we build">
           <span>Explore</span>
@@ -1307,18 +1297,6 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
             From online presence
             <span>to the systems behind the work.</span>
           </h2>
-          <p>Four connected places where better tools remove friction and create room to grow.</p>
-        </div>
-
-        <div className="business-journey-brief" data-reveal>
-          <div>
-            <span>What we improve</span>
-            <strong>Discovery, scheduling, quoting, and delivery.</strong>
-          </div>
-          <div>
-            <span>Where we begin</span>
-            <strong>The constraint costing your team the most.</strong>
-          </div>
         </div>
 
         <div className="business-journey-grid" aria-label="Four connected stages of the business" data-stagger>
@@ -1347,10 +1325,6 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
           })}
         </div>
 
-        <p className="business-journey-note">
-          These stages can work independently. When they connect, information moves from the first customer touchpoint
-          into the systems your team uses to deliver the work.
-        </p>
         {showDetailLink ? (
           <a className="section-detail-link" href="/what-we-build/">
             Explore what we build
@@ -1678,11 +1652,6 @@ function WebsiteTransformation({ showDetailLink = true }: { showDetailLink?: boo
               }}
             />
           </div>
-          <div className="transformation-notes">
-            <span>Service pages</span>
-            <span>Quote requests</span>
-            <span>Connected workflow</span>
-          </div>
           {showDetailLink ? (
             <a className="section-detail-link transformation-detail-link" href="/examples/">
               Explore more working examples
@@ -2000,6 +1969,16 @@ function ProjectForm() {
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
           <input id="contactName" name="yourName" type="text" autoComplete="name" placeholder="Jane Smith" required />
+        </label>
+        <label className="form-field" htmlFor="businessName">
+          <span>Business Name</span>
+          <input
+            id="businessName"
+            name="businessName"
+            type="text"
+            autoComplete="organization"
+            placeholder="Acme Co."
+          />
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
@@ -2447,23 +2426,17 @@ function AdvancedSystemPreview({
 function HowWeWorkPreview() {
   const steps = [
     {
-      number: "01",
       title: "Map",
-      label: "See the real work",
       text: "Trace what comes in, who touches it, and where time or information gets lost.",
       icon: Route,
     },
     {
-      number: "02",
       title: "Define",
-      label: "Choose the right fix",
       text: "Separate what can be configured from what genuinely needs a focused custom tool.",
       icon: Search,
     },
     {
-      number: "03",
       title: "Build",
-      label: "Put it into use",
       text: "Build, connect, and test the system with the people who will use it every day.",
       icon: Wrench,
     },
@@ -2474,14 +2447,11 @@ function HowWeWorkPreview() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="homepage-preview-heading">
           <div>
-            <span className="how-preview-kicker">From friction to flow</span>
             <h2 id="how-preview-title">How we work.</h2>
           </div>
-          <p>We turn a scattered process into one clear, usable system—without rebuilding more than the work requires.</p>
         </div>
         <div className="how-preview-process" data-reveal>
           <div className="how-preview-input" aria-label="Typical starting point">
-            <span>What comes in</span>
             <div>
               <i>Email</i>
               <i>Calls</i>
@@ -2496,9 +2466,7 @@ function HowWeWorkPreview() {
                 <li key={step.title}>
                   <div className="how-preview-step-head">
                     <span className="how-preview-icon"><Icon size={17} aria-hidden="true" /></span>
-                    <span className="how-preview-number">{step.number}</span>
                   </div>
-                  <small>{step.label}</small>
                   <h3>{step.title}</h3>
                   <p>{step.text}</p>
                   {index < steps.length - 1 ? (
@@ -2510,7 +2478,6 @@ function HowWeWorkPreview() {
           </ol>
           <div className="how-preview-output">
             <div>
-              <span>What comes out</span>
               <strong>One working system</strong>
             </div>
             <ul>
