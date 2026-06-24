@@ -155,7 +155,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <div id="boot-splash" aria-hidden="true" />
         {children}
         <Script src="/legal-overlay.js" strategy="afterInteractive" />
-        <Script src="/page-transitions.js?v=4" strategy="afterInteractive" />
+        <Script src="/page-transitions.js?v=5" strategy="afterInteractive" />
       </body>
     </html>
   );

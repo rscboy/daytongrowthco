@@ -3,6 +3,11 @@
   let isHome = false;
   let hasFirstHomeSplash = false;
   const nextAppPaths = new Set(["/", "/what-we-build/", "/examples/", "/how-it-works/", "/systems-that-pay/"]);
+  const normalizeAppPath = (pathname) => {
+    if (pathname === "/" || pathname === "/index.html") return "/";
+    return pathname.endsWith("/") ? pathname : `${pathname}/`;
+  };
+  const isNextAppRoute = nextAppPaths.has(normalizeAppPath(window.location.pathname));
 
   // The brand splash should only play on a genuine first arrival at the
   // homepage. This script loads on every page (home, SPA routes, and the static
@@ -74,8 +79,10 @@
   `;
   document.head.appendChild(style);
 
-  document.documentElement.classList.add("dgc-transition-fallback");
-  if (!hasFirstHomeSplash) {
+  if (!isNextAppRoute) {
+    document.documentElement.classList.add("dgc-transition-fallback");
+  }
+  if (!hasFirstHomeSplash && !isNextAppRoute) {
     document.documentElement.classList.add("dgc-page-entering");
   }
 
@@ -85,7 +92,7 @@
     window.clearTimeout(entranceTimer);
     document.documentElement.classList.remove("dgc-page-leaving");
 
-    if (prefersReducedMotion.matches || hasFirstHomeSplash || document.getElementById("boot-splash")) {
+    if (prefersReducedMotion.matches || hasFirstHomeSplash || isNextAppRoute || document.getElementById("boot-splash")) {
       document.documentElement.classList.remove("dgc-page-entering");
       return;
     }
@@ -120,7 +127,7 @@
 
     if (isSameDocument && destination.hash) return;
 
-    if (document.getElementById("boot-splash") && nextAppPaths.has(destination.pathname)) return;
+    if (nextAppPaths.has(normalizeAppPath(destination.pathname))) return;
 
     event.preventDefault();
     window.clearTimeout(entranceTimer);
