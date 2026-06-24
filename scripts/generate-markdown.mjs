@@ -22,7 +22,6 @@ const outDir = resolve(root, 'public', 'md');
 
 // slug -> source HTML file inside the project root.
 const PAGES = {
-  index: 'legacy-html/index.html',
   'website-design': 'legacy-html/website-design/index.html',
   'local-seo': 'legacy-html/local-seo/index.html',
   'website-maintenance': 'legacy-html/website-maintenance/index.html',

@@ -1,54 +1,74 @@
 # DaytonGrowthCo.
 
-> DaytonGrowthCo helps small and midsized businesses across the United States set up cleaner websites, smarter lead capture, booking flows, follow-up tools, and simple lead organization systems without requiring a monthly contract.
+> DaytonGrowthCo builds custom business tools, automations, websites, and digital systems for small and midsized businesses. The company uses AI-assisted development to deliver custom-fit work at a fraction of traditional custom development cost.
+
+Last updated: 2026-06-24
 
 ## Primary Website
 
 - Homepage: https://www.daytongrowth.co/
-- Full demo: https://www.daytongrowth.co/watson-roofing
+- What we build: https://www.daytongrowth.co/what-we-build/
+- Examples: https://www.daytongrowth.co/examples/
+- How it works: https://www.daytongrowth.co/how-it-works/
+- Website design: https://www.daytongrowth.co/website-design/
+- Local SEO: https://www.daytongrowth.co/local-seo/
+- Website maintenance: https://www.daytongrowth.co/website-maintenance/
+- About: https://www.daytongrowth.co/aboutus.html
+- Pricing summary for agents: https://www.daytongrowth.co/pricing.md
 - Contact: help@daytongrowth.co
-- Service area: Dayton, Ohio and the Miami Valley
+
+## Entity Summary
+
+DaytonGrowthCo is a Dayton, Ohio company founded by Samuel Caruso. It serves small and midsized businesses across the United States, including contractors, trades, home-service companies, professional offices, and local service organizations.
 
 ## Core Positioning
 
-DaytonGrowthCo provides one-time website and lead system setup for businesses nationwide. The work focuses on practical systems around a business website: clear calls to action, contact or quote forms, booking links, notifications, auto-responses, simple lead tracking, and follow-up workflows.
+Small businesses often need custom tools, but traditional custom software is priced for larger companies. DaytonGrowthCo starts with the business process, configures existing tools when they fit, and builds custom tools when the workflow needs something specific. AI-assisted development reduces build time and cost without turning the work into a generic template.
 
-## Packages
+## What DaytonGrowthCo Builds
 
-- Website Setup: a mobile-friendly website with clear calls to action, contact or quote form setup, basic local SEO, and launch support.
-- Lead System Setup: improved forms, lead notifications, customer auto-response, booking link setup, simple lead tracking, and full lead-flow testing.
-- Website + Lead System: a website plus the lead capture and follow-up setup needed to keep new inquiries organized.
-
-## Example Tools
-
-- Smart quote request forms
-- Appointment and booking flows
-- Missed-call text-back systems
-- Lead dashboards
-- Customer intake flows
-- Follow-up reminders
-- Estimate portal demos for service businesses that need that style of workflow
+- Phone agents that answer calls, collect details, schedule appointments, and send summaries.
+- Quote calculators, pricing tools, and estimate builders using approved business rules.
+- Project dashboards, staff dashboards, customer portals, and internal workflow tools.
+- Training libraries, SOP portals, sales pages, proposal pages, product visuals, and custom apps.
+- Modern websites, local SEO, answer engine optimization, and campaign pages.
+- Practical automations that reduce repeated entry, missed handoffs, slow quoting, and scattered customer information.
 
 ## Best Fit Customers
 
-- Contractors
-- Roofers
-- Auto shops
-- Law firms
-- Med spas
-- Landscapers
-- Salons
-- Clinics
-- Nonprofits
-- Local service businesses
+- Contractors and trades
+- Roofing, repair, landscaping, and other home-service businesses
+- Professional offices and local service organizations
+- Owner-operated teams that rely on spreadsheets, texts, PDFs, repeated manual entry, or informal handoffs
+- Small and midsized businesses that need custom-fit tools without enterprise custom-development pricing
 
-## Important Concepts
+## Buying and Pricing Notes
 
-- Dayton Ohio website setup
-- Lead capture setup
-- Local business website
-- Booking setup
-- Website forms
-- Customer follow-up
-- Lead organization
-- Google Business Profile cleanup
+- Websites start at $1,500.
+- Custom tools and automations are custom quoted.
+- AI-assisted development can reduce the hours a traditional custom development shop would bill for.
+- DaytonGrowthCo looks first for the smallest useful fix: existing software setup, focused automation, or custom build.
+- A project should have a clear business case based on time saved, errors avoided, capacity recovered, or revenue opportunities protected.
+
+## Important Query Themes
+
+- custom business tools for small businesses
+- AI-assisted custom software for small business
+- phone agents for contractors
+- quote calculator for service businesses
+- estimate builder for contractors
+- project dashboard for small business
+- customer portal for service business
+- website design Dayton Ohio
+- local SEO Dayton Ohio
+- answer engine optimization for small business
+- custom apps for contractors
+- automation for small business workflows
+
+## Structured Data and Crawl Notes
+
+- Canonical sitemap: https://www.daytongrowth.co/sitemap.xml
+- Robots file: https://www.daytongrowth.co/robots.txt
+- Markdown alternates: https://www.daytongrowth.co/md/index.md and related files under /md/
+- Pricing file: https://www.daytongrowth.co/pricing.md
+- Main pages include Organization, WebSite, Service, OfferCatalog, FAQPage, HowTo, CollectionPage, ItemList, and BreadcrumbList structured data where appropriate.

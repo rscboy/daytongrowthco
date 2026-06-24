@@ -19,6 +19,7 @@ const nextConfig = {
       { source: "/custom-systems", destination: "/", permanent: false },
       { source: "/pricing", destination: "/", permanent: false },
       { source: "/about", destination: "/", permanent: false },
+      { source: "/aboutus", destination: "/aboutus.html", permanent: true },
       { source: "/contact", destination: "/#cta", permanent: false },
     ];
   },
@@ -45,9 +46,50 @@ const nextConfig = {
         ],
       },
       {
+        source: "/what-we-build/",
+        headers: [
+          {
+            key: "Link",
+            value: '</md/what-we-build.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain"',
+          },
+        ],
+      },
+      {
+        source: "/examples/",
+        headers: [
+          {
+            key: "Link",
+            value: '</md/examples.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain"',
+          },
+        ],
+      },
+      {
+        source: "/how-it-works/",
+        headers: [
+          {
+            key: "Link",
+            value: '</md/how-it-works.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain"',
+          },
+        ],
+      },
+      {
         source: "/md/(.*)",
         headers: [
           { key: "Content-Type", value: "text/markdown; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=600" },
+        ],
+      },
+      {
+        source: "/pricing.md",
+        headers: [
+          { key: "Content-Type", value: "text/markdown; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=600" },
+        ],
+      },
+      {
+        source: "/llms.txt",
+        headers: [
+          { key: "Content-Type", value: "text/plain; charset=utf-8" },
           { key: "Cache-Control", value: "public, max-age=600" },
         ],
       },

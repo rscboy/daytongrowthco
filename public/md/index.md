@@ -1,33 +1,44 @@
-# DaytonGrowthCo. | Business Tools, Apps, Dashboards & Content
+# DaytonGrowthCo. | Practical Business Tools and Digital Systems
 
-> DaytonGrowthCo builds phone agents, quote calculators, dashboards, customer portals, training libraries, sales pages, videos, visuals, and custom apps.
+> DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, and custom apps for small and midsized businesses.
 
-Tools and digital systems for small businesses
+## We build custom business tools around the way your business actually works.
 
-## We build phone agents, quote tools, dashboards, portals, content, and custom apps.
+DaytonGrowthCo builds software and digital systems for the work small businesses already do: phone calls, quote requests, scheduling, project handoffs, customer updates, files, training, follow-up, and internal operations.
 
-Phone agents, quote calculators, dashboards, training libraries, sales pages, product visuals, and custom apps, all built around the work your business already does.
+The company uses AI-assisted development to reduce the hours a traditional custom development shop would bill for. The goal is custom-fit tools and websites at a price small and midsized businesses can justify.
 
-Small businesses run on calls, texts, spreadsheets, PDFs, notes, photos, and files. DaytonGrowthCo turns those inputs into working tools and digital systems.
+## What DaytonGrowthCo Builds
 
-[Start Building.](mailto:help@daytongrowth.co)
+- Phone agents that answer calls, collect details, schedule appointments, and summarize the request.
+- Quote calculators, estimate builders, and pricing tools based on approved business rules.
+- Project dashboards, staff dashboards, customer portals, training libraries, and internal workflows.
+- Modern websites, service pages, sales pages, local SEO, and answer engine optimization.
+- Sales materials, product visuals, short videos, proposal pages, and custom business apps.
 
-## What we build.
+## How the Work Starts
 
-We build tools and digital systems for calls, quotes, projects, customers, content, and internal work.
+1. Identify the expensive or frustrating bottleneck.
+2. Map what comes in, what the team does today, and what needs to come out.
+3. Estimate the cost of the current process.
+4. Decide whether existing software, a focused automation, or a custom build is the smallest useful fix.
+5. Build, test, and install the system with the team.
 
-- Phone agents, quote calculators, estimate builders, and service pricing tools.
-- Project dashboards, customer portals, staff dashboards, and training libraries.
-- Sales pages, proposal pages, product visuals, short videos, and custom apps.
+## Best Fit Customers
 
-## How DaytonGrowthCo. builds the right tool.
+DaytonGrowthCo works with small and midsized businesses across the United States, including contractors, trades, home-service companies, professional offices, local service businesses, and owner-operated teams.
 
-1. Map: we map the calls, files, data, and steps in the current process.
-2. Define: we define the inputs, screens, connections, and outputs.
-3. Build: we build it, set it up, and keep improving it.
+## Key Pages
 
-[Website Design](/website-design/) [Local SEO](/local-seo/) [Website Maintenance](/website-maintenance/) [About Us](/aboutus.html) [Privacy Policy](/privacy-policy/) [Terms of Service](/terms-of-service/) [Accessibility](/accessibility/)
+- [What We Build](/what-we-build/)
+- [Examples](/examples/)
+- [How It Works](/how-it-works/)
+- [Website Design](/website-design/)
+- [Local SEO](/local-seo/)
+- [Website Maintenance](/website-maintenance/)
+- [About DaytonGrowthCo.](/aboutus.html)
+- [Pricing Summary](/pricing.md)
 
 ---
 
-_Source: https://www.daytongrowth.co/ · Markdown rendering of the HTML page._
+_Source: https://www.daytongrowth.co/ · Markdown summary for search engines and AI agents._

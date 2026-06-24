@@ -6,6 +6,130 @@ import "../src/systems-that-pay.css";
 const siteUrl = "https://www.daytongrowth.co";
 const googleAnalyticsId = "G-5844NWC2PD";
 const clarityProjectId = "wix3m0k0lr";
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
+      "@id": `${siteUrl}/#organization`,
+      name: "DaytonGrowthCo.",
+      url: `${siteUrl}/`,
+      logo: `${siteUrl}/favicon.png?v=2`,
+      image: `${siteUrl}/thumbnail.jpeg`,
+      description:
+        "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, training systems, sales materials, and custom apps for small and midsized businesses.",
+      email: "help@daytongrowth.co",
+      telephone: "+1-937-367-7089",
+      founder: {
+        "@type": "Person",
+        name: "Samuel Caruso",
+      },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Dayton",
+        addressRegion: "OH",
+        addressCountry: "US",
+      },
+      areaServed: [
+        { "@type": "City", name: "Dayton", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "AdministrativeArea", name: "Miami Valley", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "Country", name: "United States" },
+      ],
+      knowsAbout: [
+        "custom business tools for small businesses",
+        "AI-assisted software development",
+        "phone agents for small businesses",
+        "quote calculators",
+        "estimate builders",
+        "project dashboards",
+        "customer portals",
+        "staff dashboards",
+        "training libraries",
+        "custom business apps",
+        "website design",
+        "local SEO",
+        "answer engine optimization",
+      ],
+      slogan: "Custom business tools and digital systems built around the way your business works.",
+      sameAs: [
+        "https://www.linkedin.com/company/daytongrowthco/",
+        "https://www.instagram.com/daytongrowthco/",
+        "https://www.facebook.com/profile.php?id=61582225267724",
+      ],
+      hasOfferCatalog: {
+        "@id": `${siteUrl}/#offer-catalog`,
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: `${siteUrl}/`,
+      name: "DaytonGrowthCo.",
+      publisher: {
+        "@id": `${siteUrl}/#organization`,
+      },
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "Service",
+      "@id": `${siteUrl}/#primary-service`,
+      name: "Custom Business Tools and Digital Systems",
+      serviceType:
+        "AI-assisted custom business tools, phone agents, quote tools, dashboards, customer portals, websites, SEO, and automations",
+      provider: {
+        "@id": `${siteUrl}/#organization`,
+      },
+      areaServed: [
+        { "@type": "City", name: "Dayton", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "Country", name: "United States" },
+      ],
+      audience: {
+        "@type": "BusinessAudience",
+        audienceType:
+          "Small and midsized businesses, contractors, service businesses, professional offices, and owner-operated teams",
+      },
+      description:
+        "DaytonGrowthCo maps a business process, configures existing tools when they fit, and builds custom tools when the workflow needs something specific.",
+      hasOfferCatalog: {
+        "@id": `${siteUrl}/#offer-catalog`,
+      },
+    },
+    {
+      "@type": "OfferCatalog",
+      "@id": `${siteUrl}/#offer-catalog`,
+      name: "DaytonGrowthCo Business Tools and Digital Systems",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          name: "Custom Business Systems",
+          description:
+            "Phone agents, quote calculators, project dashboards, customer portals, staff dashboards, training libraries, and internal workflows.",
+          url: `${siteUrl}/what-we-build/`,
+        },
+        {
+          "@type": "Offer",
+          name: "Website and SEO Setup",
+          description:
+            "Modern websites, service pages, sales pages, technical SEO, local SEO, and answer-engine-ready content for small businesses.",
+          url: `${siteUrl}/website-design/`,
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "1500",
+            description: "Website builds start at $1,500.",
+          },
+        },
+        {
+          "@type": "Offer",
+          name: "AI-Assisted Workflow Automation",
+          description:
+            "Focused automations and custom tools that reduce repeated entry, missed handoffs, slow quoting, and administrative drag.",
+          url: `${siteUrl}/how-it-works/`,
+        },
+      ],
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -88,6 +212,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className="scroll-smooth scroll-pt-24" suppressHydrationWarning>
       <head>
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="alternate" type="text/plain" href="/llms.txt" />
+        <link rel="alternate" type="text/markdown" href="/md/index.md" />
         <script
           id="dgc-boot-splash-state"
           dangerouslySetInnerHTML={{
@@ -155,6 +283,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               }
             `,
           }}
+        />
+        <script
+          id="dgc-site-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
         />
       </head>
       <body>
