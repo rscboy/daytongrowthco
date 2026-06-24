@@ -9,9 +9,12 @@ import {
   Bell,
   Calculator,
   Calendar,
+  Camera,
+  Check,
   CheckCircle2,
   ChevronDown,
   ChevronsLeftRight,
+  ClipboardList,
   Database,
   DoorOpen,
   FileInput,
@@ -23,14 +26,23 @@ import {
   Mail,
   MapPin,
   Megaphone,
+  MessageSquare,
+  MoveRight,
   PanelTop,
   Phone,
+  PhoneCall,
   Radar,
   Search,
+  Send,
   ShieldCheck,
   Sparkles,
+  StickyNote,
+  Table,
+  ToggleRight,
   TrendingDown,
   TrendingUp,
+  User,
+  UserCheck,
   Workflow,
   Wrench,
   X,
@@ -43,7 +55,6 @@ import "./index.css";
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
 // client-rendered SPA (no SSR), and a no-op if called more than once.
 gsap.registerPlugin(ScrollTrigger);
-if (typeof window !== "undefined") (window as unknown as { ScrollTrigger: typeof ScrollTrigger }).ScrollTrigger = ScrollTrigger;
 
 // The five services, in the order they assemble into a working system in the
 // hero. Icons are Lucide; labels match the language used across the site.
@@ -3358,6 +3369,338 @@ function MetricsStrip() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// GSAP motion sections (#2 process map, #3 quote builder, #4 AI workflow,
+// #6 spreadsheet). Each uses gsap.matchMedia() with a reduced-motion branch
+// that sets the finished state, initial hidden state in CSS (no flash), and
+// reverts on unmount. Transforms / opacity only.
+// ---------------------------------------------------------------------------
+
+// #3 Quote Builder Mini Demo. A send-ready estimate assembles on scroll-enter:
+// customer details, then pricing rules toggle on, scope slides in, total counts.
+function QuoteBuilderDemo() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const totalRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const fmt = (n: number) => "$" + Math.round(n).toLocaleString("en-US");
+    const total = totalRef.current;
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".qb-field, .qb-chip, .qb-ready"), { autoAlpha: 1, x: 0, y: 0 });
+          gsap.set(q(".qb-toggle"), { backgroundColor: "#18174d" });
+          gsap.set(q(".qb-toggle i"), { x: 14 });
+          if (total) total.textContent = "$4,850";
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: { trigger: root, start: "top 72%", once: true },
+        });
+        tl.fromTo(q(".qb-field"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.1 });
+        tl.to(q(".qb-toggle"), { backgroundColor: "#18174d", duration: 0.3, stagger: 0.12 }, "+=0.1");
+        tl.to(q(".qb-toggle i"), { x: 14, duration: 0.3, stagger: 0.12 }, "<");
+        tl.fromTo(q(".qb-chip"), { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.1 }, "+=0.1");
+        if (total) {
+          const counter = { v: 0 };
+          tl.to(counter, {
+            v: 4850,
+            duration: 0.7,
+            ease: "power1.out",
+            onUpdate: () => {
+              total.textContent = fmt(counter.v);
+            },
+          }, "+=0.05");
+        }
+        tl.fromTo(q(".qb-ready"), { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.35 }, "-=0.2");
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="qbuilder" aria-labelledby="qbuilder-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Quote builder</p>
+          <h2 id="qbuilder-title">A real quoting tool, not a slideshow.</h2>
+          <p>Here is a send-ready estimate coming together the way the actual tool builds it.</p>
+        </div>
+        <DottedPanel className="qbuilder-stage" label="Preview of a quote builder producing a send-ready estimate">
+          <div className="qbuilder-card">
+            <div className="qbuilder-card__bar">
+              <span>Estimate builder</span>
+              <span className="qbuilder-card__tag">Miller Roofing</span>
+            </div>
+            <div className="qbuilder-card__body">
+              <div className="qb-group">
+                <p className="qb-group__label">Customer details</p>
+                <p className="qb-field"><User size={14} aria-hidden="true" /><span>Miller Roofing</span></p>
+                <p className="qb-field"><MapPin size={14} aria-hidden="true" /><span>1240 Wayne Ave, Dayton</span></p>
+                <p className="qb-field"><FileText size={14} aria-hidden="true" /><span>Roof repair, north slope</span></p>
+              </div>
+              <div className="qb-group">
+                <p className="qb-group__label">Pricing rules</p>
+                <p className="qb-rule"><span>Labor rate</span><span className="qb-toggle"><i /></span></p>
+                <p className="qb-rule"><span>Materials markup</span><span className="qb-toggle"><i /></span></p>
+              </div>
+              <div className="qb-group">
+                <p className="qb-group__label">Scope</p>
+                <span className="qb-chip">Tear-off</span>
+                <span className="qb-chip">Underlayment</span>
+                <span className="qb-chip">Cleanup + haul</span>
+              </div>
+            </div>
+            <div className="qbuilder-card__foot">
+              <span className="qb-total">Estimate <strong ref={totalRef}>$0</strong></span>
+              <span className="qb-ready"><Check size={14} aria-hidden="true" />Ready to send</span>
+            </div>
+          </div>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
+// #4 AI Workflow Reveal. Practical AI in the operating layer: a five-stage
+// path revealed in sequence on scroll, with a human-review step in the middle.
+const aiWorkflowStages = [
+  { Icon: PhoneCall, label: "Incoming call", body: "“Roof leak over the garage, wants a quote this week.”" },
+  { Icon: ClipboardList, label: "Extracted details", body: "Name, address, job type, and urgency, pulled from the call." },
+  { Icon: Calculator, label: "Suggested scope", body: "A draft estimate scope, based on your pricing rules." },
+  { Icon: UserCheck, label: "Human review", body: "Your estimator checks the scope and adjusts before anything is sent." },
+  { Icon: Send, label: "Customer update", body: "The approved quote goes out, and the job is logged." },
+] as const;
+
+function AiWorkflowReveal() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".aiflow-stage, .aiflow-arrow"), { autoAlpha: 1, y: 0, scale: 1 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: { trigger: root, start: "top 70%", once: true },
+        });
+        tl.fromTo(q(".aiflow-stage"), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.16 });
+        tl.fromTo(q(".aiflow-arrow"), { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.3, stagger: 0.16 }, 0.25);
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="aiflow" aria-labelledby="aiflow-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">AI in the operating layer</p>
+          <h2 id="aiflow-title">AI handles the first draft. A person signs off.</h2>
+          <p>Where AI is useful is the busywork before a decision, not the decision itself.</p>
+        </div>
+        <ol className="aiflow-track">
+          {aiWorkflowStages.map(({ Icon, label, body }, index) => (
+            <li className="aiflow-item" key={label}>
+              {index > 0 ? <MoveRight className="aiflow-arrow" size={18} aria-hidden="true" /> : null}
+              <div className={`aiflow-stage${label === "Human review" ? " aiflow-stage--human" : ""}`}>
+                <span className="aiflow-stage__head"><Icon size={16} aria-hidden="true" />{label}</span>
+                <p>{body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+// #2 Interactive Process Map. Scattered real-world inputs snap into one clean
+// system flow on click. Treated as a quiet architecture diagram.
+const processInputs = [
+  { Icon: Phone, label: "Calls", scatter: { x: -120, y: -36, rotate: -7 } },
+  { Icon: MessageSquare, label: "Texts", scatter: { x: 130, y: -52, rotate: 6 } },
+  { Icon: FileText, label: "PDFs", scatter: { x: -170, y: 30, rotate: 4 } },
+  { Icon: StickyNote, label: "Notes", scatter: { x: 60, y: 44, rotate: -5 } },
+  { Icon: Camera, label: "Photos", scatter: { x: 180, y: 26, rotate: 8 } },
+  { Icon: Table, label: "Spreadsheets", scatter: { x: -40, y: -64, rotate: 5 } },
+] as const;
+
+function ProcessMap() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const reducedRef = useRef(false);
+  const [organized, setOrganized] = useState(false);
+
+  const scatterFor = (node: HTMLElement) =>
+    JSON.parse(node.dataset.scatter || "{}") as { x: number; y: number; rotate: number };
+
+  // Set the resting (scattered) state once. Reduced motion shows the organized
+  // result immediately with no scatter and no motion.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const nodes = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".pmap-node"));
+    const result = root.querySelector(".pmap-result");
+    if (reducedRef.current) {
+      gsap.set(nodes, { x: 0, y: 0, rotate: 0, autoAlpha: 1 });
+      gsap.set(result, { autoAlpha: 1 });
+      setOrganized(true);
+      return;
+    }
+    nodes.forEach((node) => gsap.set(node, { ...scatterFor(node), autoAlpha: 1 }));
+    gsap.set(result, { autoAlpha: 0 });
+  }, []);
+
+  // Animate between scattered and organized on toggle. Tweens are killed (not
+  // reverted) on change/unmount so positions never snap back unexpectedly.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || reducedRef.current) return;
+    const nodes = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".pmap-node"));
+    const result = root.querySelector(".pmap-result");
+    const tweens: gsap.core.Tween[] = [];
+    if (organized) {
+      tweens.push(gsap.to(nodes, { x: 0, y: 0, rotate: 0, duration: 0.6, ease: "power3.inOut", stagger: 0.06, overwrite: true }));
+      tweens.push(gsap.to(result, { autoAlpha: 1, duration: 0.4, delay: 0.2, overwrite: true }));
+    } else {
+      nodes.forEach((node) =>
+        tweens.push(gsap.to(node, { ...scatterFor(node), duration: 0.6, ease: "power3.inOut", overwrite: true })),
+      );
+      tweens.push(gsap.to(result, { autoAlpha: 0, duration: 0.3, overwrite: true }));
+    }
+    return () => tweens.forEach((t) => t.kill());
+  }, [organized]);
+
+  const toggle = () => setOrganized((v) => !v);
+
+  return (
+    <section className="pmap" aria-labelledby="pmap-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Process map</p>
+          <h2 id="pmap-title">The mess is the input, not the problem.</h2>
+          <p>Every business runs on scattered inputs. We map them into one system on purpose.</p>
+          <button type="button" className="pmap-button" onClick={toggle} aria-pressed={organized}>
+            {organized ? "Scatter the inputs" : "Snap into a system"}
+          </button>
+        </div>
+        <DottedPanel className="pmap-stage" label="Scattered business inputs organizing into one system">
+          <div className="pmap-grid">
+            {processInputs.map(({ Icon, label, scatter }) => (
+              <span className="pmap-node" key={label} data-scatter={JSON.stringify(scatter)}>
+                <Icon size={16} aria-hidden="true" />
+                {label}
+              </span>
+            ))}
+          </div>
+          <p className="pmap-result"><Workflow size={15} aria-hidden="true" />One system your team actually uses</p>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
+// #6 Spreadsheet Confessional. A scroll-scrubbed transform from the spreadsheet
+// everyone secretly keeps into a clean internal tool. Deadpan, painfully familiar.
+const messyRows = ["customer_notes_v7", "maybe_final_price", "ask_owner", "???", "FINAL_final_v3"];
+const cleanRows = [
+  { field: "Customer note", value: "Linked to job" },
+  { field: "Price", value: "From pricing rules" },
+  { field: "Approval", value: "Owner sign-off built in" },
+  { field: "Status", value: "Tracked, not guessed" },
+  { field: "Version", value: "One source of truth" },
+];
+
+function SpreadsheetConfessional() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".sconf-messy"), { autoAlpha: 0 });
+          gsap.set(q(".sconf-clean"), { autoAlpha: 1, y: 0 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root, start: "top 75%", end: "top 28%", scrub: 0.5 },
+        });
+        tl.to(q(".sconf-messy"), { autoAlpha: 0, stagger: 0.05 });
+        tl.fromTo(
+          q(".sconf-clean"),
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, stagger: 0.05 },
+          0.2,
+        );
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="sconf" aria-labelledby="sconf-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Before and after</p>
+          <h2 id="sconf-title">Every business has this spreadsheet.</h2>
+          <p>The one with the columns nobody can explain. Scroll to retire it.</p>
+        </div>
+        <DottedPanel className="sconf-stage" label="A messy spreadsheet resolving into a clean internal tool">
+          <div className="sconf-sheet">
+            <div className="sconf-sheet__bar"><Table size={14} aria-hidden="true" />jobs_final.xlsx</div>
+            <div className="sconf-rows">
+              {messyRows.map((row, i) => (
+                <div className="sconf-row" key={row}>
+                  <span className="sconf-cell sconf-messy">{row}</span>
+                  <span className="sconf-cell sconf-clean">
+                    <span className="sconf-field">{cleanRows[i].field}</span>
+                    <span className="sconf-value">{cleanRows[i].value}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
 function Homepage() {
   return (
     <>
@@ -3369,9 +3712,11 @@ function Homepage() {
       <main>
         <Hero />
         <BusinessJourney />
+        <ProcessMap />
         <WebsiteTransformation />
         <AiVisibility />
         <EconomicCase />
+        <SpreadsheetConfessional />
         <LaborCostCalculator sectionId="workflow" />
         <MetricsStrip />
         <FounderPreview />
@@ -3392,6 +3737,8 @@ function WhatWeBuildPage() {
         <BusinessJourney showDetailLink={false} />
         <ServiceArchitecture />
         <FeatureGrid />
+        <QuoteBuilderDemo />
+        <AiWorkflowReveal />
         <ConnectedSystem />
         <PageCTA />
       </main>
