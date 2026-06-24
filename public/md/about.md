@@ -63,7 +63,7 @@ Rooted in Dayton and serving businesses nationwide, DaytonGrowthCo builds phone 
 
 **Explore** [What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About Us](/aboutus.html) [Start a Conversation](/#cta)
 
-**Contact** [help@daytongrowth.co](mailto:help@daytongrowth.co) [(937) 367-7089](tel:+19373677089) [Privacy](/privacy-policy/) [Terms](/terms-of-service/) [Disclaimer](/disclaimer/) [Accessibility](/accessibility/)
+**Contact** [help@daytongrowth.co](mailto:help@daytongrowth.co) [Privacy](/privacy-policy/) [Terms](/terms-of-service/) [Disclaimer](/disclaimer/) [Accessibility](/accessibility/)
 
 © DaytonGrowthCo. LLC. All rights reserved.
 
