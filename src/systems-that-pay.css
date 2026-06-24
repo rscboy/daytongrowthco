@@ -20,7 +20,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
+body:has(.systems-that-pay-page) {
   margin: 0;
   color: var(--ink);
   background: var(--paper);

@@ -1,5 +1,6 @@
+"use client";
+
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -7,11 +8,16 @@ import {
   AppWindow,
   ArrowRight,
   Bell,
+  Calculator,
   Calendar,
+  Camera,
+  Check,
   CheckCircle2,
   ChevronDown,
   ChevronsLeftRight,
+  ClipboardList,
   Database,
+  DoorOpen,
   FileInput,
   FileText,
   Gauge,
@@ -21,20 +27,46 @@ import {
   Mail,
   MapPin,
   Megaphone,
+  MessageSquare,
+  MoveRight,
   PanelTop,
   Phone,
+  PhoneCall,
   Radar,
   Search,
+  Send,
   ShieldCheck,
   Sparkles,
+  StickyNote,
+  Table,
+  ToggleRight,
   TrendingDown,
   TrendingUp,
+  User,
+  UserCheck,
   Workflow,
   Wrench,
   X,
 } from "lucide-react";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type * as ThreeNS from "three";
 import "./index.css";
+
+// Register ScrollTrigger once for all scroll-driven sections. Safe in this
+// client-rendered SPA (no SSR), and a no-op if called more than once.
+gsap.registerPlugin(ScrollTrigger);
+
+// The five services, in the order they assemble into a working system in the
+// hero. Icons are Lucide; labels match the language used across the site.
+const heroSystemNodes = [
+  { label: "Phone agents", Icon: Phone },
+  { label: "Quote tools", Icon: Calculator },
+  { label: "Dashboards", Icon: LayoutDashboard },
+  { label: "Portals", Icon: DoorOpen },
+  { label: "Custom apps", Icon: AppWindow },
+] as const;
 
 type WorkflowStep = {
   label: string;
@@ -65,26 +97,40 @@ const segments = [
 const workflowSteps: WorkflowStep[] = [
   {
     label: "Inputs",
-    title: "Calls, notes, photos, and pricing.",
-    description: "Show us what comes in and what your team does with it.",
+    title: "Calls, photos, and texts come in.",
+    description: "Show us what arrives and what your team does with it by hand.",
     status: "Inputs mapped",
     output: "Working specification",
-    progress: "34%",
+    progress: "20%",
     stage: "Mapped",
     rows: [
       { label: "Incoming", value: "Calls + photos" },
-      { label: "Reference", value: "Price sheet" },
+      { label: "Channel", value: "Texts + email" },
       { label: "Current file", value: "jobs.xlsx" },
     ],
   },
   {
-    label: "Tool",
+    label: "Price sheet",
+    title: "The pricing your team already uses.",
+    description: "We load your real rates, materials, and markups as rules.",
+    status: "Pricing loaded",
+    output: "Pricing rules",
+    progress: "40%",
+    stage: "Loaded",
+    rows: [
+      { label: "Source", value: "Price sheet", tone: "accent" },
+      { label: "Labor", value: "Hourly + crew" },
+      { label: "Materials", value: "Cost + markup" },
+    ],
+  },
+  {
+    label: "Quote builder",
     title: "A quote builder for the estimator.",
-    description: "We define the screens, pricing rules, and connections.",
+    description: "We build the screen, the pricing rules, and the connections.",
     status: "Tool specified",
     output: "Quote builder",
-    progress: "68%",
-    stage: "Defined",
+    progress: "60%",
+    stage: "Built",
     rows: [
       { label: "Screen", value: "Estimate builder", tone: "accent" },
       { label: "Rules", value: "Labor + materials" },
@@ -92,17 +138,31 @@ const workflowSteps: WorkflowStep[] = [
     ],
   },
   {
-    label: "Output",
-    title: "An estimate that is ready to send.",
-    description: "The tool produces the document, update, or next step your team needs.",
-    status: "Output ready",
-    output: "Shareable estimate",
-    progress: "100%",
-    stage: "Live",
+    label: "Proposal",
+    title: "A proposal the customer can read.",
+    description: "The tool turns the estimate into a page they can review and approve.",
+    status: "Proposal ready",
+    output: "Proposal page",
+    progress: "80%",
+    stage: "Sent",
     rows: [
       { label: "Format", value: "Proposal page", tone: "success" },
       { label: "Customer", value: "Review + approve" },
-      { label: "Team", value: "Project created" },
+      { label: "Delivery", value: "One link" },
+    ],
+  },
+  {
+    label: "Project",
+    title: "Approved work becomes a project.",
+    description: "An approval creates the job, with the details already in place.",
+    status: "Project created",
+    output: "Live project",
+    progress: "100%",
+    stage: "Live",
+    rows: [
+      { label: "Trigger", value: "Approval", tone: "success" },
+      { label: "Created", value: "Project record" },
+      { label: "Team", value: "Knows next step" },
     ],
   },
 ];
@@ -357,6 +417,7 @@ const INVITE_SESSION_KEY = "dgc:personalize-shown-session";
 // we can tell a genuine first visit (the splash will play) from a same-session
 // return (it won't), and time the invitation accordingly.
 const splashSeenAtBoot = (() => {
+  if (typeof window === "undefined") return false;
   try {
     return window.sessionStorage.getItem("dgc:splash-seen") === "1";
   } catch {
@@ -365,6 +426,7 @@ const splashSeenAtBoot = (() => {
 })();
 
 function readStoredProfile(): VisitorProfile | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return null;
@@ -675,9 +737,10 @@ function InteractiveWordmark() {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const isHome = window.location.pathname === "/";
+  const [isHome, setIsHome] = useState(true);
 
   useEffect(() => {
+    setIsHome(window.location.pathname === "/");
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
     };
@@ -1564,8 +1627,47 @@ function AiVisibility() {
 function Hero() {
   const reduceMotion = useReducedMotion();
   const mediaRef = useRef<HTMLDivElement>(null);
+  const systemRef = useRef<HTMLUListElement>(null);
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
+
+  // "System builder" motion: the listed services assemble into a connected
+  // row, with thin links drawing between them. Restrained timeline, plays
+  // once after the copy entrance. Reduced motion shows the finished state.
+  // Initial hidden state lives in CSS so there is no flash before this runs.
+  useEffect(() => {
+    const scope = systemRef.current;
+    if (!scope) return;
+    const nodes = scope.querySelectorAll(".hero-system__node");
+    const links = scope.querySelectorAll(".hero-system__link");
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set([nodes, links], { autoAlpha: 1, x: 0, scaleX: 1 });
+          return;
+        }
+        const tl = gsap.timeline({ delay: 0.9, defaults: { ease: "power2.out" } });
+        tl.fromTo(
+          nodes,
+          { autoAlpha: 0, x: -8 },
+          { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.12 },
+        );
+        tl.fromTo(
+          links,
+          { autoAlpha: 0, scaleX: 0 },
+          { autoAlpha: 1, scaleX: 1, transformOrigin: "left center", duration: 0.35, stagger: 0.12 },
+          0.3,
+        );
+      },
+    );
+    return () => mm.revert();
+  }, []);
 
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
@@ -1634,6 +1736,17 @@ function Hero() {
               See the Tools
             </a>
           </div>
+          <ul className="hero-system" ref={systemRef} aria-label="The pieces we assemble into one system">
+            {heroSystemNodes.map(({ label, Icon }, index) => (
+              <li className="hero-system__item" key={label}>
+                {index > 0 ? <span className="hero-system__link" aria-hidden="true" /> : null}
+                <span className="hero-system__node">
+                  <Icon size={15} aria-hidden="true" />
+                  <span>{label}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}
@@ -1732,41 +1845,51 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
   );
 }
 
-function useActiveWorkflowStep() {
-  const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    const section = document.querySelector<HTMLElement>("#workflow .desktop-workflow");
-    if (!section) return;
-
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const scrollable = Math.max(1, rect.height - window.innerHeight);
-      const progress = Math.min(0.999, Math.max(0, -rect.top / scrollable));
-      setActiveStep(Math.min(workflowSteps.length - 1, Math.floor(progress * workflowSteps.length)));
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return activeStep;
-}
-
 function StickyWorkflow() {
-  const activeStep = useActiveWorkflowStep();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
   const active = workflowSteps[activeStep];
   const [mobileStep, setMobileStep] = useState(0);
   const mobileActive = workflowSteps[mobileStep];
 
+  // Desktop "input to output" scroll story. CSS sticky pins the panel (no
+  // layout shift); a ScrollTrigger maps scroll progress to the active step
+  // and scrubs the progress bar. Only runs at the desktop breakpoint where
+  // the panel is visible; reverted via mm.revert() on unmount.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let lastStep = -1;
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 900px)", () => {
+      const setFill = progressRef.current
+        ? gsap.quickSetter(progressRef.current, "scaleX")
+        : null;
+      const st = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          if (setFill) setFill(self.progress);
+          const step = Math.min(
+            workflowSteps.length - 1,
+            Math.floor(self.progress * workflowSteps.length),
+          );
+          if (step !== lastStep) {
+            lastStep = step;
+            setActiveStep(step);
+          }
+        },
+      });
+      return () => st.kill();
+    });
+    return () => mm.revert();
+  }, []);
+
   return (
     <section id="workflow" className="workflow-section">
-      <div className="desktop-workflow">
+      <div className="desktop-workflow" ref={sectionRef}>
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
             <div className="workflow-copy" aria-live="polite">
@@ -1785,6 +1908,9 @@ function StickyWorkflow() {
                     aria-current={index === activeStep ? "step" : undefined}
                   />
                 ))}
+              </div>
+              <div className="workflow-progress" aria-hidden="true">
+                <span className="workflow-progress__fill" ref={progressRef} />
               </div>
             </div>
             <DottedPanel className="workflow-stage" label="Animated workflow product scene">
@@ -3248,6 +3374,746 @@ function MetricsStrip() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// GSAP motion sections (#2 process map, #3 quote builder, #4 AI workflow,
+// #6 spreadsheet). Each uses gsap.matchMedia() with a reduced-motion branch
+// that sets the finished state, initial hidden state in CSS (no flash), and
+// reverts on unmount. Transforms / opacity only.
+// ---------------------------------------------------------------------------
+
+// #3 Quote Builder Mini Demo. A send-ready estimate assembles on scroll-enter:
+// customer details, then pricing rules toggle on, scope slides in, total counts.
+function QuoteBuilderDemo() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const totalRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const fmt = (n: number) => "$" + Math.round(n).toLocaleString("en-US");
+    const total = totalRef.current;
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".qb-field, .qb-chip, .qb-ready"), { autoAlpha: 1, x: 0, y: 0 });
+          gsap.set(q(".qb-toggle"), { backgroundColor: "#18174d" });
+          gsap.set(q(".qb-toggle i"), { x: 14 });
+          if (total) total.textContent = "$4,850";
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: { trigger: root, start: "top 72%", once: true },
+        });
+        tl.fromTo(q(".qb-field"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.1 });
+        tl.to(q(".qb-toggle"), { backgroundColor: "#18174d", duration: 0.3, stagger: 0.12 }, "+=0.1");
+        tl.to(q(".qb-toggle i"), { x: 14, duration: 0.3, stagger: 0.12 }, "<");
+        tl.fromTo(q(".qb-chip"), { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.1 }, "+=0.1");
+        if (total) {
+          const counter = { v: 0 };
+          tl.to(counter, {
+            v: 4850,
+            duration: 0.7,
+            ease: "power1.out",
+            onUpdate: () => {
+              total.textContent = fmt(counter.v);
+            },
+          }, "+=0.05");
+        }
+        tl.fromTo(q(".qb-ready"), { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.35 }, "-=0.2");
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="qbuilder" aria-labelledby="qbuilder-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Quote builder</p>
+          <h2 id="qbuilder-title">A real quoting tool, not a slideshow.</h2>
+          <p>Here is a send-ready estimate coming together the way the actual tool builds it.</p>
+        </div>
+        <DottedPanel className="qbuilder-stage" label="Preview of a quote builder producing a send-ready estimate">
+          <div className="qbuilder-card">
+            <div className="qbuilder-card__bar">
+              <span>Estimate builder</span>
+              <span className="qbuilder-card__tag">Miller Roofing</span>
+            </div>
+            <div className="qbuilder-card__body">
+              <div className="qb-group">
+                <p className="qb-group__label">Customer details</p>
+                <p className="qb-field"><User size={14} aria-hidden="true" /><span>Miller Roofing</span></p>
+                <p className="qb-field"><MapPin size={14} aria-hidden="true" /><span>1240 Wayne Ave, Dayton</span></p>
+                <p className="qb-field"><FileText size={14} aria-hidden="true" /><span>Roof repair, north slope</span></p>
+              </div>
+              <div className="qb-group">
+                <p className="qb-group__label">Pricing rules</p>
+                <p className="qb-rule"><span>Labor rate</span><span className="qb-toggle"><i /></span></p>
+                <p className="qb-rule"><span>Materials markup</span><span className="qb-toggle"><i /></span></p>
+              </div>
+              <div className="qb-group">
+                <p className="qb-group__label">Scope</p>
+                <span className="qb-chip">Tear-off</span>
+                <span className="qb-chip">Underlayment</span>
+                <span className="qb-chip">Cleanup + haul</span>
+              </div>
+            </div>
+            <div className="qbuilder-card__foot">
+              <span className="qb-total">Estimate <strong ref={totalRef}>$0</strong></span>
+              <span className="qb-ready"><Check size={14} aria-hidden="true" />Ready to send</span>
+            </div>
+          </div>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
+// #4 AI Workflow Reveal. Practical AI in the operating layer: a five-stage
+// path revealed in sequence on scroll, with a human-review step in the middle.
+const aiWorkflowStages = [
+  { Icon: PhoneCall, label: "Incoming call", body: "“Roof leak over the garage, wants a quote this week.”" },
+  { Icon: ClipboardList, label: "Extracted details", body: "Name, address, job type, and urgency, pulled from the call." },
+  { Icon: Calculator, label: "Suggested scope", body: "A draft estimate scope, based on your pricing rules." },
+  { Icon: UserCheck, label: "Human review", body: "Your estimator checks the scope and adjusts before anything is sent." },
+  { Icon: Send, label: "Customer update", body: "The approved quote goes out, and the job is logged." },
+] as const;
+
+function AiWorkflowReveal() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".aiflow-stage, .aiflow-arrow"), { autoAlpha: 1, y: 0, scale: 1 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: { trigger: root, start: "top 70%", once: true },
+        });
+        tl.fromTo(q(".aiflow-stage"), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.16 });
+        tl.fromTo(q(".aiflow-arrow"), { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.3, stagger: 0.16 }, 0.25);
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="aiflow" aria-labelledby="aiflow-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">AI in the operating layer</p>
+          <h2 id="aiflow-title">AI handles the first draft. A person signs off.</h2>
+          <p>Where AI is useful is the busywork before a decision, not the decision itself.</p>
+        </div>
+        <ol className="aiflow-track">
+          {aiWorkflowStages.map(({ Icon, label, body }, index) => (
+            <li className="aiflow-item" key={label}>
+              {index > 0 ? <MoveRight className="aiflow-arrow" size={18} aria-hidden="true" /> : null}
+              <div className={`aiflow-stage${label === "Human review" ? " aiflow-stage--human" : ""}`}>
+                <span className="aiflow-stage__head"><Icon size={16} aria-hidden="true" />{label}</span>
+                <p>{body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+// #2 Interactive Process Map. Scattered real-world inputs snap into one clean
+// system flow on click. Treated as a quiet architecture diagram.
+const processInputs = [
+  { Icon: Phone, label: "Calls", scatter: { x: -120, y: -36, rotate: -7 } },
+  { Icon: MessageSquare, label: "Texts", scatter: { x: 130, y: -52, rotate: 6 } },
+  { Icon: FileText, label: "PDFs", scatter: { x: -170, y: 30, rotate: 4 } },
+  { Icon: StickyNote, label: "Notes", scatter: { x: 60, y: 44, rotate: -5 } },
+  { Icon: Camera, label: "Photos", scatter: { x: 180, y: 26, rotate: 8 } },
+  { Icon: Table, label: "Spreadsheets", scatter: { x: -40, y: -64, rotate: 5 } },
+] as const;
+
+function ProcessMap() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const scatterFor = (node: HTMLElement) =>
+    JSON.parse(node.dataset.scatter || "{}") as { x: number; y: number; rotate: number };
+
+  // Scroll-scrubbed: the inputs start scattered as the section enters view and
+  // progressively settle into the system as the user scrolls through it. A
+  // small per-node stagger makes them snap in as a wave rather than all at once.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const nodes = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".pmap-node"));
+    const result = root.querySelector(".pmap-result");
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(nodes, { x: 0, y: 0, rotate: 0, autoAlpha: 1 });
+          gsap.set(result, { autoAlpha: 1 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root, start: "top 80%", end: "center 55%", scrub: true },
+        });
+        nodes.forEach((node, i) => {
+          const s = scatterFor(node);
+          tl.fromTo(
+            node,
+            { x: s.x, y: s.y, rotate: s.rotate, autoAlpha: 1 },
+            { x: 0, y: 0, rotate: 0 },
+            i * 0.08,
+          );
+        });
+        tl.fromTo(result, { autoAlpha: 0 }, { autoAlpha: 1 }, ">-0.15");
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="pmap" aria-labelledby="pmap-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Process map</p>
+          <h2 id="pmap-title">The mess is the input, not the problem.</h2>
+          <p>Every business runs on scattered inputs. Scroll, and they map into one system.</p>
+        </div>
+        <DottedPanel className="pmap-stage" label="Scattered business inputs organizing into one system">
+          <div className="pmap-grid">
+            {processInputs.map(({ Icon, label, scatter }) => (
+              <span className="pmap-node" key={label} data-scatter={JSON.stringify(scatter)}>
+                <Icon size={16} aria-hidden="true" />
+                {label}
+              </span>
+            ))}
+          </div>
+          <p className="pmap-result"><Workflow size={15} aria-hidden="true" />One system your team actually uses</p>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
+// #6 Spreadsheet Confessional. A scroll-scrubbed transform from the spreadsheet
+// everyone secretly keeps into a clean internal tool. Deadpan, painfully familiar.
+const messyRows = ["customer_notes_v7", "maybe_final_price", "ask_owner", "???", "FINAL_final_v3"];
+const cleanRows = [
+  { field: "Customer note", value: "Linked to job" },
+  { field: "Price", value: "From pricing rules" },
+  { field: "Approval", value: "Owner sign-off built in" },
+  { field: "Status", value: "Tracked, not guessed" },
+  { field: "Version", value: "One source of truth" },
+];
+
+function SpreadsheetConfessional() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const q = gsap.utils.selector(root);
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(q(".sconf-messy"), { autoAlpha: 0 });
+          gsap.set(q(".sconf-clean"), { autoAlpha: 1, y: 0 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root, start: "top 75%", end: "top 28%", scrub: 0.5 },
+        });
+        tl.to(q(".sconf-messy"), { autoAlpha: 0, stagger: 0.05 });
+        tl.fromTo(
+          q(".sconf-clean"),
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, stagger: 0.05 },
+          0.2,
+        );
+      },
+      root,
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <section className="sconf" aria-labelledby="sconf-title" ref={rootRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Before and after</p>
+          <h2 id="sconf-title">Every business has this spreadsheet.</h2>
+          <p>The one with the columns nobody can explain. Scroll to retire it.</p>
+        </div>
+        <DottedPanel className="sconf-stage" label="A messy spreadsheet resolving into a clean internal tool">
+          <div className="sconf-sheet">
+            <div className="sconf-sheet__bar"><Table size={14} aria-hidden="true" />jobs_final.xlsx</div>
+            <div className="sconf-rows">
+              {messyRows.map((row, i) => (
+                <div className="sconf-row" key={row}>
+                  <span className="sconf-cell sconf-messy">{row}</span>
+                  <span className="sconf-cell sconf-clean">
+                    <span className="sconf-field">{cleanRows[i].field}</span>
+                    <span className="sconf-value">{cleanRows[i].value}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DottedPanel>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Input Constellation -> Workflow Core (#7). A restrained Three.js scene: the
+// scattered inputs a small business runs on settle into a Capture -> Structure
+// -> Build -> Output pipeline as the section is scrolled. HTML/CSS label
+// overlays keep text crisp; reduced motion renders a static diagram instead.
+// ---------------------------------------------------------------------------
+const constellationStages = [
+  { id: "capture", label: "Capture", desc: "Collect the work once." },
+  { id: "structure", label: "Structure", desc: "Clean up the context." },
+  { id: "build", label: "Build", desc: "Apply rules and workflow." },
+  { id: "output", label: "Output", desc: "Send the next step." },
+] as const;
+
+type StageId = (typeof constellationStages)[number]["id"];
+
+const constellationInputs: ReadonlyArray<{
+  id: string;
+  label: string;
+  stage: StageId;
+  desc: string;
+  scatter: [number, number, number];
+}> = [
+  { id: "calls", label: "Calls", stage: "capture", desc: "Capture the request while it is fresh.", scatter: [-5.5, 2.6, 1.2] },
+  { id: "texts", label: "Texts", stage: "capture", desc: "Pull scattered context into one place.", scatter: [4.9, 2.2, -1.4] },
+  { id: "photos", label: "Photos", stage: "capture", desc: "Attach field evidence to the job.", scatter: [-2.8, -2.7, 1.3] },
+  { id: "pdfs", label: "PDFs", stage: "structure", desc: "Extract details from documents.", scatter: [5.3, -1.7, 0.9] },
+  { id: "notes", label: "Notes", stage: "structure", desc: "Turn informal knowledge into structure.", scatter: [-5.1, -0.8, -1.1] },
+  { id: "spreadsheets", label: "Spreadsheets", stage: "build", desc: "Move pricing logic into the tool.", scatter: [1.2, 3.0, -1.8] },
+  { id: "files", label: "Files", stage: "output", desc: "Produce the output the team can use.", scatter: [0.4, -3.0, 1.6] },
+];
+
+// Settled positions for the core and its inputs, in scene units. Horizontal
+// pipeline on wide screens; vertical pipeline on narrow screens so labels stay
+// readable with no horizontal scroll.
+function constellationLayout(vertical: boolean) {
+  const stagePos: Record<string, [number, number]> = {};
+  const inputPos: Record<string, [number, number]> = {};
+  if (vertical) {
+    const ys: Record<StageId, number> = { capture: 3, structure: 1, build: -1, output: -3 };
+    constellationStages.forEach((s) => (stagePos[s.id] = [1.1, ys[s.id]]));
+    inputPos.calls = [-1.4, 3.6]; inputPos.texts = [-1.4, 3.0]; inputPos.photos = [-1.4, 2.4];
+    inputPos.pdfs = [-1.4, 1.4]; inputPos.notes = [-1.4, 0.6];
+    inputPos.spreadsheets = [-1.4, -1]; inputPos.files = [-1.4, -3];
+  } else {
+    const xs: Record<StageId, number> = { capture: -4.6, structure: -1.55, build: 1.55, output: 4.6 };
+    constellationStages.forEach((s) => (stagePos[s.id] = [xs[s.id], -1.4]));
+    inputPos.calls = [-5.6, 1.7]; inputPos.texts = [-4.6, 2.1]; inputPos.photos = [-3.6, 1.7];
+    inputPos.pdfs = [-2.15, 1.9]; inputPos.notes = [-0.95, 1.9];
+    inputPos.spreadsheets = [1.55, 1.9]; inputPos.files = [4.6, 1.9];
+  }
+  return { stagePos, inputPos };
+}
+
+function InputConstellation() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const labelEls = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setReduced(true);
+      return;
+    }
+    const canvas = canvasRef.current;
+    const section = sectionRef.current;
+    if (!canvas || !section) return;
+
+    const initScene = (THREE: typeof ThreeNS) => {
+    const palette = {
+      indigo: 0x18174d,
+      peach: 0xf1d0b1,
+      paleBlue: 0xdde9fc,
+      charcoal: 0x1f211f,
+      border: 0xededeb,
+      line: 0xbcc0cf,
+    };
+    const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 12.5);
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const sphereGeo = new THREE.SphereGeometry(1, 24, 24);
+    const disposables: Array<{ dispose: () => void }> = [sphereGeo];
+
+    // Workflow stage nodes.
+    const stageMeshes: Record<string, ThreeNS.Mesh> = {};
+    constellationStages.forEach((s) => {
+      const mat = new THREE.MeshBasicMaterial({ color: palette.indigo, transparent: true });
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      mesh.scale.setScalar(0.26);
+      group.add(mesh);
+      stageMeshes[s.id] = mesh;
+      disposables.push(mat);
+    });
+
+    // Input nodes + their route line into the mapped stage.
+    type Node = {
+      id: string;
+      stage: StageId;
+      mesh: ThreeNS.Mesh;
+      mat: ThreeNS.MeshBasicMaterial;
+      line: ThreeNS.Line;
+      lineMat: ThreeNS.LineBasicMaterial;
+      lineGeo: ThreeNS.BufferGeometry;
+      scatter: ThreeNS.Vector3;
+      settled: ThreeNS.Vector3;
+    };
+    const nodes: Node[] = constellationInputs.map((input) => {
+      const mat = new THREE.MeshBasicMaterial({ color: palette.paleBlue, transparent: true });
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      mesh.scale.setScalar(0.17);
+      group.add(mesh);
+      const lineMat = new THREE.LineBasicMaterial({ color: palette.line, transparent: true, opacity: 0 });
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(6), 3));
+      const line = new THREE.Line(lineGeo, lineMat);
+      group.add(line);
+      disposables.push(mat, lineMat, lineGeo);
+      return {
+        id: input.id,
+        stage: input.stage,
+        mesh,
+        mat,
+        line,
+        lineMat,
+        lineGeo,
+        scatter: new THREE.Vector3(...input.scatter),
+        settled: new THREE.Vector3(),
+      };
+    });
+
+    // Pipeline lines between consecutive stages.
+    const pipelineMat = new THREE.LineBasicMaterial({ color: palette.indigo, transparent: true, opacity: 0 });
+    const pipelineGeo = new THREE.BufferGeometry();
+    pipelineGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(constellationStages.length * 3), 3));
+    const pipeline = new THREE.Line(pipelineGeo, pipelineMat);
+    group.add(pipeline);
+    disposables.push(pipelineMat, pipelineGeo);
+
+    let vertical = false;
+    const stageVec: Record<string, ThreeNS.Vector3> = {};
+    const applyLayout = () => {
+      vertical = section.clientWidth < 720;
+      const { stagePos, inputPos } = constellationLayout(vertical);
+      constellationStages.forEach((s) => {
+        const [x, y] = stagePos[s.id];
+        stageMeshes[s.id].position.set(x, y, 0);
+        stageVec[s.id] = new THREE.Vector3(x, y, 0);
+      });
+      nodes.forEach((n) => {
+        const [x, y] = inputPos[n.id];
+        n.settled.set(x, y, 0);
+      });
+      const pp = pipelineGeo.getAttribute("position") as ThreeNS.BufferAttribute;
+      constellationStages.forEach((s, i) => pp.setXYZ(i, stageVec[s.id].x, stageVec[s.id].y, 0));
+      pp.needsUpdate = true;
+    };
+
+    const resize = () => {
+      const w = section.clientWidth;
+      const h = vertical ? 460 : 520;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.position.z = section.clientWidth < 720 ? 13.5 : 12.5;
+      camera.updateProjectionMatrix();
+    };
+    applyLayout();
+    resize();
+
+    // Cursor parallax (desktop only); pointer fine = has a precise pointer.
+    const hasPointer = window.matchMedia("(pointer: fine)").matches;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    const onPointerMove = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect();
+      pointer.tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      pointer.ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    };
+    if (hasPointer) window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    // Scroll progress drives the settle. ScrollTrigger is already registered.
+    let progress = 0;
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: "top 80%",
+      end: "top 30%",
+      scrub: true,
+      onUpdate: (self) => {
+        progress = self.progress;
+      },
+    });
+
+    // Hover state highlights a route or a stage's inputs.
+    let activeId: string | null = null;
+    const setActive = (id: string | null) => {
+      activeId = id;
+      const activeInput = nodes.find((n) => n.id === id);
+      const activeStage = constellationStages.find((s) => s.id === id);
+      nodes.forEach((n) => {
+        const on =
+          (activeInput && n.id === activeInput.id) ||
+          (activeStage && n.stage === activeStage.id);
+        n.mat.color.setHex(on ? palette.indigo : palette.paleBlue);
+        n.lineMat.color.setHex(on ? palette.indigo : palette.line);
+        n.line.renderOrder = on ? 1 : 0;
+      });
+      Object.entries(stageMeshes).forEach(([sid, mesh]) => {
+        const on = activeStage?.id === sid || activeInput?.stage === sid;
+        (mesh.material as ThreeNS.MeshBasicMaterial).color.setHex(on ? palette.peach : palette.indigo);
+      });
+    };
+
+    // Attach hover/focus listeners to the HTML labels (accessible, crisp text).
+    const cleanups: Array<() => void> = [];
+    Object.entries(labelEls.current).forEach(([id, el]) => {
+      if (!el) return;
+      const enter = () => setActive(id);
+      const leave = () => setActive(null);
+      el.addEventListener("pointerenter", enter);
+      el.addEventListener("pointerleave", leave);
+      el.addEventListener("focus", enter);
+      el.addEventListener("blur", leave);
+      cleanups.push(() => {
+        el.removeEventListener("pointerenter", enter);
+        el.removeEventListener("pointerleave", leave);
+        el.removeEventListener("focus", enter);
+        el.removeEventListener("blur", leave);
+      });
+    });
+
+    const tmp = new THREE.Vector3();
+    const projectLabel = (worldY: ThreeNS.Object3D, id: string, opacity: number) => {
+      const el = labelEls.current[id];
+      if (!el) return;
+      worldY.getWorldPosition(tmp);
+      tmp.project(camera);
+      const w = renderer.domElement.clientWidth;
+      const h = renderer.domElement.clientHeight;
+      const x = (tmp.x * 0.5 + 0.5) * w;
+      const y = (-tmp.y * 0.5 + 0.5) * h;
+      el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+      el.style.opacity = String(opacity);
+      el.style.pointerEvents = opacity > 0.6 ? "auto" : "none";
+    };
+
+    let raf = 0;
+    let running = false;
+    const renderFrame = () => {
+      const p = easeInOut(progress);
+      // Smooth parallax.
+      pointer.x += (pointer.tx - pointer.x) * 0.06;
+      pointer.y += (pointer.ty - pointer.y) * 0.06;
+      group.rotation.y = pointer.x * 0.12;
+      group.rotation.x = -pointer.y * 0.08;
+
+      nodes.forEach((n) => {
+        n.mesh.position.lerpVectors(n.scatter, n.settled, p);
+        const sv = stageVec[n.stage];
+        const pos = n.lineGeo.getAttribute("position") as ThreeNS.BufferAttribute;
+        pos.setXYZ(0, n.mesh.position.x, n.mesh.position.y, n.mesh.position.z);
+        pos.setXYZ(1, sv.x, sv.y, sv.z);
+        pos.needsUpdate = true;
+        const routeLit = activeId === n.id || activeId === n.stage;
+        n.lineMat.opacity = p * (routeLit ? 0.95 : 0.7);
+        n.mat.opacity = 0.55 + 0.45 * p;
+      });
+      constellationStages.forEach((s) => {
+        const mesh = stageMeshes[s.id];
+        (mesh.material as ThreeNS.MeshBasicMaterial).opacity = 0.25 + 0.75 * p;
+        mesh.scale.setScalar(0.26 * (0.7 + 0.3 * p));
+      });
+      pipelineMat.opacity = p * 0.5;
+
+      nodes.forEach((n) => projectLabel(n.mesh, n.id, 0.35 + 0.65 * p));
+      constellationStages.forEach((s) => projectLabel(stageMeshes[s.id], s.id, 0.4 + 0.6 * p));
+
+      renderer.render(scene, camera);
+    };
+    const loop = () => {
+      renderFrame();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (!running) {
+        running = true;
+        loop();
+      }
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    // Only run the loop while the section is on screen.
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+      { threshold: 0 },
+    );
+    io.observe(section);
+
+    const onResize = () => {
+      applyLayout();
+      resize();
+      renderFrame();
+    };
+    window.addEventListener("resize", onResize);
+    renderFrame(); // paint one frame immediately so there is no blank canvas.
+
+    return () => {
+      stop();
+      io.disconnect();
+      st.kill();
+      window.removeEventListener("resize", onResize);
+      if (hasPointer) window.removeEventListener("pointermove", onPointerMove);
+      cleanups.forEach((fn) => fn());
+      disposables.forEach((d) => d.dispose());
+      renderer.dispose();
+    };
+    };
+
+    let disposeScene: (() => void) | null = null;
+    let cancelled = false;
+    // Lazy-load three.js only when the section nears the viewport, so the 3D
+    // library stays out of the initial homepage bundle.
+    const loadObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        loadObserver.disconnect();
+        void import("three").then((THREE) => {
+          if (cancelled) return;
+          disposeScene = initScene(THREE);
+        });
+      },
+      { rootMargin: "400px 0px" },
+    );
+    loadObserver.observe(section);
+
+    return () => {
+      cancelled = true;
+      loadObserver.disconnect();
+      disposeScene?.();
+    };
+  }, []);
+
+  return (
+    <section className="ic-section" aria-labelledby="ic-title" ref={sectionRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Operating system</p>
+          <h2 id="ic-title">Scattered inputs become one workflow.</h2>
+          <p>The same calls, texts, and files every small business runs on, routed into Capture, Structure, Build, and Output.</p>
+        </div>
+      </div>
+      {reduced ? (
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <ol className="ic-static">
+            {constellationStages.map((s) => (
+              <li className="ic-static__stage" key={s.id}>
+                <p className="ic-static__name">{s.label}</p>
+                <p className="ic-static__desc">{s.desc}</p>
+                <ul>
+                  {constellationInputs.filter((i) => i.stage === s.id).map((i) => (
+                    <li key={i.id}><span>{i.label}</span> {i.desc}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : (
+        <div className="ic-canvas-wrap">
+          <canvas className="ic-canvas" ref={canvasRef} aria-hidden="true" />
+          <div className="ic-overlay">
+            {constellationInputs.map((i) => (
+              <button
+                type="button"
+                className="ic-label ic-label--input"
+                key={i.id}
+                ref={(el) => { labelEls.current[i.id] = el; }}
+              >
+                {i.label}
+                <span className="ic-tip">{i.desc}</span>
+              </button>
+            ))}
+            {constellationStages.map((s) => (
+              <button
+                type="button"
+                className="ic-label ic-label--stage"
+                key={s.id}
+                ref={(el) => { labelEls.current[s.id] = el; }}
+              >
+                {s.label}
+                <span className="ic-tip">{s.desc}</span>
+              </button>
+            ))}
+          </div>
+          {/* Accessible description of the same mapping for screen readers. */}
+          <ul className="sr-only">
+            {constellationInputs.map((i) => (
+              <li key={i.id}>{i.label} routes into {i.stage}. {i.desc}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Homepage() {
   return (
     <>
@@ -3259,9 +4125,12 @@ function Homepage() {
       <main>
         <Hero />
         <BusinessJourney />
+        <ProcessMap />
         <WebsiteTransformation />
         <AiVisibility />
         <EconomicCase />
+        <SpreadsheetConfessional />
+        <InputConstellation />
         <LaborCostCalculator sectionId="workflow" />
         <MetricsStrip />
         <FounderPreview />
@@ -3282,6 +4151,8 @@ function WhatWeBuildPage() {
         <BusinessJourney showDetailLink={false} />
         <ServiceArchitecture />
         <FeatureGrid />
+        <QuoteBuilderDemo />
+        <AiWorkflowReveal />
         <ConnectedSystem />
         <PageCTA />
       </main>
@@ -3332,13 +4203,13 @@ function HowItWorksPage() {
   );
 }
 
-function App() {
+export default function App({ initialPath = "/" }: { initialPath?: string }) {
   useMotionSystem();
   useMuxVideos();
   useTurnstileProtection();
   useScrollProgressFallback();
 
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  const path = initialPath.replace(/\/+$/, "") || "/";
   useEffect(() => {
     if (path !== "/") {
       document.getElementById("boot-splash")?.remove();
@@ -3368,9 +4239,3 @@ function App() {
     </PersonalizationProvider>
   );
 }
-
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
