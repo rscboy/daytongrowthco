@@ -762,7 +762,6 @@ function Header() {
           <a href="/examples/">Examples</a>
           <a href="/how-it-works/">How It Works</a>
           <a href="/aboutus.html">About</a>
-          <a href={isHome ? "#cta" : "/#cta"}>Contact</a>
         </div>
         <div className="header-actions">
           <a className="button button-primary" href={isHome ? "#cta" : "/#cta"}>

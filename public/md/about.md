@@ -6,7 +6,7 @@
 
 [ DaytonGrowthCo. ](/)
 
-[What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About](/aboutus.html) [Contact](/#cta)
+[What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About](/aboutus.html)
 
 [Start Building. ](/#cta)
 

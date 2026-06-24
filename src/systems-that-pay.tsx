@@ -56,7 +56,6 @@ function SiteHeader() {
           <a href="/examples/">Examples</a>
           <a href="/how-it-works/">How It Works</a>
           <a href="/aboutus.html">About</a>
-          <a href="/#cta">Contact</a>
         </nav>
         <div className="lp-header-actions">
           <a className="lp-header-phone" href="tel:+19373677089">
