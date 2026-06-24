@@ -2462,18 +2462,18 @@
 
   .economic-case-video {
     z-index: 0;
-    opacity: 0.38;
-    filter: saturate(0.82) contrast(1.08) brightness(0.78);
+    opacity: 0.68;
+    filter: saturate(0.96) contrast(1.04) brightness(0.95);
     transform: scale(1.02);
   }
 
   .economic-case-video-mask {
     z-index: 1;
     background:
-      radial-gradient(circle at 12% 20%, rgba(240, 208, 176, 0.16), transparent 25rem),
-      radial-gradient(circle at 82% 42%, rgba(87, 150, 200, 0.16), transparent 30rem),
-      linear-gradient(90deg, rgba(7, 8, 19, 0.9), rgba(16, 16, 47, 0.72) 48%, rgba(7, 8, 19, 0.86)),
-      linear-gradient(180deg, rgba(7, 8, 19, 0.68), rgba(7, 8, 19, 0.9));
+      radial-gradient(circle at 12% 20%, rgba(240, 208, 176, 0.08), transparent 25rem),
+      radial-gradient(circle at 82% 42%, rgba(87, 150, 200, 0.08), transparent 30rem),
+      linear-gradient(90deg, rgba(7, 8, 19, 0.62), rgba(16, 16, 47, 0.38) 48%, rgba(7, 8, 19, 0.58)),
+      linear-gradient(180deg, rgba(7, 8, 19, 0.38), rgba(7, 8, 19, 0.66));
   }
 
   /* Soft transition bands so the navy block eases into the cream sections
@@ -2482,8 +2482,8 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(180deg, rgba(247, 246, 241, 0.5), transparent 9%),
-      linear-gradient(0deg, rgba(247, 246, 241, 0.5), transparent 9%);
+      linear-gradient(180deg, rgba(247, 246, 241, 0.14), transparent 5%),
+      linear-gradient(0deg, rgba(247, 246, 241, 0.14), transparent 5%);
     content: "";
     pointer-events: none;
     z-index: 2;
