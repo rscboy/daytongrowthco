@@ -3583,7 +3583,7 @@ function ProcessMap() {
         }
         const tl = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: root, start: "top 80%", end: "center 55%", scrub: true },
+          scrollTrigger: { trigger: root, start: "top 48%", end: "center 30%", scrub: true },
         });
         nodes.forEach((node, i) => {
           const s = scatterFor(node);

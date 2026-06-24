@@ -2257,18 +2257,17 @@
 
   .business-journey-heading {
     display: block;
-    text-align: center;
   }
 
   .business-journey-heading h2 {
-    margin: 0 auto;
-    max-width: min(100%, 20ch);
+    margin: 0;
+    max-width: 15ch;
     color: #171821;
     font-family: var(--font-serif);
-    font-size: clamp(2.45rem, 4vw, 3.7rem);
+    font-size: clamp(2.45rem, 4.3vw, 4rem);
     font-weight: var(--section-title-weight);
     letter-spacing: var(--section-title-tracking);
-    line-height: 0.95;
+    line-height: var(--section-title-leading);
   }
 
   .business-journey-heading h2 span {
@@ -8033,7 +8032,7 @@
   }
 
   .business-journey-heading h2 {
-    max-width: min(100%, 18ch);
+    max-width: 14ch;
   }
 
   .business-journey-grid {
