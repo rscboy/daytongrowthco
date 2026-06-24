@@ -1,7 +1,5 @@
 # Accessibility Statement
 
-[← Back to DaytonGrowthCo.](/)
-
 Last Updated: March 2026
 
 ### Our Commitment

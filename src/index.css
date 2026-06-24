@@ -461,7 +461,6 @@
   }
 
   .link-arrow svg,
-  .section-detail-link svg,
   .homepage-preview-copy > a svg,
   .homepage-preview-link svg,
   .service-detail-grid article > a svg,
@@ -470,7 +469,6 @@
   }
 
   .link-arrow:hover svg,
-  .section-detail-link:hover svg,
   .homepage-preview-copy > a:hover svg,
   .homepage-preview-link:hover svg,
   .service-detail-grid article > a:hover svg,
@@ -892,8 +890,7 @@
     animation: hero-copy-in 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
   }
 
-  .hero-label,
-  .meta-label {
+  .hero-label {
     display: block;
     color: #8a857d;
     font-size: 0.69rem;
@@ -1621,59 +1618,6 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 0.9rem;
-  }
-
-  .scroll-dots {
-    position: fixed;
-    z-index: 60;
-    top: 50%;
-    right: 1.5rem;
-    display: none;
-    transform: translateY(-50%);
-    gap: 0.6rem;
-  }
-
-  .scroll-dots a {
-    position: relative;
-    isolation: isolate;
-    display: block;
-    width: 0.48rem;
-    height: 0.48rem;
-    border: 1px solid rgba(31, 33, 31, 0.18);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.26);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    transition:
-      background-color 160ms ease,
-      border-color 160ms ease,
-      box-shadow 160ms ease,
-      transform 160ms ease;
-  }
-
-  .scroll-dots a::before {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: -1;
-    width: 1.2rem;
-    height: 0.5px;
-    background: rgba(255, 255, 255, 0);
-    content: "";
-    transform: translate(-50%, -50%);
-    transition: background-color 160ms ease;
-  }
-
-  .scroll-dots a.active {
-    border-color: rgba(255, 255, 255, 0.62);
-    background: rgba(255, 255, 255, 0.88);
-    box-shadow:
-      0 0 8px rgba(255, 255, 255, 0.32),
-      0 1px 4px rgba(20, 20, 28, 0.12);
-    transform: scale(1.08);
-  }
-
-  .scroll-dots a.active::before {
-    background: rgba(255, 255, 255, 0.2);
   }
 
   .site-offer-banner {
@@ -2480,35 +2424,6 @@
     font-size: 0.72rem;
     line-height: 1.55;
     text-align: right;
-  }
-
-  .section-detail-link {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1.2rem;
-    border: 1px solid rgba(24, 23, 77, 0.18);
-    border-radius: 8px;
-    padding-inline: 0.95rem;
-    color: #18174d;
-    background: rgba(255, 255, 255, 0.58);
-    font-size: 0.82rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
-  }
-
-  .section-detail-link:hover,
-  .section-detail-link:focus-visible {
-    border-color: rgba(24, 23, 77, 0.42);
-    background: #fff;
-    transform: translateY(-1px);
-  }
-
-  .business-journey .section-detail-link {
-    margin-left: auto;
   }
 
   .difference-section {
@@ -6345,16 +6260,6 @@
     z-index: 1;
   }
 
-  .page-hero-kicker {
-    display: block;
-    margin-bottom: 1rem;
-    color: #66637e;
-    font-size: 0.68rem;
-    font-weight: 740;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
   .page-hero h1 {
     max-width: 17ch;
     margin: 0;
@@ -7161,16 +7066,6 @@
     text-align: center;
   }
 
-  .page-cta-kicker {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: var(--brand-peach);
-    font-size: 0.74rem;
-    font-weight: 720;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
   .page-cta h2 {
     max-width: 17ch;
     margin-inline: auto;
@@ -7465,15 +7360,6 @@
     flex-direction: column;
     gap: 0.64rem;
     align-items: flex-start;
-  }
-
-  .footer-column-label {
-    margin-bottom: 0.28rem;
-    color: var(--brand-peach);
-    font-size: 0.82rem;
-    font-weight: 650;
-    letter-spacing: 0;
-    text-transform: none;
   }
 
   .footer-brand {
@@ -8181,10 +8067,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .scroll-dots {
-    display: grid;
-  }
-
   .desktop-workflow {
     display: block;
   }
@@ -8511,11 +8393,6 @@
     width: 100%;
   }
 
-  .site-footer .footer-links[aria-label="Explore"] .footer-column-label {
-    grid-column: 1 / -1;
-    margin-bottom: 0.15rem;
-  }
-
   .site-footer .footer-links[aria-label="Explore"] a {
     display: flex;
     min-height: 2.9rem;
@@ -8589,14 +8466,6 @@
     grid-template-columns: auto 1fr;
     justify-items: start;
     text-align: left;
-  }
-
-  .section-detail-link,
-  .business-journey .section-detail-link,
-  .transformation-detail-link {
-    width: 100%;
-    margin-right: 0;
-    margin-left: 0;
   }
 
   .how-preview-steps {
@@ -9942,7 +9811,6 @@
     display: none;
   }
 
-  .scroll-dots a,
   .scene-layer,
   .progress-track span,
   .splash-logo,

@@ -1,7 +1,5 @@
 # Terms of Service
 
-[← Back to DaytonGrowthCo.](/)
-
 Last Updated: March 2026
 
 ### Agreement to Terms

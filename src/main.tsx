@@ -327,14 +327,6 @@ const metrics = [
   { value: "3", label: "setup paths", detail: "Website + SEO Setup, Tech Integration, and Custom Systems" },
 ];
 
-const pageSections = [
-  { id: "top", label: "Hero" },
-  { id: "platform", label: "What we build" },
-  { id: "outcomes", label: "Examples" },
-  { id: "workflow", label: "How it works" },
-  { id: "cta", label: "Contact" },
-];
-
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
 const formAction =
   "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
@@ -948,66 +940,6 @@ function useTurnstileProtection() {
   }, []);
 }
 
-function useActiveSection() {
-  const [activeSection, setActiveSection] = useState(pageSections[0].id);
-
-  useEffect(() => {
-    const ids = pageSections.map((section) => section.id);
-
-    const update = () => {
-      // The section is "active" once its top has scrolled above a reference
-      // line near the upper third of the viewport. Walking top-to-bottom and
-      // keeping the last one that has crossed the line gives a deterministic
-      // mapping that never skips sections (unlike intersection-ratio sorting).
-      const line = window.innerHeight * 0.35;
-      let current = ids[0];
-
-      for (const id of ids) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        if (el.getBoundingClientRect().top <= line) {
-          current = id;
-        }
-      }
-
-      // Snap to the final section once the page is scrolled to the bottom.
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
-        current = ids[ids.length - 1];
-      }
-
-      setActiveSection((prev) => (prev === current ? prev : current));
-    };
-
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  return activeSection;
-}
-
-function ScrollDots() {
-  const activeSection = useActiveSection();
-
-  return (
-    <nav className="scroll-dots" aria-label="Page sections">
-      {pageSections.map((section) => (
-        <a
-          key={section.id}
-          href={`#${section.id}`}
-          className={activeSection === section.id ? "active" : ""}
-          aria-label={`Jump to ${section.label}`}
-          aria-current={activeSection === section.id ? "location" : undefined}
-        />
-      ))}
-    </nav>
-  );
-}
-
 function BackgroundVideo({
   className,
   src,
@@ -1167,7 +1099,6 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
               <PanelTop size={15} />
             </span>
             <div>
-              <span className="meta-label">{step.label}</span>
               <strong>Workflow record {String(index + 1).padStart(2, "0")}</strong>
             </div>
           </div>
@@ -1186,7 +1117,6 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
 
           <div className="insight-box">
             <div>
-              <span className="meta-label">Build output</span>
               <strong>{step.output}</strong>
             </div>
             <div className="score-orb">
@@ -1792,7 +1722,7 @@ function ServiceModes() {
   );
 }
 
-function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }) {
+function BusinessJourney() {
   const { profile } = usePersonalization();
   const business = profile?.business?.trim();
   return (
@@ -1834,12 +1764,6 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
           })}
         </div>
 
-        {showDetailLink ? (
-          <a className="section-detail-link" href="/what-we-build/">
-            Explore what we build
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        ) : null}
       </div>
     </section>
   );
@@ -2057,7 +1981,7 @@ function WebsiteMockup({ variant }: { variant: "before" | "after" }) {
   );
 }
 
-function WebsiteTransformation({ showDetailLink = true }: { showDetailLink?: boolean }) {
+function WebsiteTransformation() {
   const [position, setPosition] = useState(50);
   const [interacted, setInteracted] = useState(false);
   const [nudging, setNudging] = useState(false);
@@ -2162,12 +2086,6 @@ function WebsiteTransformation({ showDetailLink = true }: { showDetailLink?: boo
               }}
             />
           </div>
-          {showDetailLink ? (
-            <a className="section-detail-link transformation-detail-link" href="/examples/">
-              Explore more working examples
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          ) : null}
         </div>
       </div>
     </section>
@@ -2886,12 +2804,11 @@ const pageCopy = {
   },
 };
 
-function PageHero({ title, text, kicker }: { title: string; text: string; kicker?: string }) {
+function PageHero({ title, text }: { title: string; text: string; kicker?: string }) {
   return (
     <section className="page-hero" id="top">
       <div className="page-hero-field" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        {kicker ? <span className="page-hero-kicker">{kicker}</span> : null}
         <h1>{title}</h1>
         <p>{text}</p>
         <a className="button button-primary large" href="#cta">
@@ -2903,15 +2820,7 @@ function PageHero({ title, text, kicker }: { title: string; text: string; kicker
   );
 }
 
-function AdvancedSystemPreview({
-  linkHref = "/examples/",
-  linkLabel = "Explore more examples",
-  sectionId = "outcomes",
-}: {
-  linkHref?: string;
-  linkLabel?: string;
-  sectionId?: string;
-}) {
+function AdvancedSystemPreview({ sectionId = "outcomes" }: { sectionId?: string }) {
   const stages = [
     {
       title: "Customer request",
@@ -2944,10 +2853,6 @@ function AdvancedSystemPreview({
             Calls, pricing rules, customer details, and project updates often live in separate places. We connect the
             parts that create repeated entry, slow handoffs, or missed context.
           </p>
-          <a href={linkHref}>
-            {linkLabel}
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
         </div>
         <div className="advanced-preview-console">
           <div className="advanced-preview-tag" aria-hidden="true">
@@ -3292,7 +3197,6 @@ function CaseStudyFuture() {
 function PageCTA() {
   return (
     <section className="page-cta" id="cta">
-      <span className="page-cta-kicker">Start a conversation</span>
       <h2>Bring us the process that is still being handled by hand.</h2>
       <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
       <a className="button button-primary large" href="/#cta">Start Building <ArrowRight size={16} aria-hidden="true" /></a>
@@ -3324,7 +3228,6 @@ function SiteFooter() {
           </div>
         </div>
         <nav className="footer-links" aria-label="Explore">
-          <span className="footer-column-label">Explore</span>
           <a href="/what-we-build/">What We Build</a>
           <a href="/examples/">Examples</a>
           <a href="/how-it-works/">How It Works</a>
@@ -3332,7 +3235,6 @@ function SiteFooter() {
           <a href="/#cta">Start a Conversation</a>
         </nav>
         <nav className="footer-links" aria-label="Legal and contact">
-          <span className="footer-column-label">Contact</span>
           <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
           <a href="tel:+19373677089">(937) 367-7089</a>
           <a href="/privacy-policy/">Privacy</a>
@@ -3438,7 +3340,6 @@ function QuoteBuilderDemo() {
     <section className="qbuilder" aria-labelledby="qbuilder-title" ref={rootRef}>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <p className="meta-label">Quote builder</p>
           <h2 id="qbuilder-title">A real quoting tool, not a slideshow.</h2>
           <p>Here is a send-ready estimate coming together the way the actual tool builds it.</p>
         </div>
@@ -3523,7 +3424,6 @@ function AiWorkflowReveal() {
     <section className="aiflow" aria-labelledby="aiflow-title" ref={rootRef}>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <p className="meta-label">AI in the operating layer</p>
           <h2 id="aiflow-title">AI handles the first draft. A person signs off.</h2>
           <p>Where AI is useful is the busywork before a decision, not the decision itself.</p>
         </div>
@@ -3605,7 +3505,6 @@ function ProcessMap() {
     <section className="pmap" aria-labelledby="pmap-title" ref={rootRef}>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <p className="meta-label">Process map</p>
           <h2 id="pmap-title">The mess is the input, not the problem.</h2>
           <p>Every business runs on scattered inputs. Scroll, and they map into one system.</p>
         </div>
@@ -3677,7 +3576,6 @@ function SpreadsheetConfessional() {
     <section className="sconf" aria-labelledby="sconf-title" ref={rootRef}>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <p className="meta-label">Before and after</p>
           <h2 id="sconf-title">Every business has this spreadsheet.</h2>
           <p>The one with the columns nobody can explain. Scroll to retire it.</p>
         </div>
@@ -4054,7 +3952,6 @@ function InputConstellation() {
     <section className="ic-section" aria-labelledby="ic-title" ref={sectionRef}>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <p className="meta-label">Operating system</p>
           <h2 id="ic-title">Scattered inputs become one workflow.</h2>
           <p>The same calls, texts, and files every small business runs on, routed into Capture, Structure, Build, and Output.</p>
         </div>
@@ -4120,17 +4017,16 @@ function Homepage() {
       <SplashScreen />
       <PersonalizeInvite />
       <div id="scroll-progress-bar" aria-hidden="true" />
-      <ScrollDots />
       <Header />
       <main>
         <Hero />
-        <BusinessJourney />
         <ProcessMap />
+        <BusinessJourney />
         <WebsiteTransformation />
         <AiVisibility />
-        <EconomicCase />
         <SpreadsheetConfessional />
         <InputConstellation />
+        <EconomicCase />
         <LaborCostCalculator sectionId="workflow" />
         <MetricsStrip />
         <FounderPreview />
@@ -4148,7 +4044,7 @@ function WhatWeBuildPage() {
       <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.whatWeBuild} />
-        <BusinessJourney showDetailLink={false} />
+        <BusinessJourney />
         <ServiceArchitecture />
         <FeatureGrid />
         <QuoteBuilderDemo />
@@ -4168,7 +4064,7 @@ function ExamplesPage() {
       <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.examples} />
-        <WebsiteTransformation showDetailLink={false} />
+        <WebsiteTransformation />
         <AiVisibility />
         <OutcomeSection />
         <SpreadsheetTransformation />

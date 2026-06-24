@@ -10,8 +10,6 @@
 
 [Start Building. ](/#cta)
 
-[ Back to What We Build ](/what-we-build/)
-
 ## About Us
 
 ![Samuel Caruso, Founder](https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg)

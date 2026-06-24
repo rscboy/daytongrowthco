@@ -2,10 +2,6 @@
 
 > Local SEO services in Dayton, Ohio. Rank higher in Google Maps, attract more local customers, and increase calls.
 
-[Home](/) / Local SEO
-
-Service
-
 ## Local SEO Services in Dayton, Ohio
 
 If local buyers can’t find you in search and maps, they call someone else. We optimize your local presence so your business shows up when intent is highest.
@@ -24,10 +20,6 @@ Google Business Profile, local relevance content, review velocity, citation cons
 ## Built for Sustainable Growth
 
 Our process focuses on durable local ranking signals and lead quality, not vanity metrics. You get measurable visibility in the ZIP codes that matter most.
-
-## Explore more services
-
-[Website Design](/website-design/) [Website Maintenance](/website-maintenance/)
 
 ---
 

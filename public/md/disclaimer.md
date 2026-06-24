@@ -1,7 +1,5 @@
 # Disclaimer
 
-[← Back to DaytonGrowthCo.](/)
-
 Last Updated: March 2026
 
 ### General Information Only

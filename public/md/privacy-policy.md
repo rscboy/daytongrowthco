@@ -1,7 +1,5 @@
 # Privacy Policy
 
-[← Back to DaytonGrowthCo.](/)
-
 Last Updated: March 2026
 
 ### Introduction

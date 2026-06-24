@@ -2,10 +2,6 @@
 
 > Modern website design in Dayton, Ohio. Fast, mobile-friendly websites built to convert visitors into customers.
 
-[Home](/) / Website Design
-
-Service
-
 ## Website Design for Dayton Businesses
 
 We design modern, fast-loading websites with clear messaging and conversion paths. Because we build with AI, a custom, professional site starts at $1,500.
@@ -40,10 +36,6 @@ A one-time payment. We build it out, you cover your own server and domain, and y
 3\. Unlimited updates
 
 A one-time build plus a higher monthly fee. We build it and make unlimited changes whenever you need them.
-
-## Explore more services
-
-[Local SEO](/local-seo/) [Website Maintenance](/website-maintenance/)
 
 ---
 
