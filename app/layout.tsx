@@ -85,7 +85,74 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="scroll-smooth scroll-pt-24">
+      <head>
+        <script
+          id="dgc-boot-splash-state"
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var path = window.location.pathname;
+                var isHome = path === "/" || path === "/index.html";
+                if (!isHome || window.sessionStorage.getItem("dgc:splash-seen") === "1") {
+                  document.documentElement.classList.add("dgc-splash-seen");
+                } else {
+                  document.documentElement.classList.add("dgc-splash-pending");
+                }
+              } catch (error) {
+                document.documentElement.classList.add("dgc-splash-pending");
+              }
+            `,
+          }}
+        />
+        <style
+          id="boot-splash-style"
+          dangerouslySetInnerHTML={{
+            __html: `
+              html.dgc-splash-pending {
+                background: #05070d;
+              }
+
+              body {
+                margin: 0;
+              }
+
+              #boot-splash {
+                position: fixed;
+                inset: 0;
+                z-index: 10000;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                background:
+                  radial-gradient(circle at 50% 38%, rgba(37, 99, 235, 0.16), transparent 34%),
+                  radial-gradient(circle at 55% 58%, rgba(168, 85, 247, 0.1), transparent 36%),
+                  linear-gradient(180deg, #05070d 0%, #070a12 52%, #050505 100%);
+                pointer-events: none;
+              }
+
+              html.dgc-splash-pending #boot-splash {
+                display: flex;
+              }
+
+              html.dgc-splash-seen {
+                background: #fbfbf9;
+              }
+
+              html.dgc-splash-seen #boot-splash {
+                display: none;
+              }
+
+              @media (prefers-reduced-motion: reduce) {
+                #boot-splash {
+                  display: none !important;
+                }
+              }
+            `,
+          }}
+        />
+      </head>
       <body>
+        <div id="boot-splash" aria-hidden="true" />
         {children}
         <Script src="/legal-overlay.js" strategy="afterInteractive" />
         <Script src="/page-transitions.js?v=4" strategy="afterInteractive" />

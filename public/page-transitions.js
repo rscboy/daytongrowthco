@@ -1,5 +1,7 @@
 (() => {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let isHome = false;
+  let hasFirstHomeSplash = false;
 
   // The brand splash should only play on a genuine first arrival at the
   // homepage. This script loads on every page (home, SPA routes, and the static
@@ -9,12 +11,14 @@
   // itself is left untouched here; its own splash sets the flag after it plays.
   try {
     const path = window.location.pathname;
-    const isHome = path === "/" || path === "/index.html";
+    isHome = path === "/" || path === "/index.html";
     if (!isHome && window.sessionStorage.getItem("dgc:splash-seen") !== "1") {
       window.sessionStorage.setItem("dgc:splash-seen", "1");
     }
+    hasFirstHomeSplash = isHome && window.sessionStorage.getItem("dgc:splash-seen") !== "1";
   } catch {
     /* Storage can be unavailable in restrictive browser modes. */
+    hasFirstHomeSplash = isHome;
   }
 
   const style = document.createElement("style");
@@ -69,7 +73,10 @@
   `;
   document.head.appendChild(style);
 
-  document.documentElement.classList.add("dgc-transition-fallback", "dgc-page-entering");
+  document.documentElement.classList.add("dgc-transition-fallback");
+  if (!hasFirstHomeSplash) {
+    document.documentElement.classList.add("dgc-page-entering");
+  }
 
   let entranceTimer;
 
@@ -77,7 +84,7 @@
     window.clearTimeout(entranceTimer);
     document.documentElement.classList.remove("dgc-page-leaving");
 
-    if (prefersReducedMotion.matches) {
+    if (prefersReducedMotion.matches || hasFirstHomeSplash || document.getElementById("boot-splash")) {
       document.documentElement.classList.remove("dgc-page-entering");
       return;
     }

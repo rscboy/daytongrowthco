@@ -2575,6 +2575,7 @@ function SplashScreen() {
     document.getElementById("boot-splash")?.remove();
     if (skipSplash) {
       document.documentElement.classList.add("dgc-splash-seen");
+      document.documentElement.classList.remove("dgc-splash-pending");
       document.body.classList.remove("splash-lock");
       return;
     }
@@ -2589,6 +2590,8 @@ function SplashScreen() {
     // frame), so removing the inline boot overlay now hands off seamlessly.
     const timer = window.setTimeout(() => {
       setDone(true);
+      document.documentElement.classList.add("dgc-splash-seen");
+      document.documentElement.classList.remove("dgc-splash-pending");
       document.body.classList.remove("splash-lock");
     }, 2550);
     return () => {
