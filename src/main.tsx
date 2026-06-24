@@ -305,7 +305,7 @@ const marginLeaks = [
     area: "Practical AI",
     cost: "Paying skilled people to summarize, sort, draft, classify, or search repetitive information.",
     system: "AI embedded at specific bottlenecks, with human review where judgment matters.",
-    return: "Lower administrative load without handing control to a black box.",
+    return: "Lower administrative load without handing control to a black box or paying custom-dev rates for repetitive work.",
   },
   {
     icon: Globe2,
@@ -326,7 +326,7 @@ const marginLeaks = [
 const metrics = [
   { value: "Nationwide", label: "Dayton roots", detail: "Built for small and midsized businesses across the United States" },
   { value: "24h", label: "response window", detail: "Response guaranteed within 24 hours" },
-  { value: "3", label: "setup paths", detail: "Website + SEO Setup, Tech Integration, and Custom Systems" },
+  { value: "Up to 70%", label: "less than custom dev", detail: "AI-assisted builds reduce the hours a traditional shop would bill for" },
 ];
 
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
@@ -1282,7 +1282,8 @@ function EconomicCase() {
             </h2>
             <p>
               Skilled time should go toward judgment, customer work, and decisions, not rebuilding the same quote,
-              moving the same details, or searching for the same file.
+              moving the same details, or searching for the same file. The savings are two-sided: recover wasted labor
+              and avoid the traditional custom-dev bill.
             </p>
           </div>
 
@@ -1311,7 +1312,7 @@ function EconomicCase() {
                 <strong><CountUp value={14250} prefix="$" suffix=" / year" /></strong>
               </div>
               <p className="homepage-sheet-note">
-                Before counting faster quotes, fewer errors, or additional jobs handled.
+                Before counting faster quotes, fewer errors, additional jobs handled, or the lower build cost AI makes possible.
               </p>
             </div>
             <a className="economic-case-link" href="#cta">
@@ -2117,7 +2118,7 @@ function FeatureGrid() {
           <h2 id="margin-leak-title">Modernize the work around the work.</h2>
           <p>
             Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets,
-            and grows.
+            and grows, built for less than traditional custom software because AI compresses the build.
           </p>
         </div>
         <div className="margin-leak-table">
@@ -2529,8 +2530,8 @@ function FinalCTA() {
           </h2>
           <p>
             {business
-              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out.`
-              : "Tell us what comes in, what your team does with it, and what needs to come out."}
+              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget.`
+              : "Tell us what comes in, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget."}
           </p>
         </div>
         <ProjectForm />
@@ -2807,12 +2808,12 @@ const pageCopy = {
   whatWeBuild: {
     kicker: "What we build",
     title: "From online presence to the systems behind the work.",
-    text: "We help small and midsized businesses nationwide improve how customers find them, how requests are handled, and how the team delivers the work.",
+    text: "We help small and midsized businesses nationwide improve how customers find them, how requests are handled, and how the team delivers the work, without paying traditional custom-development prices.",
   },
   examples: {
     kicker: "Examples",
     title: "Choose a need. See the system take shape.",
-    text: "These working demonstrations show how a specific business problem can become a focused, usable tool. Each one is built to make the idea concrete before a full engagement begins.",
+    text: "These working demonstrations show how a specific business problem can become a focused, usable tool, and why a smaller AI-assisted build can often solve the expensive part first.",
   },
   howItWorks: {
     kicker: "How it works",
@@ -3055,7 +3056,7 @@ function QuoteWorkflowExample() {
 function BuildPrinciples() {
   const principles = [
     ["Fix the expensive bottleneck first.", "We start where the current process costs the most in time, errors, or lost work."],
-    ["Use existing software when it fits.", "If a tool you already trust can do the job, the right move is to set it up well, not rebuild it."],
+    ["Use existing software when it fits.", "If a tool you already trust can do the job, the right move is to set it up well, not rebuild it. That keeps the budget focused on the parts only your business needs custom."],
     ["Build custom only where your process creates an advantage.", "Custom tools are reserved for the steps where the way you work is genuinely different."],
     ["Measure time removed, errors avoided, and capacity recovered.", "Success is a process that is faster and cleaner, not a longer list of features."],
   ];
