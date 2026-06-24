@@ -2,6 +2,7 @@
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let isHome = false;
   let hasFirstHomeSplash = false;
+  const nextAppPaths = new Set(["/", "/what-we-build/", "/examples/", "/how-it-works/", "/systems-that-pay/"]);
 
   // The brand splash should only play on a genuine first arrival at the
   // homepage. This script loads on every page (home, SPA routes, and the static
@@ -118,6 +119,8 @@
       destination.search === current.search;
 
     if (isSameDocument && destination.hash) return;
+
+    if (document.getElementById("boot-splash") && nextAppPaths.has(destination.pathname)) return;
 
     event.preventDefault();
     window.clearTimeout(entranceTimer);

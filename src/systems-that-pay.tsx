@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Check, CheckCircle2, PenTool, Phone, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import "./systems-that-pay.css";
 
@@ -48,13 +49,13 @@ function SiteHeader() {
   return (
     <header className="lp-header">
       <div className="lp-header-inner">
-        <a className="lp-logo" href="/" aria-label="DaytonGrowthCo home">
+        <Link className="lp-logo" href="/" aria-label="DaytonGrowthCo home">
           <Wordmark />
-        </a>
+        </Link>
         <nav className="lp-nav" aria-label="Primary">
-          <a href="/what-we-build/">What We Build</a>
-          <a href="/examples/">Examples</a>
-          <a href="/how-it-works/">How It Works</a>
+          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/examples/">Examples</Link>
+          <Link href="/how-it-works/">How It Works</Link>
           <a href="/aboutus.html">About</a>
         </nav>
         <div className="lp-header-actions">
@@ -78,10 +79,10 @@ function SiteFooter() {
     <footer className="lp-footer">
       <div className="lp-footer-inner">
         <div className="lp-footer-brand">
-          <a className="lp-footer-logo" href="/" aria-label="DaytonGrowthCo home">
+          <Link className="lp-footer-logo" href="/" aria-label="DaytonGrowthCo home">
             <img src={logoUrl} alt="" width={32} height={32} />
             <Wordmark />
-          </a>
+          </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
           <div className="lp-social" aria-label="Social media">
             {socialLinks.map((link) => (
@@ -93,11 +94,11 @@ function SiteFooter() {
         </div>
         <nav className="lp-footer-col" aria-label="Explore">
           <span className="lp-footer-label">Explore</span>
-          <a href="/what-we-build/">What We Build</a>
-          <a href="/examples/">Examples</a>
-          <a href="/how-it-works/">How It Works</a>
+          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/examples/">Examples</Link>
+          <Link href="/how-it-works/">How It Works</Link>
           <a href="/aboutus.html">About Us</a>
-          <a href="/#cta">Start a Conversation</a>
+          <Link href="/#cta">Start a Conversation</Link>
         </nav>
         <nav className="lp-footer-col" aria-label="Legal and contact">
           <span className="lp-footer-label">Contact</span>
@@ -398,10 +399,10 @@ export default function SystemsThatPayApp() {
               <span>Trade business project</span>
               <strong>Watson Roofing <ArrowRight size={18} /></strong>
             </a>
-            <a href="/examples/">
+            <Link href="/examples/">
               <span>Capabilities + examples</span>
               <strong>View our work <ArrowRight size={18} /></strong>
-            </a>
+            </Link>
           </div>
         </section>
 

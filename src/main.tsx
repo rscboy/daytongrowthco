@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -729,10 +731,10 @@ function InteractiveWordmark() {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [isHome, setIsHome] = useState(true);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    setIsHome(window.location.pathname === "/");
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
     };
@@ -743,7 +745,7 @@ function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
-      <a className="site-offer-banner" href="/systems-that-pay/">
+      <Link className="site-offer-banner" href="/systems-that-pay/">
         <span className="site-offer-copy">
           <strong>We’ll redesign your homepage. Free.</strong>
           <span>Custom concept · No obligation</span>
@@ -752,22 +754,35 @@ function Header() {
           Claim free redesign
           <ArrowRight size={14} aria-hidden="true" />
         </span>
-      </a>
+      </Link>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
-        <a href={isHome ? "#top" : "/"} className="logo-lockup" aria-label="DaytonGrowthCo home">
-          <InteractiveWordmark />
-        </a>
+        {isHome ? (
+          <a href="#top" className="logo-lockup" aria-label="DaytonGrowthCo home">
+            <InteractiveWordmark />
+          </a>
+        ) : (
+          <Link href="/" className="logo-lockup" aria-label="DaytonGrowthCo home">
+            <InteractiveWordmark />
+          </Link>
+        )}
         <div className="header-nav" aria-label="Sections">
-          <a href="/what-we-build/">What We Build</a>
-          <a href="/examples/">Examples</a>
-          <a href="/how-it-works/">How It Works</a>
+          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/examples/">Examples</Link>
+          <Link href="/how-it-works/">How It Works</Link>
           <a href="/aboutus.html">About</a>
         </div>
         <div className="header-actions">
-          <a className="button button-primary" href={isHome ? "#cta" : "/#cta"}>
-            Start Building.
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
+          {isHome ? (
+            <a className="button button-primary" href="#cta">
+              Start Building.
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          ) : (
+            <Link className="button button-primary" href="/#cta">
+              Start Building.
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          )}
         </div>
       </nav>
     </header>
@@ -3219,10 +3234,10 @@ function SiteFooter() {
     <footer className="site-footer">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div className="footer-brand">
-          <a href="/" className="footer-logo" aria-label="DaytonGrowthCo home">
+          <Link href="/" className="footer-logo" aria-label="DaytonGrowthCo home">
             <img src={logoUrl} alt="" width="32" height="32" />
             <InteractiveWordmark />
-          </a>
+          </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
           <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
           <div className="social-links" aria-label="Social media">
@@ -3230,11 +3245,11 @@ function SiteFooter() {
           </div>
         </div>
         <nav className="footer-links" aria-label="Explore">
-          <a href="/what-we-build/">What We Build</a>
-          <a href="/examples/">Examples</a>
-          <a href="/how-it-works/">How It Works</a>
+          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/examples/">Examples</Link>
+          <Link href="/how-it-works/">How It Works</Link>
           <a href="/aboutus.html">About Us</a>
-          <a href="/#cta">Start a Conversation</a>
+          <Link href="/#cta">Start a Conversation</Link>
         </nav>
         <nav className="footer-links" aria-label="Legal and contact">
           <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
