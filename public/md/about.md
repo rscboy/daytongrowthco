@@ -18,13 +18,15 @@
 
 Born and raised in Dayton, Ohio, **Samuel Caruso** has always loved building things, whether that meant physical projects, systems, or growth strategies.
 
-The name DaytonGrowthCo. honors those roots without defining our reach. Dayton is the birthplace of aviation, where the Wright brothers turned a bold idea into something that changed how the world moves. To us, that spirit represents growth: practical invention, steady experimentation, and the courage to build what comes next. We bring that Dayton mindset to small and midsized businesses across the United States.
-
 He earned his undergraduate degree in History from the University of Michigan and later completed a Master’s in Entrepreneurship and Emerging Technology, blending strategic thinking with modern digital tools.
 
 "Most small businesses do not need more software. They need the right tool built around the work."
 
 Samuel founded DaytonGrowthCo. to build phone agents, quote tools, dashboards, portals, sales materials, and custom apps for small businesses. **The work starts with the process, then becomes a tool the team can use.** By building with AI, we deliver that custom work for a fraction of the usual cost, so the businesses that need it most can finally afford it.
+
+## Why DaytonGrowthCo.
+
+The name DaytonGrowthCo. honors those roots without defining our reach. Dayton is the birthplace of aviation, where the Wright brothers turned a bold idea into something that changed how the world moves. To us, that spirit represents growth: practical invention, steady experimentation, and the courage to build what comes next. We bring that Dayton mindset to small and midsized businesses across the United States.
 
 ### Our Mission
 

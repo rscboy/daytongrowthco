@@ -241,6 +241,7 @@
         .about-return-link:hover { color: #182018; }
 
         .about-page-intro,
+        .about-name-story,
         .about-mission {
             background:
                 radial-gradient(circle at 12% 18%, rgba(240, 208, 176, 0.2), transparent 24rem),
@@ -265,6 +266,60 @@
             color: #101048 !important;
             background: none !important;
             -webkit-text-fill-color: currentColor !important;
+        }
+
+        .about-name-story {
+            position: relative;
+            overflow: hidden;
+            padding: 4.5rem 1.5rem 5.25rem;
+            border-top: 1px solid rgba(24, 32, 24, 0.09);
+        }
+
+        .about-name-story::before {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0)),
+                radial-gradient(circle at 82% 20%, rgba(87, 150, 200, 0.13), transparent 24rem);
+            content: "";
+            pointer-events: none;
+        }
+
+        .about-name-inner {
+            position: relative;
+            display: grid;
+            max-width: 68rem;
+            gap: 2rem;
+            margin-inline: auto;
+        }
+
+        .about-name-mark {
+            align-self: center;
+            color: rgba(16, 16, 72, 0.08);
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: clamp(4.8rem, 16vw, 11rem);
+            font-weight: 650;
+            letter-spacing: 0;
+            line-height: 0.82;
+            white-space: nowrap;
+        }
+
+        .about-name-copy {
+            max-width: 43rem;
+            align-self: center;
+        }
+
+        .about-name-copy h2 {
+            margin-bottom: 1.1rem;
+            color: #111318;
+            font-size: clamp(2rem, 4vw, 3.35rem);
+            line-height: 1;
+        }
+
+        .about-name-copy p {
+            color: #4f565f;
+            font-size: clamp(1rem, 1.4vw, 1.12rem);
+            line-height: 1.75;
         }
 
         .about-mission {
@@ -443,6 +498,7 @@
 
         @media (min-width: 900px) {
             .about-nav-links { display: flex; }
+            .about-name-inner { grid-template-columns: minmax(12rem, 0.42fr) minmax(0, 0.58fr); }
             .about-footer-grid { grid-template-columns: 1.2fr 0.8fr 0.8fr; }
         }
 
@@ -543,6 +599,12 @@
             }
 
             .about-page-intro { padding-top: 9rem; }
+
+            .about-name-story { padding-block: 3.5rem 4rem; }
+            .about-name-mark {
+                font-size: 4.7rem;
+                line-height: 0.9;
+            }
 
             .about-closing-actions a { width: 100%; }
             .about-footer-grid { padding-inline: 1.25rem; }
@@ -667,9 +729,6 @@
                             Born and raised in Dayton, Ohio, <strong class="text-saas-textDark font-[600]">Samuel Caruso</strong> has always loved building things, whether that meant physical projects, systems, or growth strategies.
                         </p>
                         <p>
-                            The name DaytonGrowthCo. honors those roots without defining our reach. Dayton is the birthplace of aviation, where the Wright brothers turned a bold idea into something that changed how the world moves. To us, that spirit represents growth: practical invention, steady experimentation, and the courage to build what comes next. We bring that Dayton mindset to small and midsized businesses across the United States.
-                        </p>
-                        <p>
                             He earned his undergraduate degree in History from the University of Michigan and later completed a Master’s in Entrepreneurship and Emerging Technology, blending strategic thinking with modern digital tools.
                         </p>
                         
@@ -688,6 +747,18 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <section class="about-name-story" aria-labelledby="about-name-title">
+        <div class="about-name-inner">
+            <div class="about-name-mark" aria-hidden="true">DGC</div>
+            <div class="about-name-copy reveal">
+                <h2 id="about-name-title">Why DaytonGrowthCo.</h2>
+                <p>
+                    The name DaytonGrowthCo. honors those roots without defining our reach. Dayton is the birthplace of aviation, where the Wright brothers turned a bold idea into something that changed how the world moves. To us, that spirit represents growth: practical invention, steady experimentation, and the courage to build what comes next. We bring that Dayton mindset to small and midsized businesses across the United States.
+                </p>
             </div>
         </div>
     </section>
