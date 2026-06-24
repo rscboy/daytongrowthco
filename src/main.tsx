@@ -3342,8 +3342,8 @@ function InputConstellation() {
     let progress = 0;
     const st = ScrollTrigger.create({
       trigger: section,
-      start: "top 80%",
-      end: "top 30%",
+      start: "top 58%",
+      end: "top 8%",
       scrub: true,
       onUpdate: (self) => {
         progress = self.progress;
