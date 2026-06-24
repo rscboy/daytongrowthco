@@ -8,6 +8,7 @@ const formAction =
   "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
 
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
+const heroVideoUrl = "https://stream.mux.com/4IMYGcL01xjs7ek5ANO17JC4VQVUTsojZlnw4fXzwSxc.m3u8";
 
 const socialLinks = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
@@ -119,6 +120,72 @@ type TurnstileApi = {
   remove: (widgetId?: string) => void;
 };
 
+type HlsConstructor = new (options?: Record<string, unknown>) => {
+  loadSource: (source: string) => void;
+  attachMedia: (video: HTMLVideoElement) => void;
+  destroy: () => void;
+};
+
+function HeroBackgroundVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = heroVideoUrl;
+      return;
+    }
+
+    let hls: InstanceType<HlsConstructor> | undefined;
+    let cancelled = false;
+
+    const attachHls = (Hls: HlsConstructor & { isSupported?: () => boolean }) => {
+      if (cancelled || !video || !Hls.isSupported?.()) return;
+      hls = new Hls({ lowLatencyMode: true });
+      hls.loadSource(heroVideoUrl);
+      hls.attachMedia(video);
+    };
+
+    const win = window as unknown as { Hls?: HlsConstructor & { isSupported?: () => boolean } };
+    if (win.Hls) {
+      attachHls(win.Hls);
+    } else {
+      const existing = document.querySelector<HTMLScriptElement>("script[data-hls-loader]");
+      if (existing) {
+        existing.addEventListener("load", () => win.Hls && attachHls(win.Hls), { once: true });
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js";
+        script.async = true;
+        script.defer = true;
+        script.dataset.hlsLoader = "true";
+        script.addEventListener("load", () => win.Hls && attachHls(win.Hls), { once: true });
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      cancelled = true;
+      hls?.destroy();
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      className="lp-hero-video"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden="true"
+    />
+  );
+}
+
 function normalizeWebsiteUrl(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "";
@@ -223,6 +290,7 @@ function FreeRedesignOffer() {
 
   return (
     <section className="lp-hero" id="free-redesign" aria-labelledby="redesign-title">
+      <HeroBackgroundVideo />
       <div className="lp-hero-copy">
         <h1 id="redesign-title">We’ll redesign your website. Free.</h1>
         <p className="lp-lede">
