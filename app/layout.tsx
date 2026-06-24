@@ -4,6 +4,8 @@ import "../src/index.css";
 import "../src/systems-that-pay.css";
 
 const siteUrl = "https://www.daytongrowth.co";
+const googleAnalyticsId = "G-5844NWC2PD";
+const clarityProjectId = "wix3m0k0lr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -158,6 +160,36 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <div id="boot-splash" aria-hidden="true" />
         {children}
+        <Script
+          id="google-analytics-loader"
+          src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+          strategy="lazyOnload"
+        />
+        <Script
+          id="google-analytics-config"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag("js", new Date());
+              gtag("config", "${googleAnalyticsId}");
+            `,
+          }}
+        />
+        <Script
+          id="microsoft-clarity"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "${clarityProjectId}");
+            `,
+          }}
+        />
         <Script src="/legal-overlay.js" strategy="afterInteractive" />
         <Script src="/page-transitions.js?v=5" strategy="afterInteractive" />
       </body>
