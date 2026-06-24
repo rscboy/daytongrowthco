@@ -10713,3 +10713,163 @@ body.personalize-lock {
     transform: translateX(14px);
   }
 }
+
+/* ===========================================================================
+   Input Constellation -> Workflow Core (#7, Three.js). Full-width canvas with
+   crisp HTML label overlays. Brand palette; calm technical map, not a dashboard.
+   ========================================================================= */
+.ic-section {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+  overflow: hidden;
+}
+
+.ic-canvas-wrap {
+  position: relative;
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+  width: 100%;
+}
+
+.ic-canvas {
+  display: block;
+  width: 100%;
+}
+
+.ic-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ic-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid #ededeb;
+  border-radius: 7px;
+  background: rgba(251, 251, 249, 0.92);
+  padding: 0.18rem 0.5rem;
+  color: #1f211f;
+  font-size: 0.72rem;
+  font-weight: 560;
+  white-space: nowrap;
+  cursor: default;
+  will-change: transform, opacity;
+  transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+}
+
+.ic-label--stage {
+  border-color: rgba(24, 23, 77, 0.28);
+  color: #18174d;
+  font-weight: 640;
+}
+
+.ic-label:hover,
+.ic-label:focus-visible {
+  border-color: #18174d;
+  color: #18174d;
+  outline: none;
+}
+
+.ic-label:focus-visible {
+  box-shadow: 0 0 0 2px rgba(24, 23, 77, 0.4);
+}
+
+/* Plain-English tooltip on hover / keyboard focus. */
+.ic-tip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 5;
+  width: max-content;
+  max-width: 14rem;
+  transform: translateX(-50%);
+  border: 1px solid #ededeb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(31, 33, 31, 0.12);
+  padding: 0.45rem 0.6rem;
+  color: #5f5c56;
+  font-size: 0.74rem;
+  font-weight: 480;
+  line-height: 1.35;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 140ms ease;
+}
+
+.ic-label:hover .ic-tip,
+.ic-label:focus-visible .ic-tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Reduced-motion static fallback: the same mapping, no canvas. */
+.ic-static {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+  padding: 0;
+  list-style: none;
+}
+
+.ic-static__stage {
+  border: 1px solid #ededeb;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 34px rgba(31, 33, 31, 0.05);
+  padding: 1rem;
+}
+
+.ic-static__name {
+  color: #18174d;
+  font-size: 0.95rem;
+  font-weight: 640;
+}
+
+.ic-static__desc {
+  margin-top: 0.25rem;
+  color: #6a665f;
+  font-size: 0.82rem;
+}
+
+.ic-static__stage ul {
+  margin-top: 0.7rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ic-static__stage ul li {
+  color: #5f5c56;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.ic-static__stage ul li span {
+  display: block;
+  color: #1f211f;
+  font-weight: 580;
+}
+
+@media (max-width: 900px) {
+  .ic-static {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .ic-static {
+    grid-template-columns: 1fr;
+  }
+
+  .ic-label {
+    font-size: 0.68rem;
+    padding: 0.16rem 0.42rem;
+  }
+}

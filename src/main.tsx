@@ -50,6 +50,7 @@ import {
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type * as ThreeNS from "three";
 import "./index.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
@@ -3701,6 +3702,418 @@ function SpreadsheetConfessional() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Input Constellation -> Workflow Core (#7). A restrained Three.js scene: the
+// scattered inputs a small business runs on settle into a Capture -> Structure
+// -> Build -> Output pipeline as the section is scrolled. HTML/CSS label
+// overlays keep text crisp; reduced motion renders a static diagram instead.
+// ---------------------------------------------------------------------------
+const constellationStages = [
+  { id: "capture", label: "Capture", desc: "Collect the work once." },
+  { id: "structure", label: "Structure", desc: "Clean up the context." },
+  { id: "build", label: "Build", desc: "Apply rules and workflow." },
+  { id: "output", label: "Output", desc: "Send the next step." },
+] as const;
+
+type StageId = (typeof constellationStages)[number]["id"];
+
+const constellationInputs: ReadonlyArray<{
+  id: string;
+  label: string;
+  stage: StageId;
+  desc: string;
+  scatter: [number, number, number];
+}> = [
+  { id: "calls", label: "Calls", stage: "capture", desc: "Capture the request while it is fresh.", scatter: [-5.5, 2.6, 1.2] },
+  { id: "texts", label: "Texts", stage: "capture", desc: "Pull scattered context into one place.", scatter: [4.9, 2.2, -1.4] },
+  { id: "photos", label: "Photos", stage: "capture", desc: "Attach field evidence to the job.", scatter: [-2.8, -2.7, 1.3] },
+  { id: "pdfs", label: "PDFs", stage: "structure", desc: "Extract details from documents.", scatter: [5.3, -1.7, 0.9] },
+  { id: "notes", label: "Notes", stage: "structure", desc: "Turn informal knowledge into structure.", scatter: [-5.1, -0.8, -1.1] },
+  { id: "spreadsheets", label: "Spreadsheets", stage: "build", desc: "Move pricing logic into the tool.", scatter: [1.2, 3.0, -1.8] },
+  { id: "files", label: "Files", stage: "output", desc: "Produce the output the team can use.", scatter: [0.4, -3.0, 1.6] },
+];
+
+// Settled positions for the core and its inputs, in scene units. Horizontal
+// pipeline on wide screens; vertical pipeline on narrow screens so labels stay
+// readable with no horizontal scroll.
+function constellationLayout(vertical: boolean) {
+  const stagePos: Record<string, [number, number]> = {};
+  const inputPos: Record<string, [number, number]> = {};
+  if (vertical) {
+    const ys: Record<StageId, number> = { capture: 3, structure: 1, build: -1, output: -3 };
+    constellationStages.forEach((s) => (stagePos[s.id] = [1.1, ys[s.id]]));
+    inputPos.calls = [-1.4, 3.6]; inputPos.texts = [-1.4, 3.0]; inputPos.photos = [-1.4, 2.4];
+    inputPos.pdfs = [-1.4, 1.4]; inputPos.notes = [-1.4, 0.6];
+    inputPos.spreadsheets = [-1.4, -1]; inputPos.files = [-1.4, -3];
+  } else {
+    const xs: Record<StageId, number> = { capture: -4.6, structure: -1.55, build: 1.55, output: 4.6 };
+    constellationStages.forEach((s) => (stagePos[s.id] = [xs[s.id], -1.4]));
+    inputPos.calls = [-5.6, 1.7]; inputPos.texts = [-4.6, 2.1]; inputPos.photos = [-3.6, 1.7];
+    inputPos.pdfs = [-2.15, 1.9]; inputPos.notes = [-0.95, 1.9];
+    inputPos.spreadsheets = [1.55, 1.9]; inputPos.files = [4.6, 1.9];
+  }
+  return { stagePos, inputPos };
+}
+
+function InputConstellation() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const labelEls = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setReduced(true);
+      return;
+    }
+    const canvas = canvasRef.current;
+    const section = sectionRef.current;
+    if (!canvas || !section) return;
+
+    const initScene = (THREE: typeof ThreeNS) => {
+    const palette = {
+      indigo: 0x18174d,
+      peach: 0xf1d0b1,
+      paleBlue: 0xdde9fc,
+      charcoal: 0x1f211f,
+      border: 0xededeb,
+      line: 0xbcc0cf,
+    };
+    const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 12.5);
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const sphereGeo = new THREE.SphereGeometry(1, 24, 24);
+    const disposables: Array<{ dispose: () => void }> = [sphereGeo];
+
+    // Workflow stage nodes.
+    const stageMeshes: Record<string, ThreeNS.Mesh> = {};
+    constellationStages.forEach((s) => {
+      const mat = new THREE.MeshBasicMaterial({ color: palette.indigo, transparent: true });
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      mesh.scale.setScalar(0.26);
+      group.add(mesh);
+      stageMeshes[s.id] = mesh;
+      disposables.push(mat);
+    });
+
+    // Input nodes + their route line into the mapped stage.
+    type Node = {
+      id: string;
+      stage: StageId;
+      mesh: ThreeNS.Mesh;
+      mat: ThreeNS.MeshBasicMaterial;
+      line: ThreeNS.Line;
+      lineMat: ThreeNS.LineBasicMaterial;
+      lineGeo: ThreeNS.BufferGeometry;
+      scatter: ThreeNS.Vector3;
+      settled: ThreeNS.Vector3;
+    };
+    const nodes: Node[] = constellationInputs.map((input) => {
+      const mat = new THREE.MeshBasicMaterial({ color: palette.paleBlue, transparent: true });
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      mesh.scale.setScalar(0.17);
+      group.add(mesh);
+      const lineMat = new THREE.LineBasicMaterial({ color: palette.line, transparent: true, opacity: 0 });
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(6), 3));
+      const line = new THREE.Line(lineGeo, lineMat);
+      group.add(line);
+      disposables.push(mat, lineMat, lineGeo);
+      return {
+        id: input.id,
+        stage: input.stage,
+        mesh,
+        mat,
+        line,
+        lineMat,
+        lineGeo,
+        scatter: new THREE.Vector3(...input.scatter),
+        settled: new THREE.Vector3(),
+      };
+    });
+
+    // Pipeline lines between consecutive stages.
+    const pipelineMat = new THREE.LineBasicMaterial({ color: palette.indigo, transparent: true, opacity: 0 });
+    const pipelineGeo = new THREE.BufferGeometry();
+    pipelineGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(constellationStages.length * 3), 3));
+    const pipeline = new THREE.Line(pipelineGeo, pipelineMat);
+    group.add(pipeline);
+    disposables.push(pipelineMat, pipelineGeo);
+
+    let vertical = false;
+    const stageVec: Record<string, ThreeNS.Vector3> = {};
+    const applyLayout = () => {
+      vertical = section.clientWidth < 720;
+      const { stagePos, inputPos } = constellationLayout(vertical);
+      constellationStages.forEach((s) => {
+        const [x, y] = stagePos[s.id];
+        stageMeshes[s.id].position.set(x, y, 0);
+        stageVec[s.id] = new THREE.Vector3(x, y, 0);
+      });
+      nodes.forEach((n) => {
+        const [x, y] = inputPos[n.id];
+        n.settled.set(x, y, 0);
+      });
+      const pp = pipelineGeo.getAttribute("position") as ThreeNS.BufferAttribute;
+      constellationStages.forEach((s, i) => pp.setXYZ(i, stageVec[s.id].x, stageVec[s.id].y, 0));
+      pp.needsUpdate = true;
+    };
+
+    const resize = () => {
+      const w = section.clientWidth;
+      const h = vertical ? 460 : 520;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.position.z = section.clientWidth < 720 ? 13.5 : 12.5;
+      camera.updateProjectionMatrix();
+    };
+    applyLayout();
+    resize();
+
+    // Cursor parallax (desktop only); pointer fine = has a precise pointer.
+    const hasPointer = window.matchMedia("(pointer: fine)").matches;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    const onPointerMove = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect();
+      pointer.tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      pointer.ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    };
+    if (hasPointer) window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    // Scroll progress drives the settle. ScrollTrigger is already registered.
+    let progress = 0;
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: "top 80%",
+      end: "top 30%",
+      scrub: true,
+      onUpdate: (self) => {
+        progress = self.progress;
+      },
+    });
+
+    // Hover state highlights a route or a stage's inputs.
+    let activeId: string | null = null;
+    const setActive = (id: string | null) => {
+      activeId = id;
+      const activeInput = nodes.find((n) => n.id === id);
+      const activeStage = constellationStages.find((s) => s.id === id);
+      nodes.forEach((n) => {
+        const on =
+          (activeInput && n.id === activeInput.id) ||
+          (activeStage && n.stage === activeStage.id);
+        n.mat.color.setHex(on ? palette.indigo : palette.paleBlue);
+        n.lineMat.color.setHex(on ? palette.indigo : palette.line);
+        n.line.renderOrder = on ? 1 : 0;
+      });
+      Object.entries(stageMeshes).forEach(([sid, mesh]) => {
+        const on = activeStage?.id === sid || activeInput?.stage === sid;
+        (mesh.material as ThreeNS.MeshBasicMaterial).color.setHex(on ? palette.peach : palette.indigo);
+      });
+    };
+
+    // Attach hover/focus listeners to the HTML labels (accessible, crisp text).
+    const cleanups: Array<() => void> = [];
+    Object.entries(labelEls.current).forEach(([id, el]) => {
+      if (!el) return;
+      const enter = () => setActive(id);
+      const leave = () => setActive(null);
+      el.addEventListener("pointerenter", enter);
+      el.addEventListener("pointerleave", leave);
+      el.addEventListener("focus", enter);
+      el.addEventListener("blur", leave);
+      cleanups.push(() => {
+        el.removeEventListener("pointerenter", enter);
+        el.removeEventListener("pointerleave", leave);
+        el.removeEventListener("focus", enter);
+        el.removeEventListener("blur", leave);
+      });
+    });
+
+    const tmp = new THREE.Vector3();
+    const projectLabel = (worldY: ThreeNS.Object3D, id: string, opacity: number) => {
+      const el = labelEls.current[id];
+      if (!el) return;
+      worldY.getWorldPosition(tmp);
+      tmp.project(camera);
+      const w = renderer.domElement.clientWidth;
+      const h = renderer.domElement.clientHeight;
+      const x = (tmp.x * 0.5 + 0.5) * w;
+      const y = (-tmp.y * 0.5 + 0.5) * h;
+      el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+      el.style.opacity = String(opacity);
+      el.style.pointerEvents = opacity > 0.6 ? "auto" : "none";
+    };
+
+    let raf = 0;
+    let running = false;
+    const renderFrame = () => {
+      const p = easeInOut(progress);
+      // Smooth parallax.
+      pointer.x += (pointer.tx - pointer.x) * 0.06;
+      pointer.y += (pointer.ty - pointer.y) * 0.06;
+      group.rotation.y = pointer.x * 0.12;
+      group.rotation.x = -pointer.y * 0.08;
+
+      nodes.forEach((n) => {
+        n.mesh.position.lerpVectors(n.scatter, n.settled, p);
+        const sv = stageVec[n.stage];
+        const pos = n.lineGeo.getAttribute("position") as ThreeNS.BufferAttribute;
+        pos.setXYZ(0, n.mesh.position.x, n.mesh.position.y, n.mesh.position.z);
+        pos.setXYZ(1, sv.x, sv.y, sv.z);
+        pos.needsUpdate = true;
+        const routeLit = activeId === n.id || activeId === n.stage;
+        n.lineMat.opacity = p * (routeLit ? 0.95 : 0.7);
+        n.mat.opacity = 0.55 + 0.45 * p;
+      });
+      constellationStages.forEach((s) => {
+        const mesh = stageMeshes[s.id];
+        (mesh.material as ThreeNS.MeshBasicMaterial).opacity = 0.25 + 0.75 * p;
+        mesh.scale.setScalar(0.26 * (0.7 + 0.3 * p));
+      });
+      pipelineMat.opacity = p * 0.5;
+
+      nodes.forEach((n) => projectLabel(n.mesh, n.id, 0.35 + 0.65 * p));
+      constellationStages.forEach((s) => projectLabel(stageMeshes[s.id], s.id, 0.4 + 0.6 * p));
+
+      renderer.render(scene, camera);
+    };
+    const loop = () => {
+      renderFrame();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (!running) {
+        running = true;
+        loop();
+      }
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    // Only run the loop while the section is on screen.
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+      { threshold: 0 },
+    );
+    io.observe(section);
+
+    const onResize = () => {
+      applyLayout();
+      resize();
+      renderFrame();
+    };
+    window.addEventListener("resize", onResize);
+    renderFrame(); // paint one frame immediately so there is no blank canvas.
+
+    return () => {
+      stop();
+      io.disconnect();
+      st.kill();
+      window.removeEventListener("resize", onResize);
+      if (hasPointer) window.removeEventListener("pointermove", onPointerMove);
+      cleanups.forEach((fn) => fn());
+      disposables.forEach((d) => d.dispose());
+      renderer.dispose();
+    };
+    };
+
+    let disposeScene: (() => void) | null = null;
+    let cancelled = false;
+    // Lazy-load three.js only when the section nears the viewport, so the 3D
+    // library stays out of the initial homepage bundle.
+    const loadObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        loadObserver.disconnect();
+        void import("three").then((THREE) => {
+          if (cancelled) return;
+          disposeScene = initScene(THREE);
+        });
+      },
+      { rootMargin: "400px 0px" },
+    );
+    loadObserver.observe(section);
+
+    return () => {
+      cancelled = true;
+      loadObserver.disconnect();
+      disposeScene?.();
+    };
+  }, []);
+
+  return (
+    <section className="ic-section" aria-labelledby="ic-title" ref={sectionRef}>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="section-heading">
+          <p className="meta-label">Operating system</p>
+          <h2 id="ic-title">Scattered inputs become one workflow.</h2>
+          <p>The same calls, texts, and files every small business runs on, routed into Capture, Structure, Build, and Output.</p>
+        </div>
+      </div>
+      {reduced ? (
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <ol className="ic-static">
+            {constellationStages.map((s) => (
+              <li className="ic-static__stage" key={s.id}>
+                <p className="ic-static__name">{s.label}</p>
+                <p className="ic-static__desc">{s.desc}</p>
+                <ul>
+                  {constellationInputs.filter((i) => i.stage === s.id).map((i) => (
+                    <li key={i.id}><span>{i.label}</span> {i.desc}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : (
+        <div className="ic-canvas-wrap">
+          <canvas className="ic-canvas" ref={canvasRef} aria-hidden="true" />
+          <div className="ic-overlay">
+            {constellationInputs.map((i) => (
+              <button
+                type="button"
+                className="ic-label ic-label--input"
+                key={i.id}
+                ref={(el) => { labelEls.current[i.id] = el; }}
+              >
+                {i.label}
+                <span className="ic-tip">{i.desc}</span>
+              </button>
+            ))}
+            {constellationStages.map((s) => (
+              <button
+                type="button"
+                className="ic-label ic-label--stage"
+                key={s.id}
+                ref={(el) => { labelEls.current[s.id] = el; }}
+              >
+                {s.label}
+                <span className="ic-tip">{s.desc}</span>
+              </button>
+            ))}
+          </div>
+          {/* Accessible description of the same mapping for screen readers. */}
+          <ul className="sr-only">
+            {constellationInputs.map((i) => (
+              <li key={i.id}>{i.label} routes into {i.stage}. {i.desc}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Homepage() {
   return (
     <>
@@ -3717,6 +4130,7 @@ function Homepage() {
         <AiVisibility />
         <EconomicCase />
         <SpreadsheetConfessional />
+        <InputConstellation />
         <LaborCostCalculator sectionId="workflow" />
         <MetricsStrip />
         <FounderPreview />
