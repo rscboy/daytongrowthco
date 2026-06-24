@@ -3552,51 +3552,50 @@ const processInputs = [
 
 function ProcessMap() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const reducedRef = useRef(false);
-  const [organized, setOrganized] = useState(false);
 
   const scatterFor = (node: HTMLElement) =>
     JSON.parse(node.dataset.scatter || "{}") as { x: number; y: number; rotate: number };
 
-  // Set the resting (scattered) state once. Reduced motion shows the organized
-  // result immediately with no scatter and no motion.
+  // Scroll-scrubbed: the inputs start scattered as the section enters view and
+  // progressively settle into the system as the user scrolls through it. A
+  // small per-node stagger makes them snap in as a wave rather than all at once.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const nodes = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".pmap-node"));
     const result = root.querySelector(".pmap-result");
-    if (reducedRef.current) {
-      gsap.set(nodes, { x: 0, y: 0, rotate: 0, autoAlpha: 1 });
-      gsap.set(result, { autoAlpha: 1 });
-      setOrganized(true);
-      return;
-    }
-    nodes.forEach((node) => gsap.set(node, { ...scatterFor(node), autoAlpha: 1 }));
-    gsap.set(result, { autoAlpha: 0 });
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        animate: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduce } = context.conditions as { reduce: boolean };
+        if (reduce) {
+          gsap.set(nodes, { x: 0, y: 0, rotate: 0, autoAlpha: 1 });
+          gsap.set(result, { autoAlpha: 1 });
+          return;
+        }
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root, start: "top 80%", end: "center 55%", scrub: true },
+        });
+        nodes.forEach((node, i) => {
+          const s = scatterFor(node);
+          tl.fromTo(
+            node,
+            { x: s.x, y: s.y, rotate: s.rotate, autoAlpha: 1 },
+            { x: 0, y: 0, rotate: 0 },
+            i * 0.08,
+          );
+        });
+        tl.fromTo(result, { autoAlpha: 0 }, { autoAlpha: 1 }, ">-0.15");
+      },
+      root,
+    );
+    return () => mm.revert();
   }, []);
-
-  // Animate between scattered and organized on toggle. Tweens are killed (not
-  // reverted) on change/unmount so positions never snap back unexpectedly.
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || reducedRef.current) return;
-    const nodes = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".pmap-node"));
-    const result = root.querySelector(".pmap-result");
-    const tweens: gsap.core.Tween[] = [];
-    if (organized) {
-      tweens.push(gsap.to(nodes, { x: 0, y: 0, rotate: 0, duration: 0.6, ease: "power3.inOut", stagger: 0.06, overwrite: true }));
-      tweens.push(gsap.to(result, { autoAlpha: 1, duration: 0.4, delay: 0.2, overwrite: true }));
-    } else {
-      nodes.forEach((node) =>
-        tweens.push(gsap.to(node, { ...scatterFor(node), duration: 0.6, ease: "power3.inOut", overwrite: true })),
-      );
-      tweens.push(gsap.to(result, { autoAlpha: 0, duration: 0.3, overwrite: true }));
-    }
-    return () => tweens.forEach((t) => t.kill());
-  }, [organized]);
-
-  const toggle = () => setOrganized((v) => !v);
 
   return (
     <section className="pmap" aria-labelledby="pmap-title" ref={rootRef}>
@@ -3604,10 +3603,7 @@ function ProcessMap() {
         <div className="section-heading">
           <p className="meta-label">Process map</p>
           <h2 id="pmap-title">The mess is the input, not the problem.</h2>
-          <p>Every business runs on scattered inputs. We map them into one system on purpose.</p>
-          <button type="button" className="pmap-button" onClick={toggle} aria-pressed={organized}>
-            {organized ? "Scatter the inputs" : "Snap into a system"}
-          </button>
+          <p>Every business runs on scattered inputs. Scroll, and they map into one system.</p>
         </div>
         <DottedPanel className="pmap-stage" label="Scattered business inputs organizing into one system">
           <div className="pmap-grid">

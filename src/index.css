@@ -10345,30 +10345,6 @@ body.personalize-lock {
   padding-block: clamp(3.5rem, 7vw, 6rem);
 }
 
-.pmap-button {
-  margin-top: 1.4rem;
-  align-self: start;
-  border: 1px solid rgba(24, 23, 77, 0.25);
-  border-radius: 8px;
-  background: #ffffff;
-  padding: 0.55rem 0.95rem;
-  color: #18174d;
-  font-size: 0.86rem;
-  font-weight: 560;
-  cursor: pointer;
-  transition: background-color 160ms ease, border-color 160ms ease;
-}
-
-.pmap-button:hover {
-  background: #f3f2ec;
-  border-color: rgba(24, 23, 77, 0.45);
-}
-
-.pmap-button:focus-visible {
-  outline: 2px solid #18174d;
-  outline-offset: 2px;
-}
-
 /* --- Quote builder (#3) --- */
 .qbuilder-stage,
 .pmap-stage,
