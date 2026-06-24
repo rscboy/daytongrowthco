@@ -84,7 +84,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth scroll-pt-24">
+    <html lang="en" className="scroll-smooth scroll-pt-24" suppressHydrationWarning>
       <head>
         <script
           id="dgc-boot-splash-state"
@@ -140,6 +140,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
               html.dgc-splash-seen #boot-splash {
                 display: none;
+              }
+
+              #boot-splash[hidden] {
+                display: none !important;
               }
 
               @media (prefers-reduced-motion: reduce) {

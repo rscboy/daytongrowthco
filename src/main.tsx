@@ -2301,7 +2301,11 @@ function SplashScreen() {
   const [done, setDone] = useState(skipSplash);
 
   useEffect(() => {
-    document.getElementById("boot-splash")?.remove();
+    const bootSplash = document.getElementById("boot-splash");
+    if (bootSplash) {
+      bootSplash.hidden = true;
+      bootSplash.setAttribute("aria-hidden", "true");
+    }
     if (skipSplash) {
       document.documentElement.classList.add("dgc-splash-seen");
       document.documentElement.classList.remove("dgc-splash-pending");
@@ -2315,8 +2319,8 @@ function SplashScreen() {
       /* Continue showing the splash when storage is unavailable. */
     }
     document.body.classList.add("splash-lock");
-    // This effect runs after the React splash is committed to the DOM (same
-    // frame), so removing the inline boot overlay now hands off seamlessly.
+    // This effect runs after the React splash is committed to the DOM, so
+    // hiding the inline boot overlay now hands off without removing a layout node.
     const timer = window.setTimeout(() => {
       setDone(true);
       document.documentElement.classList.add("dgc-splash-seen");
@@ -3651,8 +3655,13 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
   const path = initialPath.replace(/\/+$/, "") || "/";
   useEffect(() => {
     if (path !== "/") {
-      document.getElementById("boot-splash")?.remove();
+      const bootSplash = document.getElementById("boot-splash");
+      if (bootSplash) {
+        bootSplash.hidden = true;
+        bootSplash.setAttribute("aria-hidden", "true");
+      }
       document.documentElement.classList.add("dgc-splash-seen");
+      document.documentElement.classList.remove("dgc-splash-pending");
       document.body.classList.remove("splash-lock");
     }
 
