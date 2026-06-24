@@ -6714,24 +6714,32 @@
   }
 
   .service-architecture {
-    background: #fbfbf9;
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, #fbfbf9 0%, #f1eee6 100%);
+  }
+
+  .service-architecture .dedicated-heading {
+    align-items: end;
   }
 
   .service-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 2.2rem;
+    gap: clamp(0.85rem, 1.4vw, 1.15rem);
+    margin-top: clamp(1.8rem, 3vw, 2.6rem);
   }
 
   .service-detail-grid article {
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(24, 23, 77, 0.13);
-    border-radius: 14px;
+    border-radius: 8px;
     padding: clamp(1.4rem, 2.4vw, 1.9rem);
-    background: rgba(255, 255, 255, 0.82);
-    box-shadow: var(--shadow-rest);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 247, 242, 0.86));
+    box-shadow: 0 16px 44px rgba(32, 29, 21, 0.07);
     transition:
       transform 240ms var(--ease-out-soft),
       box-shadow 240ms var(--ease-out-soft),
@@ -6786,7 +6794,8 @@
   }
 
   .service-detail-grid h3 {
-    margin: 0.65rem 0 0;
+    max-width: 18rem;
+    margin: 0.75rem 0 0;
     color: #202027;
     font-family: var(--font-serif);
     font-size: clamp(1.45rem, 2.4vw, 2rem);
@@ -6796,23 +6805,34 @@
 
   .service-detail-grid dl {
     display: grid;
-    gap: 0.9rem;
-    margin: 1.2rem 0 0;
+    gap: 0;
+    margin: 1.35rem 0 0;
+    border: 1px solid rgba(24, 23, 77, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.54);
   }
 
   .service-detail-grid dl div {
-    padding-top: 0.8rem;
-    border-top: 1px solid rgba(24, 23, 77, 0.09);
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 0.36fr) minmax(0, 1fr);
+    gap: 0.9rem;
+    padding: 0.95rem;
+    border-top: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .service-detail-grid dl div:first-child {
+    border-top: 0;
   }
 
   .service-detail-grid dt {
-    color: #18174d;
+    color: var(--card-accent, #18174d);
     font-size: 0.72rem;
     font-weight: 720;
+    letter-spacing: 0.02em;
   }
 
   .service-detail-grid dd {
-    margin: 0.3rem 0 0;
+    margin: 0;
     color: #66646b;
     font-size: 0.84rem;
     line-height: 1.55;
@@ -7186,49 +7206,99 @@
 
   /* How It Works: build principles */
   .build-principles {
-    background: #fbfbf9;
+    color: #fff;
+    background:
+      linear-gradient(135deg, rgba(241, 208, 177, 0.12), transparent 34rem),
+      #171821;
+  }
+
+  .build-principles .dedicated-heading h2 {
+    color: #fff;
+  }
+
+  .build-principles .dedicated-heading p {
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .build-principles-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem;
-    margin: 2rem 0 0;
+    gap: 1px;
+    overflow: hidden;
+    margin: clamp(1.8rem, 3vw, 2.5rem) 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
     padding: 0;
     list-style: none;
+    background: rgba(255, 255, 255, 0.14);
   }
 
   .build-principles-list li {
+    min-height: 13rem;
     display: flex;
-    gap: 0.9rem;
-    border: 1px solid rgba(24, 23, 77, 0.13);
-    border-radius: 10px;
-    padding: 1.2rem;
-    background: #fff;
+    gap: 1rem;
+    padding: clamp(1.2rem, 2.5vw, 1.8rem);
+    background: rgba(255, 255, 255, 0.075);
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+
+  .build-principles-list li:first-child {
+    grid-column: 1 / -1;
+    min-height: 10.5rem;
+    background:
+      linear-gradient(135deg, rgba(237, 231, 222, 0.98), rgba(248, 246, 240, 0.92));
+  }
+
+  .build-principles-list li:hover {
+    background-color: rgba(255, 255, 255, 0.11);
   }
 
   .build-principles-list li > span {
     flex: 0 0 auto;
-    color: var(--brand-accent);
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border: 1px solid rgba(241, 208, 177, 0.36);
+    border-radius: 999px;
+    color: #f1d0b1;
     font-size: 0.74rem;
     font-weight: 760;
     letter-spacing: 0.04em;
   }
 
+  .build-principles-list li:first-child > span {
+    border-color: rgba(24, 23, 77, 0.16);
+    color: #18174d;
+    background: rgba(255, 255, 255, 0.56);
+  }
+
   .build-principles-list strong {
     display: block;
-    color: #202027;
+    color: #fff;
     font-family: var(--font-serif);
-    font-size: 1.18rem;
+    font-size: clamp(1.22rem, 2vw, 1.62rem);
     font-weight: 540;
     line-height: 1.2;
   }
 
+  .build-principles-list li:first-child strong {
+    color: #171821;
+    font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+    letter-spacing: -0.035em;
+  }
+
   .build-principles-list p {
-    margin: 0.4rem 0 0;
-    color: #66646b;
+    max-width: 34rem;
+    margin: 0.55rem 0 0;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.84rem;
     line-height: 1.58;
+  }
+
+  .build-principles-list li:first-child p {
+    color: #5f5e65;
+    font-size: 0.95rem;
   }
 
   /* How It Works: discovery & diagnosis reuses .engagement-process layout */
@@ -8516,6 +8586,11 @@
 
   .service-detail-grid {
     margin-top: 1.5rem;
+  }
+
+  .service-detail-grid dl div {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
   }
 
   .engagement-process ol {

@@ -9,7 +9,6 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import {
   AppWindow,
   ArrowRight,
-  Bell,
   Calculator,
   Calendar,
   Camera,
@@ -20,13 +19,10 @@ import {
   ClipboardList,
   Database,
   DoorOpen,
-  FileInput,
   FileText,
   Gauge,
   Globe2,
   LayoutDashboard,
-  LockKeyhole,
-  Mail,
   MapPin,
   Megaphone,
   MessageSquare,
@@ -37,11 +33,9 @@ import {
   Radar,
   Search,
   Send,
-  ShieldCheck,
   Sparkles,
   StickyNote,
   Table,
-  ToggleRight,
   TrendingDown,
   TrendingUp,
   User,
@@ -80,21 +74,6 @@ type WorkflowStep = {
   stage: string;
   rows: Array<{ label: string; value: string; tone?: "accent" | "success" | "muted" }>;
 };
-
-const segments = [
-  {
-    label: "Tools for the work",
-    title: "Phone agents, quote tools, dashboards, portals, and internal systems built around your work.",
-    action: "See how we build",
-    items: ["Calls", "Quotes", "Projects"],
-  },
-  {
-    label: "Tools for the sale",
-    title: "Sales pages, proposal pages, product videos, visuals, and interactive decks.",
-    action: "Explore the tools",
-    items: ["Sales pages", "Videos", "Visuals"],
-  },
-];
 
 const workflowSteps: WorkflowStep[] = [
   {
@@ -321,12 +300,6 @@ const marginLeaks = [
     system: "Technical structure, local pages, useful content, and machine-readable business signals.",
     return: "A compounding discovery channel that reduces reliance on rented attention.",
   },
-];
-
-const metrics = [
-  { value: "Nationwide", label: "Dayton roots", detail: "Built for small and midsized businesses across the United States" },
-  { value: "24h", label: "response window", detail: "Response guaranteed within 24 hours" },
-  { value: "Up to 70%", label: "less than custom dev", detail: "AI-assisted builds reduce the hours a traditional shop would bill for" },
 ];
 
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
@@ -1028,79 +1001,6 @@ function DottedPanel({
   );
 }
 
-function SegmentCard({ segment, index }: { segment: (typeof segments)[number]; index: number }) {
-  const flowLabels =
-    index === 0
-      ? ["Call or note", "Useful tool", "Clear next step"]
-      : ["Product info", "Clear story", "Ready to send"];
-
-  return (
-    <a className="segment-card group" href="/how-it-works/">
-      <DottedPanel className="segment-stage">
-        <div className={`mini-board mini-system mini-system-${index + 1}`} aria-hidden="true">
-          <div className="mini-board-header">
-            <span>{index === 0 ? "Business workflow" : "Sales material"}</span>
-            <Sparkles size={13} aria-hidden="true" />
-          </div>
-          <div className="mini-flow">
-            {flowLabels.map((label, flowIndex) => (
-              <React.Fragment key={label}>
-                <span className={`mini-node ${flowIndex === 2 ? "is-final" : ""}`}>
-                  <i />
-                  {label}
-                </span>
-                {flowIndex < flowLabels.length - 1 ? <b /> : null}
-              </React.Fragment>
-            ))}
-          </div>
-          <div className="mini-signal-row">
-            {segment.items.map((item, itemIndex) => (
-              <span key={item} style={{ transitionDelay: `${itemIndex * 70}ms` }}>
-                {item}
-              </span>
-            ))}
-          </div>
-          <div className="mini-metric-strip">
-            <strong>{index === 0 ? "1 place" : "Ready"}</strong>
-            <span>{index === 0 ? "for the work" : "to share"}</span>
-          </div>
-        </div>
-      </DottedPanel>
-      <div className="segment-copy">
-        <h3>{segment.title}</h3>
-        <span className="link-arrow">
-          {segment.action}
-          <ArrowRight size={15} aria-hidden="true" />
-        </span>
-      </div>
-    </a>
-  );
-}
-
-function ClayLandscape({
-  scene = "warm",
-  videoSrc,
-  posterSrc,
-}: {
-  scene?: "warm" | "cool" | "pearl";
-  videoSrc?: string;
-  posterSrc?: string;
-}) {
-  return (
-    <div className={`clay-landscape clay-${scene}`} aria-hidden="true">
-      {videoSrc ? (
-        <video className="clay-video" src={videoSrc} poster={posterSrc} autoPlay muted loop playsInline />
-      ) : null}
-      <div className="clay-hill clay-hill-back" />
-      <div className="clay-hill clay-hill-mid" />
-      <div className="clay-hill clay-hill-front" />
-      <div className="clay-peak clay-peak-one" />
-      <div className="clay-peak clay-peak-two" />
-      <div className="clay-peak clay-peak-three" />
-    </div>
-  );
-}
-
 function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; index: number; active?: boolean }) {
   return (
     <div className={`scene-stack ${active ? "is-active" : ""}`}>
@@ -1710,33 +1610,6 @@ function Hero() {
   );
 }
 
-function ServiceModes() {
-  return (
-    <section className="service-modes" aria-label="About DaytonGrowthCo">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading" data-reveal>
-          <h2>
-            Calls. Quotes. Projects.
-            <span>Built into working systems.</span>
-          </h2>
-          <p>
-            Small businesses run on calls, texts, spreadsheets, PDFs, notes, photos, and files. We turn those inputs
-            into phone agents, calculators, dashboards, portals, training systems, pages, videos, and custom apps.
-          </p>
-          <p>
-            We configure existing software when it fits. We build custom tools when it does not.
-          </p>
-        </div>
-        <div className="segment-grid" aria-label="Product modes">
-          {segments.map((segment, index) => (
-            <SegmentCard key={segment.label} segment={segment} index={index} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function BusinessJourney() {
   const { profile } = usePersonalization();
   const business = profile?.business?.trim();
@@ -1779,129 +1652,6 @@ function BusinessJourney() {
           })}
         </div>
 
-      </div>
-    </section>
-  );
-}
-
-function StickyWorkflow() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLSpanElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const active = workflowSteps[activeStep];
-  const [mobileStep, setMobileStep] = useState(0);
-  const mobileActive = workflowSteps[mobileStep];
-
-  // Desktop "input to output" scroll story. CSS sticky pins the panel (no
-  // layout shift); a ScrollTrigger maps scroll progress to the active step
-  // and scrubs the progress bar. Only runs at the desktop breakpoint where
-  // the panel is visible; reverted via mm.revert() on unmount.
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    let lastStep = -1;
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 900px)", () => {
-      const setFill = progressRef.current
-        ? gsap.quickSetter(progressRef.current, "scaleX")
-        : null;
-      const st = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => {
-          if (setFill) setFill(self.progress);
-          const step = Math.min(
-            workflowSteps.length - 1,
-            Math.floor(self.progress * workflowSteps.length),
-          );
-          if (step !== lastStep) {
-            lastStep = step;
-            setActiveStep(step);
-          }
-        },
-      });
-      return () => st.kill();
-    });
-    return () => mm.revert();
-  }, []);
-
-  return (
-    <section id="workflow" className="workflow-section">
-      <div className="desktop-workflow" ref={sectionRef}>
-        <div className="sticky-workflow">
-          <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
-            <div className="workflow-copy" aria-live="polite">
-              <p className="step-count">
-                {String(activeStep + 1).padStart(2, "0")} / {String(workflowSteps.length).padStart(2, "0")}
-              </p>
-              <h2>{active.title}</h2>
-              <p>{active.description}</p>
-              <div className="workflow-dots" aria-label="Workflow progress">
-                {workflowSteps.map((step, index) => (
-                  <button
-                    key={step.label}
-                    type="button"
-                    className={index === activeStep ? "active" : ""}
-                    aria-label={`Step ${index + 1}: ${step.label}`}
-                    aria-current={index === activeStep ? "step" : undefined}
-                  />
-                ))}
-              </div>
-              <div className="workflow-progress" aria-hidden="true">
-                <span className="workflow-progress__fill" ref={progressRef} />
-              </div>
-            </div>
-            <DottedPanel className="workflow-stage" label="Animated workflow product scene">
-              {workflowSteps.map((step, index) => (
-                <div className={`scene-layer ${index === activeStep ? "active" : ""}`} key={step.label}>
-                  <ProductSceneCard step={step} index={index} active={index === activeStep} />
-                </div>
-              ))}
-            </DottedPanel>
-          </div>
-        </div>
-      </div>
-
-      <div className="mobile-workflow mx-auto max-w-3xl px-5 sm:px-8">
-        <div className="section-heading">
-          <h2>From input to output.</h2>
-        </div>
-        <div className="mobile-workflow-tabs" role="tablist" aria-label="Build process">
-          {workflowSteps.map((step, index) => (
-            <button
-              key={step.label}
-              type="button"
-              role="tab"
-              aria-selected={mobileStep === index}
-              className={mobileStep === index ? "active" : ""}
-              onClick={() => setMobileStep(index)}
-            >
-              {step.label}
-            </button>
-          ))}
-        </div>
-        <article className="mobile-step mobile-step-active">
-          <h3>{mobileActive.title}</h3>
-          <p>{mobileActive.description}</p>
-          <DottedPanel className="mobile-stage">
-            <div className="mobile-workflow-panel">
-              <header>
-                <span>{mobileActive.label}</span>
-                <strong>{mobileActive.stage}</strong>
-              </header>
-              <div>
-                {mobileActive.rows.map((row) => (
-                  <p key={row.label}><span>{row.label}</span><strong>{row.value}</strong></p>
-                ))}
-              </div>
-              <footer>
-                <span>Output</span>
-                <strong>{mobileActive.output}</strong>
-              </footer>
-            </div>
-          </DottedPanel>
-        </article>
       </div>
     </section>
   );
@@ -2540,43 +2290,6 @@ function FinalCTA() {
   );
 }
 
-function FounderPreview() {
-  const { profile } = usePersonalization();
-  const business = profile?.business?.trim();
-  return (
-    <section className="founder-preview" aria-labelledby="founder-preview-title">
-      <div className="founder-preview-layout mx-auto max-w-7xl px-5 sm:px-8">
-        <figure className="founder-profile">
-          <div className="founder-photo-frame">
-            <img
-              src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg"
-              alt="Samuel Caruso, founder of DaytonGrowthCo"
-            />
-          </div>
-          <figcaption>
-            <strong>Samuel Caruso</strong>
-            <span>Founder, DaytonGrowthCo.</span>
-          </figcaption>
-        </figure>
-        <div className="founder-preview-copy">
-          <h2 id="founder-preview-title">The person behind the tools.</h2>
-          <p>
-            Meet Samuel Caruso, founder of DaytonGrowthCo. He builds practical systems around the way{" "}
-            {business || "your business"} already works, so your team can move faster without forcing a new process.
-          </p>
-          <blockquote>
-            “Most businesses don’t need more software. They need tools that fit the process they already trust.”
-          </blockquote>
-        </div>
-        <a className="founder-preview-link" href="/aboutus.html">
-          Read the founder story
-          <ArrowRight size={16} aria-hidden="true" />
-        </a>
-      </div>
-    </section>
-  );
-}
-
 function SplashScreen() {
   const [skipSplash] = useState(() => {
     try {
@@ -2942,8 +2655,11 @@ function ServiceArchitecture() {
     <section className="service-architecture" aria-labelledby="service-architecture-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="service-architecture-title">Start with the business problem.</h2>
-          <p>Each engagement begins with the constraint, then moves to the appropriate tool or setup.</p>
+          <h2 id="service-architecture-title">Pick the constraint. Then pick the build.</h2>
+          <p>
+            This page should help a buyer recognize their own bottleneck quickly, so the options are grouped by the
+            business problem they solve instead of by technical category.
+          </p>
         </div>
         <div className="service-detail-grid" data-stagger>
           {serviceDetails.map((item, index) => (
@@ -2951,80 +2667,14 @@ function ServiceArchitecture() {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{item.title}</h3>
               <dl>
-                <div><dt>Common problem</dt><dd>{item.problem}</dd></div>
-                <div><dt>What we build</dt><dd>{item.builds}</dd></div>
-                <div><dt>Business outcome</dt><dd>{item.outcome}</dd></div>
+                <div><dt>When it hurts</dt><dd>{item.problem}</dd></div>
+                <div><dt>What fixes it</dt><dd>{item.builds}</dd></div>
+                <div><dt>Why it pays</dt><dd>{item.outcome}</dd></div>
               </dl>
               <a href="/#cta">Discuss this stage <ArrowRight size={14} aria-hidden="true" /></a>
             </article>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-function ConnectedSystem() {
-  const items = [
-    { label: "Website request", icon: Globe2 },
-    { label: "Phone agent", icon: Phone },
-    { label: "Appointment", icon: Calendar },
-    { label: "Quote", icon: Gauge },
-    { label: "Project dashboard", icon: LayoutDashboard },
-    { label: "Customer updates", icon: Bell },
-  ];
-  return (
-    <section className="connected-system" aria-labelledby="connected-system-title">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
-          <h2 id="connected-system-title">
-            The parts can
-            <span>work together.</span>
-          </h2>
-          <p>A customer request should not need to be rebuilt at every step.</p>
-        </div>
-        <ol className="connected-flow" data-stagger>
-          {items.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <li key={item.label} className="connected-node">
-                <span className="connected-node-rail" aria-hidden="true" />
-                <span className="connected-node-orb" aria-hidden="true">
-                  <Icon size={17} strokeWidth={1.75} />
-                  <i>{String(index + 1).padStart(2, "0")}</i>
-                </span>
-                <strong>{item.label}</strong>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function EngagementProcess() {
-  const stages = [
-    "Initial conversation",
-    "Process mapping",
-    "Recommendation",
-    "Build or setup",
-    "Team testing",
-    "Launch",
-    "Ongoing improvement",
-  ];
-  return (
-    <section className="engagement-process" aria-labelledby="engagement-title">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
-          <h2 id="engagement-title">A practical engagement from first conversation to launch.</h2>
-          <p>You will know what is being decided, what we need from your team, and what happens next.</p>
-        </div>
-        <ol>
-          {stages.map((stage, index) => (
-            <li key={stage}><span>{String(index + 1).padStart(2, "0")}</span><strong>{stage}</strong></li>
-          ))}
-        </ol>
       </div>
     </section>
   );
@@ -3055,7 +2705,7 @@ function QuoteWorkflowExample() {
 
 function BuildPrinciples() {
   const principles = [
-    ["Fix the expensive bottleneck first.", "We start where the current process costs the most in time, errors, or lost work."],
+    ["Fix the expensive bottleneck first.", "We start where the current process costs the most in time, errors, or lost work. That keeps the first build tied to a business case."],
     ["Use existing software when it fits.", "If a tool you already trust can do the job, the right move is to set it up well, not rebuild it. That keeps the budget focused on the parts only your business needs custom."],
     ["Build custom only where your process creates an advantage.", "Custom tools are reserved for the steps where the way you work is genuinely different."],
     ["Measure time removed, errors avoided, and capacity recovered.", "Success is a process that is faster and cleaner, not a longer list of features."],
@@ -3065,8 +2715,8 @@ function BuildPrinciples() {
     <section className="build-principles" aria-labelledby="build-principles-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="build-principles-title">A few principles decide what gets built.</h2>
-          <p>The right answer may be existing software, a focused automation, or a custom tool. These keep that decision honest.</p>
+          <h2 id="build-principles-title">The rules that keep the scope honest.</h2>
+          <p>The right answer may be existing software, a focused automation, or a custom tool. These rules keep the build useful, affordable, and specific to the work.</p>
         </div>
         <ol className="build-principles-list">
           {principles.map(([title, text], index) => (
@@ -3191,27 +2841,6 @@ function HowItWorksFaq() {
   );
 }
 
-function CaseStudyFuture() {
-  return (
-    <section className="case-study-future" aria-labelledby="case-study-future-title">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="case-study-future-card">
-          <span className="case-study-future-tag">Case studies</span>
-          <h2 id="case-study-future-title">Documented client results, coming soon.</h2>
-          <p>
-            The systems above are interactive demonstrations and representative builds. As current engagements
-            reach measurable outcomes, we will publish them here as full case studies with real numbers.
-          </p>
-          <a href="/#cta">
-            Talk to us about your process
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function PageCTA() {
   return (
     <section className="page-cta" id="cta">
@@ -3273,24 +2902,6 @@ function SiteFooter() {
         ) : null}
       </div>
     </footer>
-  );
-}
-
-function MetricsStrip() {
-  return (
-    <section className="metrics-strip" aria-label="At a glance">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <ul data-stagger>
-          {metrics.map((metric) => (
-            <li key={metric.label}>
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
-              <small>{metric.detail}</small>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
   );
 }
 
@@ -3536,82 +3147,6 @@ function ProcessMap() {
             ))}
           </div>
           <p className="pmap-result"><Workflow size={15} aria-hidden="true" />One system your team actually uses</p>
-        </DottedPanel>
-      </div>
-    </section>
-  );
-}
-
-// #6 Spreadsheet Confessional. A scroll-scrubbed transform from the spreadsheet
-// everyone secretly keeps into a clean internal tool. Deadpan, painfully familiar.
-const messyRows = ["customer_notes_v7", "maybe_final_price", "ask_owner", "???", "FINAL_final_v3"];
-const cleanRows = [
-  { field: "Customer note", value: "Linked to job" },
-  { field: "Price", value: "From pricing rules" },
-  { field: "Approval", value: "Owner sign-off built in" },
-  { field: "Status", value: "Tracked, not guessed" },
-  { field: "Version", value: "One source of truth" },
-];
-
-function SpreadsheetConfessional() {
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const q = gsap.utils.selector(root);
-    const mm = gsap.matchMedia();
-    mm.add(
-      {
-        reduce: "(prefers-reduced-motion: reduce)",
-        animate: "(prefers-reduced-motion: no-preference)",
-      },
-      (context) => {
-        const { reduce } = context.conditions as { reduce: boolean };
-        if (reduce) {
-          gsap.set(q(".sconf-messy"), { autoAlpha: 0 });
-          gsap.set(q(".sconf-clean"), { autoAlpha: 1, y: 0 });
-          return;
-        }
-        const tl = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: { trigger: root, start: "top 75%", end: "top 28%", scrub: 0.5 },
-        });
-        tl.to(q(".sconf-messy"), { autoAlpha: 0, stagger: 0.05 });
-        tl.fromTo(
-          q(".sconf-clean"),
-          { autoAlpha: 0, y: 10 },
-          { autoAlpha: 1, y: 0, stagger: 0.05 },
-          0.2,
-        );
-      },
-      root,
-    );
-    return () => mm.revert();
-  }, []);
-
-  return (
-    <section className="sconf" aria-labelledby="sconf-title" ref={rootRef}>
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading">
-          <h2 id="sconf-title">Every business has this spreadsheet.</h2>
-          <p>The one with the columns nobody can explain. Scroll to retire it.</p>
-        </div>
-        <DottedPanel className="sconf-stage" label="A messy spreadsheet resolving into a clean internal tool">
-          <div className="sconf-sheet">
-            <div className="sconf-sheet__bar"><Table size={14} aria-hidden="true" />jobs_final.xlsx</div>
-            <div className="sconf-rows">
-              {messyRows.map((row, i) => (
-                <div className="sconf-row" key={row}>
-                  <span className="sconf-cell sconf-messy">{row}</span>
-                  <span className="sconf-cell sconf-clean">
-                    <span className="sconf-field">{cleanRows[i].field}</span>
-                    <span className="sconf-value">{cleanRows[i].value}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </DottedPanel>
       </div>
     </section>
@@ -4042,12 +3577,9 @@ function Homepage() {
         <BusinessJourney />
         <WebsiteTransformation />
         <AiVisibility />
-        <SpreadsheetConfessional />
         <InputConstellation />
         <EconomicCase />
         <LaborCostCalculator sectionId="workflow" />
-        <MetricsStrip />
-        <FounderPreview />
         <FinalCTA />
       </main>
       <SiteFooter />
@@ -4058,16 +3590,14 @@ function Homepage() {
 function WhatWeBuildPage() {
   return (
     <>
-      <div id="scroll-progress-bar" aria-hidden="true" />
-      <Header />
+        <div id="scroll-progress-bar" aria-hidden="true" />
+        <Header />
       <main className="dedicated-page">
         <PageHero {...pageCopy.whatWeBuild} />
-        <BusinessJourney />
         <ServiceArchitecture />
         <FeatureGrid />
         <QuoteBuilderDemo />
         <AiWorkflowReveal />
-        <ConnectedSystem />
         <PageCTA />
       </main>
       <SiteFooter />
@@ -4083,12 +3613,10 @@ function ExamplesPage() {
       <main className="dedicated-page">
         <PageHero {...pageCopy.examples} />
         <WebsiteTransformation />
-        <AiVisibility />
         <OutcomeSection />
         <SpreadsheetTransformation />
         <QuoteWorkflowExample />
         <AdvancedSystemPreview sectionId="connected-example" />
-        <CaseStudyFuture />
         <PageCTA />
       </main>
       <SiteFooter />
@@ -4105,9 +3633,6 @@ function HowItWorksPage() {
         <PageHero {...pageCopy.howItWorks} />
         <BuildPrinciples />
         <DiscoveryDiagnosis />
-        <StickyWorkflow />
-        <EngagementProcess />
-        <LaborCostCalculator />
         <EngagementNotes />
         <HowItWorksFaq />
         <PageCTA />
