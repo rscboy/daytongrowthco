@@ -43,6 +43,7 @@ import "./index.css";
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
 // client-rendered SPA (no SSR), and a no-op if called more than once.
 gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") (window as unknown as { ScrollTrigger: typeof ScrollTrigger }).ScrollTrigger = ScrollTrigger;
 
 // The five services, in the order they assemble into a working system in the
 // hero. Icons are Lucide; labels match the language used across the site.
@@ -83,26 +84,40 @@ const segments = [
 const workflowSteps: WorkflowStep[] = [
   {
     label: "Inputs",
-    title: "Calls, notes, photos, and pricing.",
-    description: "Show us what comes in and what your team does with it.",
+    title: "Calls, photos, and texts come in.",
+    description: "Show us what arrives and what your team does with it by hand.",
     status: "Inputs mapped",
     output: "Working specification",
-    progress: "34%",
+    progress: "20%",
     stage: "Mapped",
     rows: [
       { label: "Incoming", value: "Calls + photos" },
-      { label: "Reference", value: "Price sheet" },
+      { label: "Channel", value: "Texts + email" },
       { label: "Current file", value: "jobs.xlsx" },
     ],
   },
   {
-    label: "Tool",
+    label: "Price sheet",
+    title: "The pricing your team already uses.",
+    description: "We load your real rates, materials, and markups as rules.",
+    status: "Pricing loaded",
+    output: "Pricing rules",
+    progress: "40%",
+    stage: "Loaded",
+    rows: [
+      { label: "Source", value: "Price sheet", tone: "accent" },
+      { label: "Labor", value: "Hourly + crew" },
+      { label: "Materials", value: "Cost + markup" },
+    ],
+  },
+  {
+    label: "Quote builder",
     title: "A quote builder for the estimator.",
-    description: "We define the screens, pricing rules, and connections.",
+    description: "We build the screen, the pricing rules, and the connections.",
     status: "Tool specified",
     output: "Quote builder",
-    progress: "68%",
-    stage: "Defined",
+    progress: "60%",
+    stage: "Built",
     rows: [
       { label: "Screen", value: "Estimate builder", tone: "accent" },
       { label: "Rules", value: "Labor + materials" },
@@ -110,17 +125,31 @@ const workflowSteps: WorkflowStep[] = [
     ],
   },
   {
-    label: "Output",
-    title: "An estimate that is ready to send.",
-    description: "The tool produces the document, update, or next step your team needs.",
-    status: "Output ready",
-    output: "Shareable estimate",
-    progress: "100%",
-    stage: "Live",
+    label: "Proposal",
+    title: "A proposal the customer can read.",
+    description: "The tool turns the estimate into a page they can review and approve.",
+    status: "Proposal ready",
+    output: "Proposal page",
+    progress: "80%",
+    stage: "Sent",
     rows: [
       { label: "Format", value: "Proposal page", tone: "success" },
       { label: "Customer", value: "Review + approve" },
-      { label: "Team", value: "Project created" },
+      { label: "Delivery", value: "One link" },
+    ],
+  },
+  {
+    label: "Project",
+    title: "Approved work becomes a project.",
+    description: "An approval creates the job, with the details already in place.",
+    status: "Project created",
+    output: "Live project",
+    progress: "100%",
+    stage: "Live",
+    rows: [
+      { label: "Trigger", value: "Approval", tone: "success" },
+      { label: "Created", value: "Project record" },
+      { label: "Team", value: "Knows next step" },
     ],
   },
 ];
@@ -1800,41 +1829,51 @@ function BusinessJourney({ showDetailLink = true }: { showDetailLink?: boolean }
   );
 }
 
-function useActiveWorkflowStep() {
-  const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    const section = document.querySelector<HTMLElement>("#workflow .desktop-workflow");
-    if (!section) return;
-
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const scrollable = Math.max(1, rect.height - window.innerHeight);
-      const progress = Math.min(0.999, Math.max(0, -rect.top / scrollable));
-      setActiveStep(Math.min(workflowSteps.length - 1, Math.floor(progress * workflowSteps.length)));
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return activeStep;
-}
-
 function StickyWorkflow() {
-  const activeStep = useActiveWorkflowStep();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
   const active = workflowSteps[activeStep];
   const [mobileStep, setMobileStep] = useState(0);
   const mobileActive = workflowSteps[mobileStep];
 
+  // Desktop "input to output" scroll story. CSS sticky pins the panel (no
+  // layout shift); a ScrollTrigger maps scroll progress to the active step
+  // and scrubs the progress bar. Only runs at the desktop breakpoint where
+  // the panel is visible; reverted via mm.revert() on unmount.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let lastStep = -1;
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 900px)", () => {
+      const setFill = progressRef.current
+        ? gsap.quickSetter(progressRef.current, "scaleX")
+        : null;
+      const st = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          if (setFill) setFill(self.progress);
+          const step = Math.min(
+            workflowSteps.length - 1,
+            Math.floor(self.progress * workflowSteps.length),
+          );
+          if (step !== lastStep) {
+            lastStep = step;
+            setActiveStep(step);
+          }
+        },
+      });
+      return () => st.kill();
+    });
+    return () => mm.revert();
+  }, []);
+
   return (
     <section id="workflow" className="workflow-section">
-      <div className="desktop-workflow">
+      <div className="desktop-workflow" ref={sectionRef}>
         <div className="sticky-workflow">
           <div className="mx-auto grid h-full max-w-7xl grid-cols-[5fr_6fr] items-center gap-16 px-8 xl:gap-24">
             <div className="workflow-copy" aria-live="polite">
@@ -1853,6 +1892,9 @@ function StickyWorkflow() {
                     aria-current={index === activeStep ? "step" : undefined}
                   />
                 ))}
+              </div>
+              <div className="workflow-progress" aria-hidden="true">
+                <span className="workflow-progress__fill" ref={progressRef} />
               </div>
             </div>
             <DottedPanel className="workflow-stage" label="Animated workflow product scene">
