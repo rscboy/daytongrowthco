@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbo --hostname 0.0.0.0",
-    "build": "node scripts/generate-markdown.mjs && next build",
+    "dev": "next dev --turbopack --hostname 0.0.0.0",
+    "build": "node scripts/generate-markdown.mjs && next build --turbopack",
     "markdown": "node scripts/generate-markdown.mjs",
     "start": "next start",
     "lint": "eslint .",
