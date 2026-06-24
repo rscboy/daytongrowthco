@@ -1,10 +1,10 @@
 /**
  * Build-time Markdown generator.
  *
- * Reads the built HTML for each major public page (from dist/) and writes a
- * clean Markdown representation to dist/md/<slug>.md. These files back the
+ * Reads the source HTML for each major public page and writes a clean Markdown
+ * representation to public/md/<slug>.md. These files back the
  * `Accept: text/markdown` content negotiation handled by middleware.js and the
- * `</md/index.md>; rel="alternate"` discovery hint in vercel.json.
+ * `</md/index.md>; rel="alternate"` discovery hint in Next headers.
  *
  * Design goals (solopreneur marketing site): no manual duplication of copy,
  * derive Markdown straight from the page's semantic <main> content, and skip
@@ -17,20 +17,20 @@ import { fileURLToPath } from 'node:url';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const dist = resolve(__dirname, '..', 'dist');
-const outDir = resolve(dist, 'md');
+const root = resolve(__dirname, '..');
+const outDir = resolve(root, 'public', 'md');
 
-// slug -> source HTML file inside dist/
+// slug -> source HTML file inside the project root.
 const PAGES = {
-  index: 'index.html',
-  'website-design': 'website-design/index.html',
-  'local-seo': 'local-seo/index.html',
-  'website-maintenance': 'website-maintenance/index.html',
-  about: 'aboutus.html',
-  'privacy-policy': 'privacy-policy/index.html',
-  'terms-of-service': 'terms-of-service/index.html',
-  accessibility: 'accessibility/index.html',
-  disclaimer: 'disclaimer/index.html',
+  index: 'legacy-html/index.html',
+  'website-design': 'legacy-html/website-design/index.html',
+  'local-seo': 'legacy-html/local-seo/index.html',
+  'website-maintenance': 'legacy-html/website-maintenance/index.html',
+  about: 'legacy-html/aboutus.html',
+  'privacy-policy': 'legacy-html/privacy-policy/index.html',
+  'terms-of-service': 'legacy-html/terms-of-service/index.html',
+  accessibility: 'legacy-html/accessibility/index.html',
+  disclaimer: 'legacy-html/disclaimer/index.html',
 };
 
 const SITE = 'https://www.daytongrowth.co';
@@ -45,7 +45,9 @@ function extractMain(html) {
   const main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
   if (main) return main[1];
   const root = html.match(/<div[^>]*id=["']root["'][^>]*>([\s\S]*?)<\/div>\s*<script/i);
-  return root ? root[1] : '';
+  if (root) return root[1];
+  const body = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  return body ? body[1] : '';
 }
 
 /** Remove layout-only / non-content markup before converting. */
@@ -74,17 +76,13 @@ const nhm = new NodeHtmlMarkdown({
 });
 
 async function run() {
-  if (!existsSync(dist)) {
-    console.error('[generate-markdown] dist/ not found. Run vite build first.');
-    process.exit(1);
-  }
   await mkdir(outDir, { recursive: true });
 
   let written = 0;
   let skipped = 0;
 
   for (const [slug, file] of Object.entries(PAGES)) {
-    const srcPath = resolve(dist, file);
+    const srcPath = resolve(root, file);
     if (!existsSync(srcPath)) {
       console.warn(`[generate-markdown] skip ${slug}: ${file} missing`);
       skipped++;

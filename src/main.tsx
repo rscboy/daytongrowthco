@@ -1,5 +1,6 @@
+"use client";
+
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -416,6 +417,7 @@ const INVITE_SESSION_KEY = "dgc:personalize-shown-session";
 // we can tell a genuine first visit (the splash will play) from a same-session
 // return (it won't), and time the invitation accordingly.
 const splashSeenAtBoot = (() => {
+  if (typeof window === "undefined") return false;
   try {
     return window.sessionStorage.getItem("dgc:splash-seen") === "1";
   } catch {
@@ -424,6 +426,7 @@ const splashSeenAtBoot = (() => {
 })();
 
 function readStoredProfile(): VisitorProfile | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return null;
@@ -734,9 +737,10 @@ function InteractiveWordmark() {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const isHome = window.location.pathname === "/";
+  const [isHome, setIsHome] = useState(true);
 
   useEffect(() => {
+    setIsHome(window.location.pathname === "/");
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
     };
@@ -4199,13 +4203,13 @@ function HowItWorksPage() {
   );
 }
 
-function App() {
+export default function App({ initialPath = "/" }: { initialPath?: string }) {
   useMotionSystem();
   useMuxVideos();
   useTurnstileProtection();
   useScrollProgressFallback();
 
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  const path = initialPath.replace(/\/+$/, "") || "/";
   useEffect(() => {
     if (path !== "/") {
       document.getElementById("boot-splash")?.remove();
@@ -4235,9 +4239,3 @@ function App() {
     </PersonalizationProvider>
   );
 }
-
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);

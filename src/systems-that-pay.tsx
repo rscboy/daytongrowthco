@@ -1,5 +1,6 @@
+"use client";
+
 import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { ArrowRight, Check, CheckCircle2, PenTool, Phone, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import "./systems-that-pay.css";
 
@@ -128,8 +129,8 @@ function FreeRedesignOffer() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [token, setToken] = useState("");
   const widgetRef = useRef<HTMLDivElement>(null);
-  const turnstileRef = useRef<TurnstileApi>();
-  const widgetIdRef = useRef<string>();
+  const turnstileRef = useRef<TurnstileApi | undefined>(undefined);
+  const widgetIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -293,9 +294,9 @@ function FreeRedesignOffer() {
   );
 }
 
-function App() {
+export default function SystemsThatPayApp() {
   return (
-    <>
+    <div className="systems-that-pay-page">
       <SiteHeader />
       <main>
         <FreeRedesignOffer />
@@ -346,8 +347,6 @@ function App() {
         </section>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
-
-createRoot(document.getElementById("roi-root")!).render(<App />);
