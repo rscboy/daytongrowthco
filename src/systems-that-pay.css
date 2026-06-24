@@ -165,7 +165,8 @@ button, input { font: inherit; }
     linear-gradient(90deg, rgba(5, 7, 12, 0.88) 0%, rgba(5, 7, 12, 0.76) 44%, rgba(5, 7, 12, 0.62) 100%),
     linear-gradient(180deg, rgba(5, 7, 12, 0.18), rgba(5, 7, 12, 0.88));
 }
-.lp-hero-video {
+.lp-hero-video,
+.lp-final-video {
   position: absolute;
   inset: 0;
   z-index: -2;
@@ -443,16 +444,37 @@ button, input { font: inherit; }
 
 /* ---------- Final ---------- */
 .lp-final {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: clamp(3.5rem, 7vw, 5.5rem) 20px;
   text-align: center;
   background: var(--charcoal);
   color: #fff;
 }
+.lp-final::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background:
+    radial-gradient(circle at 50% 0%, rgba(240, 208, 176, 0.2), transparent 30rem),
+    linear-gradient(180deg, rgba(5, 7, 12, 0.58), rgba(5, 7, 12, 0.9)),
+    linear-gradient(90deg, rgba(5, 7, 12, 0.84), rgba(24, 23, 77, 0.68), rgba(5, 7, 12, 0.84));
+}
+.lp-final-video {
+  filter: saturate(0.9) contrast(1.08) brightness(0.78);
+  transform: scale(1.03);
+}
+.lp-final-content {
+  position: relative;
+  z-index: 1;
+}
 .lp-final h2 { max-width: 24ch; margin-inline: auto; color: #fff; }
-.lp-final > p {
+.lp-final-content > p {
   max-width: 44ch;
   margin: 1.1rem auto 1.6rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.76);
   font-size: 1rem;
   line-height: 1.6;
 }

@@ -125,7 +125,7 @@ type HlsConstructor = new (options?: Record<string, unknown>) => {
   destroy: () => void;
 };
 
-function HeroBackgroundVideo() {
+function HeroBackgroundVideo({ className = "lp-hero-video" }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -174,7 +174,7 @@ function HeroBackgroundVideo() {
   return (
     <video
       ref={videoRef}
-      className="lp-hero-video"
+      className={className}
       autoPlay
       muted
       loop
@@ -406,11 +406,14 @@ export default function SystemsThatPayApp() {
         </section>
 
         <section className="lp-final">
-          <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
-          <p>One custom concept. Clearer positioning. A stronger path to contact. No obligation.</p>
-          <a className="lp-button lp-button-light" href="#free-redesign">
-            Get my free redesign <ArrowRight size={16} />
-          </a>
+          <HeroBackgroundVideo className="lp-final-video" />
+          <div className="lp-final-content">
+            <h2>Let us redesign the homepage. You decide if the old one is still good enough.</h2>
+            <p>One custom concept. Clearer positioning. A stronger path to contact. No obligation.</p>
+            <a className="lp-button lp-button-light" href="#free-redesign">
+              Get my free redesign <ArrowRight size={16} />
+            </a>
+          </div>
         </section>
       </main>
       <SiteFooter />
