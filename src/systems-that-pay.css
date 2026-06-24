@@ -220,65 +220,26 @@ button, input { font: inherit; }
 
 /* ---------- Form card ---------- */
 .lp-card {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 18px;
+  border: 1px solid rgba(237, 231, 222, 0.72);
+  border-radius: 14px;
   padding: clamp(1.4rem, 2.4vw, 2rem);
-  color: #fff;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08) 42%, rgba(8, 10, 20, 0.44)),
-    rgba(10, 13, 24, 0.52);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
-    0 24px 80px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(28px) saturate(1.35) contrast(1.04);
-  -webkit-backdrop-filter: blur(28px) saturate(1.35) contrast(1.04);
+  color: #18171f;
+  background: rgba(237, 231, 222, 0.94);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
-.lp-card::before,
-.lp-card::after {
-  position: absolute;
-  pointer-events: none;
-  content: "";
-}
-.lp-card::before {
-  inset: 1px;
-  z-index: -1;
-  border-radius: 17px;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.42), transparent 34%),
-    radial-gradient(circle at 88% 18%, rgba(180, 215, 255, 0.22), transparent 30%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 42%);
-  mix-blend-mode: screen;
-}
-.lp-card::after {
-  inset: -42% -18% auto;
-  z-index: -1;
-  height: 76%;
-  border-radius: 999px;
-  background: linear-gradient(110deg, transparent 10%, rgba(255, 255, 255, 0.2) 42%, transparent 74%);
-  filter: blur(16px);
-  opacity: 0.78;
-  transform: rotate(-9deg);
-}
-.lp-card form {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.9rem;
-}
+.lp-card form { display: grid; gap: 0.85rem; }
 .lp-card-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 1rem;
-  padding-bottom: 0.95rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(24, 23, 77, 0.14);
 }
 .lp-card-head span {
-  color: rgba(255, 255, 255, 0.72);
+  color: #6e665c;
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -289,39 +250,25 @@ button, input { font: inherit; }
   font-size: 1.3rem;
   font-weight: 580;
   letter-spacing: -0.03em;
-  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  color: #18171f;
 }
 .lp-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 .lp-card label { display: grid; gap: 0.35rem; }
-.lp-card label > span { color: rgba(255, 255, 255, 0.88); font-size: 0.72rem; font-weight: 660; }
-.lp-card label > small { margin-top: -0.1rem; color: rgba(255, 255, 255, 0.68); font-size: 0.66rem; }
+.lp-card label > span { color: #2f2c29; font-size: 0.72rem; font-weight: 620; }
+.lp-card label > small { margin-top: -0.1rem; color: #6e665c; font-size: 0.66rem; }
 .lp-card input {
   width: 100%;
   min-height: 2.85rem;
   padding: 0 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72)),
-    rgba(255, 255, 255, 0.78);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    0 8px 24px rgba(0, 0, 0, 0.12);
-  color: #12131a;
+  border: 1px solid rgba(24, 23, 77, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.96);
+  color: var(--ink);
   font-size: 0.86rem;
-  backdrop-filter: blur(14px) saturate(1.25);
-  -webkit-backdrop-filter: blur(14px) saturate(1.25);
-  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 .lp-card input:focus {
   border-color: var(--peach);
-  outline: 2px solid rgba(241, 208, 177, 0.28);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 0 0 4px rgba(241, 208, 177, 0.14),
-    0 12px 30px rgba(0, 0, 0, 0.16);
-  transform: translateY(-1px);
+  outline: 2px solid rgba(241, 208, 177, 0.36);
 }
 .lp-turnstile { min-height: 65px; }
 .lp-turnstile:empty { min-height: 0; }
@@ -332,29 +279,16 @@ button, input { font: inherit; }
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 48%),
-    linear-gradient(135deg, #27236f, var(--indigo));
+  border: 1px solid var(--indigo);
+  border-radius: 8px;
+  background: var(--indigo);
   color: #fff;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 680;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.26),
-    0 12px 32px rgba(24, 23, 77, 0.34);
-  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  transition: background 150ms ease;
 }
-.lp-card button:hover:not(:disabled) {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 48%),
-    linear-gradient(135deg, #312d82, var(--indigo-hover));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    0 16px 38px rgba(24, 23, 77, 0.42);
-  transform: translateY(-1px);
-}
+.lp-card button:hover:not(:disabled) { background: var(--indigo-hover); }
 .lp-card button:disabled { cursor: wait; opacity: 0.55; }
 .lp-privacy {
   display: flex;
@@ -366,9 +300,9 @@ button, input { font: inherit; }
   color: var(--muted);
   font-size: 0.66rem;
 }
-.lp-privacy { color: rgba(255, 255, 255, 0.72); }
-.lp-privacy a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
-.lp-privacy a:hover { color: var(--peach); }
+.lp-privacy { color: #6e665c; }
+.lp-privacy a { color: #18174d; text-decoration: underline; text-underline-offset: 2px; }
+.lp-privacy a:hover { color: #0d0c3e; }
 .lp-error { margin: 0; color: #ffb4b4; font-size: 0.74rem; font-weight: 600; }
 .lp-success {
   display: grid;
@@ -390,6 +324,7 @@ button, input { font: inherit; }
 .lp-success h2 {
   max-width: 22ch;
   margin: 0;
+  color: #18171f;
   font-family: var(--serif);
   font-size: 1.9rem;
   font-weight: 560;
@@ -399,7 +334,7 @@ button, input { font: inherit; }
 .lp-success > p:last-child {
   max-width: 32ch;
   margin: 0.8rem 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: #6e665c;
   font-size: 0.86rem;
   line-height: 1.5;
 }
@@ -621,21 +556,4 @@ a:focus-visible, input:focus-visible, button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .lp-card,
-  .lp-card input {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .lp-card {
-    background: rgba(9, 11, 21, 0.94);
-  }
-
-  .lp-card::before,
-  .lp-card::after {
-    display: none;
-  }
 }

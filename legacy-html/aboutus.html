@@ -225,14 +225,7 @@
         .about-nav-cta:hover i,
         .about-nav-cta:focus-visible i { transform: translateX(3px); }
 
-        .about-page-intro {
-            position: relative;
-            overflow: hidden;
-            padding-top: 10rem;
-            color: #fff;
-            background: #05070c;
-            isolation: isolate;
-        }
+        .about-page-intro { padding-top: 10rem; }
 
         .about-return-link {
             display: inline-flex;
@@ -247,6 +240,7 @@
 
         .about-return-link:hover { color: #182018; }
 
+        .about-page-intro,
         .about-name-story,
         .about-mission {
             background:
@@ -254,88 +248,22 @@
                 #f0f0e8;
         }
 
-        .about-intro-video,
-        .about-intro-video-mask {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
+        .about-title-accent { color: #5796C8; }
 
-        .about-intro-video {
-            z-index: -2;
-            object-fit: cover;
-            opacity: 0.62;
-            filter: saturate(0.9) contrast(1.08) brightness(0.72);
-            transform: scale(1.02);
-        }
-
-        .about-intro-video-mask {
-            z-index: -1;
-            background:
-                radial-gradient(circle at 18% 18%, rgba(240, 208, 176, 0.2), transparent 27rem),
-                radial-gradient(circle at 74% 46%, rgba(87, 150, 200, 0.22), transparent 32rem),
-                linear-gradient(90deg, rgba(5, 7, 12, 0.88), rgba(5, 7, 12, 0.68) 48%, rgba(5, 7, 12, 0.82)),
-                linear-gradient(180deg, rgba(5, 7, 12, 0.78), rgba(5, 7, 12, 0.9));
-        }
-
-        .about-page-intro > div {
-            position: relative;
-            z-index: 1;
-        }
-
-        .about-page-intro h1,
-        .about-page-intro h2,
-        .about-page-intro p,
-        .about-page-intro strong,
-        .about-page-intro strong.text-saas-textDark {
-            color: #fff !important;
-        }
-
-        .about-page-intro .text-saas-textMuted,
-        .about-page-intro .text-saas-textDark {
-            color: rgba(255, 255, 255, 0.84) !important;
-        }
-
-        .about-page-intro h1,
-        .about-page-intro h2 {
-            color: #fff !important;
-        }
-
-        .about-page-intro h1 {
-            text-shadow: 0 14px 42px rgba(0, 0, 0, 0.34);
-        }
-
-        .about-page-intro .text-\[18px\].text-saas-textDark {
-            color: rgba(255, 255, 255, 0.94) !important;
-        }
-
-        .about-page-intro h2 i,
-        .about-page-intro i {
-            color: #f0d0b0 !important;
-        }
-
-        .about-page-intro .about-highlight {
-            color: #f0d0b0 !important;
-        }
-
-        .about-title-accent { color: #f0d0b0; }
-
-        .about-page-intro i { color: #f0d0b0 !important; }
+        .about-page-intro i { color: #101048 !important; }
 
         .about-portrait-glow {
-            background: linear-gradient(135deg, rgba(240, 208, 176, 0.56), rgba(216, 232, 248, 0.5)) !important;
+            background: linear-gradient(135deg, rgba(240, 208, 176, 0.72), rgba(216, 232, 248, 0.78)) !important;
         }
 
-        .about-portrait-frame { border-color: rgba(240, 208, 176, 0.38) !important; }
+        .about-portrait-frame { border-color: rgba(16, 16, 72, 0.22) !important; }
 
         .about-quote-line {
             background: linear-gradient(to bottom, #f0d0b0, #5796c8) !important;
         }
 
         .about-highlight {
-            color: #f0d0b0 !important;
+            color: #101048 !important;
             background: none !important;
             -webkit-text-fill-color: currentColor !important;
         }
@@ -763,17 +691,6 @@
 
     <!-- Page Intro & Meet the Founder -->
     <section class="about-page-intro pb-[80px] lg:pb-[100px]">
-        <video
-             class="about-intro-video"
-             poster="https://image.mux.com/blULaJm2RMbAmsrwxLrBdgEx9yI1do2yM89vHTkdA6I/thumbnail.jpg?time=0"
-             data-mux-stream="https://stream.mux.com/blULaJm2RMbAmsrwxLrBdgEx9yI1do2yM89vHTkdA6I.m3u8"
-             autoplay
-             muted
-             loop
-             playsinline
-             preload="none"
-             aria-hidden="true"></video>
-        <div class="about-intro-video-mask" aria-hidden="true"></div>
         <div class="max-w-[1000px] mx-auto px-6 lg:px-8">
             <!-- Tighter Intro -->
             <div class="text-center mb-[60px] lg:mb-[80px] reveal">
@@ -978,52 +895,6 @@
         };
         updateAboutHeader();
         window.addEventListener('scroll', updateAboutHeader, { passive: true });
-
-        const aboutIntroVideo = document.querySelector('.about-intro-video');
-        const reduceAboutMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const playAboutVideo = (video) => {
-            video.muted = true;
-            video.playsInline = true;
-            const playPromise = video.play();
-            if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(() => {});
-            }
-        };
-        const attachAboutIntroVideo = () => {
-            if (!aboutIntroVideo || reduceAboutMotion) return;
-            const stream = aboutIntroVideo.dataset.muxStream;
-            if (!stream) return;
-            if (aboutIntroVideo.canPlayType('application/vnd.apple.mpegurl')) {
-                aboutIntroVideo.src = stream;
-                aboutIntroVideo.addEventListener('loadedmetadata', () => playAboutVideo(aboutIntroVideo), { once: true });
-                aboutIntroVideo.load();
-                return;
-            }
-            const attachHls = () => {
-                if (!window.Hls || !window.Hls.isSupported()) return;
-                const hls = new window.Hls({ lowLatencyMode: true });
-                hls.loadSource(stream);
-                hls.attachMedia(aboutIntroVideo);
-                hls.on(window.Hls.Events.MANIFEST_PARSED, () => playAboutVideo(aboutIntroVideo));
-            };
-            if (window.Hls) {
-                attachHls();
-                return;
-            }
-            const existingScript = document.querySelector('script[data-about-hls-loader]');
-            if (existingScript) {
-                existingScript.addEventListener('load', attachHls, { once: true });
-                return;
-            }
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js';
-            script.async = true;
-            script.defer = true;
-            script.dataset.aboutHlsLoader = 'true';
-            script.addEventListener('load', attachHls, { once: true });
-            document.head.appendChild(script);
-        };
-        attachAboutIntroVideo();
 
         // Scroll Reveal Logic
         document.addEventListener('DOMContentLoaded', () => {

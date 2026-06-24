@@ -343,10 +343,6 @@ const videos = {
     poster: "https://image.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU/thumbnail.jpg?time=0",
     stream: "https://stream.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU.m3u8",
   },
-  freeRedesign: {
-    poster: "https://image.mux.com/4IMYGcL01xjs7ek5ANO17JC4VQVUTsojZlnw4fXzwSxc/thumbnail.jpg?time=0",
-    stream: "https://stream.mux.com/4IMYGcL01xjs7ek5ANO17JC4VQVUTsojZlnw4fXzwSxc.m3u8",
-  },
 };
 
 const toolScenarios = [
@@ -1262,12 +1258,6 @@ function EconomicCase() {
       : "DGC";
   return (
     <section className="economic-case" id="economic-case" aria-labelledby="economic-case-title">
-      <BackgroundVideo
-        className="economic-case-video"
-        poster={videos.freeRedesign.poster}
-        stream={videos.freeRedesign.stream}
-      />
-      <div className="economic-case-video-mask" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="economic-case-grid">
           <div className="economic-case-thesis" data-reveal>
