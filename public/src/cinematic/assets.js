@@ -2,7 +2,7 @@ export const sceneLayers = [
   {
     id: 'back-haze',
     label: 'Market haze',
-    imageUrl: null, // Replace with '/assets/layers/back-haze.png' or any PNG/JPG served by Vite.
+    imageUrl: null, // Replace with '/assets/layers/back-haze.png' or any PNG/JPG served by Next.js.
     colorA: '#0b1635',
     colorB: '#2563eb',
     z: -16,
