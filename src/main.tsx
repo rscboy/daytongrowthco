@@ -18,7 +18,6 @@ import {
   ChevronsLeftRight,
   ClipboardList,
   Database,
-  DoorOpen,
   FileText,
   Gauge,
   Globe2,
@@ -44,10 +43,10 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
+import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import "./index.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
@@ -56,14 +55,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 // The five services, in the order they assemble into a working system in the
 // hero. Icons are Lucide; labels match the language used across the site.
-const heroSystemNodes = [
-  { label: "Phone agents", Icon: Phone },
-  { label: "Quote tools", Icon: Calculator },
-  { label: "Dashboards", Icon: LayoutDashboard },
-  { label: "Portals", Icon: DoorOpen },
-  { label: "Custom apps", Icon: AppWindow },
-] as const;
-
 type WorkflowStep = {
   label: string;
   title: string;
@@ -1469,50 +1460,77 @@ function AiVisibility() {
   );
 }
 
+// The hero's desire driver: a typical dev-shop quote counts up, gets struck
+// through, and collapses to the cost we deliver at. Numbers are intentionally
+// soft (an illustrative "$15,000+" anchor, "up to 70% less") so nothing here
+// claims a figure we can't defend. Reduced motion shows the finished state.
+function HeroPriceGap() {
+  const reduceMotion = useReducedMotion();
+  const numRef = useRef<HTMLSpanElement>(null);
+  const [struck, setStruck] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = numRef.current;
+    if (!el) return;
+    const target = 15000;
+    const fmt = (n: number) => `$${Math.round(n).toLocaleString()}+`;
+
+    if (reduceMotion) {
+      el.textContent = fmt(target);
+      setStruck(true);
+      setRevealed(true);
+      return;
+    }
+
+    el.textContent = "$0+";
+    let raf = 0;
+    let revealTimer = 0;
+    const duration = 1300;
+    // Begin after the hero copy entrance has settled.
+    const start = performance.now() + 700;
+    const step = (now: number) => {
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = fmt(target * eased);
+      if (progress < 1) {
+        raf = requestAnimationFrame(step);
+      } else {
+        setStruck(true);
+        revealTimer = window.setTimeout(() => setRevealed(true), 350);
+      }
+    };
+    raf = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(revealTimer);
+    };
+  }, [reduceMotion]);
+
+  return (
+    <div
+      className="hero-pricegap"
+      role="group"
+      aria-label="A dev shop quotes about $15,000 or more to build a tool like this. With AI we deliver up to 70% less."
+    >
+      <span className="hero-pricegap__label" aria-hidden="true">
+        What a dev shop quotes to build a tool like this
+      </span>
+      <span className={`hero-pricegap__num${struck ? " is-struck" : ""}`} aria-hidden="true">
+        <span ref={numRef}>$15,000+</span>
+      </span>
+      <span className={`hero-pricegap__after${revealed ? " is-revealed" : ""}`} aria-hidden="true">
+        <span className="hero-pricegap__big">up to 70% less, built with AI</span>
+      </span>
+    </div>
+  );
+}
+
 function Hero() {
   const reduceMotion = useReducedMotion();
   const mediaRef = useRef<HTMLDivElement>(null);
-  const systemRef = useRef<HTMLUListElement>(null);
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
-
-  // "System builder" motion: the listed services assemble into a connected
-  // row, with thin links drawing between them. Restrained timeline, plays
-  // once after the copy entrance. Reduced motion shows the finished state.
-  // Initial hidden state lives in CSS so there is no flash before this runs.
-  useEffect(() => {
-    const scope = systemRef.current;
-    if (!scope) return;
-    const nodes = scope.querySelectorAll(".hero-system__node");
-    const links = scope.querySelectorAll(".hero-system__link");
-    const mm = gsap.matchMedia();
-    mm.add(
-      {
-        reduce: "(prefers-reduced-motion: reduce)",
-        animate: "(prefers-reduced-motion: no-preference)",
-      },
-      (context) => {
-        const { reduce } = context.conditions as { reduce: boolean };
-        if (reduce) {
-          gsap.set([nodes, links], { autoAlpha: 1, x: 0, scaleX: 1 });
-          return;
-        }
-        const tl = gsap.timeline({ delay: 0.9, defaults: { ease: "power2.out" } });
-        tl.fromTo(
-          nodes,
-          { autoAlpha: 0, x: -8 },
-          { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.12 },
-        );
-        tl.fromTo(
-          links,
-          { autoAlpha: 0, scaleX: 0 },
-          { autoAlpha: 1, scaleX: 1, transformOrigin: "left center", duration: 0.35, stagger: 0.12 },
-          0.3,
-        );
-      },
-    );
-    return () => mm.revert();
-  }, []);
 
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
@@ -1569,9 +1587,10 @@ function Hero() {
             </span>
           </h1>
           <p>
-            We build software around the way your business actually works, then use AI to do it for up to 70% less
-            than a custom dev shop would charge.
+            A dev shop wants five figures and a few months for one custom tool. We build yours with AI for up to
+            70% less, shaped to exactly how you already work, so the money stays in your business.
           </p>
+          <HeroPriceGap />
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
               Start Building.
@@ -1581,17 +1600,6 @@ function Hero() {
               See the Tools
             </a>
           </div>
-          <ul className="hero-system" ref={systemRef} aria-label="The pieces we assemble into one system">
-            {heroSystemNodes.map(({ label, Icon }, index) => (
-              <li className="hero-system__item" key={label}>
-                {index > 0 ? <span className="hero-system__link" aria-hidden="true" /> : null}
-                <span className="hero-system__node">
-                  <Icon size={15} aria-hidden="true" />
-                  <span>{label}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}
@@ -2152,6 +2160,58 @@ function ToolScenarioDemo() {
   );
 }
 
+// Pulls a likely domain out of whatever the visitor types (a bare domain, a full
+// URL, with or without www) so we can show their site's favicon. Returns null for
+// anything that is not a plausible domain, so nothing flickers mid-typing.
+function extractDomain(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  let hostname = trimmed;
+  try {
+    hostname = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`).hostname;
+  } catch {
+    return null;
+  }
+  hostname = hostname.replace(/^www\./i, "");
+  if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(hostname)) return null;
+  if (!/\.[a-z]{2,}$/i.test(hostname)) return null;
+  return hostname.toLowerCase();
+}
+
+// Consumer mailbox providers: their domain is the visitor's inbox, not their
+// business, so we never show a favicon for these.
+const CONSUMER_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "yahoo.com",
+  "ymail.com",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "msn.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "aol.com",
+  "proton.me",
+  "protonmail.com",
+  "pm.me",
+  "gmx.com",
+  "zoho.com",
+  "mail.com",
+  "yandex.com",
+]);
+
+// The domain after the "@" is, nine times out of ten, the visitor's business.
+// Returns null for consumer mailboxes or anything that is not a real domain yet.
+function extractEmailDomain(value: string): string | null {
+  const at = value.lastIndexOf("@");
+  if (at < 0) return null;
+  const domain = extractDomain(value.slice(at + 1));
+  if (!domain || CONSUMER_EMAIL_DOMAINS.has(domain)) return null;
+  return domain;
+}
+
 function ProjectForm() {
   const { profile } = usePersonalization();
 
@@ -2159,8 +2219,20 @@ function ProjectForm() {
   // visitor types: once a field has been edited by hand it stops syncing.
   const [name, setName] = useState(profile?.name ?? "");
   const [business, setBusiness] = useState(profile?.business ?? "");
+  const [email, setEmail] = useState("");
+  const [faviconReady, setFaviconReady] = useState(false);
   const nameEdited = useRef(false);
   const businessEdited = useRef(false);
+
+  // Derive the business favicon from the email domain. Reset the loaded state
+  // whenever the domain changes so the logo only animates in once it has loaded.
+  const faviconDomain = useMemo(() => extractEmailDomain(email), [email]);
+  useEffect(() => {
+    setFaviconReady(false);
+  }, [faviconDomain]);
+  const faviconSrc = faviconDomain
+    ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(faviconDomain)}&sz=64`
+    : null;
 
   useEffect(() => {
     if (profile?.name && !nameEdited.current) setName(profile.name);
@@ -2211,7 +2283,37 @@ function ProjectForm() {
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
-          <input id="email" name="emailAddress" type="email" autoComplete="email" placeholder="jane@company.com" required />
+          <div className="favicon-field">
+            <input
+              id="email"
+              name="emailAddress"
+              type="email"
+              autoComplete="email"
+              placeholder="jane@company.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+            {faviconSrc ? (
+              <span className={`field-favicon ${faviconReady ? "is-ready" : ""}`} aria-hidden="true">
+                <img
+                  key={faviconDomain}
+                  ref={(node) => {
+                    // Cached favicons can finish loading before React attaches
+                    // onLoad, so catch the already-complete case here too.
+                    if (node && node.complete && node.naturalWidth > 0) setFaviconReady(true);
+                  }}
+                  src={faviconSrc}
+                  alt=""
+                  width={20}
+                  height={20}
+                  loading="lazy"
+                  onLoad={() => setFaviconReady(true)}
+                  onError={() => setFaviconReady(false)}
+                />
+              </span>
+            ) : null}
+          </div>
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
@@ -2347,6 +2449,24 @@ function SplashScreen() {
       </div>
     </div>
   );
+}
+
+// Cursor-tracking warm light on buttons: a soft highlight follows the pointer
+// inside any .button via --mx/--my custom properties that the ::before glow reads.
+// One delegated listener covers every button, including ones rendered later.
+function useButtonGlow() {
+  useEffect(() => {
+    const onMove = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      const button = target?.closest?.(".button") as HTMLElement | null;
+      if (!button) return;
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+      button.style.setProperty("--my", `${event.clientY - rect.top}px`);
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
 }
 
 function useMotionSystem() {
@@ -3584,6 +3704,7 @@ function Homepage() {
         <InputConstellation />
         <EconomicCase />
         <LaborCostCalculator sectionId="workflow" />
+        <WhoItsFor />
         <FinalCTA />
       </main>
       <SiteFooter />
@@ -3646,8 +3767,62 @@ function HowItWorksPage() {
   );
 }
 
+// Self-identification section: helps the right visitor see themselves and lets
+// the wrong one opt out. Net-new (the brief's "who it's for"). Qualitative copy,
+// no invented metrics, no eyebrow label, no pills, no em dashes.
+function WhoItsFor() {
+  const cards = [
+    {
+      icon: ClipboardList,
+      title: "You quote on nights and weekends",
+      body: "Intake, pricing, and follow-up keep landing on you after hours. A tool can carry that load instead of you.",
+    },
+    {
+      icon: Wrench,
+      title: "Your software does not fit how you work",
+      body: "You keep bending the business around off-the-shelf tools. We build around your actual workflow, not the other way around.",
+    },
+    {
+      icon: TrendingDown,
+      title: "An agency quote made no sense for your size",
+      body: "Custom development was priced for enterprises. AI lets us deliver custom-grade work for a fraction of that.",
+    },
+    {
+      icon: Table,
+      title: "The business runs on spreadsheets and memory",
+      body: "The important steps live in your head or in scattered files. We turn them into one system that holds together.",
+    },
+  ];
+
+  return (
+    <section className="who-its-for" id="who-its-for" aria-labelledby="who-its-for-title">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="who-its-for-heading" data-reveal>
+          <h2 id="who-its-for-title">
+            This is built for you
+            <span>if one of these is your week.</span>
+          </h2>
+          <p>No pressure to match all four. One is usually enough to feel the difference.</p>
+        </div>
+        <div className="who-its-for-grid" data-stagger>
+          {cards.map(({ icon: Icon, title, body }) => (
+            <article className="who-its-for-card" key={title} tabIndex={0}>
+              <span className="who-its-for-icon" aria-hidden="true">
+                <Icon size={20} strokeWidth={1.8} />
+              </span>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function App({ initialPath = "/" }: { initialPath?: string }) {
   useMotionSystem();
+  useButtonGlow();
   useMuxVideos();
   useTurnstileProtection();
   useScrollProgressFallback();
