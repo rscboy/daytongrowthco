@@ -1612,7 +1612,6 @@ function Hero() {
               See the Tools
             </a>
           </div>
-          <p className="cta-trust">Free consultation · No pressure · Built around how you already work</p>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}
