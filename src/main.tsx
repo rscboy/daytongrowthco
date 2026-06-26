@@ -1511,7 +1511,7 @@ function HeroPriceGap() {
     <div
       className="hero-pricegap"
       role="group"
-      aria-label="A dev shop quotes about $15,000 or more to build a tool like this. With AI we deliver up to 70% less. Websites from $1,500."
+      aria-label="A dev shop quotes about $15,000 or more to build a tool like this. With AI we deliver up to 70% less."
     >
       <span className="hero-pricegap__label" aria-hidden="true">
         What a dev shop quotes to build a tool like this
@@ -1521,7 +1521,6 @@ function HeroPriceGap() {
       </span>
       <span className={`hero-pricegap__after${revealed ? " is-revealed" : ""}`} aria-hidden="true">
         <span className="hero-pricegap__big">up to 70% less, built with AI</span>
-        <span className="hero-pricegap__chip">Websites from $1,500.</span>
       </span>
     </div>
   );
@@ -2450,6 +2449,24 @@ function SplashScreen() {
       </div>
     </div>
   );
+}
+
+// Cursor-tracking warm light on buttons: a soft highlight follows the pointer
+// inside any .button via --mx/--my custom properties that the ::before glow reads.
+// One delegated listener covers every button, including ones rendered later.
+function useButtonGlow() {
+  useEffect(() => {
+    const onMove = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      const button = target?.closest?.(".button") as HTMLElement | null;
+      if (!button) return;
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+      button.style.setProperty("--my", `${event.clientY - rect.top}px`);
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
 }
 
 function useMotionSystem() {
@@ -3805,6 +3822,7 @@ function WhoItsFor() {
 
 export default function App({ initialPath = "/" }: { initialPath?: string }) {
   useMotionSystem();
+  useButtonGlow();
   useMuxVideos();
   useTurnstileProtection();
   useScrollProgressFallback();

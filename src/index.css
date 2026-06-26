@@ -410,6 +410,10 @@
   }
 
   .button {
+    --btn-glow: rgba(255, 240, 222, 0.42);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -432,6 +436,40 @@
 
   .button:hover {
     transform: translateY(-1px);
+  }
+
+  /* Cursor-tracking warm light. The glow sits at z-index -1 (above the button's
+     own background, below its text) so labels never dim. Position comes from
+     --mx/--my, set in JS as the pointer moves across the button. */
+  .button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(circle 120px at var(--mx, 50%) var(--my, 50%), var(--btn-glow), transparent 62%);
+    transition: opacity 260ms ease;
+  }
+
+  .button:hover::before,
+  .button:focus-visible::before {
+    opacity: 1;
+  }
+
+  .button-primary {
+    --btn-glow: rgba(255, 255, 255, 0.5);
+  }
+
+  .button-secondary {
+    --btn-glow: rgba(241, 208, 177, 0.42);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button::before {
+      transition: none;
+    }
   }
 
   /* The trailing arrow glides forward on hover/focus for a sense of momentum. */
