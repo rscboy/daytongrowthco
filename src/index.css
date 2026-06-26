@@ -11756,10 +11756,7 @@ body.personalize-lock {
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1;
-  background: linear-gradient(180deg, #ffffff, #cfcdf2);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ffffff;
 }
 .proof-band-label {
   font-size: 0.82rem;
@@ -12149,7 +12146,7 @@ body.personalize-lock {
 }
 
 /* ---- Premium image treatment (utility) ----------------------------------- */
-/* Wrap any <img> in <figure class="premium-media"> to fold it into the brand
+/* Wrap any image element in figure.premium-media to fold it into the brand
    system: rounded card, ring, grayscale that warms to color on hover, and a
    soft dark overlay gradient so it blends with surrounding panels. */
 .premium-media {
@@ -12272,6 +12269,15 @@ body.personalize-lock {
   letter-spacing: -0.01em;
   color: var(--brand-charcoal);
 }
+.home-faq-q:hover {
+  color: var(--accent-ink);
+}
+.home-faq-q:hover svg {
+  transform: translateY(1px);
+}
+.home-faq-item.is-open .home-faq-q:hover svg {
+  transform: rotate(180deg) translateY(1px);
+}
 .home-faq-q svg {
   flex: none;
   color: var(--accent-ink);
@@ -12289,19 +12295,20 @@ body.personalize-lock {
   overflow: hidden;
   min-height: 0;
   margin: 0;
-  padding: 0 1.35rem;
+  /* Constant padding; the grid-template-rows collapse clips it when closed,
+     so there is no layout property to animate. */
+  padding: 0 1.35rem 1.3rem;
   font-size: 0.96rem;
   line-height: 1.6;
   color: var(--text-muted);
   opacity: 0;
-  transition: opacity 280ms var(--ease-out-soft), padding 320ms var(--ease-out-soft);
+  transition: opacity 280ms var(--ease-out-soft);
 }
 .home-faq-item.is-open .home-faq-a {
   grid-template-rows: 1fr;
 }
 .home-faq-item.is-open .home-faq-a > p {
   opacity: 1;
-  padding-bottom: 1.3rem;
 }
 @media (max-width: 820px) {
   .home-faq-inner {
@@ -12313,5 +12320,65 @@ body.personalize-lock {
   .home-faq-a > p,
   .home-faq-q svg {
     transition: none;
+  }
+}
+
+/* ==========================================================================
+   MOTION: mini-dashboards come alive (/impeccable animate)
+   The decorative dashboard modules (aria-hidden) animate when their card
+   enters view, so the service reads as the tool actually doing the work.
+   Everything below is gated on prefers-reduced-motion: no-preference and the
+   default (reduced motion / pre-reveal) state is the finished, fully-visible
+   one, so no real content depends on the animation firing.
+   ========================================================================== */
+@keyframes dash-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Progress bars grow from empty to their value as the process card reveals.
+     scaleX (not width) keeps it on the compositor. */
+  .process-step .mini-dash-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1000ms var(--ease-out-soft) 220ms;
+  }
+  .process-step.visible .mini-dash-fill {
+    transform: scaleX(1);
+  }
+
+  /* Checklist items tick in one after another, like steps completing. */
+  .process-step .mini-dash-checks li {
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 420ms var(--ease-out-soft),
+      transform 420ms var(--ease-out-soft);
+  }
+  .process-step.visible .mini-dash-checks li {
+    opacity: 1;
+    transform: none;
+  }
+  .process-step.visible .mini-dash-checks li:nth-child(1) { transition-delay: 520ms; }
+  .process-step.visible .mini-dash-checks li:nth-child(2) { transition-delay: 640ms; }
+  .process-step.visible .mini-dash-checks li:nth-child(3) { transition-delay: 760ms; }
+  /* The check glyph gives a small confirming pop as each row lands. */
+  .process-step .mini-dash-checks li svg {
+    transform: scale(0.5);
+    transition: transform 360ms var(--ease-out-soft);
+  }
+  .process-step.visible .mini-dash-checks li svg {
+    transform: scale(1);
+  }
+  .process-step.visible .mini-dash-checks li:nth-child(1) svg { transition-delay: 600ms; }
+  .process-step.visible .mini-dash-checks li:nth-child(2) svg { transition-delay: 720ms; }
+  .process-step.visible .mini-dash-checks li:nth-child(3) svg { transition-delay: 840ms; }
+
+  /* Above-the-fold hero proof card: the draft-quote bar fills on first paint,
+     reinforcing "sent in under a minute". */
+  .hero-proof .mini-dash-fill {
+    transform-origin: left;
+    animation: dash-fill 1100ms var(--ease-out-soft) 820ms both;
   }
 }

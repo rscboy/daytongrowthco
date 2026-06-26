@@ -14,7 +14,7 @@ const siteSchema = {
       "@id": `${siteUrl}/#organization`,
       name: "DaytonGrowthCo.",
       url: `${siteUrl}/`,
-      logo: `${siteUrl}/favicon.png?v=2`,
+      logo: `${siteUrl}/favicon.png?v=3`,
       image: `${siteUrl}/thumbnail.jpeg`,
       description:
         "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, training systems, sales materials, and custom apps for small and midsized businesses.",
@@ -159,9 +159,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.png?v=2",
-    shortcut: "/favicon.png?v=2",
-    apple: "/favicon.png?v=2",
+    icon: "/favicon.png?v=3",
+    shortcut: "/favicon.png?v=3",
+    apple: "/favicon.png?v=3",
   },
   robots: {
     index: true,
