@@ -1,5 +1,7 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/fraunces";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -916,7 +918,9 @@
   }
 
   .clay-hero-copy .hero-label {
+    position: relative;
     width: min(100%, 36rem);
+    padding-top: 0.95rem;
     color: #f4d1b1;
     font-size: clamp(1.125rem, 1.35vw, 1.375rem);
     font-weight: 560;
@@ -924,6 +928,19 @@
     line-height: 1.35;
     text-transform: none;
     text-shadow: 0 1px 5px rgba(0, 0, 0, 0.72);
+  }
+
+  /* Refined leading accent: a short peach rule above the eyebrow line. Not a
+     pill, not an uppercase kicker, just a quiet premium detail. */
+  .clay-hero-copy .hero-label::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.4rem;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--brand-peach), rgba(244, 209, 177, 0));
   }
 
   .clay-hero-copy .hero-label + h1 {
@@ -983,6 +1000,85 @@
     top: clamp(5.5rem, 13svh, 9rem);
     z-index: 5;
     width: min(24rem, 29vw);
+  }
+
+  /* Price-gap reveal: the hero's desire driver. The struck "before" number and
+     the peach "after" line live in the left copy column so the cinematic video
+     stays fully visible behind everything. */
+  .hero-pricegap {
+    margin-top: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .hero-pricegap__label {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.82rem;
+    letter-spacing: -0.005em;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  }
+
+  .hero-pricegap__num {
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-serif);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-weight: 560;
+    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .hero-pricegap__num::after {
+    content: "";
+    position: absolute;
+    left: -3px;
+    right: -3px;
+    top: 54%;
+    height: 2px;
+    background: var(--brand-peach);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 440ms cubic-bezier(0.7, 0, 0.26, 1);
+  }
+
+  .hero-pricegap__num.is-struck::after {
+    transform: scaleX(1);
+  }
+
+  .hero-pricegap__after {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transform: translate3d(0, 7px, 0);
+    transition:
+      opacity 520ms ease,
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hero-pricegap__after.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-pricegap__big {
+    font-family: var(--font-serif);
+    color: var(--brand-peach);
+    font-size: clamp(1.55rem, 2.6vw, 2.05rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-pricegap__chip {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.82rem;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
   }
 
   .hero-actions,
@@ -2300,6 +2396,122 @@
 
   .business-journey-card:last-child {
     border-right: 0;
+  }
+
+  /* "Who it's for" self-identification cards. Light section in the page rhythm,
+     premium depth, animated top accent on hover. No eyebrow, no pills. */
+  .who-its-for {
+    padding: clamp(4rem, 8vw, 6.5rem) 0;
+    background:
+      radial-gradient(120% 80% at 82% 0%, rgba(221, 233, 252, 0.4), transparent 55%),
+      #f6f4ef;
+  }
+
+  .who-its-for-heading h2 {
+    max-width: 22ch;
+    font-family: var(--font-serif);
+    font-size: var(--section-title-size-compact);
+    font-weight: var(--section-title-weight);
+    letter-spacing: var(--section-title-tracking);
+    line-height: var(--section-title-leading);
+    color: #1f211f;
+  }
+
+  .who-its-for-heading h2 span {
+    display: block;
+    color: #6a665f;
+  }
+
+  .who-its-for-heading p {
+    margin-top: 0.9rem;
+    max-width: 46ch;
+    color: #6a665f;
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+
+  .who-its-for-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2rem, 3.5vw, 2.8rem);
+  }
+
+  .who-its-for-card {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.2rem, 1.6vw, 1.5rem);
+    border: 1px solid rgba(24, 23, 77, 0.12);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+    box-shadow: var(--shadow-rest);
+    transition:
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 220ms ease;
+  }
+
+  .who-its-for-card::after {
+    content: "";
+    position: absolute;
+    inset: -1px -1px auto -1px;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+    background: linear-gradient(90deg, var(--brand-peach), var(--brand-indigo));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .who-its-for-card:hover,
+  .who-its-for-card:focus-visible {
+    outline: none;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .who-its-for-card:hover::after,
+  .who-its-for-card:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .who-its-for-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    margin-bottom: 0.95rem;
+    border-radius: 50%;
+    color: var(--brand-indigo);
+    background: rgba(241, 208, 177, 0.32);
+    border: 1px solid rgba(24, 23, 77, 0.1);
+  }
+
+  .who-its-for-card h3 {
+    font-size: 1.06rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: #1f211f;
+  }
+
+  .who-its-for-card p {
+    margin-top: 0.5rem;
+    color: #57544e;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 980px) {
+    .who-its-for-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .who-its-for-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -5688,6 +5900,56 @@
     min-height: 2.72rem;
   }
 
+  /* The visitor's business favicon, derived from their email domain, animates in
+     on the right of the email field once the icon has loaded. */
+  .favicon-field {
+    position: relative;
+  }
+
+  .favicon-field input {
+    padding-right: 2.9rem;
+  }
+
+  .field-favicon {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%) scale(0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid rgba(2, 3, 18, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 220ms ease,
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .field-favicon.is-ready {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .field-favicon img {
+    display: block;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-favicon {
+      transition: opacity 160ms ease;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
   .form-field textarea {
     resize: vertical;
     min-height: 5.9rem;
@@ -7587,11 +7849,11 @@
     position: relative;
     display: inline-flex;
     align-items: baseline;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
     color: #ffffff;
-    font-size: clamp(1.55rem, 5.2vw, 2.1rem);
-    font-weight: 450;
-    letter-spacing: -0.025em;
+    font-size: clamp(2.05rem, 6.8vw, 2.7rem);
+    font-weight: 400;
+    letter-spacing: 0;
     line-height: 1;
     white-space: nowrap;
     opacity: 0;
@@ -7618,18 +7880,18 @@
   }
 
   .splash-wordmark .sp-dayton {
-    font-size: 1.08em;
-    font-weight: 650;
+    font-weight: 400;
   }
 
   .splash-wordmark .sp-growth {
     color: rgba(214, 222, 232, 0.82);
-    font-weight: 450;
+    font-weight: 400;
+    font-style: italic;
   }
 
   .splash-wordmark .sp-co {
     color: #5796c8;
-    font-weight: 800;
+    font-weight: 400;
   }
 
   #scroll-progress-bar {
