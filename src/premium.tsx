@@ -329,6 +329,7 @@ export function CircularCTA({ href = "#cta", label = "Start building", sub = "Bo
 export function PositioningStatement({ children }: { children: React.ReactNode }) {
   return (
     <section className="positioning" aria-labelledby="positioning-title">
+      <AccentPath className="accent-path-positioning" />
       <div className="positioning-inner">
         <p id="positioning-title" className="positioning-statement" data-reveal>
           {children}
@@ -405,6 +406,40 @@ export function TestimonialCard({ initials, name, role, resultLabel, quote, outc
         {outcome}
       </p>
     </article>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* AccentPath: a slow, low-opacity flowing line used as a premium background   */
+/* accent. Decorative only (aria-hidden, pointer-events none); the line draws  */
+/* in a slow loop and a single dot travels along it. Hidden on small screens   */
+/* and frozen under reduced motion (both handled in CSS).                      */
+/* -------------------------------------------------------------------------- */
+
+export function AccentPath({ className = "" }: { className?: string }) {
+  // One shared path string so the stroke and the travelling dot follow the
+  // exact same curve (the dot uses it via CSS offset-path).
+  const d = "M-20 150 C 220 40, 380 250, 640 140 S 1080 40, 1340 170";
+  return (
+    <div className={`accent-path ${className}`.trim()} aria-hidden="true">
+      <svg viewBox="0 0 1320 300" preserveAspectRatio="xMidYMid slice" fill="none">
+        <defs>
+          <linearGradient id="accent-path-stroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#2a2880" stopOpacity="0" />
+            <stop offset="35%" stopColor="#4744c4" stopOpacity="0.9" />
+            <stop offset="70%" stopColor="#f1d0b1" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#f1d0b1" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path className="accent-path-line" d={d} stroke="url(#accent-path-stroke)" strokeWidth="1.5" strokeLinecap="round" />
+        {/* The spark travels in SVG user-space via SMIL, so it stays locked to
+            the path at any container width (a CSS offset-path dot would drift
+            as the viewBox scales). Frozen for reduced-motion in CSS. */}
+        <circle className="accent-path-spark" r="3.5" fill="#f5deca">
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto" path={d} />
+        </circle>
+      </svg>
+    </div>
   );
 }
 

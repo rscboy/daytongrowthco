@@ -1483,6 +1483,17 @@ function Hero() {
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
 
+  // The staggered entrance is JS-gated so the hero never depends on an
+  // animation to be visible: without JS (or for a headless/SEO render) the
+  // content ships at full opacity. Once mounted with motion allowed, we add
+  // `is-animating`, which switches on the opacity-0 start state and the
+  // stagger. The splash screen covers the brief class-add, so there's no flash.
+  const [entranceReady, setEntranceReady] = useState(false);
+  useEffect(() => {
+    setEntranceReady(true);
+  }, []);
+  const entranceClass = entranceReady && !reduceMotion ? " is-animating" : "";
+
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
   // small translate never exposes an edge.
@@ -1523,7 +1534,7 @@ function Hero() {
         <div className="hero-product-video-mask" />
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
-        <div className="clay-hero-copy hero-entrance">
+        <div className={`clay-hero-copy hero-entrance${entranceClass}`}>
           <span className="hero-label">
             {business ? (
               <>Remove the manual work slowing down <em className="hero-personal">{business}</em>.</>
@@ -1532,14 +1543,15 @@ function Hero() {
             )}
           </span>
           <h1 className="hero-title">
-            <span data-scroll-words>We build</span>{" "}
-            <span className="hero-audience-line">
+            <span className="hero-line">We build</span>{" "}
+            <span className="hero-line hero-audience-line">
               <AnimatedHeroPhrase phrases={heroPhrases} />
             </span>
           </h1>
           <p>
-            A dev shop wants five figures and a few months for one custom tool. We build yours with AI for up to
-            70% less, shaped to exactly how you already work, so the money stays in your business.
+            A dev shop wants five figures and a few months for one custom tool. We build yours with AI for{" "}
+            <em className="ink-accent">up to 70% less</em>, shaped to exactly{" "}
+            <em className="ink-accent">how you already work</em>, so the money stays in your business.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -1559,7 +1571,7 @@ function Hero() {
             </p>
           ) : null}
         </div>
-        <aside className="hero-proof hero-entrance" aria-label="What a typical build looks like">
+        <aside className={`hero-proof hero-entrance${entranceClass}`} aria-label="What a typical build looks like">
           <ProofCard
             tone="glass"
             tags={["Live build", "Custom tool", "Built to fit"]}

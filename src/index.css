@@ -770,7 +770,6 @@
       width: 100%;
       max-width: 26rem;
       justify-self: end;
-      animation-delay: 320ms;
     }
   }
 
@@ -12381,4 +12380,160 @@ body.personalize-lock {
     transform-origin: left;
     animation: dash-fill 1100ms var(--ease-out-soft) 820ms both;
   }
+}
+
+/* ==========================================================================
+   PREMIUM INTERACTION PASS
+   Staggered hero entrance, inline accents, accent path, animated icons,
+   mini-card lift. Every animated default is the finished/visible state;
+   motion is gated on prefers-reduced-motion: no-preference.
+   ========================================================================== */
+
+/* ---- #3 Inline accent emphasis (non-pill, per brand rule) ---------------- */
+/* Weight + brand color, no chip/background, so it reads as emphasis not a tag. */
+.ink-accent {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.hero-section .ink-accent {
+  color: #f7dec7;
+  font-weight: 620;
+}
+
+/* ---- #4 One lit keyword: restrained warm glow on the rotating phrase ------ */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-audience-line {
+    text-shadow: 0 0 32px rgba(247, 222, 199, 0.22);
+  }
+}
+
+/* ---- #1 Cinematic staggered hero entrance -------------------------------- */
+/* Transforms need a block box on the headline lines. */
+.hero-title .hero-line {
+  display: inline-block;
+}
+
+/* Gated on `.is-animating` (added by JS after mount), so the default DOM,
+   no-JS, and headless/SEO renders all show the hero at full opacity. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Panel settles (opacity + rise + micro-scale), then the label, the two
+     headline lines, the paragraph and the CTA rise in sequence; the proof
+     card lands last. */
+  .clay-hero-copy.is-animating {
+    animation: hero-panel-in 820ms var(--ease-out-soft) both;
+  }
+  .clay-hero-copy.is-animating > .hero-label,
+  .clay-hero-copy.is-animating > .hero-title .hero-line,
+  .clay-hero-copy.is-animating > p,
+  .clay-hero-copy.is-animating > .hero-actions {
+    opacity: 0;
+    animation: hero-rise-in 720ms var(--ease-out-soft) both;
+  }
+  .clay-hero-copy.is-animating > .hero-label { animation-delay: 160ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(1) { animation-delay: 300ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(2) { animation-delay: 420ms; }
+  .clay-hero-copy.is-animating > p { animation-delay: 580ms; }
+  .clay-hero-copy.is-animating > .hero-actions { animation-delay: 720ms; }
+  .hero-proof.is-animating {
+    opacity: 0;
+    animation: hero-rise-in 800ms var(--ease-out-soft) 860ms both;
+  }
+}
+@keyframes hero-panel-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-rise-in {
+  from { opacity: 0; transform: translateY(34px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- #6 Animated SVG accent path ----------------------------------------- */
+.accent-path {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.accent-path svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+}
+.accent-path-line {
+  fill: none;
+}
+.accent-path-spark {
+  filter: drop-shadow(0 0 6px rgba(245, 222, 202, 0.85));
+}
+/* Sit the line in the lower third behind the editorial statement. */
+.accent-path-positioning svg {
+  top: auto;
+  bottom: -2rem;
+  height: 70%;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Freeze the travelling spark; the static gradient line stays. */
+  .accent-path-spark { display: none; }
+}
+@media (max-width: 700px) {
+  /* The accent line clutters narrow screens; drop it. */
+  .accent-path { display: none; }
+}
+
+/* ---- #10 Animated icons (hover-only, no always-on motion) ----------------- */
+.hover-card-icon {
+  position: relative;
+}
+.hover-card-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(71, 68, 196, 0.45);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* A single soft ping ring radiates from the icon while the card is engaged. */
+  .hover-card:hover .hover-card-icon::after,
+  .hover-card:focus-within .hover-card-icon::after {
+    animation: icon-ping 1.8s var(--ease-out-soft) infinite;
+  }
+  /* System-map icons breathe gently, staggered, so the flow reads as "live". */
+  .system-map-icon {
+    animation: icon-breathe 3.6s ease-in-out infinite;
+  }
+  .system-map-node:nth-child(2) .system-map-icon { animation-delay: 0.4s; }
+  .system-map-node:nth-child(3) .system-map-icon { animation-delay: 0.8s; }
+  .system-map-node:nth-child(4) .system-map-icon { animation-delay: 1.2s; }
+}
+@keyframes icon-ping {
+  0% { opacity: 0.7; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes icon-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(71, 68, 196, 0); }
+  50% { box-shadow: 0 0 0 5px rgba(71, 68, 196, 0.07); }
+}
+
+/* ---- #15 Nested mini-card hover lift (system-map nodes) ------------------- */
+.system-map-node {
+  transition:
+    transform 240ms var(--ease-out-soft),
+    box-shadow 240ms var(--ease-out-soft),
+    border-color 240ms var(--ease-out-soft);
+}
+.system-map-node:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(71, 68, 196, 0.3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .system-map-node { transition: box-shadow 240ms ease, border-color 240ms ease; }
+  .system-map-node:hover { transform: none; }
 }
