@@ -1476,67 +1476,6 @@ function AiVisibility() {
 // through, and collapses to the cost we deliver at. Numbers are intentionally
 // soft (an illustrative "$15,000+" anchor, "up to 70% less") so nothing here
 // claims a figure we can't defend. Reduced motion shows the finished state.
-function HeroPriceGap() {
-  const reduceMotion = useReducedMotion();
-  const numRef = useRef<HTMLSpanElement>(null);
-  const [struck, setStruck] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    const el = numRef.current;
-    if (!el) return;
-    const target = 15000;
-    const fmt = (n: number) => `$${Math.round(n).toLocaleString()}+`;
-
-    if (reduceMotion) {
-      el.textContent = fmt(target);
-      setStruck(true);
-      setRevealed(true);
-      return;
-    }
-
-    el.textContent = "$0+";
-    let raf = 0;
-    let revealTimer = 0;
-    const duration = 1300;
-    // Begin after the hero copy entrance has settled.
-    const start = performance.now() + 700;
-    const step = (now: number) => {
-      const progress = Math.min(Math.max((now - start) / duration, 0), 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = fmt(target * eased);
-      if (progress < 1) {
-        raf = requestAnimationFrame(step);
-      } else {
-        setStruck(true);
-        revealTimer = window.setTimeout(() => setRevealed(true), 350);
-      }
-    };
-    raf = requestAnimationFrame(step);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(revealTimer);
-    };
-  }, [reduceMotion]);
-
-  return (
-    <div
-      className="hero-pricegap"
-      role="group"
-      aria-label="A dev shop quotes about $15,000 or more to build a tool like this. With AI we deliver up to 70% less."
-    >
-      <span className="hero-pricegap__label" aria-hidden="true">
-        What a dev shop quotes to build a tool like this
-      </span>
-      <span className={`hero-pricegap__num${struck ? " is-struck" : ""}`} aria-hidden="true">
-        <span ref={numRef}>$15,000+</span>
-      </span>
-      <span className={`hero-pricegap__after${revealed ? " is-revealed" : ""}`} aria-hidden="true">
-        <span className="hero-pricegap__big">up to 70% less, built with AI</span>
-      </span>
-    </div>
-  );
-}
 
 function Hero() {
   const reduceMotion = useReducedMotion();
@@ -1602,7 +1541,6 @@ function Hero() {
             A dev shop wants five figures and a few months for one custom tool. We build yours with AI for up to
             70% less, shaped to exactly how you already work, so the money stays in your business.
           </p>
-          <HeroPriceGap />
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
               Start Building.
