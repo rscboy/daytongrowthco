@@ -47,6 +47,18 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import {
+  Accent,
+  CircularCTA,
+  HoverRevealCard,
+  MiniDashboard,
+  PositioningStatement,
+  ProcessStepCard,
+  ProofBand,
+  ProofCard,
+  StickyStorySection,
+  TrustStrip,
+} from "./premium";
 import "./index.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
@@ -1600,6 +1612,7 @@ function Hero() {
               See the Tools
             </a>
           </div>
+          <p className="cta-trust">Free consultation · No pressure · Built around how you already work</p>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}
@@ -1609,6 +1622,30 @@ function Hero() {
             </p>
           ) : null}
         </div>
+        <aside className="hero-proof hero-entrance" aria-label="What a typical build looks like">
+          <ProofCard
+            tone="glass"
+            tags={["Live build", "Custom tool", "Built to fit"]}
+            title="A quoting tool that runs on your real price sheet."
+            description="Calls, photos, and texts come in. A clean, sendable quote comes out, priced the way you already price."
+            visual={
+              <MiniDashboard
+                title="quote-builder · live"
+                rows={[
+                  { label: "New request", value: "Roof · 24 sq", tone: "muted" },
+                  { label: "Priced from", value: "Your sheet", tone: "accent" },
+                ]}
+                progress={[{ label: "Draft quote", value: 100 }]}
+                checks={["Sent in under a minute"]}
+              />
+            }
+            stats={[
+              { label: "Cost vs. a dev shop", value: "Up to 70% less", tone: "accent" },
+              { label: "Time to live", value: "2 to 4 weeks" },
+              { label: "Shaped to your workflow", value: "Exactly" },
+            ]}
+          />
+        </aside>
         <a className="hero-scroll-cue" href="#platform" aria-label="Continue to what we build">
           <span>Explore</span>
           <i aria-hidden="true" />
@@ -2334,6 +2371,7 @@ function ProjectForm() {
           <span className="form-submit-label">Start Building</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
+        <p className="cta-trust form-cta-trust">Free consultation · No obligation · A real reply within one business day</p>
         <div id="auditStatus" aria-live="polite" className="form-status" />
       </form>
       <dialog
@@ -3688,6 +3726,296 @@ function InputConstellation() {
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/* Premium homepage sections (built on src/premium.tsx components).            */
+/* -------------------------------------------------------------------------- */
+
+const premiumServices = [
+  {
+    icon: <PhoneCall size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Phone agents",
+    summary: "Calls answered and qualified, day or night.",
+    detail:
+      "An AI agent picks up, answers common questions, captures the job details, and texts you a clean summary. No more missed calls turning into lost work.",
+  },
+  {
+    icon: <Calculator size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Quote tools",
+    summary: "Sendable quotes priced from your real sheet.",
+    detail:
+      "Your rates, materials, and markups become rules. Your team builds an accurate quote in a minute instead of an evening, and it goes out while the lead is still warm.",
+  },
+  {
+    icon: <LayoutDashboard size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Dashboards & portals",
+    summary: "One place for every job and customer.",
+    detail:
+      "Stop digging through texts, spreadsheets, and inboxes. A custom dashboard or customer portal keeps jobs, files, and status in one view your whole team trusts.",
+  },
+  {
+    icon: <Globe2 size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Websites",
+    summary: "Fast, modern, and built to convert.",
+    detail:
+      "A site that loads instantly, shows up in search and AI answers, and turns visitors into booked calls, wired straight into the tools that run your business.",
+  },
+  {
+    icon: <Workflow size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Automations",
+    summary: "The manual handoffs, gone.",
+    detail:
+      "Intake, follow-up, scheduling, and reminders run themselves. We connect the steps your team does by hand so nothing slips and no one re-types the same thing twice.",
+  },
+  {
+    icon: <AppWindow size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Custom apps",
+    summary: "Software shaped to how you already work.",
+    detail:
+      "When off-the-shelf almost fits but never quite does, we build the exact tool around your process, for a fraction of what a traditional dev shop would charge.",
+  },
+];
+
+function ServicesSticky() {
+  return (
+    <StickyStorySection
+      id="services"
+      heading="One team for the whole system."
+      intro="Most shops sell you a single piece. We build the connected layer that quotes, answers, organizes, and follows up, so the parts actually talk to each other."
+      aside={
+        <div className="sticky-story-aside">
+          <CircularCTA href="#cta" label="Start building" sub="Free consultation" />
+        </div>
+      }
+    >
+      {premiumServices.map((service, index) => (
+        <HoverRevealCard key={service.name} index={index + 1} {...service} />
+      ))}
+    </StickyStorySection>
+  );
+}
+
+const premiumProcess = [
+  {
+    step: 1,
+    phase: "Week 01",
+    title: "We map the manual work.",
+    deliverables: ["A walkthrough of how the work flows today", "The handoffs that cost you time", "A written spec, in plain language"],
+    result: "You see exactly what we will build and why, before a dollar is spent.",
+    dashboard: (
+      <MiniDashboard
+        title="discovery · mapped"
+        rows={[
+          { label: "Inputs", value: "Calls + photos", tone: "muted" },
+          { label: "Done by hand", value: "Quoting", tone: "accent" },
+        ]}
+        checks={["Scope agreed", "Spec written"]}
+      />
+    ),
+  },
+  {
+    step: 2,
+    phase: "Weeks 02 to 03",
+    title: "We build the smallest tool that pays.",
+    deliverables: ["A working build on your real data", "Your pricing and rules, loaded in", "Reviews with you as it takes shape"],
+    result: "A tool that saves real time before it ever asks for real budget.",
+    dashboard: (
+      <MiniDashboard
+        title="build · in progress"
+        progress={[
+          { label: "Core tool", value: 80 },
+          { label: "Your data", value: 100 },
+        ]}
+        rows={[{ label: "Built to fit", value: "Your workflow", tone: "accent" }]}
+      />
+    ),
+  },
+  {
+    step: 3,
+    phase: "Week 04+",
+    title: "We ship it and hand it over.",
+    deliverables: ["Live tool your team actually uses", "Training so it sticks", "Tuning as the work changes"],
+    result: "Hours come back every week, and the savings stay in your business.",
+    dashboard: (
+      <MiniDashboard
+        title="live · this week"
+        rows={[
+          { label: "Status", value: "In production", tone: "success" },
+          { label: "Time saved", value: "Hours / wk", tone: "accent" },
+        ]}
+        checks={["Team trained", "Handed over"]}
+      />
+    ),
+  },
+];
+
+function ProcessSteps() {
+  return (
+    <section className="process-section" id="process" aria-labelledby="process-title">
+      <div className="process-section-inner">
+        <div className="process-section-head">
+          <h2 id="process-title" data-scroll-words>
+            How a build actually goes.
+          </h2>
+          <p>No long discovery decks. No surprise invoices. A short, visible path from manual work to a tool your team uses.</p>
+        </div>
+        <div className="process-section-track">
+          {premiumProcess.map((step) => (
+            <ProcessStepCard key={step.step} {...step} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const systemMapNodes = [
+  { icon: <PhoneCall size={20} strokeWidth={1.7} aria-hidden="true" />, label: "Calls, texts & photos", sub: "Everything that comes in" },
+  { icon: <ClipboardList size={20} strokeWidth={1.7} aria-hidden="true" />, label: "Captured & organized", sub: "One clean record" },
+  { icon: <Workflow size={20} strokeWidth={1.7} aria-hidden="true" />, label: "Priced & automated", sub: "Quotes and follow-up" },
+  { icon: <CheckCircle2 size={20} strokeWidth={1.7} aria-hidden="true" />, label: "Booked work", sub: "Less slips through" },
+];
+
+function SystemMap() {
+  return (
+    <section className="system-map" aria-labelledby="system-map-title">
+      <div className="system-map-inner">
+        <div className="system-map-head">
+          <h2 id="system-map-title" data-scroll-words>
+            One connected path, end to end.
+          </h2>
+          <p>The same flow behind every build: nothing dropped between the call and the booked job.</p>
+        </div>
+        <ol className="system-map-flow" data-stagger>
+          {systemMapNodes.map((node, i) => (
+            <li className="system-map-node" key={node.label}>
+              <span className="system-map-icon" aria-hidden="true">
+                {node.icon}
+              </span>
+              <strong>{node.label}</strong>
+              <span className="system-map-sub">{node.sub}</span>
+              {i < systemMapNodes.length - 1 ? (
+                <span className="system-map-arrow" aria-hidden="true">
+                  <ArrowRight size={18} />
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function MissionStatement() {
+  return (
+    <PositioningStatement>
+      Custom software should not cost five figures and three months. We use AI to build the exact tool your business needs for{" "}
+      <Accent>up to 70% less</Accent>, shaped to <Accent>how you already work</Accent>, so the money you save{" "}
+      <Accent>stays in your business</Accent>.
+    </PositioningStatement>
+  );
+}
+
+function ProofAndVoices() {
+  return (
+    <div className="proof-wrap">
+      <ProofBand
+        stats={[
+          { value: "Up to 70%", label: "Lower than a traditional dev shop quote" },
+          { value: "2 to 4 wks", label: "From first call to a live, working tool" },
+          { value: "100%", label: "Built around your existing workflow" },
+        ]}
+        statement={
+          <>
+            “The goal is never a bigger software bill. It is the smallest build that quietly saves real hours, every week, for years.”
+          </>
+        }
+        attribution="DaytonGrowthCo."
+      />
+      {/* Testimonials section intentionally omitted until real client quotes are
+          available. The TestimonialCard component lives in src/premium.tsx and
+          can be dropped back in here when ready. */}
+    </div>
+  );
+}
+
+function BuiltForStrip() {
+  return (
+    <TrustStrip
+      label="Built for"
+      marks={["Contractors", "Service companies", "Professional offices", "Owner-operated teams", "Local trades"]}
+    />
+  );
+}
+
+const homeFaqs = [
+  {
+    q: "What does DaytonGrowthCo build?",
+    a: "Phone agents, quote tools, dashboards, customer portals, training systems, websites, sales materials, and custom business apps, all shaped around the way your business already works.",
+  },
+  {
+    q: "How do you keep custom software affordable?",
+    a: "We use AI-assisted development to cut the hours a traditional dev shop would bill for. You get a custom-fit tool at a price a small business can actually justify, often up to 70% less.",
+  },
+  {
+    q: "Who is this for?",
+    a: "Small and midsized businesses, contractors, service companies, professional offices, and owner-operated teams that still rely on manual quoting, intake, scheduling, follow-up, or scattered spreadsheets.",
+  },
+  {
+    q: "How fast can a tool go live?",
+    a: "Most first builds are live in two to four weeks. We start with the smallest tool that saves real time, prove it on your real work, then expand from there.",
+  },
+];
+
+function HomeFaq() {
+  const [open, setOpen] = useState(0);
+  return (
+    <section className="home-faq" aria-labelledby="home-faq-title">
+      <div className="home-faq-inner">
+        <div className="home-faq-aside">
+          <h2 id="home-faq-title" data-scroll-words>
+            Questions, answered plainly.
+          </h2>
+          <div className="home-faq-note">
+            <span className="home-faq-note-avatar" aria-hidden="true">
+              DG
+            </span>
+            <p>
+              Not sure if this fits your business? Tell us what eats your time and we will tell you straight whether a tool is
+              worth building. No pressure either way.
+            </p>
+            <a className="link-arrow" href="#cta">
+              Ask us directly
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+        <ul className="home-faq-list">
+          {homeFaqs.map((item, index) => {
+            const isOpen = open === index;
+            return (
+              <li key={item.q} className={`home-faq-item ${isOpen ? "is-open" : ""}`}>
+                <button
+                  type="button"
+                  className="home-faq-q"
+                  aria-expanded={isOpen}
+                  onClick={() => setOpen(isOpen ? -1 : index)}
+                >
+                  <span>{item.q}</span>
+                  <ChevronDown size={18} aria-hidden="true" />
+                </button>
+                <div className="home-faq-a" role="region">
+                  <p>{item.a}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 function Homepage() {
   return (
     <>
@@ -3697,14 +4025,21 @@ function Homepage() {
       <Header />
       <main>
         <Hero />
+        <BuiltForStrip />
         <ProcessMap />
+        <MissionStatement />
+        <ServicesSticky />
         <BusinessJourney />
         <WebsiteTransformation />
+        <ProcessSteps />
+        <SystemMap />
         <AiVisibility />
         <InputConstellation />
         <EconomicCase />
         <LaborCostCalculator sectionId="workflow" />
+        <ProofAndVoices />
         <WhoItsFor />
+        <HomeFaq />
         <FinalCTA />
       </main>
       <SiteFooter />
