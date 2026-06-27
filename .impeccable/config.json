@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "reason": "User confirmed Instrument Serif is intentional brand wordmark on the splash screen",
+        "createdAt": "2026-06-27T03:33:24.873Z"
+      }
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/hanken-grotesk";
 @import "@fontsource-variable/fraunces";
 @import "@fontsource/instrument-serif/400.css";
 @import "@fontsource/instrument-serif/400-italic.css";
@@ -47,43 +47,9 @@
     --sidebar-ring: oklch(0.708 0 0);
   }
 
-  .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --destructive-foreground: 210 40% 98%;
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
   .theme {
     --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
+    --font-sans: 'Hanken Grotesk Variable', sans-serif;
   }
   :root {
     /* Brand serif for hero + major editorial moments. */
@@ -135,7 +101,7 @@
     --panel-dark-2: #131233;
     --panel-light: #ffffff;
     --panel-muted: #f6f5f1;
-    --text-muted: #6b6b76;
+    --text-muted: #5f5f6b;
     --text-muted-on-dark: rgba(233, 233, 247, 0.62);
     --ring-line: rgba(24, 23, 77, 0.1);
     --ring-line-on-dark: rgba(255, 255, 255, 0.12);
@@ -146,6 +112,7 @@
   body {
     overflow-x: clip;
     color: #1a1a1a;
+    text-wrap: pretty;
     background:
       radial-gradient(circle at 15% 5%, rgba(248, 206, 173, 0.3), transparent 30rem),
       linear-gradient(180deg, #fbfbf9 0%, #f8f7f3 55%, #fbfbf9 100%);
@@ -218,7 +185,7 @@
   .nav-wordmark {
     display: inline-flex;
     align-items: baseline;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     letter-spacing: -0.025em;
     white-space: nowrap;
   }
@@ -227,7 +194,7 @@
     display: inline-flex;
     align-items: baseline;
     color: #182018;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     font-size: 1.08em;
     font-weight: 650;
   }
@@ -236,7 +203,7 @@
     display: inline-flex;
     align-items: baseline;
     color: #7a766f;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     font-weight: 450;
   }
 
@@ -245,7 +212,7 @@
     align-items: baseline;
     margin-left: 0.02em;
     color: #5796c8;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     font-weight: 800;
   }
 
@@ -1424,7 +1391,7 @@
 
   .record-row strong {
     color: #252522;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.82rem;
     font-weight: 650;
     text-align: right;
@@ -1680,7 +1647,7 @@
     border-radius: 8px;
     color: #1f211f;
     background: var(--brand-peach);
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.82rem;
     font-weight: 800;
   }
@@ -1796,7 +1763,7 @@
 
   .score-orb span {
     max-width: 100%;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.72rem;
     font-weight: 750;
     line-height: 1;
@@ -2063,7 +2030,7 @@
   }
 
   .mini-metric-strip strong {
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 1rem;
     font-weight: 800;
   }
@@ -2181,7 +2148,7 @@
 
   .display-card small {
     color: #8a857d;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.66rem;
     font-weight: 720;
     white-space: nowrap;
@@ -2684,7 +2651,7 @@
 
   .business-journey-number {
     color: #8a857d;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.64rem;
     font-weight: 760;
     letter-spacing: 0.12em;
@@ -3090,7 +3057,8 @@
   .labor-formula {
     margin-top: 1.35rem;
     padding: 1rem 1.1rem;
-    border-left: 3px solid #18174d;
+    border: 1px solid rgba(24, 23, 77, 0.16);
+    border-radius: 10px;
     color: #292932;
     background: rgba(24, 23, 77, 0.055);
     font-size: 0.74rem;
@@ -3536,7 +3504,7 @@
   .step-count {
     margin-top: 1.2rem;
     color: #a6a199;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.78rem;
     font-weight: 650;
   }
@@ -4302,9 +4270,11 @@
 
   .about-copy blockquote {
     margin-top: 1.25rem;
-    border-left: 3px solid #18174d;
-    padding: 0.5rem 0 0.5rem 1rem;
+    border: 1px solid rgba(24, 23, 77, 0.12);
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
     color: #252522;
+    background: rgba(24, 23, 77, 0.045);
     font-size: 1.08rem;
     font-weight: 650;
     line-height: 1.6;
@@ -4393,7 +4363,7 @@
 
   .build-card-index {
     color: #908b84;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.66rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -4530,7 +4500,7 @@
   .intake-list li::before {
     color: rgba(216, 232, 248, 0.62);
     content: "0" counter(intake-step);
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.62rem;
     font-weight: 680;
     letter-spacing: 0.06em;
@@ -5287,7 +5257,8 @@
 
   .phone-agent-next {
     margin-top: 0.7rem;
-    border-left: 2px solid #101048;
+    border: 1px solid rgba(16, 16, 72, 0.16);
+    border-radius: 8px;
     padding: 0.55rem 0.7rem;
     background: rgba(216, 232, 248, 0.45);
   }
@@ -5456,7 +5427,6 @@
   .scenario-calendar-item {
     min-height: 3.65rem;
     border: 1px solid rgba(24, 32, 24, 0.08);
-    border-top: 3px solid #d8e8f8;
     border-radius: 6px;
     padding: 0.48rem;
     background: #fbfbf9;
@@ -5755,10 +5725,7 @@
 
   .transformation-section .section-heading h2 span {
     display: block;
-    background: linear-gradient(90deg, #c98a4e, var(--brand-indigo));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #b5651d;
   }
 
   .metric-grid {
@@ -5777,7 +5744,7 @@
   .metric-card strong {
     display: block;
     color: #1f211f;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     font-weight: 760;
     line-height: 1;
@@ -5952,7 +5919,7 @@
     border-radius: 8px;
     color: #dbeafe;
     background: rgba(24, 23, 77, 0.1);
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.66rem;
     font-weight: 760;
   }
@@ -6583,7 +6550,7 @@
     overflow: hidden;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     color: #aab2bd;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     background:
       radial-gradient(circle at 85% 0%, rgba(42, 40, 128, 0.32), transparent 45%),
       #05070c;
@@ -6606,7 +6573,7 @@
     right: -0.5rem;
     bottom: -1.6rem;
     color: #ffffff;
-    font-family: "Geist Variable", sans-serif;
+    font-family: "Hanken Grotesk Variable", sans-serif;
     font-size: clamp(4rem, 12vw, 9rem);
     font-weight: 700;
     letter-spacing: -0.04em;
@@ -6781,7 +6748,7 @@
     padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.12);
     color: #6a6781;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.62rem;
     font-weight: 760;
     letter-spacing: 0.15em;
@@ -6996,7 +6963,7 @@
   .service-detail-grid article > span,
   .engagement-process li span {
     color: #817c74;
-    font-family: "Geist Variable", ui-monospace, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
     font-size: 0.66rem;
     font-weight: 760;
     letter-spacing: 0.08em;
@@ -7316,7 +7283,7 @@
     border-radius: 999px;
     color: #1a1a1a;
     background: var(--brand-peach);
-    font-family: "Geist Variable", ui-monospace, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
     font-size: 0.6rem;
     font-style: normal;
     font-weight: 760;
@@ -7458,7 +7425,7 @@
   .engagement-process li span {
     flex: 0 0 auto;
     color: var(--brand-indigo);
-    font-family: "Geist Variable", ui-monospace, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
     font-size: 0.66rem;
     font-weight: 780;
     letter-spacing: 0.08em;
@@ -8098,7 +8065,7 @@
     transition:
       opacity 640ms var(--ease-out-soft),
       transform 640ms var(--ease-out-soft);
-    transition-delay: calc(var(--stagger-index, 0) * 80ms);
+    transition-delay: calc(var(--stagger-index, 0) * 40ms);
     will-change: opacity, transform;
   }
 
@@ -9769,7 +9736,7 @@
 
   .feature-index {
     color: #98938c;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.65rem;
     font-weight: 650;
     letter-spacing: 0.06em;
@@ -10008,7 +9975,7 @@
   .featured-build > span,
   .supporting-builds > article > span {
     color: #8b867f;
-    font-family: "Geist Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.64rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -10037,7 +10004,8 @@
     align-items: center;
     gap: 0.65rem;
     margin-top: 0.8rem;
-    border-left: 2px solid #101048;
+    border: 1px solid rgba(16, 16, 72, 0.16);
+    border-radius: 8px;
     padding: 0.55rem 0.65rem;
     background: rgba(216, 232, 248, 0.55);
   }
@@ -10944,7 +10912,7 @@ body.personalize-lock {
   border-bottom: 1px solid #efede7;
   background: #faf9f6;
   color: #6a665f;
-  font-family: "Geist Variable", ui-monospace, monospace;
+  font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
   font-size: 0.8rem;
 }
 
@@ -10972,7 +10940,7 @@ body.personalize-lock {
 
 .sconf-messy {
   color: #b04a3a;
-  font-family: "Geist Variable", ui-monospace, monospace;
+  font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
   font-size: 0.86rem;
 }
 
@@ -11410,9 +11378,9 @@ body.personalize-lock {
   border: 1px solid var(--ring-line);
   box-shadow: var(--shadow-rest);
   transition:
-    transform 320ms var(--ease-out-soft),
-    box-shadow 320ms var(--ease-out-soft),
-    border-color 320ms var(--ease-out-soft);
+    transform 260ms var(--ease-out-soft),
+    box-shadow 260ms var(--ease-out-soft),
+    border-color 260ms var(--ease-out-soft);
 }
 .hover-card::before {
   content: "";
@@ -11423,7 +11391,7 @@ body.personalize-lock {
   background: var(--brand-gradient);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 380ms var(--ease-out-soft);
+  transition: transform 260ms var(--ease-out-soft);
 }
 .hover-card-glow {
   position: absolute;
@@ -11431,7 +11399,7 @@ body.personalize-lock {
   z-index: -1;
   opacity: 0;
   background: radial-gradient(120% 80% at 50% 0%, var(--accent-glow), transparent 70%);
-  transition: opacity 380ms var(--ease-out-soft);
+  transition: opacity 260ms var(--ease-out-soft);
 }
 .hover-card:hover,
 .hover-card:focus-visible {
@@ -11535,7 +11503,7 @@ body.personalize-lock {
   background: var(--panel-light);
   border: 1px solid var(--ring-line);
   box-shadow: var(--shadow-rest);
-  transition: box-shadow 320ms var(--ease-out-soft), transform 320ms var(--ease-out-soft);
+  transition: box-shadow 260ms var(--ease-out-soft), transform 260ms var(--ease-out-soft);
 }
 .process-step:hover {
   box-shadow: var(--shadow-hover);
@@ -11655,7 +11623,7 @@ body.personalize-lock {
   color: #fff;
   background: var(--brand-gradient);
   box-shadow: 0 24px 60px rgba(42, 40, 128, 0.36);
-  transition: transform 360ms var(--ease-out-soft), box-shadow 360ms var(--ease-out-soft);
+  transition: transform 260ms var(--ease-out-soft), box-shadow 260ms var(--ease-out-soft);
 }
 .circular-cta-ring {
   position: absolute;
@@ -11789,7 +11757,7 @@ body.personalize-lock {
   background: var(--panel-light);
   border: 1px solid var(--ring-line);
   box-shadow: var(--shadow-rest);
-  transition: box-shadow 320ms var(--ease-out-soft), transform 320ms var(--ease-out-soft);
+  transition: box-shadow 260ms var(--ease-out-soft), transform 260ms var(--ease-out-soft);
 }
 .member-card:hover {
   box-shadow: var(--shadow-hover);

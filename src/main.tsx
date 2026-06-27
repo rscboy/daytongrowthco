@@ -2555,44 +2555,84 @@ function useMuxVideos() {
       return true;
     };
 
-    const hlsVideos = videoEls.filter((video) => !loadNativeHls(video));
-    if (!hlsVideos.length) return;
-
-    const attachHls = () => {
-      const hlsGlobal = (window as unknown as { Hls?: any }).Hls;
-      if (!hlsGlobal?.isSupported?.()) return;
-      hlsVideos.forEach((video) => {
-        const src = video.dataset.muxStream;
-        if (!src || video.dataset.hlsAttached === "true") return;
-        video.dataset.hlsAttached = "true";
-        const hls = new hlsGlobal({
-          capLevelToPlayerSize: true,
-          maxBufferLength: 18,
-          backBufferLength: 12,
-        });
-        hls.loadSource(src);
-        hls.attachMedia(video);
-        hls.on(hlsGlobal.Events.MANIFEST_PARSED, () => playQuietly(video));
-      });
+    // Lazily load hls.js (CDN) only once, and only when a stream video actually
+    // needs it. Returns the resolved Hls global via callback.
+    const whenHlsReady = (cb: () => void) => {
+      if ((window as unknown as { Hls?: any }).Hls) {
+        cb();
+        return;
+      }
+      const existingScript = document.querySelector<HTMLScriptElement>("script[data-hls-loader]");
+      if (existingScript) {
+        existingScript.addEventListener("load", cb, { once: true });
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js";
+      script.async = true;
+      script.dataset.hlsLoader = "true";
+      script.addEventListener("load", cb, { once: true });
+      document.head.appendChild(script);
     };
 
-    if ((window as unknown as { Hls?: any }).Hls) {
-      attachHls();
+    const hlsInstances: Array<{ destroy: () => void }> = [];
+
+    const attachHls = (video: HTMLVideoElement) => {
+      const hlsGlobal = (window as unknown as { Hls?: any }).Hls;
+      if (!hlsGlobal?.isSupported?.()) return;
+      const src = video.dataset.muxStream;
+      if (!src || video.dataset.hlsAttached === "true") return;
+      video.dataset.hlsAttached = "true";
+      const hls = new hlsGlobal({
+        capLevelToPlayerSize: true,
+        maxBufferLength: 18,
+        backBufferLength: 12,
+      });
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      hls.on(hlsGlobal.Events.MANIFEST_PARSED, () => playQuietly(video));
+      hlsInstances.push(hls);
+    };
+
+    // Begin loading a single video. Safari plays HLS natively; everyone else
+    // gets hls.js, fetched on demand.
+    const activate = (video: HTMLVideoElement) => {
+      if (video.dataset.muxActivated === "true") return;
+      video.dataset.muxActivated = "true";
+      if (loadNativeHls(video)) return;
+      whenHlsReady(() => attachHls(video));
+    };
+
+    // Gate buffering on viewport proximity: a below-the-fold background video
+    // (and the hls.js script) should not eat bandwidth until the visitor is
+    // about to reach it. Matters most for the mobile, between-jobs audience.
+    if (typeof IntersectionObserver === "undefined") {
+      videoEls.forEach(activate);
       return;
     }
 
-    const existingScript = document.querySelector<HTMLScriptElement>("script[data-hls-loader]");
-    if (existingScript) {
-      existingScript.addEventListener("load", attachHls, { once: true });
-      return;
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          activate(entry.target as HTMLVideoElement);
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    videoEls.forEach((video) => observer.observe(video));
 
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js";
-    script.async = true;
-    script.dataset.hlsLoader = "true";
-    script.onload = attachHls;
-    document.head.appendChild(script);
+    return () => {
+      observer.disconnect();
+      hlsInstances.forEach((hls) => {
+        try {
+          hls.destroy();
+        } catch {
+          /* ignore */
+        }
+      });
+    };
   }, []);
 }
 
@@ -3054,10 +3094,10 @@ function QuoteBuilderDemo() {
           defaults: { ease: "power2.out" },
           scrollTrigger: { trigger: root, start: "top 72%", once: true },
         });
-        tl.fromTo(q(".qb-field"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.1 });
-        tl.to(q(".qb-toggle"), { backgroundColor: "#18174d", duration: 0.3, stagger: 0.12 }, "+=0.1");
-        tl.to(q(".qb-toggle i"), { x: 14, duration: 0.3, stagger: 0.12 }, "<");
-        tl.fromTo(q(".qb-chip"), { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.1 }, "+=0.1");
+        tl.fromTo(q(".qb-field"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05 });
+        tl.to(q(".qb-toggle"), { backgroundColor: "#18174d", duration: 0.3, stagger: 0.05 }, "+=0.1");
+        tl.to(q(".qb-toggle i"), { x: 14, duration: 0.3, stagger: 0.05 }, "<");
+        tl.fromTo(q(".qb-chip"), { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.05 }, "+=0.1");
         if (total) {
           const counter = { v: 0 };
           tl.to(counter, {

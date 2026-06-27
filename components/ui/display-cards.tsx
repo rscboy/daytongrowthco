@@ -29,7 +29,7 @@ export function DisplayCards({ cards, tone = "light", className }: DisplayCardsP
             whileInView={{ opacity: 1, y: 0 }}
             whileHover={{ y: -4 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.45, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.45, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
             style={{ "--card-index": index } as CSSProperties}
           >
             <span className="display-card-icon" aria-hidden="true">
