@@ -49,7 +49,7 @@
       .legal-document-title {
         overflow: hidden;
         color: #242722;
-        font: 650 0.9rem/1.2 Geist, "Geist Variable", system-ui, sans-serif;
+        font: 650 0.9rem/1.2 "Hanken Grotesk Variable", system-ui, sans-serif;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -63,7 +63,7 @@
         border-radius: 8px;
         color: #fff;
         background: #20231f;
-        font: 650 0.82rem/1 Geist, "Geist Variable", system-ui, sans-serif;
+        font: 650 0.82rem/1 "Hanken Grotesk Variable", system-ui, sans-serif;
         cursor: pointer;
       }
       .legal-document-close:hover,

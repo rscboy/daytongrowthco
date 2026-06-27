@@ -21,7 +21,7 @@ export function OutcomeReel({ items, className }: OutcomeReelProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.42, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.42, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
         >
           <p>&ldquo;{item.quote}&rdquo;</p>
           <span>{item.author}</span>
