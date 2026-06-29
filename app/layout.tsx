@@ -229,8 +229,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 } else {
                   document.documentElement.classList.add("dgc-splash-pending");
                 }
+                window.setTimeout(function () {
+                  document.documentElement.classList.add("dgc-splash-seen");
+                  document.documentElement.classList.remove("dgc-splash-pending");
+                  if (document.body) document.body.classList.remove("splash-lock");
+                  var bootSplash = document.getElementById("boot-splash");
+                  if (bootSplash) {
+                    bootSplash.hidden = true;
+                    bootSplash.setAttribute("aria-hidden", "true");
+                  }
+                }, 5000);
               } catch (error) {
-                document.documentElement.classList.add("dgc-splash-pending");
+                document.documentElement.classList.add("dgc-splash-seen");
+                document.documentElement.classList.remove("dgc-splash-pending");
               }
             `,
           }}

@@ -1625,7 +1625,8 @@ function Hero() {
             </span>
           </h1>
           <p>
-            A dev shop wants five figures and a few months for one custom tool. We build yours with AI for{" "}
+            We are your AI contractor for contractors: the team that turns quoting, intake, follow-up, and job handoffs into
+            practical tools. A dev shop wants five figures and a few months for one custom tool. We build yours with AI for{" "}
             <em className="ink-accent">up to 70% less</em>, shaped to exactly{" "}
             <em className="ink-accent">how you already work</em>, so the money stays in your business.
           </p>
@@ -1921,6 +1922,26 @@ function WebsiteTransformation() {
               }}
             />
           </div>
+        </div>
+      </div>
+      <div className="website-migration-offer mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="website-migration-card">
+          <div>
+            <h3>Websites start at $1,500.</h3>
+            <p>
+              Move from WordPress, Wix, or Squarespace to a fast vibecoded website your team can update by prompting,
+              instead of digging through page builders, plugins, and brittle templates.
+            </p>
+          </div>
+          <ul aria-label="Website migration benefits">
+            <li>Clean migration from your current site</li>
+            <li>Modern codebase built around your services</li>
+            <li>Prompt-based edits for copy, sections, and page updates</li>
+          </ul>
+          <a className="button button-primary" href="#cta">
+            Migrate my website
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>
@@ -2459,8 +2480,8 @@ function FinalCTA() {
           </h2>
           <p>
             {business
-              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget.`
-              : "Tell us what comes in, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget."}
+              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. As your AI contractor for contractors, we will look for the smallest build that saves real time before it asks for real budget.`
+              : "Tell us what comes in, what your team does with it, and what needs to come out. As your AI contractor for contractors, we will look for the smallest build that saves real time before it asks for real budget."}
           </p>
         </div>
         <ProjectForm />
@@ -2478,6 +2499,7 @@ function SplashScreen() {
     }
   });
   const [done, setDone] = useState(skipSplash);
+  const [visible, setVisible] = useState(!skipSplash);
 
   useEffect(() => {
     const bootSplash = document.getElementById("boot-splash");
@@ -2489,6 +2511,7 @@ function SplashScreen() {
       document.documentElement.classList.add("dgc-splash-seen");
       document.documentElement.classList.remove("dgc-splash-pending");
       document.body.classList.remove("splash-lock");
+      setVisible(false);
       return;
     }
 
@@ -2506,13 +2529,25 @@ function SplashScreen() {
       document.documentElement.classList.remove("dgc-splash-pending");
       document.body.classList.remove("splash-lock");
     }, 2550);
+    const removeTimer = window.setTimeout(() => {
+      setVisible(false);
+    }, 3050);
+    const hardStopTimer = window.setTimeout(() => {
+      setDone(true);
+      setVisible(false);
+      document.documentElement.classList.add("dgc-splash-seen");
+      document.documentElement.classList.remove("dgc-splash-pending");
+      document.body.classList.remove("splash-lock");
+    }, 4200);
     return () => {
       window.clearTimeout(timer);
+      window.clearTimeout(removeTimer);
+      window.clearTimeout(hardStopTimer);
       document.body.classList.remove("splash-lock");
     };
   }, [skipSplash]);
 
-  if (skipSplash) return null;
+  if (!visible) return null;
 
   return (
     <div className={`splash-screen ${done ? "is-done" : ""}`} aria-hidden="true">
@@ -4011,6 +4046,85 @@ function MissionStatement() {
   );
 }
 
+const orbitClients = [
+  {
+    name: "Waibel Energy Solutions",
+    work: "Energy systems and field-service visibility",
+    logo: "https://gowaibel.com/wp-content/uploads/2024/02/waibel-logo.jpeg",
+    orbit: "22deg",
+    initials: "WE",
+  },
+  {
+    name: "Khan Construction",
+    work: "Construction workflows and lead capture",
+    orbit: "118deg",
+    initials: "KC",
+  },
+  {
+    name: "FlightFix",
+    work: "Travel-support experience and digital presence",
+    logo: "https://i.postimg.cc/RVjSKdGB/Flight-Fix-Logo.jpg",
+    orbit: "212deg",
+    initials: "FF",
+  },
+  {
+    name: "Shmu's Automotive",
+    work: "Automotive service proof and local demand",
+    logo: "https://i.ibb.co/B5fmCZDS/Screenshot-2026-04-23-at-10-51-12-PM.png",
+    orbit: "306deg",
+    initials: "SA",
+  },
+];
+
+function ClientOrbit() {
+  return (
+    <section className="client-orbit" aria-labelledby="client-orbit-title">
+      <div className="client-orbit-inner">
+        <div className="client-orbit-copy">
+          <h2 id="client-orbit-title" data-scroll-words>
+            Growth work happens in good company.
+          </h2>
+          <p>
+            A small set of real teams we have helped with sites, systems, proof, and the operational work behind better demand.
+          </p>
+          <a className="link-arrow" href="#cta">
+            Talk through your build
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
+
+        <div className="client-orbit-stage" aria-label="Companies DaytonGrowthCo has worked with">
+          <div className="client-orbit-core">
+            <img src={logoUrl} alt="" />
+            <strong>DaytonGrowthCo.</strong>
+            <span>Growth partner</span>
+          </div>
+
+          <div className="client-orbit-rings" aria-hidden="true" />
+
+          <ul className="client-orbit-list">
+            {orbitClients.map((client) => (
+              <li
+                className="client-orbit-node"
+                key={client.name}
+                style={{ "--orbit-angle": client.orbit } as React.CSSProperties}
+              >
+                <div className="client-orbit-logo">
+                  {client.logo ? <img src={client.logo} alt={`${client.name} logo`} loading="lazy" /> : <span>{client.initials}</span>}
+                </div>
+                <div className="client-orbit-card">
+                  <strong>{client.name}</strong>
+                  <span>{client.work}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ProofAndVoices() {
   return (
     <div className="proof-wrap">
@@ -4027,6 +4141,7 @@ function ProofAndVoices() {
         }
         attribution="DaytonGrowthCo."
       />
+      <ClientOrbit />
       {/* Testimonials section intentionally omitted until real client quotes are
           available. The TestimonialCard component lives in src/premium.tsx and
           can be dropped back in here when ready. */}
