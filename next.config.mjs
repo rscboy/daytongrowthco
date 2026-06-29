@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true,
+  trailingSlash: false,
+  skipTrailingSlashRedirect: true,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ibb.co" },
@@ -18,8 +19,8 @@ const nextConfig = {
       { source: "/workflow-automation", destination: "/", permanent: false },
       { source: "/custom-systems", destination: "/", permanent: false },
       { source: "/pricing", destination: "/", permanent: false },
-      { source: "/about", destination: "/", permanent: false },
-      { source: "/aboutus", destination: "/aboutus.html", permanent: true },
+      { source: "/about", destination: "/aboutus", permanent: true },
+      { source: "/aboutus.html", destination: "/aboutus", permanent: true },
       { source: "/contact", destination: "/#cta", permanent: false },
     ];
   },

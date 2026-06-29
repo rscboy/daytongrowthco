@@ -745,7 +745,7 @@ function Header() {
           <Link href="/what-we-build/">What We Build</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
-          <a href="/aboutus.html">About</a>
+          <Link href="/aboutus">About</Link>
         </div>
         <div className="header-actions">
           {isHome ? (
@@ -2684,6 +2684,11 @@ const pageCopy = {
     title: "Start with the constraint. Not the trend.",
     text: "We map the work, measure what the current process costs, and choose the smallest useful fix before recommending a custom build.",
   },
+  about: {
+    kicker: "About",
+    title: "Practical invention, rooted in Dayton.",
+    text: "DaytonGrowthCo builds custom tools around the way small and midsized businesses actually work, starting with the process before the software.",
+  },
 };
 
 function PageHero({ title, text }: { title: string; text: string; kicker?: string }) {
@@ -3029,7 +3034,7 @@ function SiteFooter() {
           <Link href="/what-we-build/">What We Build</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
-          <a href="/aboutus.html">About Us</a>
+          <Link href="/aboutus">About Us</Link>
           <Link href="/#cta">Start a Conversation</Link>
         </nav>
         <nav className="footer-links" aria-label="Legal and contact">
@@ -4091,6 +4096,74 @@ function HowItWorksPage() {
   );
 }
 
+function AboutPage() {
+  return (
+    <>
+      <div id="scroll-progress-bar" aria-hidden="true" />
+      <Header />
+      <main className="dedicated-page">
+        <PageHero {...pageCopy.about} />
+        <section className="about-founder" aria-labelledby="about-founder-title">
+          <div className="about-founder-inner">
+            <div className="about-founder-portrait" aria-hidden="true">
+              <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="" />
+            </div>
+            <div className="about-founder-copy">
+              <span className="about-founder-kicker">Meet the founder</span>
+              <h2 id="about-founder-title">Samuel Caruso</h2>
+              <p>
+                Born and raised in Dayton, Ohio, Samuel has always loved building things, whether that meant physical
+                projects, systems, or growth strategies.
+              </p>
+              <p>
+                He earned his undergraduate degree in History from the University of Michigan and later completed a
+                Master’s in Entrepreneurship and Emerging Technology, blending strategic thinking with modern digital tools.
+              </p>
+              <blockquote>
+                Most small businesses do not need more software. They need the right tool built around the work.
+              </blockquote>
+              <p>
+                Samuel founded DaytonGrowthCo. to build phone agents, quote tools, dashboards, portals, sales materials,
+                and custom apps for small businesses. The work starts with the process, then becomes a tool the team can use.
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="build-principles about-mission-native" aria-labelledby="about-mission-title">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="dedicated-heading">
+              <h2 id="about-mission-title">Why DaytonGrowthCo.</h2>
+              <p>
+                The name honors our roots without limiting our reach. Dayton represents practical invention, steady
+                experimentation, and the courage to build what comes next.
+              </p>
+            </div>
+            <ol className="build-principles-list">
+              <li>
+                <span>01</span>
+                <strong>Process first</strong>
+                <p>We map the calls, files, data, handoffs, and repeated steps before recommending a tool.</p>
+              </li>
+              <li>
+                <span>02</span>
+                <strong>Use what fits</strong>
+                <p>Existing software is configured when it can solve the problem cleanly.</p>
+              </li>
+              <li>
+                <span>03</span>
+                <strong>Build what is missing</strong>
+                <p>Custom tools are reserved for the places where the business workflow needs something specific.</p>
+              </li>
+            </ol>
+          </div>
+        </section>
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
 // Self-identification section: helps the right visitor see themselves and lets
 // the wrong one opt out. Net-new (the brief's "who it's for"). Qualitative copy,
 // no invented metrics, no eyebrow label, no pills, no em dashes.
@@ -4169,6 +4242,7 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
       "/what-we-build": "What We Build | DaytonGrowthCo.",
       "/examples": "Examples | DaytonGrowthCo.",
       "/how-it-works": "How It Works | DaytonGrowthCo.",
+      "/aboutus": "About DaytonGrowthCo. | Tools and Digital Systems",
     };
     document.title = titles[path] || titles["/"];
   }, [path]);
@@ -4177,6 +4251,7 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
   if (path === "/what-we-build") page = <WhatWeBuildPage />;
   if (path === "/examples") page = <ExamplesPage />;
   if (path === "/how-it-works") page = <HowItWorksPage />;
+  if (path === "/aboutus") page = <AboutPage />;
 
   return (
     <PersonalizationProvider>

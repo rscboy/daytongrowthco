@@ -6,7 +6,7 @@
 
 [ DaytonGrowthCo. ](/)
 
-[What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About](/aboutus.html)
+[What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About](/aboutus)
 
 [Start Building. ](/#cta)
 
@@ -61,7 +61,7 @@ Rooted in Dayton and serving businesses nationwide, DaytonGrowthCo builds phone 
 
 [LinkedIn](https://www.linkedin.com/company/daytongrowthco/) [Instagram](https://www.instagram.com/daytongrowthco/)
 
-**Explore** [What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About Us](/aboutus.html) [Start a Conversation](/#cta)
+**Explore** [What We Build](/what-we-build/) [Examples](/examples/) [How It Works](/how-it-works/) [About Us](/aboutus) [Start a Conversation](/#cta)
 
 **Contact** [help@daytongrowth.co](mailto:help@daytongrowth.co) [Privacy](/privacy-policy/) [Terms](/terms-of-service/) [Disclaimer](/disclaimer/) [Accessibility](/accessibility/)
 
@@ -69,4 +69,4 @@ Rooted in Dayton and serving businesses nationwide, DaytonGrowthCo builds phone 
 
 ---
 
-_Source: https://www.daytongrowth.co/aboutus.html · Markdown rendering of the HTML page._
+_Source: https://www.daytongrowth.co/aboutus · Markdown rendering of the HTML page._

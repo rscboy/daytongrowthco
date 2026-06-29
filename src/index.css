@@ -401,6 +401,8 @@
 
   .button {
     --btn-glow: rgba(255, 240, 222, 0.42);
+    --btn-lift: 0px;
+    --btn-press-scale: 1;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -416,6 +418,7 @@
     line-height: 1;
     white-space: nowrap;
     text-decoration: none;
+    transform: translateY(var(--btn-lift)) scale(var(--btn-press-scale));
     transition:
       background-color 150ms ease,
       border-color 150ms ease,
@@ -424,8 +427,15 @@
       opacity 150ms ease;
   }
 
-  .button:hover {
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    .button:hover {
+      --btn-lift: -1px;
+    }
+  }
+
+  .button:active {
+    --btn-lift: 0px;
+    --btn-press-scale: 0.97;
   }
 
   /* Cursor-tracking warm light. The glow sits at z-index -1 (above the button's
@@ -443,9 +453,14 @@
     transition: opacity 260ms ease;
   }
 
-  .button:hover::before,
   .button:focus-visible::before {
     opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .button:hover::before {
+      opacity: 1;
+    }
   }
 
   .button-primary {
@@ -467,9 +482,14 @@
     transition: transform 220ms var(--ease-out-soft);
   }
 
-  .button:hover svg,
   .button:focus-visible svg {
     transform: translateX(3px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .button:hover svg {
+      transform: translateX(3px);
+    }
   }
 
   .link-arrow svg,
@@ -480,12 +500,14 @@
     transition: transform 220ms var(--ease-out-soft);
   }
 
-  .link-arrow:hover svg,
-  .homepage-preview-copy > a:hover svg,
-  .homepage-preview-link:hover svg,
-  .service-detail-grid article > a:hover svg,
-  .founder-preview-link:hover svg {
-    transform: translateX(4px);
+  @media (hover: hover) and (pointer: fine) {
+    .link-arrow:hover svg,
+    .homepage-preview-copy > a:hover svg,
+    .homepage-preview-link:hover svg,
+    .service-detail-grid article > a:hover svg,
+    .founder-preview-link:hover svg {
+      transform: translateX(4px);
+    }
   }
 
   .button-primary {
@@ -556,7 +578,13 @@
       0 1px 0 rgba(255, 255, 255, 0.76) inset,
       0 -1px 0 rgba(97, 65, 42, 0.08) inset,
       0 12px 30px rgba(0, 0, 8, 0.28);
-    transform: translateY(-1px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-section .button-primary:hover,
+    .final-cta .form-submit:hover {
+      --btn-lift: -1px;
+    }
   }
 
   .hero-section .button-primary svg,
@@ -580,11 +608,17 @@
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.12) inset,
       0 12px 30px rgba(0, 0, 8, 0.24);
-    transform: translateY(-2px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-section .button-secondary:hover {
+      --btn-lift: -2px;
+    }
   }
 
   .hero-section .button:active {
-    transform: translateY(1px) scale(0.995);
+    --btn-lift: 1px;
+    --btn-press-scale: 0.98;
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.4) inset,
       0 4px 11px rgba(0, 0, 8, 0.22);
@@ -1514,11 +1548,16 @@
     transition:
       color 160ms ease,
       background-color 160ms ease,
-      border-color 160ms ease;
+      border-color 160ms ease,
+      transform 140ms var(--ease-out-soft);
   }
 
   .ai-chip:hover {
     border-color: #d8d4cc;
+  }
+
+  .ai-chip:active {
+    transform: scale(0.97);
   }
 
   .ai-chip.is-active {
@@ -3350,7 +3389,12 @@
     transition:
       border-color 160ms ease,
       color 160ms ease,
-      background-color 160ms ease;
+      background-color 160ms ease,
+      transform 140ms var(--ease-out-soft);
+  }
+
+  .expandable-tab:active {
+    transform: scale(0.97);
   }
 
   .expandable-tab > svg,
@@ -5049,6 +5093,10 @@
     border-color: rgba(24, 23, 77, 0.08);
   }
 
+  .phone-agent-steps button:active {
+    transform: scale(0.98);
+  }
+
   .phone-agent-steps button.is-active {
     background: rgba(255, 255, 255, 0.96);
     border-color: rgba(16, 16, 72, 0.14);
@@ -6642,6 +6690,92 @@
     margin-top: 1.2rem;
   }
 
+  .about-founder {
+    padding-block: clamp(3.75rem, 6vw, 5.75rem);
+    background:
+      radial-gradient(circle at 92% 12%, rgba(87, 150, 200, 0.12), transparent 28rem),
+      #fbfbf9;
+  }
+
+  .about-founder-inner {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.42fr) minmax(0, 0.58fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .about-founder-portrait {
+    position: relative;
+    isolation: isolate;
+    max-width: 22rem;
+  }
+
+  .about-founder-portrait::before {
+    content: "";
+    position: absolute;
+    inset: 1rem -1rem -1rem 1rem;
+    z-index: -1;
+    border: 1px solid rgba(87, 150, 200, 0.34);
+    border-radius: 8px;
+    background: rgba(221, 233, 252, 0.34);
+  }
+
+  .about-founder-portrait img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 4px solid #fff;
+    border-radius: 8px;
+    box-shadow: 0 24px 70px rgba(24, 23, 77, 0.14);
+  }
+
+  .about-founder-kicker {
+    display: inline-flex;
+    margin-bottom: 0.85rem;
+    color: #5796c8;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .about-founder-copy h2 {
+    margin: 0;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.4vw, 3.1rem);
+    font-weight: 520;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .about-founder-copy p {
+    margin: 1rem 0 0;
+    color: #5f5e65;
+    font-size: clamp(0.96rem, 1.1vw, 1.05rem);
+    line-height: 1.62;
+  }
+
+  .about-founder-copy blockquote {
+    margin: clamp(1.4rem, 3vw, 2rem) 0;
+    border-left: 3px solid #5796c8;
+    padding: 0.2rem 0 0.2rem 1rem;
+    color: #171821;
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    font-weight: 520;
+    letter-spacing: -0.03em;
+    line-height: 1.16;
+  }
+
+  .about-mission-native {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   .homepage-preview,
   .service-architecture,
   .connected-system,
@@ -6779,12 +6913,27 @@
     transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
   }
 
-  .advanced-preview-flow > button:hover,
   .advanced-preview-flow > button:focus-visible,
   .advanced-preview-flow > button.is-active {
     border-color: rgba(24, 23, 77, 0.46);
     box-shadow: 0 8px 22px rgba(24, 23, 77, 0.1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .advanced-preview-flow > button:hover {
+      border-color: rgba(24, 23, 77, 0.46);
+      box-shadow: 0 8px 22px rgba(24, 23, 77, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  .advanced-preview-flow > button:focus-visible,
+  .advanced-preview-flow > button.is-active {
     transform: translateY(-2px);
+  }
+
+  .advanced-preview-flow > button:active {
+    transform: scale(0.98);
   }
 
   /* Connector arrows pulse left-to-right to suggest information flowing
@@ -10221,7 +10370,6 @@
     scroll-behavior: auto !important;
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
   }
 
   .desktop-workflow {
@@ -10233,7 +10381,11 @@
   }
 
   .button:hover,
-  .segment-card:hover {
+  .segment-card:hover,
+  .advanced-preview-flow > button:hover,
+  .phone-agent-steps button:active,
+  .expandable-tab:active,
+  .ai-chip:active {
     transform: none;
   }
 
@@ -10280,6 +10432,47 @@
     opacity: 1;
     transform: none;
     filter: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .logo-lockup:hover,
+  .segment-card:hover,
+  .segment-card:hover .mini-row,
+  .segment-card:hover .mini-signal-row span,
+  .business-journey-card:hover,
+  .who-its-for-card:hover,
+  .pricing-card:hover,
+  .pricing-card.featured:hover,
+  .margin-leak-row:hover,
+  .feature-cell:hover,
+  .final-cta-start:hover,
+  .choice-option:hover,
+  .founder-preview-link:hover,
+  .advanced-preview-flow > button:hover,
+  .how-preview-steps li:hover,
+  .service-detail-grid article:hover,
+  .connected-node:hover .connected-node-orb,
+  .engagement-process li:hover,
+  .hover-card:hover,
+  .process-step:hover,
+  .circular-cta:hover,
+  .circular-cta:hover .circular-cta-core,
+  .member-card:hover,
+  .premium-media:hover img,
+  .system-map-node:hover {
+    transform: none;
+  }
+
+  .site-offer-banner:hover .site-offer-action svg,
+  .economic-case-link:hover svg,
+  .final-cta-start:hover svg,
+  .form-submit:hover svg,
+  .founder-preview-link:hover svg,
+  .hover-card:hover .hover-card-cta svg,
+  .home-faq-q:hover svg,
+  .home-faq-item.is-open .home-faq-q:hover svg {
+    transform: none;
   }
 }
 
@@ -12389,23 +12582,23 @@ body.personalize-lock {
      headline lines, the paragraph and the CTA rise in sequence; the proof
      card lands last. */
   .clay-hero-copy.is-animating {
-    animation: hero-panel-in 820ms var(--ease-out-soft) both;
+    animation: hero-panel-in 420ms var(--ease-out-soft) both;
   }
   .clay-hero-copy.is-animating > .hero-label,
   .clay-hero-copy.is-animating > .hero-title .hero-line,
   .clay-hero-copy.is-animating > p,
   .clay-hero-copy.is-animating > .hero-actions {
     opacity: 0;
-    animation: hero-rise-in 720ms var(--ease-out-soft) both;
+    animation: hero-rise-in 420ms var(--ease-out-soft) both;
   }
-  .clay-hero-copy.is-animating > .hero-label { animation-delay: 160ms; }
-  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(1) { animation-delay: 300ms; }
-  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(2) { animation-delay: 420ms; }
-  .clay-hero-copy.is-animating > p { animation-delay: 580ms; }
-  .clay-hero-copy.is-animating > .hero-actions { animation-delay: 720ms; }
+  .clay-hero-copy.is-animating > .hero-label { animation-delay: 80ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(1) { animation-delay: 150ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(2) { animation-delay: 220ms; }
+  .clay-hero-copy.is-animating > p { animation-delay: 310ms; }
+  .clay-hero-copy.is-animating > .hero-actions { animation-delay: 390ms; }
   .hero-proof.is-animating {
     opacity: 0;
-    animation: hero-rise-in 800ms var(--ease-out-soft) 860ms both;
+    animation: hero-rise-in 520ms var(--ease-out-soft) 480ms both;
   }
 }
 @keyframes hero-panel-in {
@@ -12504,4 +12697,15 @@ body.personalize-lock {
 @media (prefers-reduced-motion: reduce) {
   .system-map-node { transition: box-shadow 240ms ease, border-color 240ms ease; }
   .system-map-node:hover { transform: none; }
+}
+
+@media (max-width: 760px) {
+  .about-founder-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-founder-portrait {
+    width: min(100%, 18rem);
+    margin-inline: auto;
+  }
 }

@@ -56,7 +56,7 @@ function SiteHeader() {
           <Link href="/what-we-build/">What We Build</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
-          <a href="/aboutus.html">About</a>
+          <a href="/aboutus">About</a>
         </nav>
         <div className="lp-header-actions">
           <a className="lp-header-phone" href="tel:+19373677089">
@@ -97,7 +97,7 @@ function SiteFooter() {
           <Link href="/what-we-build/">What We Build</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
-          <a href="/aboutus.html">About Us</a>
+          <a href="/aboutus">About Us</a>
           <Link href="/#cta">Start a Conversation</Link>
         </nav>
         <nav className="lp-footer-col" aria-label="Legal and contact">

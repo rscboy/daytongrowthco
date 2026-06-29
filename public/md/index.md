@@ -36,7 +36,7 @@ DaytonGrowthCo works with small and midsized businesses across the United States
 - [Website Design](/website-design/)
 - [Local SEO](/local-seo/)
 - [Website Maintenance](/website-maintenance/)
-- [About DaytonGrowthCo.](/aboutus.html)
+- [About DaytonGrowthCo.](/aboutus)
 - [Pricing Summary](/pricing.md)
 
 ---

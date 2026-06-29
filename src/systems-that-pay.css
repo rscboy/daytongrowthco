@@ -129,15 +129,21 @@ button, input { font: inherit; }
   line-height: 1;
   white-space: nowrap;
   text-decoration: none;
+  transform: translateY(var(--lp-button-lift, 0)) scale(var(--lp-button-scale, 1));
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
-.lp-button:hover { background: #34372f; border-color: #34372f; transform: translateY(-1px); }
+@media (hover: hover) and (pointer: fine) {
+  .lp-button:hover { --lp-button-lift: -1px; background: #34372f; border-color: #34372f; }
+}
+.lp-button:active { --lp-button-lift: 0; --lp-button-scale: 0.97; }
 .lp-button-light {
   border-color: rgba(255, 232, 210, 0.88);
   color: #1f211f;
   background: linear-gradient(180deg, #f7dec7 0%, #efcfaf 100%);
 }
-.lp-button-light:hover { background: linear-gradient(180deg, #ffe3cb 0%, #f3d2b1 100%); }
+@media (hover: hover) and (pointer: fine) {
+  .lp-button-light:hover { background: linear-gradient(180deg, #ffe3cb 0%, #f3d2b1 100%); }
+}
 
 /* ---------- Hero ---------- */
 .lp-hero {
@@ -555,5 +561,19 @@ a:focus-visible, input:focus-visible, button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { transition-duration: 0.01ms !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .lp-button:hover,
+  .lp-button:active {
+    transform: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .lp-button:hover,
+  .lp-button:active {
+    transform: none;
+  }
 }
