@@ -53,7 +53,7 @@ Explore the tools DaytonGrowthCo builds, or tell us what your team is still hand
 
 [See What We Build](/what-we-build/) [Start Building.](/#cta)
 
-[ ![](/favicon.png?v=2) DaytonGrowthCo. ](/)
+[ ![](https://github.com/rscboy/daytongrowthco/blob/main/favicon.png?raw=true) DaytonGrowthCo. ](/)
 
 Rooted in Dayton and serving businesses nationwide, DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, sales materials, and custom apps.
 

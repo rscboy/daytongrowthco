@@ -4,6 +4,7 @@ import "../src/index.css";
 import "../src/systems-that-pay.css";
 
 const siteUrl = "https://www.daytongrowth.co";
+const faviconUrl = "https://github.com/rscboy/daytongrowthco/blob/main/favicon.png?raw=true";
 const googleAnalyticsId = "G-5844NWC2PD";
 const clarityProjectId = "wix3m0k0lr";
 const siteSchema = {
@@ -14,7 +15,7 @@ const siteSchema = {
       "@id": `${siteUrl}/#organization`,
       name: "DaytonGrowthCo.",
       url: `${siteUrl}/`,
-      logo: `${siteUrl}/favicon.png?v=3`,
+      logo: faviconUrl,
       image: `${siteUrl}/thumbnail.jpeg`,
       description:
         "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, training systems, sales materials, and custom apps for small and midsized businesses.",
@@ -159,9 +160,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.png?v=3",
-    shortcut: "/favicon.png?v=3",
-    apple: "/favicon.png?v=3",
+    icon: faviconUrl,
+    shortcut: faviconUrl,
+    apple: faviconUrl,
   },
   robots: {
     index: true,

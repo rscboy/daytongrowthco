@@ -6,7 +6,7 @@ const FROM_NAME = "DaytonGrowthCo.";
 const FROM_ALIAS = "sam@daytongrowth.co";   // must be configured in Gmail under "Send mail as"
 
 // Brand
-const LOGO_URL   = "https://www.daytongrowth.co/favicon.png?v=2";
+const LOGO_URL   = "https://github.com/rscboy/daytongrowthco/blob/main/favicon.png?raw=true";
 const SITE_URL   = "https://www.daytongrowth.co/";
 const REPLY_TO   = "sam@daytongrowth.co";
 const PHONE      = "(937) 367-7089";
