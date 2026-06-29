@@ -162,6 +162,32 @@
     box-shadow: 0 10px 30px rgba(24, 32, 24, 0.055);
   }
 
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 10001;
+    transform: translateY(-160%);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--brand-charcoal);
+    box-shadow: 0 14px 34px rgba(24, 23, 77, 0.18);
+    font-size: 0.88rem;
+    font-weight: 720;
+    line-height: 1;
+    padding: 0.78rem 1rem;
+    text-decoration: none;
+    transition: transform 160ms ease;
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  #main-content:focus {
+    outline: none;
+  }
+
   .logo-lockup {
     display: inline-flex;
     align-items: center;
@@ -293,6 +319,41 @@
     display: flex;
     align-items: center;
     gap: 1.15rem;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgba(24, 32, 24, 0.12);
+    border-radius: 999px;
+    color: #20231f;
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: 0 8px 20px rgba(24, 32, 24, 0.08);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .mobile-menu-toggle:active {
+    transform: scale(0.97);
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] {
+    border-color: rgba(24, 23, 77, 0.22);
+    background: #ffffff;
+  }
+
+  .mobile-nav-panel {
+    display: none;
+  }
+
+  .mobile-nav-panel[hidden] {
+    display: none !important;
   }
 
   .header-phone {
@@ -1111,10 +1172,23 @@
     vertical-align: baseline;
   }
 
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+  }
+
   /* Layout only. Framer Motion drives the opacity/transform animation.
      A CSS transition here double-animates on iOS Safari (the reported
      "double flash"), so it is intentionally omitted. */
-  .animated-hero-phrase > span {
+  .animated-hero-phrase > [aria-hidden="true"],
+  .animated-hero-phrase > [aria-hidden="true"] > span {
     grid-area: 1 / 1;
     display: block !important;
     white-space: nowrap;
@@ -6142,12 +6216,20 @@
   }
 
   .form-field input:focus,
-  .form-field textarea:focus {
+  .form-field textarea:focus,
+  .form-field select:focus {
     border-color: rgba(240, 208, 176, 0.72);
     background: rgba(2, 3, 18, 0.42);
     box-shadow:
       0 0 0 3px rgba(240, 208, 176, 0.12),
       0 8px 24px rgba(0, 0, 8, 0.14);
+  }
+
+  .form-field input:user-invalid,
+  .form-field textarea:user-invalid,
+  .form-field select:user-invalid {
+    border-color: rgba(254, 202, 202, 0.82);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.13);
   }
 
   .form-choice-group {
@@ -6289,6 +6371,25 @@
     color: #6ee7a8;
     font-size: 0.86rem;
     font-weight: 660;
+  }
+
+  .form-next-steps {
+    display: grid;
+    gap: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    color: #d9deea;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    padding: 0.72rem 0.78rem;
+    text-align: left;
+  }
+
+  .form-cta-trust a {
+    color: #f5d3b5;
+    font-weight: 700;
+    text-underline-offset: 0.22em;
   }
 
   .project-form[hidden],
@@ -9452,6 +9553,52 @@
     gap: 0.6rem;
   }
 
+  .mobile-menu-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .mobile-nav-panel {
+    position: absolute;
+    inset: calc(100% - 1px) 0 auto;
+    display: block;
+    padding: 0 1rem 1rem;
+    background: rgba(236, 233, 225, 0.992);
+    border-bottom: 1px solid rgba(24, 32, 24, 0.11);
+    box-shadow: 0 20px 40px rgba(24, 32, 24, 0.1);
+  }
+
+  .mobile-nav-panel nav {
+    display: grid;
+    gap: 0.35rem;
+    height: auto;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0.55rem 0 0.25rem;
+  }
+
+  .mobile-nav-panel a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    border-radius: 10px;
+    color: #262823;
+    font-size: 0.94rem;
+    font-weight: 680;
+    text-decoration: none;
+    padding: 0 0.82rem;
+  }
+
+  .mobile-nav-panel a:not(.button):hover,
+  .mobile-nav-panel a:not(.button):focus-visible {
+    background: rgba(24, 23, 77, 0.07);
+  }
+
+  .mobile-nav-panel .button {
+    justify-content: center;
+    margin-top: 0.2rem;
+  }
+
   .logo-lockup {
     min-width: 0;
     font-size: 0.82rem;
@@ -9473,6 +9620,10 @@
     box-shadow: 0 4px 12px rgba(24, 32, 24, 0.12);
     font-size: 0.76rem;
     font-weight: 620;
+  }
+
+  .site-header .header-actions > .button-primary {
+    display: none;
   }
 
   /* Hide the quiet hero category row and the route-diagram service cards on mobile. */
@@ -10496,7 +10647,7 @@ body.personalize-lock {
   animation: personalize-fade 320ms ease both;
 }
 
-/* Warm peach card — the same color as the hero "Start Building" button and the
+/* Warm peach card — the same color as the hero primary CTA and the
    hero eyebrow line, so the invite feels like part of the hero, not a bolt-on. */
 .personalize-card {
   position: relative;

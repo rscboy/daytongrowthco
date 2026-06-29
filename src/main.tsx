@@ -23,6 +23,7 @@ import {
   Globe2,
   LayoutDashboard,
   MapPin,
+  Menu,
   Megaphone,
   MessageSquare,
   MoveRight,
@@ -312,6 +313,13 @@ const socialLinks = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
   { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
+];
+
+const primaryNavLinks = [
+  { href: "/what-we-build/", label: "What We Build" },
+  { href: "/examples/", label: "Examples" },
+  { href: "/how-it-works/", label: "How It Works" },
+  { href: "/aboutus", label: "About" },
 ];
 const videos = {
   hero: {
@@ -707,6 +715,7 @@ function InteractiveWordmark() {
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -718,6 +727,19 @@ function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
@@ -742,27 +764,70 @@ function Header() {
           </Link>
         )}
         <div className="header-nav" aria-label="Sections">
-          <Link href="/what-we-build/">What We Build</Link>
-          <Link href="/examples/">Examples</Link>
-          <Link href="/how-it-works/">How It Works</Link>
-          <Link href="/aboutus">About</Link>
+          {primaryNavLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
         </div>
         <div className="header-actions">
           {isHome ? (
             <a className="button button-primary" href="#cta">
-              Start Building.
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Start Building.
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobilePrimaryNav"
+            onClick={() => setMobileOpen((open) => !open)}
+          >
+            {mobileOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+          </button>
         </div>
       </nav>
+      <div id="mobilePrimaryNav" className="mobile-nav-panel" hidden={!mobileOpen}>
+        <nav aria-label="Mobile primary">
+          {primaryNavLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+          {isHome ? (
+            <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
+              Start your build
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          ) : (
+            <Link className="button button-primary" href="/#cta">
+              Start your build
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          )}
+        </nav>
+      </div>
     </header>
   );
+}
+
+function RouteFocus() {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (!main) return;
+    main.focus({ preventScroll: true });
+  }, [pathname]);
+
+  return null;
 }
 
 function useTurnstileProtection() {
@@ -784,7 +849,7 @@ function useTurnstileProtection() {
       submitButton.disabled = isSubmitting;
       submitButton.dataset.loading = String(isSubmitting);
       submitButton.setAttribute("aria-busy", String(isSubmitting));
-      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Start Building";
+      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Start your build";
     };
 
     type Turnstile = {
@@ -863,6 +928,17 @@ function useTurnstileProtection() {
       event.preventDefault();
       const status = getStatus();
 
+      if (!form.checkValidity()) {
+        const firstInvalid = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(":invalid");
+        if (status) {
+          status.dataset.variant = "error";
+          status.textContent = "Please complete the highlighted fields before sending.";
+        }
+        firstInvalid?.focus();
+        form.reportValidity();
+        return;
+      }
+
       const token = turnstileApi?.getResponse(widgetId);
       if (!token) {
         if (status) {
@@ -910,7 +986,7 @@ function useTurnstileProtection() {
         .catch(() => {
           if (status) {
             status.dataset.variant = "error";
-            status.textContent = "Something went wrong. Please email help@daytongrowth.co and we’ll follow up.";
+            status.textContent = "Something went wrong. Try again, or email help@daytongrowth.co and we’ll follow up.";
           }
         })
         .finally(() => {
@@ -1555,11 +1631,11 @@ function Hero() {
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
-              Start Building.
+              Start your build
               <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a className="button button-secondary large" href="#platform">
-              See the Tools
+              See the systems
             </a>
           </div>
           {business ? (
@@ -2231,7 +2307,7 @@ function ProjectForm() {
 
   return (
     <div className="form-card">
-      <form id="auditForm" method="POST" action={formAction} className="project-form">
+      <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
         <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
@@ -2245,12 +2321,14 @@ function ProjectForm() {
             autoComplete="name"
             placeholder="Jane Smith"
             value={name}
+            aria-describedby="contactNameHelp"
             onChange={(event) => {
               nameEdited.current = true;
               setName(event.target.value);
             }}
             required
           />
+          <small id="contactNameHelp">So we know who to reply to.</small>
         </label>
         <label className="form-field" htmlFor="businessName">
           <span>Business</span>
@@ -2261,11 +2339,13 @@ function ProjectForm() {
             autoComplete="organization"
             placeholder="Your business"
             value={business}
+            aria-describedby="businessNameHelp"
             onChange={(event) => {
               businessEdited.current = true;
               setBusiness(event.target.value);
             }}
           />
+          <small id="businessNameHelp">Optional, but it helps us tailor the reply.</small>
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
@@ -2277,6 +2357,7 @@ function ProjectForm() {
               autoComplete="email"
               placeholder="jane@company.com"
               value={email}
+              aria-describedby="emailHelp"
               onChange={(event) => setEmail(event.target.value)}
               required
             />
@@ -2300,6 +2381,7 @@ function ProjectForm() {
               </span>
             ) : null}
           </div>
+          <small id="emailHelp">We only use this to respond to your request.</small>
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
@@ -2317,11 +2399,19 @@ function ProjectForm() {
         <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
 
         <button type="submit" className="button button-primary large form-submit">
-          <span className="form-submit-label">Start Building</span>
+          <span className="form-submit-label">Start your build</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
-        <p className="cta-trust form-cta-trust">Free consultation · No obligation · A real reply within one business day</p>
-        <div id="auditStatus" aria-live="polite" className="form-status" />
+        <p className="cta-trust form-cta-trust">
+          Free consultation · No obligation · A real reply within one business day ·{" "}
+          <a href="/privacy-policy/">Privacy policy</a>
+        </p>
+        <div className="form-next-steps" aria-label="What happens next">
+          <span>1. We read the workflow.</span>
+          <span>2. We identify the smallest useful build.</span>
+          <span>3. You get practical next steps.</span>
+        </div>
+        <div id="auditStatus" aria-live="assertive" className="form-status" />
       </form>
       <dialog
         id="formSuccessDialog"
@@ -3002,13 +3092,24 @@ function PageCTA() {
     <section className="page-cta" id="cta">
       <h2>Bring us the process that is still being handled by hand.</h2>
       <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
-      <a className="button button-primary large" href="/#cta">Start Building <ArrowRight size={16} aria-hidden="true" /></a>
+      <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
       <ul className="page-cta-trust" aria-label="What to expect">
         <li>Dayton roots, nationwide reach</li>
         <li>Reply within 24 hours</li>
         <li>No obligation</li>
       </ul>
     </section>
+  );
+}
+
+function PageChrome() {
+  return (
+    <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+      <div id="scroll-progress-bar" aria-hidden="true" />
+      <Header />
+      <RouteFocus />
+    </>
   );
 }
 
@@ -4015,9 +4116,8 @@ function Homepage() {
     <>
       <SplashScreen />
       <PersonalizeInvite />
-      <div id="scroll-progress-bar" aria-hidden="true" />
-      <Header />
-      <main>
+      <PageChrome />
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <BuiltForStrip />
         <ProcessMap />
@@ -4044,9 +4144,8 @@ function Homepage() {
 function WhatWeBuildPage() {
   return (
     <>
-        <div id="scroll-progress-bar" aria-hidden="true" />
-        <Header />
-      <main className="dedicated-page">
+      <PageChrome />
+      <main id="main-content" className="dedicated-page" tabIndex={-1}>
         <PageHero {...pageCopy.whatWeBuild} />
         <ServiceArchitecture />
         <FeatureGrid />
@@ -4062,9 +4161,8 @@ function WhatWeBuildPage() {
 function ExamplesPage() {
   return (
     <>
-      <div id="scroll-progress-bar" aria-hidden="true" />
-      <Header />
-      <main className="dedicated-page">
+      <PageChrome />
+      <main id="main-content" className="dedicated-page" tabIndex={-1}>
         <PageHero {...pageCopy.examples} />
         <WebsiteTransformation />
         <OutcomeSection />
@@ -4081,9 +4179,8 @@ function ExamplesPage() {
 function HowItWorksPage() {
   return (
     <>
-      <div id="scroll-progress-bar" aria-hidden="true" />
-      <Header />
-      <main className="dedicated-page">
+      <PageChrome />
+      <main id="main-content" className="dedicated-page" tabIndex={-1}>
         <PageHero {...pageCopy.howItWorks} />
         <BuildPrinciples />
         <DiscoveryDiagnosis />
@@ -4099,9 +4196,8 @@ function HowItWorksPage() {
 function AboutPage() {
   return (
     <>
-      <div id="scroll-progress-bar" aria-hidden="true" />
-      <Header />
-      <main className="dedicated-page">
+      <PageChrome />
+      <main id="main-content" className="dedicated-page" tabIndex={-1}>
         <PageHero {...pageCopy.about} />
         <section className="about-founder" aria-labelledby="about-founder-title">
           <div className="about-founder-inner">

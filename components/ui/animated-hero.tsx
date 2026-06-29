@@ -29,28 +29,31 @@ export function AnimatedHeroPhrase({ phrases, suffix = ".", className }: Animate
   );
 
   return (
-    <span className={cn("animated-hero-phrase", className)} aria-live="polite">
-      <AnimatePresence initial={false} mode="wait">
-        <motion.span
-          key={phrases[index]}
-          initial={reduceMotion ? false : { opacity: 0, y: "0.5em" }}
-          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-          exit={
-            reduceMotion
-              ? { opacity: 0 }
-              : {
-                  opacity: 0,
-                  y: "-0.5em",
-                  // Departing text builds momentum with an ease-in curve.
-                  transition: { duration: 0.42, ease: [0.4, 0, 1, 1] },
-                }
-          }
-          transition={{ duration: reduceMotion ? 0.2 : 0.42, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {phrases[index]}
-          {suffix}
-        </motion.span>
-      </AnimatePresence>
+    <span className={cn("animated-hero-phrase", className)}>
+      <span className="sr-only">{phrases[0]}{suffix}</span>
+      <span aria-hidden="true">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.span
+            key={phrases[index]}
+            initial={reduceMotion ? false : { opacity: 0, y: "0.5em" }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    y: "-0.5em",
+                    // Departing text builds momentum with an ease-in curve.
+                    transition: { duration: 0.42, ease: [0.4, 0, 1, 1] },
+                  }
+            }
+            transition={{ duration: reduceMotion ? 0.2 : 0.42, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {phrases[index]}
+            {suffix}
+          </motion.span>
+        </AnimatePresence>
+      </span>
     </span>
   );
 }
