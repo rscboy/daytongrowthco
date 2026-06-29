@@ -2342,14 +2342,12 @@ function ProjectForm() {
             autoComplete="name"
             placeholder="Jane Smith"
             value={name}
-            aria-describedby="contactNameHelp"
             onChange={(event) => {
               nameEdited.current = true;
               setName(event.target.value);
             }}
             required
           />
-          <small id="contactNameHelp">So we know who to reply to.</small>
         </label>
         <label className="form-field" htmlFor="businessName">
           <span>Business</span>
@@ -2360,13 +2358,11 @@ function ProjectForm() {
             autoComplete="organization"
             placeholder="Your business"
             value={business}
-            aria-describedby="businessNameHelp"
             onChange={(event) => {
               businessEdited.current = true;
               setBusiness(event.target.value);
             }}
           />
-          <small id="businessNameHelp">Optional, but it helps us tailor the reply.</small>
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
@@ -2378,7 +2374,6 @@ function ProjectForm() {
               autoComplete="email"
               placeholder="jane@company.com"
               value={email}
-              aria-describedby="emailHelp"
               onChange={(event) => setEmail(event.target.value)}
               required
             />
@@ -2402,17 +2397,14 @@ function ProjectForm() {
               </span>
             ) : null}
           </div>
-          <small id="emailHelp">We only use this to respond to your request.</small>
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
-          <small id="detailsHelp">Describe what comes in, what your team does, and what should come out.</small>
           <textarea
             id="details"
             name="notes"
-            rows={5}
+            rows={4}
             placeholder={detailsPlaceholder}
-            aria-describedby="detailsHelp"
             required
           />
         </label>
@@ -2424,14 +2416,9 @@ function ProjectForm() {
           <ArrowRight size={16} aria-hidden="true" />
         </button>
         <p className="cta-trust form-cta-trust">
-          Free consultation · No obligation · A real reply within one business day ·{" "}
+          Free consultation · No obligation ·{" "}
           <a href="/privacy-policy/">Privacy policy</a>
         </p>
-        <div className="form-next-steps" aria-label="What happens next">
-          <span>1. We read the workflow.</span>
-          <span>2. We identify the smallest useful build.</span>
-          <span>3. You get practical next steps.</span>
-        </div>
         <div id="auditStatus" aria-live="assertive" className="form-status" />
       </form>
       <dialog
