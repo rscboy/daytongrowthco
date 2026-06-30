@@ -2,7 +2,8 @@
 
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, CheckCircle2, PenTool, Phone, Send, ShieldCheck, ThumbsUp } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
+import { Header } from "./site-header";
 import "./systems-that-pay.css";
 
 const formAction =
@@ -42,34 +43,6 @@ function Wordmark({ className = "" }: { className?: string }) {
       <span className="wm-growth">Growth</span>
       <b>Co.</b>
     </span>
-  );
-}
-
-function SiteHeader() {
-  return (
-    <header className="lp-header">
-      <div className="lp-header-inner">
-        <Link className="lp-logo" href="/" aria-label="DaytonGrowthCo home">
-          <Wordmark />
-        </Link>
-        <nav className="lp-nav" aria-label="Primary">
-          <Link href="/what-we-build/">What We Build</Link>
-          <Link href="/examples/">Examples</Link>
-          <Link href="/how-it-works/">How It Works</Link>
-          <a href="/aboutus">About</a>
-        </nav>
-        <div className="lp-header-actions">
-          <a className="lp-header-phone" href="tel:+19373677089">
-            <Phone size={15} aria-hidden="true" />
-            (937) 367-7089
-          </a>
-          <a className="lp-button" href="#free-redesign">
-            Get my free redesign
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </div>
-      </div>
-    </header>
   );
 }
 
@@ -365,7 +338,7 @@ function FreeRedesignOffer() {
 export default function SystemsThatPayApp() {
   return (
     <div className="systems-that-pay-page">
-      <SiteHeader />
+      <Header />
       <main>
         <FreeRedesignOffer />
 
