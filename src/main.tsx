@@ -375,8 +375,8 @@ const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer port
 // A one-time, dismissible invitation collects the visitor's name, business,
 // and team size. Once given, a few naturally occurring spots on the site quietly
 // address the visitor and their business by name (the hero line, the AI-answer
-// demo, and the contact form). It is stored in localStorage so the touch
-// persists across the multi-page site and across return visits.
+// demo, and the contact form). It is stored in sessionStorage so a first-time
+// visit gets the experience, but the same tab session is not nagged twice.
 // ---------------------------------------------------------------------------
 
 type VisitorProfile = {
@@ -392,7 +392,7 @@ const WORKFLOW_CHOICE_KEY = "dgc:workflow-choice";
 function readStoredProfile(): VisitorProfile | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+    const raw = window.sessionStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<VisitorProfile>;
     const name = typeof parsed.name === "string" ? parsed.name.trim() : "";
@@ -407,7 +407,7 @@ function readStoredProfile(): VisitorProfile | null {
 function readStoredWorkflowChoice() {
   if (typeof window === "undefined") return "";
   try {
-    return window.localStorage.getItem(WORKFLOW_CHOICE_KEY) ?? "";
+    return window.sessionStorage.getItem(WORKFLOW_CHOICE_KEY) ?? "";
   } catch {
     return "";
   }
@@ -467,7 +467,8 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
   const save = useCallback((next: VisitorProfile) => {
     setProfile(next);
     try {
-      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(next));
+      window.sessionStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(next));
+      window.localStorage.removeItem(PROFILE_STORAGE_KEY);
     } catch {
       /* Storage unavailable; the personalization lives for this page view only. */
     }
@@ -477,6 +478,9 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
     setWorkflowChoice("");
     try {
+      window.sessionStorage.removeItem(PROFILE_STORAGE_KEY);
+      window.sessionStorage.removeItem(INVITE_DISMISSED_KEY);
+      window.sessionStorage.removeItem(WORKFLOW_CHOICE_KEY);
       window.localStorage.removeItem(PROFILE_STORAGE_KEY);
       window.localStorage.removeItem(INVITE_DISMISSED_KEY);
       window.localStorage.removeItem(WORKFLOW_CHOICE_KEY);
@@ -488,7 +492,8 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
   const chooseWorkflow = useCallback((workflowId: string) => {
     setWorkflowChoice(workflowId);
     try {
-      window.localStorage.setItem(WORKFLOW_CHOICE_KEY, workflowId);
+      window.sessionStorage.setItem(WORKFLOW_CHOICE_KEY, workflowId);
+      window.localStorage.removeItem(WORKFLOW_CHOICE_KEY);
     } catch {
       /* Storage unavailable; the selection still lives for this page view. */
     }
@@ -509,7 +514,7 @@ function PersonalizeInvite() {
   const [hidden, setHidden] = useState(() => {
     if (typeof window === "undefined") return false;
     try {
-      return window.localStorage.getItem(INVITE_DISMISSED_KEY) === "1";
+      return window.sessionStorage.getItem(INVITE_DISMISSED_KEY) === "1";
     } catch {
       return false;
     }
@@ -519,6 +524,18 @@ function PersonalizeInvite() {
   const [teamSize, setTeamSize] = useState("");
   const nameInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (profile || hidden || open) return;
+    let delay = 3350;
+    try {
+      delay = document.documentElement.classList.contains("dgc-splash-seen") ? 650 : 3350;
+    } catch {
+      /* Use the normal post-splash delay when storage is unavailable. */
+    }
+    const timer = window.setTimeout(() => setOpen(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [profile, hidden, open]);
 
   // Move focus into the dialog when it opens and lock background scroll.
   useEffect(() => {
@@ -537,7 +554,8 @@ function PersonalizeInvite() {
     setOpen(false);
     setHidden(true);
     try {
-      window.localStorage.setItem(INVITE_DISMISSED_KEY, "1");
+      window.sessionStorage.setItem(INVITE_DISMISSED_KEY, "1");
+      window.localStorage.removeItem(INVITE_DISMISSED_KEY);
     } catch {
       /* ignore */
     }
@@ -553,7 +571,8 @@ function PersonalizeInvite() {
     }
     save({ name: cleanName, business: cleanBusiness, teamSize });
     try {
-      window.localStorage.setItem(INVITE_DISMISSED_KEY, "1");
+      window.sessionStorage.setItem(INVITE_DISMISSED_KEY, "1");
+      window.localStorage.removeItem(INVITE_DISMISSED_KEY);
     } catch {
       /* ignore */
     }
