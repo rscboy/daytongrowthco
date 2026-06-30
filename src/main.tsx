@@ -597,8 +597,8 @@ function PersonalizeInvite() {
       <section className="personalize-inline" aria-labelledby="personalizeInlineTitle">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 id="personalizeInlineTitle">Make the examples fit your business.</h2>
-            <p>Add a name, business, and team size to tailor the calculator, demo copy, and contact form.</p>
+            <h2 id="personalizeInlineTitle">Make this less generic.</h2>
+            <p>Three questions. No personality quiz. We promise.</p>
           </div>
           <div className="personalize-inline-actions">
             <button type="button" className="button button-primary" onClick={() => setOpen(true)}>
@@ -783,8 +783,8 @@ function WorkflowSimulation() {
               Pick the workflow that is annoying this week.
             </h2>
             <p>
-              {firstName ? `${firstName}, ` : ""}choose one part of {business} and the page sketches the first sane
-              version of the system. Three questions in. No pretending we know the whole company yet.
+              {firstName ? `${firstName}, ` : ""}choose the part of {business} currently held together by memory,
+              inbox searches, and one very tired person. We sketch the first sane version from there.
             </p>
           </div>
           <a className="workflow-sim-link" href="#cta">
@@ -956,12 +956,12 @@ function Header() {
         <div className="header-actions">
           {isHome ? (
             <a className="button button-primary" href="#cta">
-              Find one workflow
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Find one workflow
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
@@ -994,12 +994,12 @@ function Header() {
           })}
           {isHome ? (
             <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
-              Find one workflow
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Find one workflow
+              Start your build
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
@@ -1536,7 +1536,7 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
           <h2 id="labor-calculator-title">What does the old way cost every year?</h2>
           <p>
             This model values only recoverable labor. It does not count faster response, fewer pricing errors,
-            better close rates, or work completed with the capacity you get back.
+            better close rates, or the quiet cost of “we just do it manually” becoming company policy.
           </p>
           <div className="labor-formula">
             People × weekly hours lost × loaded hourly cost × 50 working weeks
@@ -1578,7 +1578,7 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
             </div>
           </div>
           <p className="labor-disclaimer">
-            Directional estimate, not a guarantee. We validate assumptions against your actual workflow before recommending a build.
+            Directional estimate, not a magic number. We validate the assumptions before recommending a build.
           </p>
           <div className="labor-lead-bridge">
             <p>
@@ -1640,7 +1640,10 @@ function AiVisibility() {
             Show up when customers
             <span>ask AI.</span>
           </h2>
-          <p>Customers ask ChatGPT and Google AI for a recommendation. We get your business named as the answer.</p>
+          <p>
+            Customers ask ChatGPT and Google AI for a recommendation. If your business is invisible there, that is
+            inconvenient. Technically bad, even.
+          </p>
         </div>
 
         <div className="ai-demo" data-reveal>
@@ -1835,7 +1838,7 @@ function Hero() {
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
-              Find one workflow to fix
+              Start your build
               <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a className="button button-secondary large" href="#old-stack">
@@ -2131,8 +2134,8 @@ function WebsiteTransformation() {
           <div>
             <h3>Websites start at $1,500.</h3>
             <p>
-              Move from WordPress, Wix, or Squarespace to a fast vibecoded website your team can update by prompting,
-              instead of digging through page builders, plugins, and brittle templates.
+              Move from WordPress, Wix, or Squarespace to a fast vibecoded website your team can update by prompting.
+              Page builders are fine until the workaround becomes the job.
             </p>
           </div>
           <ul aria-label="Website migration benefits">
@@ -2673,8 +2676,8 @@ function FinalCTA() {
           </h2>
           <p>
             {business
-              ? `Tell us what comes in at ${business}, what your team repeats by hand, and what needs to happen next. We will look for one workflow that can be fixed, monitored, and improved.`
-              : "Tell us what comes in, what your team repeats by hand, and what needs to happen next. We will look for one workflow that can be fixed, monitored, and improved."}
+              ? `Tell us what your team keeps doing by hand at ${business}. We will look for the smallest useful fix. If it is not worth building, we will say that too.`
+              : "Tell us what your team keeps doing by hand. We will look for the smallest useful fix. If it is not worth building, we will say that too."}
           </p>
         </div>
         <ProjectForm />
@@ -3320,7 +3323,7 @@ function PageCTA() {
     <section className="page-cta" id="cta">
       <h2>Bring us the process that is still being handled by hand.</h2>
       <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
-      <a className="button button-primary large" href="/#cta">Find one workflow <ArrowRight size={16} aria-hidden="true" /></a>
+      <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
       <ul className="page-cta-trust" aria-label="What to expect">
         <li>Dayton roots, nationwide reach</li>
         <li>Reply within 24 hours</li>
@@ -4318,8 +4321,8 @@ function OldStackUpgrade() {
               Replace the old stack, one workflow at a time.
             </h2>
             <p>
-              A lot of business software was built for a time when custom tools were too expensive. That is not the same
-              world anymore. We help you move the parts that are ready, without turning the whole company upside down.
+              If the system only works because one employee knows the secret ritual, it is not a system. We help you
+              move the parts that are ready, without turning the whole company upside down.
             </p>
           </div>
           <a className="old-stack-cta" href="#cta">
@@ -4432,8 +4435,8 @@ function OneWorkflowRetainers() {
             One repetitive problem = one AI retainer.
           </h2>
           <p>
-            “Custom AI systems” is too vague. We fix one repeated workflow and keep it working. Setup gets it live.
-            Monthly support keeps it updated, monitored, and improved.
+            “Custom AI systems” is too vague. One repeated problem, one working system, kept from getting weird.
+            Setup gets it live. Monthly support keeps it useful.
           </p>
         </div>
 
@@ -4494,7 +4497,7 @@ function OneWorkflowRetainers() {
             <h3>Boring repeated work is where the money is.</h3>
             <p>
               The best first AI project is usually not glamorous. It is the task someone repeats every week while quietly
-              questioning modern life.
+              questioning modern life. Sorry to the chatbot with a name.
             </p>
             <a className="link-arrow" href="#cta">
               Show us the repeated task
@@ -4608,7 +4611,7 @@ const homeFaqs = [
   },
   {
     q: "How do you keep custom software affordable?",
-    a: "We use AI-assisted development to cut the hours a traditional dev shop would bill for. You get a custom-fit tool at a price a small business can actually justify, often up to 70% less.",
+    a: "We use AI-assisted development to cut the hours a traditional dev shop would bill for. Same custom result, fewer billable ceremonies. Everyone survives.",
   },
   {
     q: "Who is this for?",
@@ -4616,7 +4619,7 @@ const homeFaqs = [
   },
   {
     q: "How fast can a tool go live?",
-    a: "Most first builds are live in two to four weeks. We start with the smallest tool that saves real time, prove it on your real work, then expand from there.",
+    a: "Most first builds are live in two to four weeks. We start with the smallest tool that saves real time. No giant platform cosplay.",
   },
 ];
 
