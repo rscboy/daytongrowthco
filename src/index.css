@@ -104,6 +104,12 @@
     --text-muted-on-dark: rgba(233, 233, 247, 0.62);
     --ring-line: rgba(24, 23, 77, 0.1);
     --ring-line-on-dark: rgba(255, 255, 255, 0.12);
+    --ease-emil-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-emil-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --motion-press: 140ms;
+    --motion-quick: 180ms;
+    --motion-standard: 240ms;
+    --motion-reveal: 340ms;
   }
   * {
     border-color: var(--border);
@@ -14200,4 +14206,309 @@ body.personalize-lock {
 [class*="chip"],
 [class*="tag"] {
   border-radius: 6px !important;
+}
+
+/* ---- Brand Motion System -------------------------------------------------
+   Purposeful UI motion only: state changes, expanding content, button
+   feedback, and content swaps. Keep it quiet enough to feel expensive. */
+@keyframes dgc-panel-morph {
+  from {
+    opacity: 0;
+    transform: translateY(0.55rem) scale(0.985);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes dgc-list-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.42rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dgc-clip-open {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0 round 0 0 14px 14px);
+    transform: translateY(-0.35rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 0 0 14px 14px);
+    transform: translateY(0);
+  }
+}
+
+@keyframes dgc-submit-arrow {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+}
+
+@keyframes dgc-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.button,
+.workflow-sim-link,
+.old-stack-cta,
+.link-arrow,
+.home-faq-q,
+.retainer-picker button,
+.workflow-sim-picker button,
+.old-stack-more summary {
+  transition-timing-function: var(--ease-emil-out);
+}
+
+.button:active,
+.workflow-sim-link:active,
+.old-stack-cta:active,
+.retainer-picker button:active,
+.workflow-sim-picker button:active,
+.old-stack-more summary:active,
+.home-faq-q:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.workflow-sim-board,
+.retainer-card {
+  transform-origin: 50% 20%;
+  animation: dgc-panel-morph var(--motion-standard) var(--ease-emil-out) both;
+}
+
+.workflow-lane li,
+.retainer-build li {
+  animation: dgc-list-rise var(--motion-reveal) var(--ease-emil-out) both;
+}
+
+.workflow-lane li:nth-child(1),
+.retainer-build li:nth-child(1) {
+  animation-delay: 35ms;
+}
+
+.workflow-lane li:nth-child(2),
+.retainer-build li:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.workflow-lane li:nth-child(3),
+.retainer-build li:nth-child(3) {
+  animation-delay: 105ms;
+}
+
+.workflow-lane li:nth-child(4),
+.retainer-build li:nth-child(4) {
+  animation-delay: 140ms;
+}
+
+.workflow-sim-picker button,
+.retainer-picker button {
+  will-change: transform;
+}
+
+.workflow-sim-picker button.is-active,
+.retainer-picker button.is-active {
+  transform: translateX(4px);
+}
+
+.workflow-sim-picker button.is-active svg,
+.retainer-picker button.is-active svg {
+  transform: scale(1.08);
+}
+
+.workflow-sim-picker button svg,
+.retainer-picker button svg {
+  transition: transform var(--motion-quick) var(--ease-emil-out);
+}
+
+.workflow-system-card,
+.retainer-card-icon {
+  transition:
+    transform var(--motion-standard) var(--ease-emil-out),
+    box-shadow var(--motion-standard) var(--ease-emil-out);
+}
+
+.workflow-sim-board:hover .workflow-system-card,
+.retainer-card:hover .retainer-card-icon {
+  transform: translateY(-2px);
+}
+
+.old-stack-more-rows {
+  overflow: hidden;
+  transform-origin: top;
+}
+
+.old-stack-more[open] .old-stack-more-rows {
+  animation: dgc-clip-open var(--motion-reveal) var(--ease-emil-out) both;
+}
+
+.old-stack-more summary::after {
+  transition:
+    transform var(--motion-quick) var(--ease-emil-out),
+    background-color var(--motion-quick) ease,
+    color var(--motion-quick) ease;
+}
+
+.old-stack-more[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.old-stack-row {
+  transition:
+    background-color var(--motion-quick) ease,
+    transform var(--motion-quick) var(--ease-emil-out);
+}
+
+.old-stack-row:hover {
+  background: rgba(221, 233, 252, 0.22);
+  transform: translateX(2px);
+}
+
+.home-faq-item {
+  transform-origin: top;
+}
+
+.home-faq-q {
+  transition:
+    color var(--motion-quick) ease,
+    transform var(--motion-press) var(--ease-emil-out);
+}
+
+.home-faq-a {
+  transform-origin: top;
+}
+
+.home-faq-a > p {
+  transform: translateY(-0.25rem);
+  transition:
+    opacity var(--motion-standard) var(--ease-emil-out),
+    transform var(--motion-standard) var(--ease-emil-out);
+}
+
+.home-faq-item.is-open .home-faq-a > p {
+  transform: translateY(0);
+}
+
+.form-submit {
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  transition:
+    transform var(--motion-press) var(--ease-emil-out),
+    background var(--motion-quick) ease,
+    border-color var(--motion-quick) ease,
+    box-shadow var(--motion-quick) var(--ease-emil-out),
+    opacity var(--motion-quick) ease;
+}
+
+.form-submit .form-submit-label {
+  display: inline-block;
+  transition:
+    opacity var(--motion-quick) var(--ease-emil-out),
+    filter var(--motion-quick) var(--ease-emil-out),
+    transform var(--motion-quick) var(--ease-emil-out);
+}
+
+.form-submit[data-state="sending"] .form-submit-label {
+  opacity: 0.68;
+  filter: blur(0.45px);
+  transform: translateY(-1px);
+}
+
+.form-submit[data-state="sending"]:not([data-loading="true"]) svg {
+  display: inline-block;
+  animation: dgc-submit-arrow 760ms var(--ease-emil-in-out) infinite;
+}
+
+.form-submit[data-state="sent"] {
+  background: #f1d0b1;
+  border-color: rgba(241, 208, 177, 0.82);
+  color: #18174d;
+}
+
+.form-submit[data-state="sent"] .form-submit-label {
+  transform: translateY(0);
+}
+
+dialog[open],
+.form-success:not([hidden]) {
+  animation: dgc-dialog-in var(--motion-reveal) var(--ease-emil-out) both;
+}
+
+@starting-style {
+  dialog[open],
+  .form-success:not([hidden]) {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .workflow-sim-link,
+  .old-stack-cta,
+  .link-arrow,
+  .home-faq-q,
+  .retainer-picker button,
+  .workflow-sim-picker button,
+  .old-stack-more summary,
+  .workflow-sim-board,
+  .retainer-card,
+  .workflow-lane li,
+  .retainer-build li,
+  .old-stack-more-rows,
+  .old-stack-row,
+  .workflow-system-card,
+  .retainer-card-icon,
+  .form-submit,
+  .form-submit .form-submit-label,
+  dialog[open],
+  .form-success:not([hidden]) {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .button:active,
+  .workflow-sim-link:active,
+  .old-stack-cta:active,
+  .retainer-picker button:active,
+  .workflow-sim-picker button:active,
+  .old-stack-more summary:active,
+  .home-faq-q:active,
+  .workflow-sim-picker button.is-active,
+  .retainer-picker button.is-active,
+  .old-stack-row:hover,
+  .workflow-sim-board:hover .workflow-system-card,
+  .retainer-card:hover .retainer-card-icon,
+  .form-submit[data-state="sending"] .form-submit-label {
+    transform: none !important;
+  }
+
+  .form-submit[data-state="sending"] .form-submit-label {
+    filter: none !important;
+  }
 }

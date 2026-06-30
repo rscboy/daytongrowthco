@@ -775,7 +775,7 @@ function WorkflowSimulation() {
   }, [activeId, chooseWorkflow]);
 
   return (
-    <section className="workflow-sim" id="workflow-sim" aria-labelledby="workflow-sim-title">
+    <section className="workflow-sim" id="workflow-sim" aria-labelledby="workflow-sim-title" data-reveal>
       <div className="workflow-sim-inner">
         <div className="workflow-sim-head">
           <div>
@@ -817,7 +817,7 @@ function WorkflowSimulation() {
             })}
           </div>
 
-          <div className="workflow-sim-board" role="tabpanel" aria-live="polite">
+          <div className="workflow-sim-board" key={active.id} role="tabpanel" aria-live="polite">
             <div className="workflow-sim-brief">
               <span className="workflow-sim-doc">DGC / draft brief</span>
               <h3>{briefLine}</h3>
@@ -1039,8 +1039,15 @@ function useTurnstileProtection() {
       if (!submitButton) return;
       submitButton.disabled = isSubmitting;
       submitButton.dataset.loading = String(isSubmitting);
+      submitButton.dataset.state = isSubmitting ? "sending" : submitButton.dataset.state === "sent" ? "sent" : "idle";
       submitButton.setAttribute("aria-busy", String(isSubmitting));
-      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Send the workflow";
+      if (submitLabel) {
+        submitLabel.textContent = isSubmitting
+          ? "Sending…"
+          : submitButton.dataset.state === "sent"
+            ? "Received"
+            : "Send the workflow";
+      }
     };
 
     type Turnstile = {
@@ -1156,6 +1163,8 @@ function useTurnstileProtection() {
       fetch(form.action, { method: "POST", mode: "no-cors", body: payload })
         .then(() => {
           form.reset();
+          if (submitButton) submitButton.dataset.state = "sent";
+          if (submitLabel) submitLabel.textContent = "Received";
           if (status) {
             status.dataset.variant = "";
             status.textContent = "";
@@ -1175,6 +1184,7 @@ function useTurnstileProtection() {
           }
         })
         .catch(() => {
+          if (submitButton) submitButton.dataset.state = "idle";
           if (status) {
             status.dataset.variant = "error";
             status.textContent = "Something went wrong. Try again, or email help@daytongrowth.co and we’ll follow up.";
@@ -4300,7 +4310,7 @@ function OldStackUpgrade() {
   );
 
   return (
-    <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title">
+    <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title" data-reveal>
       <div className="old-stack-inner">
         <div className="old-stack-head">
           <div>
@@ -4318,7 +4328,7 @@ function OldStackUpgrade() {
           </a>
         </div>
 
-        <div className="old-stack-layout">
+        <div className="old-stack-layout" data-stagger>
           <div className="old-stack-ledger" role="table" aria-label="Old business software and modern replacements">
             <div className="old-stack-ledger-head" role="row">
               <span role="columnheader">Current setup</span>
@@ -4415,7 +4425,7 @@ function OneWorkflowRetainers() {
   const ActiveIcon = active.icon;
 
   return (
-    <section className="retainer-section" id="ai-retainers" aria-labelledby="retainer-title">
+    <section className="retainer-section" id="ai-retainers" aria-labelledby="retainer-title" data-reveal>
       <div className="retainer-inner">
         <div className="retainer-head">
           <h2 id="retainer-title" data-scroll-words>
@@ -4427,7 +4437,7 @@ function OneWorkflowRetainers() {
           </p>
         </div>
 
-        <div className="retainer-layout">
+        <div className="retainer-layout" data-stagger>
           <div className="retainer-picker" role="tablist" aria-label="Repeated workflow examples">
             {retainerExamples.map((example, index) => {
               const Icon = example.icon;
@@ -4448,7 +4458,7 @@ function OneWorkflowRetainers() {
             })}
           </div>
 
-          <article className="retainer-card" role="tabpanel" aria-live="polite">
+          <article className="retainer-card" key={active.title} role="tabpanel" aria-live="polite">
             <div className="retainer-card-top">
               <span className="retainer-card-icon" aria-hidden="true">
                 <ActiveIcon size={24} strokeWidth={1.8} />
@@ -4613,7 +4623,7 @@ const homeFaqs = [
 function HomeFaq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="home-faq" aria-labelledby="home-faq-title">
+    <section className="home-faq" aria-labelledby="home-faq-title" data-reveal>
       <div className="home-faq-inner">
         <div className="home-faq-aside">
           <h2 id="home-faq-title" data-scroll-words>
