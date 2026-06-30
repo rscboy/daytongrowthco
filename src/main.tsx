@@ -387,21 +387,6 @@ type VisitorProfile = {
 
 const PROFILE_STORAGE_KEY = "dgc:visitor-profile";
 const INVITE_DISMISSED_KEY = "dgc:personalize-dismissed";
-// Per-tab flag (sessionStorage): once the invite has surfaced in a session, a
-// refresh won't re-trigger it. A brand-new session/tab can still show it.
-const INVITE_SESSION_KEY = "dgc:personalize-shown-session";
-
-// Captured at module load, before the splash effect writes its session flag, so
-// we can tell a genuine first visit (the splash will play) from a same-session
-// return (it won't), and time the invitation accordingly.
-const splashSeenAtBoot = (() => {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.sessionStorage.getItem("dgc:splash-seen") === "1";
-  } catch {
-    return false;
-  }
-})();
 
 function readStoredProfile(): VisitorProfile | null {
   if (typeof window === "undefined") return null;
@@ -492,67 +477,23 @@ const teamSizeOptions = ["Just me", "2–10", "11–50", "50+"];
 function PersonalizeInvite() {
   const { profile, save } = usePersonalization();
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return window.localStorage.getItem(INVITE_DISMISSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
   const [teamSize, setTeamSize] = useState("");
   const nameInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Decide whether, and when, to surface the invitation.
-  useEffect(() => {
-    if (profile) return; // already personalized — never interrupt
-    let dismissed = false;
-    let shownThisSession = false;
-    try {
-      dismissed = window.localStorage.getItem(INVITE_DISMISSED_KEY) === "1";
-      shownThisSession = window.sessionStorage.getItem(INVITE_SESSION_KEY) === "1";
-    } catch {
-      /* ignore */
-    }
-    // Permanently suppressed (dismissed/submitted) or already seen this session
-    // (so a refresh doesn't bring it back).
-    if (dismissed || shownThisSession) return;
-
-    let timer: number | undefined;
-    const reveal = (delay: number) => {
-      timer = window.setTimeout(() => setOpen(true), delay);
-    };
-
-    // On a genuine first visit, wait for the splash to hand off before opening,
-    // then give the hero a beat to settle. Returning visitors get a shorter wait.
-    if (!splashSeenAtBoot && document.body.classList.contains("splash-lock")) {
-      const observer = new MutationObserver(() => {
-        if (!document.body.classList.contains("splash-lock")) {
-          observer.disconnect();
-          reveal(900);
-        }
-      });
-      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-      const fallback = window.setTimeout(() => {
-        observer.disconnect();
-        reveal(0);
-      }, 4200);
-      return () => {
-        observer.disconnect();
-        window.clearTimeout(fallback);
-        window.clearTimeout(timer);
-      };
-    }
-
-    reveal(splashSeenAtBoot ? 1200 : 3400);
-    return () => window.clearTimeout(timer);
-  }, [profile]);
-
   // Move focus into the dialog when it opens and lock background scroll.
   useEffect(() => {
     if (!open) return;
-    // Remember within the session that the invite has appeared, so a refresh
-    // doesn't surface it again.
-    try {
-      window.sessionStorage.setItem(INVITE_SESSION_KEY, "1");
-    } catch {
-      /* ignore */
-    }
     const previouslyFocused = document.activeElement as HTMLElement | null;
     document.body.classList.add("personalize-lock");
     const focusTimer = window.setTimeout(() => nameInputRef.current?.focus(), 80);
@@ -565,6 +506,7 @@ function PersonalizeInvite() {
 
   const dismiss = useCallback(() => {
     setOpen(false);
+    setHidden(true);
     try {
       window.localStorage.setItem(INVITE_DISMISSED_KEY, "1");
     } catch {
@@ -587,6 +529,7 @@ function PersonalizeInvite() {
       /* ignore */
     }
     setOpen(false);
+    setHidden(true);
     // Return the visitor to the top so they see the page re-introduce itself,
     // now personalized.
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -618,82 +561,104 @@ function PersonalizeInvite() {
     }
   };
 
-  if (!open) return null;
+  if (profile || hidden) return null;
 
   return (
-    <div
-      className="personalize-overlay"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) dismiss();
-      }}
-    >
-      <div
-        className="personalize-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="personalizeTitle"
-        aria-describedby="personalizeBody"
-        ref={cardRef}
-        onKeyDown={onKeyDown}
-      >
-        <button type="button" className="personalize-close" aria-label="Close" onClick={dismiss}>
-          <X size={18} aria-hidden="true" />
-        </button>
-        <h2 id="personalizeTitle" className="personalize-title">A more personal visit.</h2>
-        <p id="personalizeBody" className="personalize-lead">
-          Let’s make this about <span>your business.</span>
-        </p>
-        <form className="personalize-form" onSubmit={handleSubmit}>
-          <label className="personalize-field">
-            <span>Your name</span>
-            <input
-              ref={nameInputRef}
-              type="text"
-              value={name}
-              autoComplete="given-name"
-              placeholder="Jane"
-              onChange={(event) => setName(event.target.value)}
-            />
-          </label>
-          <label className="personalize-field">
-            <span>Business name</span>
-            <input
-              type="text"
-              value={business}
-              autoComplete="organization"
-              placeholder="Jane’s Plumbing"
-              onChange={(event) => setBusiness(event.target.value)}
-            />
-          </label>
-          <div className="personalize-field">
-            <span>Team size</span>
-            <div className="personalize-chips" role="group" aria-label="Team size">
-              {teamSizeOptions.map((option) => (
-                <button
-                  type="button"
-                  key={option}
-                  className={`personalize-chip ${teamSize === option ? "is-active" : ""}`}
-                  aria-pressed={teamSize === option}
-                  onClick={() => setTeamSize((prev) => (prev === option ? "" : option))}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
+    <>
+      <section className="personalize-inline" aria-labelledby="personalizeInlineTitle">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <span className="personalize-inline-kicker">Optional</span>
+            <h2 id="personalizeInlineTitle">Make the examples fit your business.</h2>
+            <p>Add a name, business, and team size to tailor the calculator, demo copy, and contact form.</p>
           </div>
-          <button
-            type="submit"
-            className={`button button-primary large personalize-submit ${isReady ? "is-ready" : ""}`}
+          <div className="personalize-inline-actions">
+            <button type="button" className="button button-primary" onClick={() => setOpen(true)}>
+              Personalize this page
+              <ArrowRight size={15} aria-hidden="true" />
+            </button>
+            <button type="button" className="personalize-skip" onClick={dismiss}>
+              Not now
+            </button>
+          </div>
+        </div>
+      </section>
+      {open ? (
+        <div
+          className="personalize-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) dismiss();
+          }}
+        >
+          <div
+            className="personalize-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="personalizeTitle"
+            aria-describedby="personalizeBody"
+            ref={cardRef}
+            onKeyDown={onKeyDown}
           >
-            {isReady ? "You’re all set, personalize" : "Personalize my visit"}
-            {isReady ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
-          </button>
-          <button type="button" className="personalize-skip" onClick={dismiss}>
-            Maybe later
-          </button>
-        </form>
-      </div>
-    </div>
+            <button type="button" className="personalize-close" aria-label="Close" onClick={dismiss}>
+              <X size={18} aria-hidden="true" />
+            </button>
+            <h2 id="personalizeTitle" className="personalize-title">A more personal visit.</h2>
+            <p id="personalizeBody" className="personalize-lead">
+              Let’s make this about <span>your business.</span>
+            </p>
+            <form className="personalize-form" onSubmit={handleSubmit}>
+              <label className="personalize-field">
+                <span>Your name</span>
+                <input
+                  ref={nameInputRef}
+                  type="text"
+                  value={name}
+                  autoComplete="given-name"
+                  placeholder="Jane"
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </label>
+              <label className="personalize-field">
+                <span>Business name</span>
+                <input
+                  type="text"
+                  value={business}
+                  autoComplete="organization"
+                  placeholder="Jane’s Plumbing"
+                  onChange={(event) => setBusiness(event.target.value)}
+                />
+              </label>
+              <div className="personalize-field">
+                <span>Team size</span>
+                <div className="personalize-chips" role="group" aria-label="Team size">
+                  {teamSizeOptions.map((option) => (
+                    <button
+                      type="button"
+                      key={option}
+                      className={`personalize-chip ${teamSize === option ? "is-active" : ""}`}
+                      aria-pressed={teamSize === option}
+                      onClick={() => setTeamSize((prev) => (prev === option ? "" : option))}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="submit"
+                className={`button button-primary large personalize-submit ${isReady ? "is-ready" : ""}`}
+              >
+                {isReady ? "You’re all set, personalize" : "Personalize my visit"}
+                {isReady ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
+              </button>
+              <button type="button" className="personalize-skip" onClick={dismiss}>
+                Maybe later
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -745,11 +710,11 @@ function Header() {
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <Link className="site-offer-banner" href="/systems-that-pay/">
         <span className="site-offer-copy">
-          <strong>We’ll redesign your homepage. Free.</strong>
-          <span>Custom concept · No obligation</span>
+          <strong>Free homepage concept available.</strong>
+          <span>A secondary offer for teams considering a website refresh</span>
         </span>
         <span className="site-offer-action">
-          Claim free redesign
+          View option
           <ArrowRight size={14} aria-hidden="true" />
         </span>
       </Link>
@@ -764,11 +729,19 @@ function Header() {
           </Link>
         )}
         <div className="header-nav" aria-label="Sections">
-          {primaryNavLinks.map((link) => (
-            <Link key={link.href} href={link.href}>
-              {link.label}
-            </Link>
-          ))}
+          {primaryNavLinks.map((link) => {
+            const active = pathname === link.href || pathname === link.href.replace(/\/$/, "");
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={active ? "is-active" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
         <div className="header-actions">
           {isHome ? (
@@ -796,11 +769,19 @@ function Header() {
       </nav>
       <div id="mobilePrimaryNav" className="mobile-nav-panel" hidden={!mobileOpen}>
         <nav aria-label="Mobile primary">
-          {primaryNavLinks.map((link) => (
-            <Link key={link.href} href={link.href}>
-              {link.label}
-            </Link>
-          ))}
+          {primaryNavLinks.map((link) => {
+            const active = pathname === link.href || pathname === link.href.replace(/\/$/, "");
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={active ? "is-active" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           {isHome ? (
             <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
               Start your build
@@ -1379,6 +1360,15 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
           <p className="labor-disclaimer">
             Directional estimate, not a guarantee. We validate assumptions against your actual workflow before recommending a build.
           </p>
+          <div className="labor-lead-bridge">
+            <p>
+              Seeing a number worth fixing? Send us the process behind this estimate and we will look for the smallest useful build.
+            </p>
+            <a className="button button-primary" href="#cta">
+              Send this estimate
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -1625,10 +1615,9 @@ function Hero() {
             </span>
           </h1>
           <p>
-            We are your AI contractor for contractors: the team that turns quoting, intake, follow-up, and job handoffs into
-            practical tools. A dev shop wants five figures and a few months for one custom tool. We build yours with AI for{" "}
-            <em className="ink-accent">up to 70% less</em>, shaped to exactly{" "}
-            <em className="ink-accent">how you already work</em>, so the money stays in your business.
+            We turn quoting, intake, follow-up, and job handoffs into practical tools built around how your team
+            already works. AI-assisted development keeps first builds faster, leaner, and often{" "}
+            <em className="ink-accent">up to 70% less</em> than a traditional custom dev quote.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -1639,6 +1628,20 @@ function Hero() {
               See the systems
             </a>
           </div>
+          <dl className="hero-proof-strip" aria-label="DaytonGrowthCo build proof">
+            <div>
+              <dt>2 to 4 wks</dt>
+              <dd>Typical first build</dd>
+            </div>
+            <div>
+              <dt>Up to 70%</dt>
+              <dd>Less than traditional dev</dd>
+            </div>
+            <div>
+              <dt>Real workflow</dt>
+              <dd>No generic template</dd>
+            </div>
+          </dl>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}
@@ -2467,8 +2470,8 @@ function FinalCTA() {
           </h2>
           <p>
             {business
-              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. As your AI contractor for contractors, we will look for the smallest build that saves real time before it asks for real budget.`
-              : "Tell us what comes in, what your team does with it, and what needs to come out. As your AI contractor for contractors, we will look for the smallest build that saves real time before it asks for real budget."}
+              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget.`
+              : "Tell us what comes in, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget."}
           </p>
         </div>
         <ProjectForm />
@@ -4217,20 +4220,15 @@ function Homepage() {
   return (
     <>
       <SplashScreen />
-      <PersonalizeInvite />
       <PageChrome />
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <BuiltForStrip />
+        <PersonalizeInvite />
         <ProcessMap />
-        <MissionStatement />
         <ServicesSticky />
         <BusinessJourney />
         <WebsiteTransformation />
-        <ProcessSteps />
-        <SystemMap />
-        <AiVisibility />
-        <InputConstellation />
         <EconomicCase />
         <LaborCostCalculator sectionId="workflow" />
         <ProofAndVoices />
