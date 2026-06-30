@@ -13351,11 +13351,10 @@ body.personalize-lock {
 .retainer-card h3 {
   margin-top: 0.16rem;
   color: var(--brand-charcoal);
-  font-family: var(--font-serif);
-  font-size: clamp(1.42rem, 2.05vw, 1.95rem);
-  font-weight: 520;
-  letter-spacing: -0.018em;
-  line-height: 1.02;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 760;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
 }
 .retainer-problem {
   margin: 0;
