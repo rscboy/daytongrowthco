@@ -4291,6 +4291,22 @@ const upgradeRules = [
 ];
 
 function OldStackUpgrade() {
+  const featuredRows = oldStackRows.slice(0, 4);
+  const additionalRows = oldStackRows.slice(4);
+
+  const renderOldStackRow = (row: (typeof oldStackRows)[number]) => (
+    <div className="old-stack-row" role="row" key={row.current}>
+      <div className="old-stack-current" role="cell">
+        <span className="old-stack-icon" aria-hidden="true">
+          {row.icon}
+        </span>
+        <strong>{row.current}</strong>
+      </div>
+      <p role="cell">{row.build}</p>
+      <p role="cell">{row.result}</p>
+    </div>
+  );
+
   return (
     <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title">
       <div className="old-stack-inner">
@@ -4317,18 +4333,13 @@ function OldStackUpgrade() {
               <span role="columnheader">Modern build</span>
               <span role="columnheader">Why switch</span>
             </div>
-            {oldStackRows.map((row) => (
-              <div className="old-stack-row" role="row" key={row.current}>
-                <div className="old-stack-current" role="cell">
-                  <span className="old-stack-icon" aria-hidden="true">
-                    {row.icon}
-                  </span>
-                  <strong>{row.current}</strong>
-                </div>
-                <p role="cell">{row.build}</p>
-                <p role="cell">{row.result}</p>
+            {featuredRows.map(renderOldStackRow)}
+            <details className="old-stack-more">
+              <summary>See more old tools</summary>
+              <div className="old-stack-more-rows">
+                {additionalRows.map(renderOldStackRow)}
               </div>
-            ))}
+            </details>
           </div>
 
           <aside className="old-stack-decision" aria-label="How DaytonGrowthCo decides what to build">

@@ -11963,11 +11963,11 @@ body.personalize-lock {
 /* ---- ProcessStepCard ----------------------------------------------------- */
 .process-step {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 1.75rem;
-  align-items: center;
-  padding: 1.85rem;
-  border-radius: var(--radius-panel);
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  padding: 1.15rem;
+  border-radius: 16px;
   background: var(--panel-light);
   border: 1px solid var(--ring-line);
   box-shadow: var(--shadow-rest);
@@ -11980,17 +11980,17 @@ body.personalize-lock {
 .process-step-head {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  margin-bottom: 0.85rem;
+  gap: 0.7rem;
+  margin-bottom: 0.65rem;
 }
 .process-step-num {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 660;
   color: var(--accent-ink);
   background: #f7f6f1;
@@ -12005,29 +12005,30 @@ body.personalize-lock {
   color: var(--text-muted);
 }
 .process-step-title {
-  font-size: 1.42rem;
+  font-size: 1.12rem;
   font-weight: 580;
   letter-spacing: -0.025em;
-  line-height: 1.12;
+  line-height: 1.14;
   color: var(--brand-charcoal);
 }
 .process-step-deliverables {
   list-style: none;
-  margin: 1rem 0 1.1rem;
+  margin: 0.75rem 0 0.85rem;
   padding: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.42rem;
 }
 .process-step-deliverables li {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  font-size: 0.9rem;
+  gap: 0.48rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
   color: #45454d;
 }
 .process-step-deliverables svg { color: #1f7a52; flex: none; }
 .process-step-result {
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   line-height: 1.5;
   color: var(--brand-charcoal);
 }
@@ -12039,6 +12040,21 @@ body.personalize-lock {
   text-transform: uppercase;
   color: var(--accent-ink);
   margin-bottom: 0.2rem;
+}
+.process-step .mini-dash-head {
+  padding: 0.42rem 0.65rem;
+}
+.process-step .mini-dash-body {
+  padding: 0.72rem 0.8rem;
+  gap: 0.45rem;
+}
+.process-step .mini-dash-caption,
+.process-step .mini-dash-row,
+.process-step .mini-dash-checks li {
+  font-size: 0.76rem;
+}
+.process-step .mini-dash-checks {
+  gap: 0.28rem;
 }
 
 /* ---- StickyStorySection -------------------------------------------------- */
@@ -12343,9 +12359,18 @@ body.personalize-lock {
   .sticky-story-rail-inner {
     position: static;
   }
+  .process-section-head,
+  .process-section-track {
+    grid-template-columns: 1fr;
+  }
+  .process-section-head {
+    gap: 0.75rem;
+    align-items: start;
+  }
   .process-step {
     grid-template-columns: 1fr;
     gap: 1.25rem;
+    padding: 1.25rem;
   }
 }
 @media (max-width: 560px) {
@@ -12408,15 +12433,19 @@ body.personalize-lock {
 /* ---- ProcessSteps section ------------------------------------------------ */
 .process-section {
   position: relative;
-  padding: clamp(3.5rem, 7vw, 6.5rem) 1.25rem;
+  padding: clamp(2.75rem, 5vw, 4.75rem) 1.25rem;
 }
 .process-section-inner {
-  max-width: 72rem;
+  max-width: 78rem;
   margin: 0 auto;
 }
 .process-section-head {
-  max-width: 40rem;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1fr);
+  gap: 1.5rem;
+  align-items: end;
+  max-width: 72rem;
+  margin-bottom: clamp(1.35rem, 2.6vw, 2rem);
 }
 .process-section-head h2 {
   font-size: var(--section-title-size);
@@ -12426,15 +12455,25 @@ body.personalize-lock {
   color: var(--brand-charcoal);
 }
 .process-section-head p {
-  margin-top: 1rem;
-  font-size: 1.05rem;
+  margin-top: 0;
+  font-size: 0.98rem;
   line-height: 1.6;
   color: var(--text-muted);
 }
 .process-section-track {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.95rem;
+}
+@media (max-width: 860px) {
+  .process-section-head,
+  .process-section-track {
+    grid-template-columns: 1fr;
+  }
+  .process-section-head {
+    gap: 0.75rem;
+    align-items: start;
+  }
 }
 
 /* ---- SystemMap ----------------------------------------------------------- */
@@ -12542,7 +12581,7 @@ body.personalize-lock {
 
 /* ---- WorkflowSimulation -------------------------------------------------- */
 .workflow-sim {
-  padding: clamp(3.75rem, 7vw, 7rem) 1.25rem;
+  padding: clamp(2.85rem, 5.4vw, 5rem) 1.25rem;
   background:
     linear-gradient(180deg, rgba(251, 251, 249, 0) 0%, rgba(221, 233, 252, 0.28) 50%, rgba(251, 251, 249, 0) 100%);
 }
@@ -12555,7 +12594,7 @@ body.personalize-lock {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(1.4rem, 3vw, 2.5rem);
   align-items: end;
-  margin-bottom: clamp(1.6rem, 3.5vw, 2.6rem);
+  margin-bottom: clamp(1.2rem, 2.6vw, 1.8rem);
 }
 .workflow-sim-head h2 {
   max-width: 48rem;
@@ -12567,9 +12606,9 @@ body.personalize-lock {
 }
 .workflow-sim-head p {
   max-width: 46rem;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   color: var(--text-muted);
-  font-size: 1.03rem;
+  font-size: 0.98rem;
   line-height: 1.62;
 }
 .workflow-sim-link {
@@ -12606,10 +12645,10 @@ body.personalize-lock {
 .workflow-sim-shell {
   display: grid;
   grid-template-columns: minmax(17rem, 0.72fr) minmax(0, 1.28fr);
-  gap: 1rem;
+  gap: 0.75rem;
   border: 1px solid rgba(24, 23, 77, 0.12);
   border-radius: 18px;
-  padding: clamp(0.8rem, 1.5vw, 1rem);
+  padding: clamp(0.65rem, 1.2vw, 0.85rem);
   background:
     linear-gradient(145deg, rgba(241, 208, 177, 0.08), rgba(255, 255, 255, 0) 38%),
     #15142b;
@@ -12617,17 +12656,17 @@ body.personalize-lock {
 }
 .workflow-sim-picker {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.45rem;
 }
 .workflow-sim-picker button {
-  min-height: 4.55rem;
+  min-height: 3.85rem;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 0.72rem;
+  gap: 0.62rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 0.78rem;
+  padding: 0.62rem 0.68rem;
   color: rgba(255, 255, 255, 0.72);
   background: rgba(255, 255, 255, 0.045);
   text-align: left;
@@ -12661,23 +12700,23 @@ body.personalize-lock {
   min-width: 0;
 }
 .workflow-sim-picker strong {
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 720;
   line-height: 1.12;
 }
 .workflow-sim-picker em {
   margin-top: 0.16rem;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-style: normal;
   line-height: 1.28;
 }
 .workflow-sim-board {
   display: grid;
-  gap: 1rem;
+  gap: 0.78rem;
   min-width: 0;
   border-radius: 14px;
-  padding: clamp(1rem, 2.2vw, 1.45rem);
+  padding: clamp(0.85rem, 1.7vw, 1.15rem);
   background: #fffdfa;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
@@ -12695,7 +12734,7 @@ body.personalize-lock {
 }
 .workflow-sim-brief h3 {
   color: var(--brand-charcoal);
-  font-size: clamp(1.24rem, 2.2vw, 1.95rem);
+  font-size: clamp(1.12rem, 1.85vw, 1.55rem);
   font-weight: 760;
   letter-spacing: -0.035em;
   line-height: 1.05;
@@ -12703,23 +12742,23 @@ body.personalize-lock {
 .workflow-sim-brief p {
   max-width: 41rem;
   color: #5f5c56;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   line-height: 1.5;
 }
 .workflow-lanes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.58rem;
 }
 .workflow-lane {
   border-radius: 12px;
-  padding: 0.85rem;
+  padding: 0.68rem;
   border: 1px solid rgba(24, 23, 77, 0.1);
   background: #ffffff;
 }
 .workflow-lane > span {
   display: block;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.5rem;
   color: rgba(24, 23, 77, 0.58);
   font-size: 0.74rem;
   font-weight: 760;
@@ -12733,20 +12772,20 @@ body.personalize-lock {
 }
 .workflow-lane li {
   position: relative;
-  min-height: 2.15rem;
+  min-height: 1.85rem;
   display: flex;
   align-items: center;
   border-radius: 9px;
-  padding: 0.48rem 0.62rem 0.48rem 1.8rem;
+  padding: 0.4rem 0.52rem 0.4rem 1.55rem;
   color: #3b3b37;
   background: #f7f6f1;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   line-height: 1.22;
 }
 .workflow-lane li::before {
   content: "";
   position: absolute;
-  left: 0.66rem;
+  left: 0.56rem;
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 50%;
@@ -12765,10 +12804,10 @@ body.personalize-lock {
 .workflow-system-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.78rem;
+  gap: 0.65rem;
   align-items: center;
   border-radius: 12px;
-  padding: 0.9rem;
+  padding: 0.72rem;
   color: #ffffff;
   background:
     linear-gradient(135deg, rgba(241, 208, 177, 0.16), rgba(255, 255, 255, 0) 42%),
@@ -12777,8 +12816,8 @@ body.personalize-lock {
 .workflow-system-icon {
   display: inline-grid;
   place-items: center;
-  width: 2.8rem;
-  height: 2.8rem;
+  width: 2.45rem;
+  height: 2.45rem;
   border-radius: 10px;
   color: var(--brand-charcoal);
   background: #f1d0b1;
@@ -12793,18 +12832,18 @@ body.personalize-lock {
   display: block;
   margin-top: 0.12rem;
   color: #ffffff;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 760;
 }
 .workflow-sim-notes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.58rem;
 }
 .workflow-sim-notes div {
   border: 1px solid rgba(24, 23, 77, 0.1);
   border-radius: 12px;
-  padding: 0.85rem;
+  padding: 0.68rem;
   background: #ffffff;
 }
 .workflow-sim-notes span {
@@ -12816,7 +12855,7 @@ body.personalize-lock {
 .workflow-sim-notes p {
   margin-top: 0.34rem;
   color: #5f5c56;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   line-height: 1.45;
 }
 @media (max-width: 960px) {
@@ -12838,13 +12877,14 @@ body.personalize-lock {
     display: none;
   }
   .workflow-sim-picker button {
-    flex: 0 0 min(78vw, 20rem);
+    flex: 0 0 min(74vw, 18rem);
     scroll-snap-align: start;
   }
 }
 @media (max-width: 680px) {
   .workflow-sim {
     padding-inline: 1rem;
+    padding-block: clamp(2.4rem, 8vw, 3.5rem);
   }
   .workflow-sim-link {
     width: 100%;
@@ -12874,7 +12914,7 @@ body.personalize-lock {
 
 /* ---- OldStackUpgrade ----------------------------------------------------- */
 .old-stack {
-  padding: clamp(3.5rem, 7vw, 6.5rem) 1.25rem;
+  padding: clamp(2.9rem, 5.5vw, 5rem) 1.25rem;
   background:
     linear-gradient(180deg, rgba(247, 246, 241, 0) 0%, rgba(247, 246, 241, 0.78) 48%, rgba(247, 246, 241, 0) 100%);
 }
@@ -12887,7 +12927,7 @@ body.personalize-lock {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(1.5rem, 3vw, 2.5rem);
   align-items: end;
-  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
 }
 .old-stack-head h2 {
   max-width: 47rem;
@@ -12899,9 +12939,9 @@ body.personalize-lock {
 }
 .old-stack-head p {
   max-width: 49rem;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   color: var(--text-muted);
-  font-size: 1.04rem;
+  font-size: 0.98rem;
   line-height: 1.62;
 }
 .old-stack-cta {
@@ -12938,7 +12978,7 @@ body.personalize-lock {
 .old-stack-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(20rem, 0.7fr);
-  gap: 1rem;
+  gap: 0.85rem;
   align-items: start;
 }
 .old-stack-ledger {
@@ -12958,20 +12998,20 @@ body.personalize-lock {
   color: rgba(255, 255, 255, 0.72);
 }
 .old-stack-ledger-head span {
-  padding: 0.78rem 1rem;
+  padding: 0.66rem 0.85rem;
   font-size: 0.78rem;
   font-weight: 680;
   line-height: 1.25;
 }
 .old-stack-row {
-  min-height: 5.75rem;
+  min-height: 4.85rem;
   border-top: 1px solid rgba(24, 23, 77, 0.08);
 }
 .old-stack-row > * {
   min-width: 0;
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.78rem 0.85rem;
   border-left: 1px solid rgba(24, 23, 77, 0.08);
 }
 .old-stack-row > *:first-child {
@@ -12980,26 +13020,72 @@ body.personalize-lock {
 .old-stack-row p {
   margin: 0;
   color: #5f5c56;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   line-height: 1.45;
 }
+.old-stack-more {
+  border-top: 1px solid rgba(24, 23, 77, 0.08);
+}
+.old-stack-more summary {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  padding: 0.72rem 1rem;
+  color: var(--accent-ink);
+  background: #f7f6f1;
+  font-size: 0.86rem;
+  font-weight: 720;
+  line-height: 1.2;
+  cursor: pointer;
+  list-style: none;
+  transition: background 180ms ease, color 180ms ease;
+}
+.old-stack-more summary::-webkit-details-marker {
+  display: none;
+}
+.old-stack-more summary::after {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--brand-indigo);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.old-stack-more[open] summary::after {
+  content: "-";
+}
+.old-stack-more summary:hover,
+.old-stack-more summary:focus-visible {
+  color: var(--brand-indigo);
+  background: #efede7;
+  outline: none;
+}
+.old-stack-more-rows {
+  display: grid;
+}
 .old-stack-current {
-  gap: 0.72rem;
+  gap: 0.62rem;
 }
 .old-stack-current strong {
   color: var(--brand-charcoal);
-  font-size: 0.94rem;
+  font-size: 0.88rem;
   font-weight: 690;
   line-height: 1.28;
 }
 .old-stack-icon {
   flex: 0 0 auto;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 2.1rem;
+  height: 2.1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 9px;
   color: var(--accent-ink);
   background: linear-gradient(145deg, rgba(221, 233, 252, 0.88), rgba(241, 208, 177, 0.32));
   border: 1px solid rgba(24, 23, 77, 0.08);
@@ -13008,7 +13094,7 @@ body.personalize-lock {
   position: sticky;
   top: 6rem;
   border-radius: 16px;
-  padding: clamp(1.2rem, 2.4vw, 1.6rem);
+  padding: clamp(1rem, 2vw, 1.25rem);
   color: #ffffff;
   background:
     linear-gradient(145deg, rgba(241, 208, 177, 0.12), rgba(255, 255, 255, 0) 42%),
@@ -13130,6 +13216,20 @@ body.personalize-lock {
   }
   .old-stack-row p:last-child::before {
     content: "Why switch";
+  }
+  .old-stack-more {
+    border: 0;
+  }
+  .old-stack-more summary {
+    min-height: 3rem;
+    border: 1px solid rgba(24, 23, 77, 0.1);
+    border-radius: 12px;
+    background: #fffdfa;
+    box-shadow: 0 10px 22px rgba(31, 33, 31, 0.05);
+  }
+  .old-stack-more-rows {
+    gap: 0.85rem;
+    margin-top: 0.85rem;
   }
   .old-stack-cta {
     width: 100%;
