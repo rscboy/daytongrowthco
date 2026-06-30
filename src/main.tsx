@@ -1624,8 +1624,8 @@ function Hero() {
               Start your build
               <ArrowRight size={16} aria-hidden="true" />
             </a>
-            <a className="button button-secondary large" href="#platform">
-              See the systems
+            <a className="button button-secondary large" href="#old-stack">
+              See what we replace
             </a>
           </div>
           {business ? (
@@ -1661,7 +1661,7 @@ function Hero() {
             ]}
           />
         </aside>
-        <a className="hero-scroll-cue" href="#platform" aria-label="Continue to what we build">
+        <a className="hero-scroll-cue" href="#old-stack" aria-label="Continue to what we replace">
           <span>Explore</span>
           <i aria-hidden="true" />
         </a>
@@ -4186,55 +4186,6 @@ const orbitClients = [
   },
 ];
 
-function ClientOrbit() {
-  return (
-    <section className="client-orbit" aria-labelledby="client-orbit-title">
-      <div className="client-orbit-inner">
-        <div className="client-orbit-copy">
-          <h2 id="client-orbit-title" data-scroll-words>
-            Growth work happens in good company.
-          </h2>
-          <p>
-            A small set of real teams we have helped with sites, systems, proof, and the operational work behind better demand.
-          </p>
-          <a className="link-arrow" href="#cta">
-            Talk through your build
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </div>
-
-        <div className="client-orbit-stage" aria-label="Companies DaytonGrowthCo has worked with">
-          <div className="client-orbit-core">
-            <img src={logoUrl} alt="" />
-            <strong>DaytonGrowthCo.</strong>
-            <span>Growth partner</span>
-          </div>
-
-          <div className="client-orbit-rings" aria-hidden="true" />
-
-          <ul className="client-orbit-list">
-            {orbitClients.map((client) => (
-              <li
-                className="client-orbit-node"
-                key={client.name}
-                style={{ "--orbit-angle": client.orbit } as React.CSSProperties}
-              >
-                <div className="client-orbit-logo">
-                  {client.logo ? <img src={client.logo} alt={`${client.name} logo`} loading="lazy" /> : <span>{client.initials}</span>}
-                </div>
-                <div className="client-orbit-card">
-                  <strong>{client.name}</strong>
-                  <span>{client.work}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ProofAndVoices() {
   return (
     <div className="proof-wrap">
@@ -4251,7 +4202,6 @@ function ProofAndVoices() {
         }
         attribution="DaytonGrowthCo."
       />
-      <ClientOrbit />
       {/* Testimonials section intentionally omitted until real client quotes are
           available. The TestimonialCard component lives in src/premium.tsx and
           can be dropped back in here when ready. */}
@@ -4366,16 +4316,10 @@ function Homepage() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <BuiltForStrip />
-        <ProcessMap />
         <OldStackUpgrade />
         <ServicesSticky />
-        <BusinessJourney />
-        <WebsiteTransformation />
-        <EconomicCase />
-        <PersonalizeInvite />
-        <LaborCostCalculator sectionId="workflow" />
+        <ProcessSteps />
         <ProofAndVoices />
-        <WhoItsFor />
         <HomeFaq />
         <FinalCTA />
       </main>
