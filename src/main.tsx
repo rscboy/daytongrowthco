@@ -1655,9 +1655,9 @@ function Hero() {
               />
             }
             stats={[
-              { label: "Uses your rules", value: "Price sheet", tone: "accent" },
-              { label: "Starts from real inputs", value: "Calls + photos" },
-              { label: "Output your team needs", value: "Send-ready quote" },
+              { label: "Cost vs. a dev shop", value: "Up to 70% less", tone: "accent" },
+              { label: "Time to live", value: "2 to 4 weeks" },
+              { label: "Shaped to your workflow", value: "Exactly" },
             ]}
           />
         </aside>
