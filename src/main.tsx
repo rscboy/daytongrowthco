@@ -4012,6 +4012,129 @@ function SystemMap() {
   );
 }
 
+const oldStackRows = [
+  {
+    icon: <Globe2 size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Wix, Squarespace, WordPress themes",
+    build: "Hosted custom site with fewer moving parts",
+    result: "Faster edits, cleaner pages, less plugin archaeology.",
+  },
+  {
+    icon: <Table size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Spreadsheet quote sheets",
+    build: "Guided quote builder using your real pricing",
+    result: "The team sends the same number for the same job. Bold idea.",
+  },
+  {
+    icon: <Database size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Generic CRM nobody updates",
+    build: "Lead and job tracker with the stages you actually use",
+    result: "Less software guilt. More visible work.",
+  },
+  {
+    icon: <Send size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Forms duct-taped to inboxes",
+    build: "Intake flow with summaries, routing, and next steps",
+    result: "A form submission becomes a record, not an email with ambition.",
+  },
+  {
+    icon: <PhoneCall size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Voicemail and manual callbacks",
+    build: "AI phone agent for routine calls and job details",
+    result: "Calls get answered while everyone is busy doing the work.",
+  },
+  {
+    icon: <FileText size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "PDF quotes copied from the last job",
+    build: "Send-ready proposal tool with your rules built in",
+    result: "Less renaming old files and hoping nobody notices.",
+  },
+  {
+    icon: <MessageSquare size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Email as project management",
+    build: "Simple internal tool with owner, status, notes, and files",
+    result: "The next action has a place to live.",
+  },
+  {
+    icon: <StickyNote size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Training binders and ask-the-owner processes",
+    build: "Searchable knowledge base or internal assistant",
+    result: "The process survives lunch breaks, vacations, and Tuesdays.",
+  },
+];
+
+const upgradeRules = [
+  ["Replace it", "When the old tool is slow, brittle, expensive, or doing work it was never meant to do."],
+  ["Connect it", "When the tool is fine but the handoff around it is where time disappears."],
+  ["Leave it alone", "When the current system works. We are allowed to be normal about software."],
+];
+
+function OldStackUpgrade() {
+  return (
+    <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title">
+      <div className="old-stack-inner">
+        <div className="old-stack-head">
+          <div>
+            <h2 id="old-stack-title" data-scroll-words>
+              Replace the old stack, one workflow at a time.
+            </h2>
+            <p>
+              A lot of business software was built for a time when custom tools were too expensive. That is not the same
+              world anymore. We help you move the parts that are ready, without turning the whole company upside down.
+            </p>
+          </div>
+          <a className="old-stack-cta" href="#cta">
+            Show us the old system
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </div>
+
+        <div className="old-stack-layout">
+          <div className="old-stack-ledger" role="table" aria-label="Old business software and modern replacements">
+            <div className="old-stack-ledger-head" role="row">
+              <span role="columnheader">Current setup</span>
+              <span role="columnheader">Modern build</span>
+              <span role="columnheader">Practical result</span>
+            </div>
+            {oldStackRows.map((row) => (
+              <div className="old-stack-row" role="row" key={row.current}>
+                <div className="old-stack-current" role="cell">
+                  <span className="old-stack-icon" aria-hidden="true">
+                    {row.icon}
+                  </span>
+                  <strong>{row.current}</strong>
+                </div>
+                <p role="cell">{row.build}</p>
+                <p role="cell">{row.result}</p>
+              </div>
+            ))}
+          </div>
+
+          <aside className="old-stack-decision" aria-label="How DaytonGrowthCo decides what to build">
+            <h3>We do not always build from scratch.</h3>
+            <p>
+              Sometimes the answer is an existing tool. Sometimes it is a custom tool. Sometimes it is deleting three tools
+              and using one properly. A thrilling plot twist, but useful.
+            </p>
+            <dl>
+              {upgradeRules.map(([term, definition]) => (
+                <div key={term}>
+                  <dt>{term}</dt>
+                  <dd>{definition}</dd>
+                </div>
+              ))}
+            </dl>
+            <a className="link-arrow" href="#cta">
+              Tell us what feels old
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function MissionStatement() {
   return (
     <PositioningStatement>
@@ -4233,6 +4356,7 @@ function Homepage() {
         <Hero />
         <BuiltForStrip />
         <ProcessMap />
+        <OldStackUpgrade />
         <ServicesSticky />
         <BusinessJourney />
         <WebsiteTransformation />
