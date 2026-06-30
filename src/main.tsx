@@ -1628,20 +1628,6 @@ function Hero() {
               See the systems
             </a>
           </div>
-          <dl className="hero-proof-strip" aria-label="DaytonGrowthCo build proof">
-            <div>
-              <dt>2 to 4 wks</dt>
-              <dd>Typical first build</dd>
-            </div>
-            <div>
-              <dt>Up to 70%</dt>
-              <dd>Less than traditional dev</dd>
-            </div>
-            <div>
-              <dt>Real workflow</dt>
-              <dd>No generic template</dd>
-            </div>
-          </dl>
           {business ? (
             <p className="personalize-note">
               Tailored for {business}.{" "}

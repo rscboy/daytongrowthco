@@ -13375,36 +13375,6 @@ body.personalize-lock {
   box-shadow: none;
 }
 
-.hero-proof-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin: 1.45rem 0 0;
-  max-width: 39rem;
-}
-
-.hero-proof-strip div {
-  min-width: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  padding-top: 0.72rem;
-}
-
-.hero-proof-strip dt {
-  color: #ffffff;
-  font-size: 0.82rem;
-  font-weight: 760;
-  line-height: 1.15;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
-}
-
-.hero-proof-strip dd {
-  margin: 0.25rem 0 0;
-  color: rgba(233, 233, 247, 0.68);
-  font-size: 0.72rem;
-  font-weight: 580;
-  line-height: 1.3;
-}
-
 .personalize-inline {
   padding: clamp(0.85rem, 2vw, 1.2rem) 0;
   background: #f7f6f1;
@@ -13482,24 +13452,6 @@ body.personalize-lock {
     align-items: flex-start;
     padding-top: 8.5rem;
     padding-bottom: 5.5rem;
-  }
-
-  .hero-proof-strip {
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
-    margin-top: 1.2rem;
-  }
-
-  .hero-proof-strip div {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .hero-proof-strip dd {
-    margin-top: 0;
-    text-align: right;
   }
 
   .above-fold-proof-inner,
