@@ -4015,51 +4015,57 @@ function SystemMap() {
 const oldStackRows = [
   {
     icon: <Globe2 size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Wix, Squarespace, WordPress themes",
+    current: "Wix, Squarespace, WordPress, old agency themes",
     build: "Hosted custom site with fewer moving parts",
-    result: "Faster edits, cleaner pages, less plugin archaeology.",
+    result: "Lower maintenance cost, more custom pages, easier edits. Less plugin archaeology.",
   },
   {
     icon: <Table size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Spreadsheet quote sheets",
+    current: "Excel, Google Sheets, Airtable quote trackers",
     build: "Guided quote builder using your real pricing",
-    result: "The team sends the same number for the same job. Bold idea.",
+    result: "Lower admin time, custom pricing logic, easier for the team to quote the same way.",
   },
   {
     icon: <Database size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Generic CRM nobody updates",
+    current: "HubSpot, Salesforce, Zoho, Jobber, ServiceTitan",
     build: "Lead and job tracker with the stages you actually use",
-    result: "Less software guilt. More visible work.",
+    result: "Lower seat bloat, custom pipeline stages, easier updates. Minor detail for a CRM.",
   },
   {
     icon: <Send size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Forms duct-taped to inboxes",
+    current: "Jotform, Typeform, Google Forms, Gravity Forms",
     build: "Intake flow with summaries, routing, and next steps",
-    result: "A form submission becomes a record, not an email with ambition.",
+    result: "Lower manual follow-up, custom intake logic, easier handoff after the form.",
+  },
+  {
+    icon: <Calendar size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Calendly, Acuity, dispatch boards, scheduling texts",
+    build: "Scheduling flow tied to job type, location, and team availability",
+    result: "Lower coordination time, custom routing, easier booking without the text thread marathon.",
   },
   {
     icon: <PhoneCall size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Voicemail and manual callbacks",
+    current: "Voicemail, answering services, missed-call workflows",
     build: "AI phone agent for routine calls and job details",
-    result: "Calls get answered while everyone is busy doing the work.",
+    result: "Lower missed-lead cost, custom call handling, easier capture while everyone is busy.",
   },
   {
     icon: <FileText size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "PDF quotes copied from the last job",
+    current: "Word docs, PDF templates, copied proposals",
     build: "Send-ready proposal tool with your rules built in",
-    result: "Less renaming old files and hoping nobody notices.",
+    result: "Lower quoting time, custom scope rules, easier proposals. Less renaming and hoping.",
   },
   {
     icon: <MessageSquare size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Email as project management",
+    current: "Gmail, Outlook, shared inboxes, forwarded threads",
     build: "Simple internal tool with owner, status, notes, and files",
-    result: "The next action has a place to live.",
+    result: "Lower search time, custom status views, easier ownership. The next action has a home.",
   },
   {
     icon: <StickyNote size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Training binders and ask-the-owner processes",
+    current: "Google Drive, Dropbox, SOP docs, ask-the-owner processes",
     build: "Searchable knowledge base or internal assistant",
-    result: "The process survives lunch breaks, vacations, and Tuesdays.",
+    result: "Lower training drag, custom answers, easier access. The process survives Tuesdays.",
   },
 ];
 
@@ -4094,7 +4100,7 @@ function OldStackUpgrade() {
             <div className="old-stack-ledger-head" role="row">
               <span role="columnheader">Current setup</span>
               <span role="columnheader">Modern build</span>
-              <span role="columnheader">Practical result</span>
+              <span role="columnheader">Why switch</span>
             </div>
             {oldStackRows.map((row) => (
               <div className="old-stack-row" role="row" key={row.current}>
@@ -4116,6 +4122,11 @@ function OldStackUpgrade() {
               Sometimes the answer is an existing tool. Sometimes it is a custom tool. Sometimes it is deleting three tools
               and using one properly. A thrilling plot twist, but useful.
             </p>
+            <ul className="old-stack-reasons" aria-label="Main reasons to modernize">
+              <li>Lower cost</li>
+              <li>More custom</li>
+              <li>Easier to use</li>
+            </ul>
             <dl>
               {upgradeRules.map(([term, definition]) => (
                 <div key={term}>

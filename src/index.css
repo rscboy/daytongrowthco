@@ -12605,7 +12605,7 @@ body.personalize-lock {
 }
 .old-stack-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(20rem, 0.75fr);
+  grid-template-columns: minmax(0, 1.65fr) minmax(20rem, 0.7fr);
   gap: 1rem;
   align-items: start;
 }
@@ -12619,7 +12619,7 @@ body.personalize-lock {
 .old-stack-ledger-head,
 .old-stack-row {
   display: grid;
-  grid-template-columns: minmax(13rem, 1.05fr) minmax(12rem, 1fr) minmax(12rem, 1fr);
+  grid-template-columns: minmax(15rem, 1.08fr) minmax(12rem, 0.92fr) minmax(14rem, 1fr);
 }
 .old-stack-ledger-head {
   background: #18174d;
@@ -12696,6 +12696,27 @@ body.personalize-lock {
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.92rem;
   line-height: 1.55;
+}
+.old-stack-reasons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.old-stack-reasons li {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem;
+  color: #f7f6f1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.78rem;
+  font-weight: 690;
+  line-height: 1.2;
 }
 .old-stack-decision dl {
   margin: 1.15rem 0 0;
@@ -12776,10 +12797,18 @@ body.personalize-lock {
     font-weight: 720;
   }
   .old-stack-row p:last-child::before {
-    content: "Practical result";
+    content: "Why switch";
   }
   .old-stack-cta {
     width: 100%;
+  }
+}
+@media (max-width: 440px) {
+  .old-stack-reasons {
+    grid-template-columns: 1fr;
+  }
+  .old-stack-reasons li {
+    min-height: 2.4rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
