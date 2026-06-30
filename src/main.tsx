@@ -4335,7 +4335,9 @@ function WhatWeBuildPage() {
       <main id="main-content" className="dedicated-page" tabIndex={-1}>
         <PageHero {...pageCopy.whatWeBuild} />
         <ServiceArchitecture />
+        <WhoItsFor />
         <FeatureGrid />
+        <ProcessMap />
         <QuoteBuilderDemo />
         <AiWorkflowReveal />
         <PageCTA />
@@ -4371,6 +4373,8 @@ function HowItWorksPage() {
         <PageHero {...pageCopy.howItWorks} />
         <BuildPrinciples />
         <DiscoveryDiagnosis />
+        <EconomicCase />
+        <LaborCostCalculator sectionId="process-cost" />
         <EngagementNotes />
         <HowItWorksFaq />
         <PageCTA />
