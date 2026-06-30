@@ -1934,7 +1934,8 @@
   }
 
   .site-offer-copy strong {
-    font-weight: 720;
+    font-weight: 600;
+    letter-spacing: 0;
   }
 
   .site-offer-copy > span {
@@ -13973,12 +13974,19 @@ body.personalize-lock {
   color: rgba(255, 255, 255, 0.58);
 }
 
+.site-offer-copy strong {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
 .site-offer-action {
   min-height: auto;
   border-left: 0;
   padding-left: 0;
   color: #f1d0b1;
   font-size: inherit;
+  font-weight: 640;
+  letter-spacing: 0;
 }
 
 .site-offer-action::before {
@@ -14002,7 +14010,9 @@ body.personalize-lock {
   }
 
   .site-offer-copy strong {
-    font-size: 0.68rem;
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0;
   }
 
   .site-offer-copy > span {
