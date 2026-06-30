@@ -597,7 +597,6 @@ function PersonalizeInvite() {
       <section className="personalize-inline" aria-labelledby="personalizeInlineTitle">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <span className="personalize-inline-kicker">Optional</span>
             <h2 id="personalizeInlineTitle">Make the examples fit your business.</h2>
             <p>Add a name, business, and team size to tailor the calculator, demo copy, and contact form.</p>
           </div>
@@ -957,12 +956,12 @@ function Header() {
         <div className="header-actions">
           {isHome ? (
             <a className="button button-primary" href="#cta">
-              Start your build
+              Find one workflow
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Start your build
+              Find one workflow
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
@@ -995,12 +994,12 @@ function Header() {
           })}
           {isHome ? (
             <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
-              Start your build
+              Find one workflow
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Start your build
+              Find one workflow
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
@@ -1041,7 +1040,7 @@ function useTurnstileProtection() {
       submitButton.disabled = isSubmitting;
       submitButton.dataset.loading = String(isSubmitting);
       submitButton.setAttribute("aria-busy", String(isSubmitting));
-      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Start your build";
+      if (submitLabel) submitLabel.textContent = isSubmitting ? "Sending…" : "Send the workflow";
     };
 
     type Turnstile = {
@@ -1812,13 +1811,6 @@ function Hero() {
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
         <div className={`clay-hero-copy hero-entrance${entranceClass}`}>
-          <span className="hero-label">
-            {business ? (
-              <>Remove the manual work slowing down <em className="hero-personal">{business}</em>.</>
-            ) : (
-              "Remove the manual work slowing down your business."
-            )}
-          </span>
           <h1 className="hero-title">
             <span className="hero-line">We build</span>{" "}
             <span className="hero-line hero-audience-line">
@@ -1826,13 +1818,16 @@ function Hero() {
             </span>
           </h1>
           <p>
+            {business
+              ? `We remove the manual work slowing down ${business}. `
+              : "We remove the manual work slowing down your business. "}
             We turn quoting, intake, follow-up, and job handoffs into practical tools built around how your team
             already works. AI-assisted development keeps first builds faster, leaner, and often{" "}
             <em className="ink-accent">up to 70% less</em> than a traditional custom dev quote.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
-              Start your build
+              Find one workflow to fix
               <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a className="button button-secondary large" href="#old-stack">
@@ -1851,7 +1846,6 @@ function Hero() {
         <aside className={`hero-proof hero-entrance${entranceClass}`} aria-label="What a typical build looks like">
           <ProofCard
             tone="glass"
-            tags={["Live build", "Custom tool", "Built to fit"]}
             title="A quoting tool that runs on your real price sheet."
             description="Calls, photos, and texts come in. A clean, sendable quote comes out, priced the way you already price."
             visual={
@@ -2616,7 +2610,7 @@ function ProjectForm() {
         <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
 
         <button type="submit" className="button button-primary large form-submit">
-          <span className="form-submit-label">Start your build</span>
+          <span className="form-submit-label">Send the workflow</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
         <p className="cta-trust form-cta-trust">
@@ -2666,13 +2660,13 @@ function FinalCTA() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
           <h2>
-            {firstName ? `${firstName}, bring us the process. ` : "Bring us the process. "}
-            We’ll build the tool.
+            {firstName ? `${firstName}, bring us the repeated workflow. ` : "Bring us the repeated workflow. "}
+            We’ll tell you what is worth fixing.
           </h2>
           <p>
             {business
-              ? `Tell us what comes in at ${business}, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget.`
-              : "Tell us what comes in, what your team does with it, and what needs to come out. We will look for the smallest build that saves real time before it asks for real budget."}
+              ? `Tell us what comes in at ${business}, what your team repeats by hand, and what needs to happen next. We will look for one workflow that can be fixed, monitored, and improved.`
+              : "Tell us what comes in, what your team repeats by hand, and what needs to happen next. We will look for one workflow that can be fixed, monitored, and improved."}
           </p>
         </div>
         <ProjectForm />
@@ -3318,7 +3312,7 @@ function PageCTA() {
     <section className="page-cta" id="cta">
       <h2>Bring us the process that is still being handled by hand.</h2>
       <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
-      <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
+      <a className="button button-primary large" href="/#cta">Find one workflow <ArrowRight size={16} aria-hidden="true" /></a>
       <ul className="page-cta-trust" aria-label="What to expect">
         <li>Dayton roots, nationwide reach</li>
         <li>Reply within 24 hours</li>
@@ -4372,6 +4366,139 @@ function OldStackUpgrade() {
   );
 }
 
+const retainerExamples = [
+  {
+    icon: Calendar,
+    title: "Veterinary clinic reminders",
+    problem: "Missed appointments and overdue vaccines.",
+    build: ["Reminder workflow", "Reschedule follow-up", "Overdue patient list", "Staff-approved messages"],
+    monthly: "Keep reminder timing, message rules, and overdue lists current.",
+  },
+  {
+    icon: FileText,
+    title: "Tax prep document chase",
+    problem: "Clients send half the documents. The team becomes a polite reminder machine.",
+    build: ["Missing doc checklist", "Reminder drafts", "Status board", "Escalation list"],
+    monthly: "Tune checklists, review reminder language, and keep tax-season chaos slightly less theatrical.",
+  },
+  {
+    icon: Calculator,
+    title: "Home-cleaning quote intake",
+    problem: "Leads ask for quotes with missing details.",
+    build: ["Intake questions", "Quote prep summary", "Follow-up workflow", "Ready-to-price record"],
+    monthly: "Improve questions, adjust quote logic, and watch where leads drop off.",
+  },
+  {
+    icon: UserCheck,
+    title: "Recruiting resume triage",
+    problem: "Recruiters lose time sorting unqualified candidates.",
+    build: ["Resume classifier", "Candidate summary", "Missing-info request", "Interview reminder"],
+    monthly: "Update screening rules, monitor edge cases, and keep good candidates from vanishing.",
+  },
+  {
+    icon: Camera,
+    title: "Podcast clip approval",
+    problem: "Clips, titles, approvals, and publishing steps get scattered.",
+    build: ["Clip review workflow", "Title draft assistant", "Publishing QA checklist", "Approval tracker"],
+    monthly: "Refresh title patterns, clean up the workflow, and stop the 'where is that clip?' tradition.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Contractor quote follow-up",
+    problem: "Quotes go out, then follow-up depends on memory and a heroic inbox.",
+    build: ["Quote status board", "Follow-up drafts", "Owner assignment", "Next-step reminders"],
+    monthly: "Adjust timing, update templates, and keep the pipeline visible.",
+  },
+];
+
+function OneWorkflowRetainers() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = retainerExamples[activeIndex] ?? retainerExamples[0];
+  const ActiveIcon = active.icon;
+
+  return (
+    <section className="retainer-section" id="ai-retainers" aria-labelledby="retainer-title">
+      <div className="retainer-inner">
+        <div className="retainer-head">
+          <h2 id="retainer-title" data-scroll-words>
+            One repetitive problem = one AI retainer.
+          </h2>
+          <p>
+            “Custom AI systems” is too vague. We fix one repeated workflow and keep it working. Setup gets it live.
+            Monthly support keeps it updated, monitored, and improved.
+          </p>
+        </div>
+
+        <div className="retainer-layout">
+          <div className="retainer-picker" role="tablist" aria-label="Repeated workflow examples">
+            {retainerExamples.map((example, index) => {
+              const Icon = example.icon;
+              const selected = index === activeIndex;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  className={selected ? "is-active" : ""}
+                  key={example.title}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  <span>{example.title}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <article className="retainer-card" role="tabpanel" aria-live="polite">
+            <div className="retainer-card-top">
+              <span className="retainer-card-icon" aria-hidden="true">
+                <ActiveIcon size={24} strokeWidth={1.8} />
+              </span>
+              <div>
+                <span>Repeated problem</span>
+                <h3>{active.title}</h3>
+              </div>
+            </div>
+
+            <p className="retainer-problem">{active.problem}</p>
+
+            <div className="retainer-build">
+              <div>
+                <span>Setup fee gets live</span>
+                <ul>
+                  {active.build.map((item) => (
+                    <li key={item}>
+                      <Check size={14} aria-hidden="true" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <span>Monthly retainer keeps it useful</span>
+                <p>{active.monthly}</p>
+              </div>
+            </div>
+          </article>
+
+          <aside className="retainer-rule">
+            <h3>Boring repeated work is where the money is.</h3>
+            <p>
+              The best first AI project is usually not glamorous. It is the task someone repeats every week while quietly
+              questioning modern life.
+            </p>
+            <a className="link-arrow" href="#cta">
+              Show us the repeated task
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function MissionStatement() {
   return (
     <PositioningStatement>
@@ -4545,6 +4672,7 @@ function Homepage() {
         <PersonalizeInvite />
         <WorkflowSimulation />
         <OldStackUpgrade />
+        <OneWorkflowRetainers />
         <ServicesSticky />
         <ProcessSteps />
         <ProofAndVoices />

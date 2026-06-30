@@ -1,4 +1,3 @@
-@import "@fontsource-variable/hanken-grotesk";
 @import "@fontsource-variable/fraunces";
 @import "@fontsource/instrument-serif/400.css";
 @import "@fontsource/instrument-serif/400-italic.css";
@@ -10,6 +9,7 @@
   :root {
     --background: #fbfbf9;
     --foreground: #1a1a1a;
+    --font-sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
@@ -49,7 +49,6 @@
 
   .theme {
     --font-heading: var(--font-sans);
-    --font-sans: 'Hanken Grotesk Variable', sans-serif;
   }
   :root {
     /* Brand serif for hero + major editorial moments. */
@@ -84,7 +83,7 @@
     --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 
     /* ---- Premium upgrade tokens (radius / gradient / glow / panels) ---- */
-    /* Radius scale: keep 8px for inputs/small chips, add panel + full. */
+    /* Radius scale: keep 8px for inputs/small controls, add panel + full. */
     --radius-card: 18px;
     --radius-panel: 28px;
     --radius-full: 999px;
@@ -112,6 +111,7 @@
   body {
     overflow-x: clip;
     color: #1a1a1a;
+    font-family: var(--font-sans);
     text-wrap: pretty;
     background:
       radial-gradient(circle at 15% 5%, rgba(248, 206, 173, 0.3), transparent 30rem),
@@ -211,7 +211,7 @@
   .nav-wordmark {
     display: inline-flex;
     align-items: baseline;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     letter-spacing: -0.025em;
     white-space: nowrap;
   }
@@ -220,7 +220,7 @@
     display: inline-flex;
     align-items: baseline;
     color: #182018;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     font-size: 1.08em;
     font-weight: 650;
   }
@@ -229,7 +229,7 @@
     display: inline-flex;
     align-items: baseline;
     color: #7a766f;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 450;
   }
 
@@ -238,7 +238,7 @@
     align-items: baseline;
     margin-left: 0.02em;
     color: #5796c8;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 800;
   }
 
@@ -1083,14 +1083,7 @@
     animation: hero-copy-in 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
   }
 
-  .hero-label {
-    display: block;
-    color: #8a857d;
-    font-size: 0.69rem;
-    font-weight: 700;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
+  .hero-label { display: none; }
 
   .section-kicker,
   .eyebrow {
@@ -1098,7 +1091,7 @@
   }
 
   .clay-hero-copy h1 {
-    margin-top: 1.4rem;
+    margin-top: 0;
     color: #ffffff;
     max-width: 16ch;
     font-family: var(--font-serif);
@@ -1126,35 +1119,8 @@
     color: #ffffff;
   }
 
-  .clay-hero-copy .hero-label {
-    position: relative;
-    width: min(100%, 36rem);
-    padding-top: 0.95rem;
-    color: #f4d1b1;
-    font-size: clamp(1.125rem, 1.35vw, 1.375rem);
-    font-weight: 560;
-    letter-spacing: -0.012em;
-    line-height: 1.35;
-    text-transform: none;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.72);
-  }
-
-  /* Refined leading accent: a short peach rule above the eyebrow line. Not a
-     pill, not an uppercase kicker, just a quiet premium detail. */
-  .clay-hero-copy .hero-label::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2.4rem;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, var(--brand-peach), rgba(244, 209, 177, 0));
-  }
-
-  .clay-hero-copy .hero-label + h1 {
-    margin-top: 1.1rem;
-  }
+  .clay-hero-copy .hero-label,
+  .clay-hero-copy .hero-label::before { display: none; }
 
   .hero-audience-line {
     display: block !important;
@@ -1499,7 +1465,7 @@
 
   .record-row strong {
     color: #252522;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.82rem;
     font-weight: 650;
     text-align: right;
@@ -1586,13 +1552,13 @@
   }
 
   .ai-section-kicker {
-    display: block;
+    display: none;
     margin-bottom: 0.75rem;
     color: #f1d0b1;
     font-size: 0.66rem;
     font-weight: 760;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   .ai-demo-bar {
@@ -1612,7 +1578,7 @@
 
   .ai-chip {
     border: 1px solid #ededeb;
-    border-radius: 5px;
+    border-radius: 4px;
     padding: 0.34rem 0.8rem;
     color: #5f5c56;
     background: #ffffff;
@@ -1760,7 +1726,7 @@
     border-radius: 8px;
     color: #1f211f;
     background: var(--brand-peach);
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.82rem;
     font-weight: 800;
   }
@@ -1876,7 +1842,7 @@
 
   .score-orb span {
     max-width: 100%;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.72rem;
     font-weight: 750;
     line-height: 1;
@@ -2143,7 +2109,7 @@
   }
 
   .mini-metric-strip strong {
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 1rem;
     font-weight: 800;
   }
@@ -2261,7 +2227,7 @@
 
   .display-card small {
     color: #8a857d;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.66rem;
     font-weight: 720;
     white-space: nowrap;
@@ -2764,7 +2730,7 @@
 
   .business-journey-number {
     color: #8a857d;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.64rem;
     font-weight: 760;
     letter-spacing: 0.12em;
@@ -3622,7 +3588,7 @@
   .step-count {
     margin-top: 1.2rem;
     color: #a6a199;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.78rem;
     font-weight: 650;
   }
@@ -4570,7 +4536,7 @@
 
   .build-card-index {
     color: #908b84;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.66rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -4707,7 +4673,7 @@
   .intake-list li::before {
     color: rgba(216, 232, 248, 0.62);
     content: "0" counter(intake-step);
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.62rem;
     font-weight: 680;
     letter-spacing: 0.06em;
@@ -5955,7 +5921,7 @@
   .metric-card strong {
     display: block;
     color: #1f211f;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     font-weight: 760;
     line-height: 1;
@@ -6130,7 +6096,7 @@
     border-radius: 8px;
     color: #dbeafe;
     background: rgba(24, 23, 77, 0.1);
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.66rem;
     font-weight: 760;
   }
@@ -6795,7 +6761,7 @@
     overflow: hidden;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     color: #aab2bd;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     background:
       radial-gradient(circle at 85% 0%, rgba(42, 40, 128, 0.32), transparent 45%),
       #05070c;
@@ -6818,7 +6784,7 @@
     right: -0.5rem;
     bottom: -1.6rem;
     color: #ffffff;
-    font-family: "Hanken Grotesk Variable", sans-serif;
+    font-family: var(--font-sans);
     font-size: clamp(4rem, 12vw, 9rem);
     font-weight: 700;
     letter-spacing: -0.04em;
@@ -7079,7 +7045,7 @@
     padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.12);
     color: #6a6781;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.62rem;
     font-weight: 760;
     letter-spacing: 0.15em;
@@ -7309,7 +7275,7 @@
   .service-detail-grid article > span,
   .engagement-process li span {
     color: #817c74;
-    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.66rem;
     font-weight: 760;
     letter-spacing: 0.08em;
@@ -7629,7 +7595,7 @@
     border-radius: 999px;
     color: #1a1a1a;
     background: var(--brand-peach);
-    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.6rem;
     font-style: normal;
     font-weight: 760;
@@ -7771,7 +7737,7 @@
   .engagement-process li span {
     flex: 0 0 auto;
     color: var(--brand-indigo);
-    font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.66rem;
     font-weight: 780;
     letter-spacing: 0.08em;
@@ -10159,7 +10125,7 @@
 
   .feature-index {
     color: #98938c;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.65rem;
     font-weight: 650;
     letter-spacing: 0.06em;
@@ -10398,7 +10364,7 @@
   .featured-build > span,
   .supporting-builds > article > span {
     color: #8b867f;
-    font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.64rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -10855,10 +10821,10 @@ body.personalize-lock {
 
 .personalize-field > span {
   color: #836b52;
-  font-size: 0.62rem;
-  font-weight: 760;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .personalize-field input {
@@ -10893,7 +10859,7 @@ body.personalize-lock {
 .personalize-chip {
   padding: 0.55rem 0.3rem;
   border: 1px solid rgba(120, 90, 60, 0.3);
-  border-radius: 10px;
+  border-radius: 6px;
   background: rgba(255, 252, 248, 0.55);
   color: #4a3f33;
   font-size: 0.8rem;
@@ -11379,7 +11345,7 @@ body.personalize-lock {
   border-bottom: 1px solid #efede7;
   background: #faf9f6;
   color: #6a665f;
-  font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.8rem;
 }
 
@@ -11407,7 +11373,7 @@ body.personalize-lock {
 
 .sconf-messy {
   color: #b04a3a;
-  font-family: "Hanken Grotesk Variable", ui-monospace, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.86rem;
 }
 
@@ -11685,7 +11651,7 @@ body.personalize-lock {
   overflow: hidden;
 }
 .proof-card-tags {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 0.9rem;
 }
@@ -12728,7 +12694,7 @@ body.personalize-lock {
 .workflow-sim-doc {
   width: fit-content;
   color: rgba(24, 23, 77, 0.58);
-  font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.72rem;
   font-weight: 760;
 }
@@ -13254,6 +13220,248 @@ body.personalize-lock {
   }
 }
 
+/* ---- OneWorkflowRetainers ----------------------------------------------- */
+.retainer-section {
+  padding: clamp(2.9rem, 5.5vw, 5.25rem) 1.25rem;
+  background:
+    radial-gradient(60% 72% at 8% 0%, rgba(221, 233, 252, 0.46), transparent 62%),
+    linear-gradient(180deg, #fbfbf9 0%, #f7f6f1 100%);
+}
+.retainer-inner {
+  max-width: 78rem;
+  margin: 0 auto;
+}
+.retainer-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1fr);
+  gap: clamp(1.2rem, 3vw, 2.25rem);
+  align-items: end;
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+.retainer-kicker { display: none; }
+.retainer-head h2 {
+  max-width: 43rem;
+  color: var(--brand-charcoal);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
+}
+.retainer-head p {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.62;
+}
+.retainer-layout {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.18fr) minmax(17rem, 0.66fr);
+  gap: 0.85rem;
+  align-items: stretch;
+}
+.retainer-picker {
+  display: grid;
+  gap: 0.5rem;
+}
+.retainer-picker button {
+  min-height: 3.1rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  border-radius: 7px;
+  padding: 0.65rem 0.72rem;
+  color: #54545c;
+  background: rgba(255, 253, 250, 0.78);
+  box-shadow: 0 10px 24px rgba(31, 33, 31, 0.04);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 200ms var(--ease-out-soft),
+    border-color 200ms ease,
+    background 200ms ease,
+    color 200ms ease;
+}
+.retainer-picker button:hover,
+.retainer-picker button:focus-visible,
+.retainer-picker button.is-active {
+  color: var(--brand-indigo);
+  border-color: rgba(24, 23, 77, 0.22);
+  background: #ffffff;
+  outline: none;
+}
+.retainer-picker button:hover,
+.retainer-picker button:focus-visible {
+  transform: translateX(3px);
+}
+.retainer-picker svg {
+  color: var(--accent-ink);
+}
+.retainer-picker span {
+  min-width: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.18;
+}
+.retainer-card,
+.retainer-rule {
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(31, 33, 31, 0.07);
+}
+.retainer-card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.35rem);
+  background: #fffdfa;
+}
+.retainer-card-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: center;
+}
+.retainer-card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 12px;
+  color: #ffffff;
+  background: var(--brand-indigo);
+}
+.retainer-card-top span,
+.retainer-build > div > span {
+  display: block;
+  color: rgba(24, 23, 77, 0.58);
+  font-size: 0.84rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.retainer-card h3 {
+  margin-top: 0.16rem;
+  color: var(--brand-charcoal);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 760;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+.retainer-problem {
+  margin: 0;
+  color: #4a4944;
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+.retainer-build {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 0.75rem;
+}
+.retainer-build > div {
+  min-width: 0;
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: #f7f6f1;
+  border: 1px solid rgba(24, 23, 77, 0.08);
+}
+.retainer-build ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.72rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.retainer-build li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #3f3e3a;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+.retainer-build li svg {
+  flex: 0 0 auto;
+  color: #1f7a52;
+}
+.retainer-build p {
+  margin: 0.72rem 0 0;
+  color: #5f5c56;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.retainer-rule {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem;
+  color: #ffffff;
+  background:
+    linear-gradient(145deg, rgba(241, 208, 177, 0.14), rgba(255, 255, 255, 0) 40%),
+    #15142b;
+}
+.retainer-rule h3 {
+  max-width: 17rem;
+  color: #ffffff;
+  font-size: clamp(1.25rem, 2vw, 1.58rem);
+  font-weight: 760;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+.retainer-rule p {
+  margin: 0.75rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.retainer-rule .link-arrow {
+  color: #f7f6f1;
+}
+@media (max-width: 980px) {
+  .retainer-head,
+  .retainer-layout {
+    grid-template-columns: 1fr;
+  }
+  .retainer-picker {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.45rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .retainer-picker::-webkit-scrollbar {
+    display: none;
+  }
+  .retainer-picker button {
+    flex: 0 0 min(72vw, 17rem);
+    scroll-snap-align: start;
+  }
+}
+@media (max-width: 680px) {
+  .retainer-section {
+    padding-inline: 1rem;
+  }
+  .retainer-build {
+    grid-template-columns: 1fr;
+  }
+  .retainer-card h3 {
+    font-size: 1.28rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .retainer-picker button {
+    transition: none;
+  }
+  .retainer-picker button:hover,
+  .retainer-picker button:focus-visible {
+    transform: none;
+  }
+}
+
 /* ---- Proof wrap + Voices (testimonials) ---------------------------------- */
 .proof-wrap {
   padding: clamp(2rem, 4vw, 3.5rem) 1.25rem;
@@ -13584,18 +13792,16 @@ body.personalize-lock {
   .clay-hero-copy.is-animating {
     animation: hero-panel-in 420ms var(--ease-out-soft) both;
   }
-  .clay-hero-copy.is-animating > .hero-label,
   .clay-hero-copy.is-animating > .hero-title .hero-line,
   .clay-hero-copy.is-animating > p,
   .clay-hero-copy.is-animating > .hero-actions {
     opacity: 0;
     animation: hero-rise-in 420ms var(--ease-out-soft) both;
   }
-  .clay-hero-copy.is-animating > .hero-label { animation-delay: 80ms; }
-  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(1) { animation-delay: 150ms; }
-  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(2) { animation-delay: 220ms; }
-  .clay-hero-copy.is-animating > p { animation-delay: 310ms; }
-  .clay-hero-copy.is-animating > .hero-actions { animation-delay: 390ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(1) { animation-delay: 100ms; }
+  .clay-hero-copy.is-animating > .hero-title .hero-line:nth-child(2) { animation-delay: 170ms; }
+  .clay-hero-copy.is-animating > p { animation-delay: 260ms; }
+  .clay-hero-copy.is-animating > .hero-actions { animation-delay: 340ms; }
   .hero-proof.is-animating {
     opacity: 0;
     animation: hero-rise-in 520ms var(--ease-out-soft) 480ms both;
@@ -13885,15 +14091,7 @@ body.personalize-lock {
   border-block: 1px solid rgba(24, 23, 77, 0.07);
 }
 
-.personalize-inline-kicker {
-  display: block;
-  margin-bottom: 0.32rem;
-  color: var(--accent-ink);
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
+.personalize-inline-kicker { display: none; }
 
 .personalize-inline h2 {
   margin: 0;
@@ -13980,4 +14178,26 @@ body.personalize-lock {
   .labor-lead-bridge .button {
     width: 100%;
   }
+}
+
+/* ---- Anti-generic-AI cleanup -------------------------------------------- */
+[class*="kicker"],
+.eyebrow,
+.section-kicker,
+[class*="tag"] {
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.section-kicker,
+.eyebrow,
+.ai-section-kicker,
+.retainer-kicker,
+.personalize-inline-kicker {
+  display: none !important;
+}
+
+[class*="chip"],
+[class*="tag"] {
+  border-radius: 6px !important;
 }
