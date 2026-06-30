@@ -1819,11 +1819,9 @@ function Hero() {
           </h1>
           <p>
             {business
-              ? `We remove the manual work slowing down ${business}. `
-              : "We remove the manual work slowing down your business. "}
-            We turn quoting, intake, follow-up, and job handoffs into practical tools built around how your team
-            already works. AI-assisted development keeps first builds faster, leaner, and often{" "}
-            <em className="ink-accent">up to 70% less</em> than a traditional custom dev quote.
+              ? `We fix one repeated workflow slowing down ${business}.`
+              : "We fix one repeated workflow slowing down your business."}{" "}
+            Faster, custom, and often <em className="ink-accent">up to 70% less</em> than traditional custom dev.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
