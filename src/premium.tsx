@@ -304,7 +304,7 @@ export function StickyStorySection({ id, heading, intro, aside, children }: Stic
 }
 
 /* -------------------------------------------------------------------------- */
-/* CircularCTA: large round branded action object.                            */
+/* CircularCTA: compact branded action object.                                */
 /* -------------------------------------------------------------------------- */
 
 export function CircularCTA({ href = "#cta", label = "Start building", sub = "Book a free consult" }: { href?: string; label?: string; sub?: string }) {

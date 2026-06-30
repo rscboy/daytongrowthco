@@ -12080,63 +12080,69 @@ body.personalize-lock {
 /* ---- CircularCTA --------------------------------------------------------- */
 .circular-cta {
   position: relative;
-  display: inline-flex;
-  flex-direction: column;
+  display: inline-grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  width: 12.5rem;
-  min-height: 10.5rem;
-  border-radius: 26px;
-  padding: 1.25rem;
+  gap: 1rem;
+  width: min(100%, 18rem);
+  min-height: 5.75rem;
+  border-radius: 12px;
+  padding: 1rem 1rem 1rem 1.1rem;
   text-decoration: none;
   color: #fff;
-  background: var(--panel-dark);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 22px 52px rgba(8, 8, 20, 0.24);
+  background:
+    linear-gradient(135deg, rgba(241, 208, 177, 0.12), rgba(255, 255, 255, 0) 48%),
+    #15142b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 28px rgba(8, 8, 20, 0.16);
   transition: transform 260ms var(--ease-out-soft), box-shadow 260ms var(--ease-out-soft);
 }
 .circular-cta-ring {
-  position: absolute;
-  inset: 0.65rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  animation: none;
+  display: none;
 }
 .circular-cta-core {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  border-radius: 16px;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
   color: var(--brand-charcoal);
-  background: #f7f6f1;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  transition: transform 360ms var(--ease-out-soft);
+  background: #f1d0b1;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  transition: transform 260ms var(--ease-out-soft), background 260ms var(--ease-out-soft);
+}
+.circular-cta-core svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 .circular-cta-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  gap: 0.28rem;
+  min-width: 0;
+  text-align: left;
 }
 .circular-cta-text strong {
-  font-size: 1rem;
-  font-weight: 640;
+  font-size: 1.02rem;
+  font-weight: 680;
+  line-height: 1.15;
+  color: #fbfaf6;
 }
 .circular-cta-text span {
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.68);
 }
 .circular-cta:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 28px 64px rgba(8, 8, 20, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(8, 8, 20, 0.2);
 }
 .circular-cta:hover .circular-cta-core {
-  transform: translateY(-3px) rotate(8deg);
+  transform: translateX(2px);
+  background: #f5d9bd;
 }
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
@@ -12348,8 +12354,8 @@ body.personalize-lock {
     gap: 1.1rem;
   }
   .circular-cta {
-    width: 11rem;
-    height: 11rem;
+    width: 100%;
+    min-height: 5.5rem;
   }
 }
 
@@ -12386,7 +12392,7 @@ body.personalize-lock {
   }
 }
 
-/* ---- Sticky story aside (circular CTA) ----------------------------------- */
+/* ---- Sticky story aside CTA ---------------------------------------------- */
 .sticky-story-aside {
   margin-top: 2.5rem;
   display: flex;
