@@ -8453,6 +8453,17 @@
   }
 }
 
+@keyframes mobile-nav-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes scroll-cue-pulse {
   0%,
   100% {
@@ -9635,6 +9646,11 @@
     background: rgba(236, 233, 225, 0.992);
     border-bottom: 1px solid rgba(24, 32, 24, 0.11);
     box-shadow: 0 20px 40px rgba(24, 32, 24, 0.1);
+    transform-origin: top center;
+    /* Animation fires each time the panel flips from display:none to block
+       (i.e. when the [hidden] attribute is removed on open). Reduced-motion
+       is handled in the global animation: none block below. */
+    animation: mobile-nav-in var(--motion-quick) var(--ease-emil-out) both;
   }
 
   .mobile-nav-panel nav {
@@ -10652,6 +10668,7 @@
   .splash-wordmark,
   .splash-wordmark::after,
   .hero-entrance,
+  .mobile-nav-panel,
   [data-reveal],
   .scroll-word,
   .portal-status > span::before {
