@@ -54,6 +54,8 @@
   :root {
     /* Brand serif for hero + major editorial moments. */
     --font-serif: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+    /* Monospace for dashboards, terminal-style UI, code, and tabular data. */
+    --font-mono: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
     /* DaytonGrowthCo. brand palette */
     --brand-indigo: #18174d;
     --brand-indigo-hover: #262587;
@@ -1472,7 +1474,7 @@
 
   .record-row strong {
     color: #252522;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 650;
     text-align: right;
@@ -1733,7 +1735,7 @@
     border-radius: 8px;
     color: #1f211f;
     background: var(--brand-peach);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 800;
   }
@@ -1849,7 +1851,7 @@
 
   .score-orb span {
     max-width: 100%;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 750;
     line-height: 1;
@@ -2116,7 +2118,7 @@
   }
 
   .mini-metric-strip strong {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 1rem;
     font-weight: 800;
   }
@@ -2234,7 +2236,7 @@
 
   .display-card small {
     color: #8a857d;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 720;
     white-space: nowrap;
@@ -2737,7 +2739,7 @@
 
   .business-journey-number {
     color: #8a857d;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.64rem;
     font-weight: 760;
     letter-spacing: 0.12em;
@@ -3595,7 +3597,7 @@
   .step-count {
     margin-top: 1.2rem;
     color: #a6a199;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 650;
   }
@@ -4543,7 +4545,7 @@
 
   .build-card-index {
     color: #908b84;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -4680,7 +4682,7 @@
   .intake-list li::before {
     color: rgba(216, 232, 248, 0.62);
     content: "0" counter(intake-step);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 680;
     letter-spacing: 0.06em;
@@ -5928,7 +5930,7 @@
   .metric-card strong {
     display: block;
     color: #1f211f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     font-weight: 760;
     line-height: 1;
@@ -6103,7 +6105,7 @@
     border-radius: 8px;
     color: #dbeafe;
     background: rgba(24, 23, 77, 0.1);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 760;
   }
@@ -7052,7 +7054,7 @@
     padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.12);
     color: #6a6781;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 760;
     letter-spacing: 0.15em;
@@ -7282,7 +7284,7 @@
   .service-detail-grid article > span,
   .engagement-process li span {
     color: #817c74;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 760;
     letter-spacing: 0.08em;
@@ -7602,7 +7604,7 @@
     border-radius: 999px;
     color: #1a1a1a;
     background: var(--brand-peach);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.6rem;
     font-style: normal;
     font-weight: 760;
@@ -7744,7 +7746,7 @@
   .engagement-process li span {
     flex: 0 0 auto;
     color: var(--brand-indigo);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 780;
     letter-spacing: 0.08em;
@@ -10148,7 +10150,7 @@
 
   .feature-index {
     color: #98938c;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 650;
     letter-spacing: 0.06em;
@@ -10387,7 +10389,7 @@
   .featured-build > span,
   .supporting-builds > article > span {
     color: #8b867f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.64rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -11369,7 +11371,7 @@ body.personalize-lock {
   border-bottom: 1px solid #efede7;
   background: #faf9f6;
   color: #6a665f;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
 }
 
@@ -11397,7 +11399,7 @@ body.personalize-lock {
 
 .sconf-messy {
   color: #b04a3a;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.86rem;
 }
 
@@ -12718,7 +12720,7 @@ body.personalize-lock {
 .workflow-sim-doc {
   width: fit-content;
   color: rgba(24, 23, 77, 0.58);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 760;
 }
