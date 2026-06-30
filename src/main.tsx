@@ -708,13 +708,13 @@ function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
-      <Link className="site-offer-banner" href="/systems-that-pay/">
+      <Link className="site-offer-banner" href="/systems-that-pay/" aria-label="View the free homepage concept offer">
         <span className="site-offer-copy">
-          <strong>Free homepage concept available.</strong>
-          <span>A secondary offer for teams considering a website refresh</span>
+          <strong>Website refresh?</strong>
+          <span>View the free homepage concept option</span>
         </span>
         <span className="site-offer-action">
-          View option
+          View
           <ArrowRight size={14} aria-hidden="true" />
         </span>
       </Link>
@@ -4140,11 +4140,33 @@ function ProofAndVoices() {
 }
 
 function BuiltForStrip() {
+  const proofClients = orbitClients.slice(0, 4);
   return (
-    <TrustStrip
-      label="Built for"
-      marks={["Contractors", "Service companies", "Professional offices", "Owner-operated teams", "Local trades"]}
-    />
+    <section className="above-fold-proof" aria-labelledby="above-fold-proof-title">
+      <div className="above-fold-proof-inner">
+        <div className="above-fold-proof-copy">
+          <span>Proof from real teams</span>
+          <h2 id="above-fold-proof-title">Sites, systems, and workflow support for companies already doing the work.</h2>
+        </div>
+        <ul className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
+          {proofClients.map((client) => (
+            <li key={client.name}>
+              <span className="above-fold-proof-logo" aria-hidden="true">
+                {client.logo ? <img src={client.logo} alt="" loading="lazy" /> : client.initials}
+              </span>
+              <span>
+                <strong>{client.name}</strong>
+                <em>{client.work}</em>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <TrustStrip
+          label="Built for"
+          marks={["Contractors", "Service companies", "Professional offices", "Owner-operated teams", "Local trades"]}
+        />
+      </div>
+    </section>
   );
 }
 
@@ -4224,12 +4246,12 @@ function Homepage() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <BuiltForStrip />
-        <PersonalizeInvite />
         <ProcessMap />
         <ServicesSticky />
         <BusinessJourney />
         <WebsiteTransformation />
         <EconomicCase />
+        <PersonalizeInvite />
         <LaborCostCalculator sectionId="workflow" />
         <ProofAndVoices />
         <WhoItsFor />
