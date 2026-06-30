@@ -387,6 +387,7 @@ type VisitorProfile = {
 
 const PROFILE_STORAGE_KEY = "dgc:visitor-profile";
 const INVITE_DISMISSED_KEY = "dgc:personalize-dismissed";
+const WORKFLOW_CHOICE_KEY = "dgc:workflow-choice";
 
 function readStoredProfile(): VisitorProfile | null {
   if (typeof window === "undefined") return null;
@@ -400,6 +401,15 @@ function readStoredProfile(): VisitorProfile | null {
     return { name, business, teamSize: typeof parsed.teamSize === "string" ? parsed.teamSize : "" };
   } catch {
     return null;
+  }
+}
+
+function readStoredWorkflowChoice() {
+  if (typeof window === "undefined") return "";
+  try {
+    return window.localStorage.getItem(WORKFLOW_CHOICE_KEY) ?? "";
+  } catch {
+    return "";
   }
 }
 
@@ -432,13 +442,17 @@ function businessToDomain(business: string) {
 
 type PersonalizationValue = {
   profile: VisitorProfile | null;
+  workflowChoice: string;
   save: (profile: VisitorProfile) => void;
+  chooseWorkflow: (workflowId: string) => void;
   clear: () => void;
 };
 
 const PersonalizationContext = React.createContext<PersonalizationValue>({
   profile: null,
+  workflowChoice: "",
   save: () => {},
+  chooseWorkflow: () => {},
   clear: () => {},
 });
 
@@ -448,6 +462,7 @@ function usePersonalization() {
 
 function PersonalizationProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<VisitorProfile | null>(() => readStoredProfile());
+  const [workflowChoice, setWorkflowChoice] = useState(() => readStoredWorkflowChoice());
 
   const save = useCallback((next: VisitorProfile) => {
     setProfile(next);
@@ -460,15 +475,29 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
 
   const clear = useCallback(() => {
     setProfile(null);
+    setWorkflowChoice("");
     try {
       window.localStorage.removeItem(PROFILE_STORAGE_KEY);
       window.localStorage.removeItem(INVITE_DISMISSED_KEY);
+      window.localStorage.removeItem(WORKFLOW_CHOICE_KEY);
     } catch {
       /* ignore */
     }
   }, []);
 
-  const value = useMemo(() => ({ profile, save, clear }), [profile, save, clear]);
+  const chooseWorkflow = useCallback((workflowId: string) => {
+    setWorkflowChoice(workflowId);
+    try {
+      window.localStorage.setItem(WORKFLOW_CHOICE_KEY, workflowId);
+    } catch {
+      /* Storage unavailable; the selection still lives for this page view. */
+    }
+  }, []);
+
+  const value = useMemo(
+    () => ({ profile, workflowChoice, save, chooseWorkflow, clear }),
+    [profile, workflowChoice, save, chooseWorkflow, clear],
+  );
   return <PersonalizationContext.Provider value={value}>{children}</PersonalizationContext.Provider>;
 }
 
@@ -659,6 +688,188 @@ function PersonalizeInvite() {
         </div>
       ) : null}
     </>
+  );
+}
+
+const workflowSimulationOptions = [
+  {
+    id: "quotes",
+    label: "Building quotes",
+    short: "Price work without rebuilding the same document.",
+    icon: Calculator,
+    before: ["Call notes", "Photos in texts", "Price sheet", "Old PDF", "Manual follow-up"],
+    after: ["Intake record", "Pricing rules", "Draft proposal", "Approval", "Auto follow-up"],
+    build: "Guided quote builder",
+    need: "Two recent quotes, the price sheet, and the rules your team already trusts.",
+    notYet: "A giant estimating platform with 47 tabs. Nobody asked for a new hobby.",
+  },
+  {
+    id: "calls",
+    label: "Answering calls",
+    short: "Capture the details before the lead cools off.",
+    icon: PhoneCall,
+    before: ["Missed call", "Voicemail", "Callback", "Loose notes", "Maybe booked"],
+    after: ["AI pickup", "Job questions", "Clean summary", "Route owner", "Book or escalate"],
+    build: "AI phone intake agent",
+    need: "Common questions, service area, booking rules, and what should always go to a human.",
+    notYet: "A robot pretending to be your entire front office. Deeply unnecessary.",
+  },
+  {
+    id: "schedule",
+    label: "Scheduling work",
+    short: "Stop coordinating jobs from a text thread.",
+    icon: Calendar,
+    before: ["What time works?", "Three texts", "Crew check", "Calendar edit", "Reminder by memory"],
+    after: ["Job type", "Location", "Availability", "Booked slot", "Reminders sent"],
+    build: "Scheduling flow",
+    need: "Crew availability, job types, service area, and the rules for urgent work.",
+    notYet: "A dispatch center for a business that needs a clean calendar first.",
+  },
+  {
+    id: "updates",
+    label: "Updating customers",
+    short: "Give people a place to check before they ask again.",
+    icon: MessageSquare,
+    before: ["Any update?", "Find job", "Find photo", "Type reply", "Repeat tomorrow"],
+    after: ["Status logged", "Photo attached", "Customer note", "Approval request", "Next step visible"],
+    build: "Customer update portal",
+    need: "Typical statuses, approval moments, photo examples, and who should receive updates.",
+    notYet: "A full customer app they have to download. That is how good ideas go to a quiet place.",
+  },
+  {
+    id: "files",
+    label: "Finding files",
+    short: "Make the company memory searchable.",
+    icon: Search,
+    before: ["Drive folder", "Old email", "Ask the owner", "Wrong version", "Start over"],
+    after: ["Tagged file", "Search question", "Suggested answer", "Source shown", "Next action"],
+    build: "Internal knowledge base",
+    need: "SOPs, folders, sample jobs, and the questions people keep asking twice.",
+    notYet: "A knowledge system nobody maintains. We have all suffered enough.",
+  },
+  {
+    id: "followup",
+    label: "Following up",
+    short: "Keep the lead warm without remembering every loose end.",
+    icon: Send,
+    before: ["Quote sent", "Mental note", "Busy day", "Lead goes quiet", "No one knows"],
+    after: ["Quote sent", "Follow-up timer", "Owner assigned", "Reply captured", "Next step logged"],
+    build: "Follow-up tracker",
+    need: "Quote stages, follow-up timing, message tone, and when a human should step in.",
+    notYet: "A sales machine that emails people into witness protection.",
+  },
+];
+
+function WorkflowSimulation() {
+  const { profile, workflowChoice, chooseWorkflow } = usePersonalization();
+  const firstName = firstNameOf(profile?.name ?? "");
+  const business = profile?.business?.trim() || "your business";
+  const teamSize = profile?.teamSize || "your team";
+  const defaultId = workflowChoice || "quotes";
+  const [activeId, setActiveId] = useState(defaultId);
+  const active = workflowSimulationOptions.find((option) => option.id === activeId) ?? workflowSimulationOptions[0];
+  const ActiveIcon = active.icon;
+  const briefLine = `${business}: ${active.build} for ${active.label.toLowerCase()}`;
+
+  useEffect(() => {
+    chooseWorkflow(activeId);
+  }, [activeId, chooseWorkflow]);
+
+  return (
+    <section className="workflow-sim" id="workflow-sim" aria-labelledby="workflow-sim-title">
+      <div className="workflow-sim-inner">
+        <div className="workflow-sim-head">
+          <div>
+            <h2 id="workflow-sim-title" data-scroll-words>
+              Pick the workflow that is annoying this week.
+            </h2>
+            <p>
+              {firstName ? `${firstName}, ` : ""}choose one part of {business} and the page sketches the first sane
+              version of the system. Three questions in. No pretending we know the whole company yet.
+            </p>
+          </div>
+          <a className="workflow-sim-link" href="#cta">
+            Send this brief
+            <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </div>
+
+        <div className="workflow-sim-shell">
+          <div className="workflow-sim-picker" role="tablist" aria-label="Choose a workflow to simulate">
+            {workflowSimulationOptions.map((option) => {
+              const Icon = option.icon;
+              const selected = active.id === option.id;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  className={selected ? "is-active" : ""}
+                  key={option.id}
+                  onClick={() => setActiveId(option.id)}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  <span>
+                    <strong>{option.label}</strong>
+                    <em>{option.short}</em>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="workflow-sim-board" role="tabpanel" aria-live="polite">
+            <div className="workflow-sim-brief">
+              <span className="workflow-sim-doc">DGC / draft brief</span>
+              <h3>{briefLine}</h3>
+              <p>
+                First pass for a {teamSize} setup. Useful enough to discuss. Not a prophecy, which is probably healthy.
+              </p>
+            </div>
+
+            <div className="workflow-lanes">
+              <div className="workflow-lane workflow-lane-before">
+                <span>Current way</span>
+                <ol>
+                  {active.before.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+              <div className="workflow-lane workflow-lane-after">
+                <span>Cleaner version</span>
+                <ol>
+                  {active.after.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            <div className="workflow-system-card">
+              <span className="workflow-system-icon" aria-hidden="true">
+                <ActiveIcon size={22} strokeWidth={1.8} />
+              </span>
+              <div>
+                <span>Suggested first build</span>
+                <strong>{active.build}</strong>
+              </div>
+            </div>
+
+            <div className="workflow-sim-notes">
+              <div>
+                <span>Bring us</span>
+                <p>{active.need}</p>
+              </div>
+              <div>
+                <span>Not yet</span>
+                <p>{active.notYet}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -2285,7 +2496,9 @@ function extractEmailDomain(value: string): string | null {
 }
 
 function ProjectForm() {
-  const { profile } = usePersonalization();
+  const { profile, workflowChoice } = usePersonalization();
+  const selectedWorkflow =
+    workflowSimulationOptions.find((option) => option.id === workflowChoice) ?? workflowSimulationOptions[0];
 
   // Seed the visible fields from the saved profile, but never overwrite what the
   // visitor types: once a field has been edited by hand it stops syncing.
@@ -2312,8 +2525,8 @@ function ProjectForm() {
   }, [profile]);
 
   const detailsPlaceholder = business.trim()
-    ? `At ${business.trim()}, we receive X, our team does Y, and we need Z automated.`
-    : "We receive X, our team does Y, and we need Z automated.";
+    ? `At ${business.trim()}, ${selectedWorkflow.label.toLowerCase()} is the workflow we want to fix. Right now we do X, Y, and Z by hand.`
+    : `${selectedWorkflow.label} is the workflow we want to fix. Right now we do X, Y, and Z by hand.`;
 
   return (
     <div className="form-card">
@@ -2321,6 +2534,8 @@ function ProjectForm() {
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
         <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
+        <input type="hidden" name="selectedWorkflow" value={selectedWorkflow.label} readOnly />
+        <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow.build} readOnly />
 
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
@@ -4316,6 +4531,8 @@ function Homepage() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <BuiltForStrip />
+        <PersonalizeInvite />
+        <WorkflowSimulation />
         <OldStackUpgrade />
         <ServicesSticky />
         <ProcessSteps />

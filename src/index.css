@@ -12540,6 +12540,338 @@ body.personalize-lock {
   }
 }
 
+/* ---- WorkflowSimulation -------------------------------------------------- */
+.workflow-sim {
+  padding: clamp(3.75rem, 7vw, 7rem) 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(251, 251, 249, 0) 0%, rgba(221, 233, 252, 0.28) 50%, rgba(251, 251, 249, 0) 100%);
+}
+.workflow-sim-inner {
+  max-width: 78rem;
+  margin: 0 auto;
+}
+.workflow-sim-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.4rem, 3vw, 2.5rem);
+  align-items: end;
+  margin-bottom: clamp(1.6rem, 3.5vw, 2.6rem);
+}
+.workflow-sim-head h2 {
+  max-width: 48rem;
+  color: var(--brand-charcoal);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
+}
+.workflow-sim-head p {
+  max-width: 46rem;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 1.03rem;
+  line-height: 1.62;
+}
+.workflow-sim-link {
+  min-height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 10px;
+  padding: 0.82rem 1rem;
+  color: #ffffff;
+  background: var(--brand-indigo);
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 12px 28px rgba(24, 23, 77, 0.18);
+  transition:
+    transform 220ms var(--ease-out-soft),
+    box-shadow 220ms var(--ease-out-soft),
+    background 220ms ease;
+}
+.workflow-sim-link:hover {
+  transform: translateY(-2px);
+  background: #242168;
+  box-shadow: 0 16px 34px rgba(24, 23, 77, 0.22);
+}
+.workflow-sim-link svg {
+  transition: transform 220ms var(--ease-out-soft);
+}
+.workflow-sim-link:hover svg {
+  transform: translateX(3px);
+}
+.workflow-sim-shell {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.72fr) minmax(0, 1.28fr);
+  gap: 1rem;
+  border: 1px solid rgba(24, 23, 77, 0.12);
+  border-radius: 18px;
+  padding: clamp(0.8rem, 1.5vw, 1rem);
+  background:
+    linear-gradient(145deg, rgba(241, 208, 177, 0.08), rgba(255, 255, 255, 0) 38%),
+    #15142b;
+  box-shadow: 0 24px 70px rgba(8, 8, 20, 0.2);
+}
+.workflow-sim-picker {
+  display: grid;
+  gap: 0.55rem;
+}
+.workflow-sim-picker button {
+  min-height: 4.55rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.045);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 200ms var(--ease-out-soft),
+    border-color 200ms ease,
+    background 200ms ease,
+    color 200ms ease;
+}
+.workflow-sim-picker button:hover,
+.workflow-sim-picker button:focus-visible,
+.workflow-sim-picker button.is-active {
+  color: #ffffff;
+  border-color: rgba(241, 208, 177, 0.48);
+  background: rgba(241, 208, 177, 0.12);
+  outline: none;
+}
+.workflow-sim-picker button:hover,
+.workflow-sim-picker button:focus-visible {
+  transform: translateX(3px);
+}
+.workflow-sim-picker button svg {
+  color: #f1d0b1;
+  flex: 0 0 auto;
+}
+.workflow-sim-picker strong,
+.workflow-sim-picker em {
+  display: block;
+  min-width: 0;
+}
+.workflow-sim-picker strong {
+  font-size: 0.92rem;
+  font-weight: 720;
+  line-height: 1.12;
+}
+.workflow-sim-picker em {
+  margin-top: 0.16rem;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.76rem;
+  font-style: normal;
+  line-height: 1.28;
+}
+.workflow-sim-board {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  border-radius: 14px;
+  padding: clamp(1rem, 2.2vw, 1.45rem);
+  background: #fffdfa;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+.workflow-sim-brief {
+  display: grid;
+  gap: 0.5rem;
+}
+.workflow-sim-doc {
+  width: fit-content;
+  color: rgba(24, 23, 77, 0.58);
+  font-family: "Hanken Grotesk Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 760;
+}
+.workflow-sim-brief h3 {
+  color: var(--brand-charcoal);
+  font-size: clamp(1.24rem, 2.2vw, 1.95rem);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+.workflow-sim-brief p {
+  max-width: 41rem;
+  color: #5f5c56;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.workflow-lanes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.workflow-lane {
+  border-radius: 12px;
+  padding: 0.85rem;
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  background: #ffffff;
+}
+.workflow-lane > span {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: rgba(24, 23, 77, 0.58);
+  font-size: 0.74rem;
+  font-weight: 760;
+}
+.workflow-lane ol {
+  display: grid;
+  gap: 0.42rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.workflow-lane li {
+  position: relative;
+  min-height: 2.15rem;
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  padding: 0.48rem 0.62rem 0.48rem 1.8rem;
+  color: #3b3b37;
+  background: #f7f6f1;
+  font-size: 0.82rem;
+  line-height: 1.22;
+}
+.workflow-lane li::before {
+  content: "";
+  position: absolute;
+  left: 0.66rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: rgba(24, 23, 77, 0.28);
+}
+.workflow-lane-after {
+  border-color: rgba(31, 122, 82, 0.18);
+  background: rgba(241, 250, 245, 0.8);
+}
+.workflow-lane-after li {
+  background: #ffffff;
+}
+.workflow-lane-after li::before {
+  background: #1f7a52;
+}
+.workflow-system-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.78rem;
+  align-items: center;
+  border-radius: 12px;
+  padding: 0.9rem;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(241, 208, 177, 0.16), rgba(255, 255, 255, 0) 42%),
+    #18174d;
+}
+.workflow-system-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 10px;
+  color: var(--brand-charcoal);
+  background: #f1d0b1;
+}
+.workflow-system-card span {
+  display: block;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.76rem;
+  font-weight: 660;
+}
+.workflow-system-card strong {
+  display: block;
+  margin-top: 0.12rem;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 760;
+}
+.workflow-sim-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.workflow-sim-notes div {
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: #ffffff;
+}
+.workflow-sim-notes span {
+  display: block;
+  color: var(--accent-ink);
+  font-size: 0.76rem;
+  font-weight: 760;
+}
+.workflow-sim-notes p {
+  margin-top: 0.34rem;
+  color: #5f5c56;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+@media (max-width: 960px) {
+  .workflow-sim-head,
+  .workflow-sim-shell {
+    grid-template-columns: 1fr;
+  }
+  .workflow-sim-link {
+    width: fit-content;
+  }
+  .workflow-sim-picker {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.45rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .workflow-sim-picker::-webkit-scrollbar {
+    display: none;
+  }
+  .workflow-sim-picker button {
+    flex: 0 0 min(78vw, 20rem);
+    scroll-snap-align: start;
+  }
+}
+@media (max-width: 680px) {
+  .workflow-sim {
+    padding-inline: 1rem;
+  }
+  .workflow-sim-link {
+    width: 100%;
+  }
+  .workflow-lanes,
+  .workflow-sim-notes {
+    grid-template-columns: 1fr;
+  }
+  .workflow-sim-shell {
+    border-radius: 16px;
+    padding: 0.7rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workflow-sim-link,
+  .workflow-sim-link svg,
+  .workflow-sim-picker button {
+    transition: none;
+  }
+  .workflow-sim-link:hover,
+  .workflow-sim-link:hover svg,
+  .workflow-sim-picker button:hover,
+  .workflow-sim-picker button:focus-visible {
+    transform: none;
+  }
+}
+
 /* ---- OldStackUpgrade ----------------------------------------------------- */
 .old-stack {
   padding: clamp(3.5rem, 7vw, 6.5rem) 1.25rem;
