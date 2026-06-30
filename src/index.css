@@ -13244,23 +13244,23 @@ body.personalize-lock {
 }
 
 .site-offer-banner {
-  min-height: 1.85rem;
-  gap: 0.5rem;
-  padding-block: 0.24rem;
+  min-height: 2.25rem;
+  gap: 0.9rem;
+  padding-block: 0.38rem;
   background:
-    linear-gradient(90deg, rgba(221, 233, 252, 0.44), rgba(241, 208, 177, 0.16)),
-    #f7f6f1;
-  color: #393b37;
-  border-bottom: 1px solid rgba(24, 23, 77, 0.08);
+    linear-gradient(90deg, rgba(241, 208, 177, 0.12), transparent 25%),
+    #18174d;
+  color: #ffffff;
+  border-bottom: 0;
 }
 
 .site-offer-copy > span {
-  color: rgba(31, 33, 31, 0.58);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .site-offer-action {
-  color: var(--brand-accent);
-  font-size: 0.66rem;
+  color: #f1d0b1;
+  font-size: inherit;
 }
 
 .above-fold-proof {

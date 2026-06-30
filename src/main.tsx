@@ -708,13 +708,13 @@ function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
-      <Link className="site-offer-banner" href="/systems-that-pay/" aria-label="View the free homepage concept offer">
+      <Link className="site-offer-banner" href="/systems-that-pay/">
         <span className="site-offer-copy">
-          <strong>Website refresh?</strong>
-          <span>View the free homepage concept option</span>
+          <strong>Free homepage redesign available.</strong>
+          <span>Custom concept · No obligation</span>
         </span>
         <span className="site-offer-action">
-          View
+          Claim free redesign
           <ArrowRight size={14} aria-hidden="true" />
         </span>
       </Link>
