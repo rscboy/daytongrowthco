@@ -1,3 +1,4 @@
+@import "@fontsource-variable/hanken-grotesk";
 @import "@fontsource-variable/fraunces";
 @import "@fontsource/instrument-serif/400.css";
 @import "@fontsource/instrument-serif/400-italic.css";
@@ -9,7 +10,7 @@
   :root {
     --background: #fbfbf9;
     --foreground: #1a1a1a;
-    --font-sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+    --font-sans: "Hanken Grotesk Variable", sans-serif;
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
@@ -1934,8 +1935,7 @@
   }
 
   .site-offer-copy strong {
-    font-weight: 600;
-    letter-spacing: 0;
+    font-weight: 720;
   }
 
   .site-offer-copy > span {
@@ -13950,81 +13950,15 @@ body.personalize-lock {
     #18174d;
   color: #ffffff;
   border-bottom: 0;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.site-offer-label {
-  display: inline-flex;
-}
-
-.site-offer-copy {
-  display: flex;
-  flex: 0 1 auto;
-  align-items: baseline;
-  gap: 0.55rem;
-  min-width: 0;
-  overflow: visible;
-  white-space: normal;
-  text-overflow: clip;
 }
 
 .site-offer-copy > span {
-  display: inline;
   color: rgba(255, 255, 255, 0.58);
 }
 
-.site-offer-copy strong {
-  font-weight: 600;
-  letter-spacing: 0;
-}
-
 .site-offer-action {
-  min-height: auto;
-  border-left: 0;
-  padding-left: 0;
   color: #f1d0b1;
   font-size: inherit;
-  font-weight: 640;
-  letter-spacing: 0;
-}
-
-.site-offer-action::before {
-  content: none;
-}
-
-@media (max-width: 640px) {
-  .site-offer-banner {
-    min-height: 2.5rem;
-    gap: 0.42rem 0.65rem;
-    padding: 0.48rem 0.75rem;
-  }
-
-  .site-offer-label {
-    display: inline-flex;
-    font-size: 0.52rem;
-  }
-
-  .site-offer-copy {
-    flex: 0 1 auto;
-  }
-
-  .site-offer-copy strong {
-    font-size: 0.64rem;
-    font-weight: 600;
-    letter-spacing: 0;
-  }
-
-  .site-offer-copy > span {
-    display: inline;
-    font-size: 0.6rem;
-  }
-
-  .site-offer-action {
-    min-height: auto;
-    padding-left: 0;
-    font-size: 0.66rem;
-  }
 }
 
 .above-fold-proof {
