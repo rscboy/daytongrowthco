@@ -27,6 +27,9 @@ body:has(.systems-that-pay-page) {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
+.systems-that-pay-page {
+  padding-top: calc(64px + 2.25rem);
+}
 a { color: inherit; }
 button, input { font: inherit; }
 
@@ -152,11 +155,11 @@ button, input { font: inherit; }
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   gap: clamp(2.5rem, 6vw, 5rem);
-  align-items: center;
+  align-items: start;
   width: 100%;
   min-height: min(760px, calc(100vh - 64px));
   margin: 0;
-  padding: clamp(3rem, 7vw, 5.5rem) max(20px, calc((100vw - 1180px) / 2)) clamp(3.5rem, 8vw, 6rem);
+  padding: clamp(2rem, 4.8vw, 4rem) max(20px, calc((100vw - 1180px) / 2)) clamp(3rem, 6.5vw, 5rem);
   overflow: hidden;
   color: #fff;
   background: #05070c;
@@ -199,15 +202,15 @@ button, input { font: inherit; }
 }
 .lp-lede {
   max-width: 38rem;
-  margin: 1.3rem 0 0;
+  margin: clamp(1rem, 2vw, 1.3rem) 0 0;
   color: rgba(255, 255, 255, 0.84);
   font-size: clamp(1rem, 1.3vw, 1.12rem);
   line-height: 1.65;
 }
 .lp-checklist {
   display: grid;
-  gap: 0.6rem;
-  margin: 1.5rem 0 0;
+  gap: clamp(0.48rem, 1vw, 0.6rem);
+  margin: clamp(1.1rem, 2.4vw, 1.5rem) 0 0;
   padding: 0;
   list-style: none;
   font-size: 0.88rem;
@@ -218,7 +221,7 @@ button, input { font: inherit; }
 .lp-checklist li svg { flex: 0 0 auto; color: var(--peach); }
 .lp-fineprint {
   max-width: 34rem;
-  margin: 1.3rem 0 0;
+  margin: clamp(1rem, 2vw, 1.3rem) 0 0;
   color: rgba(255, 255, 255, 0.64);
   font-size: 0.72rem;
   line-height: 1.5;
@@ -226,22 +229,23 @@ button, input { font: inherit; }
 
 /* ---------- Form card ---------- */
 .lp-card {
+  align-self: start;
   border: 1px solid rgba(237, 231, 222, 0.72);
   border-radius: 14px;
-  padding: clamp(1.4rem, 2.4vw, 2rem);
+  padding: clamp(1.15rem, 1.8vw, 1.55rem);
   color: #18171f;
   background: rgba(237, 231, 222, 0.94);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-.lp-card form { display: grid; gap: 0.85rem; }
+.lp-card form { display: grid; gap: 0.66rem; }
 .lp-card-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 1rem;
-  padding-bottom: 0.9rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid rgba(24, 23, 77, 0.14);
 }
 .lp-card-head span {
@@ -253,18 +257,18 @@ button, input { font: inherit; }
 }
 .lp-card-head strong {
   font-family: var(--serif);
-  font-size: 1.3rem;
+  font-size: clamp(1.12rem, 1.65vw, 1.3rem);
   font-weight: 580;
   letter-spacing: -0.03em;
   color: #18171f;
 }
-.lp-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.lp-card label { display: grid; gap: 0.35rem; }
+.lp-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+.lp-card label { display: grid; gap: 0.28rem; }
 .lp-card label > span { color: #2f2c29; font-size: 0.72rem; font-weight: 620; }
 .lp-card label > small { margin-top: -0.1rem; color: #6e665c; font-size: 0.66rem; }
 .lp-card input {
   width: 100%;
-  min-height: 2.85rem;
+  min-height: 2.5rem;
   padding: 0 0.8rem;
   border: 1px solid rgba(24, 23, 77, 0.16);
   border-radius: 8px;
@@ -281,7 +285,7 @@ button, input { font: inherit; }
 .lp-card button {
   display: inline-flex;
   width: 100%;
-  min-height: 3rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
