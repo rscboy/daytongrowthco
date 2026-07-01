@@ -1,7 +1,5 @@
 @import "@fontsource-variable/hanken-grotesk";
 @import "@fontsource-variable/fraunces";
-@import "@fontsource/instrument-serif/400.css";
-@import "@fontsource/instrument-serif/400-italic.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -54,6 +52,8 @@
   :root {
     /* Brand serif for hero + major editorial moments. */
     --font-serif: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+    /* Monospace for dashboards, terminal-style UI, code, and tabular data. */
+    --font-mono: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
     /* DaytonGrowthCo. brand palette */
     --brand-indigo: #18174d;
     --brand-indigo-hover: #262587;
@@ -1472,7 +1472,7 @@
 
   .record-row strong {
     color: #252522;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 650;
     text-align: right;
@@ -1733,7 +1733,7 @@
     border-radius: 8px;
     color: #1f211f;
     background: var(--brand-peach);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 800;
   }
@@ -1849,7 +1849,7 @@
 
   .score-orb span {
     max-width: 100%;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 750;
     line-height: 1;
@@ -2116,7 +2116,7 @@
   }
 
   .mini-metric-strip strong {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 1rem;
     font-weight: 800;
   }
@@ -2234,7 +2234,7 @@
 
   .display-card small {
     color: #8a857d;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 720;
     white-space: nowrap;
@@ -2737,7 +2737,7 @@
 
   .business-journey-number {
     color: #8a857d;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.64rem;
     font-weight: 760;
     letter-spacing: 0.12em;
@@ -3595,7 +3595,7 @@
   .step-count {
     margin-top: 1.2rem;
     color: #a6a199;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 650;
   }
@@ -4543,7 +4543,7 @@
 
   .build-card-index {
     color: #908b84;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -4680,7 +4680,7 @@
   .intake-list li::before {
     color: rgba(216, 232, 248, 0.62);
     content: "0" counter(intake-step);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 680;
     letter-spacing: 0.06em;
@@ -5928,7 +5928,7 @@
   .metric-card strong {
     display: block;
     color: #1f211f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     font-weight: 760;
     line-height: 1;
@@ -6103,7 +6103,7 @@
     border-radius: 8px;
     color: #dbeafe;
     background: rgba(24, 23, 77, 0.1);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 760;
   }
@@ -7052,7 +7052,7 @@
     padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.6rem);
     border-bottom: 1px solid rgba(24, 23, 77, 0.12);
     color: #6a6781;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 760;
     letter-spacing: 0.15em;
@@ -7282,7 +7282,7 @@
   .service-detail-grid article > span,
   .engagement-process li span {
     color: #817c74;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 760;
     letter-spacing: 0.08em;
@@ -7602,7 +7602,7 @@
     border-radius: 999px;
     color: #1a1a1a;
     background: var(--brand-peach);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.6rem;
     font-style: normal;
     font-weight: 760;
@@ -7744,7 +7744,7 @@
   .engagement-process li span {
     flex: 0 0 auto;
     color: var(--brand-indigo);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     font-weight: 780;
     letter-spacing: 0.08em;
@@ -8283,11 +8283,11 @@
     position: relative;
     display: inline-flex;
     align-items: baseline;
-    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-family: var(--font-serif);
     color: #ffffff;
     font-size: clamp(2.05rem, 6.8vw, 2.7rem);
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 520;
+    letter-spacing: -0.025em;
     line-height: 1;
     white-space: nowrap;
     opacity: 0;
@@ -10148,7 +10148,7 @@
 
   .feature-index {
     color: #98938c;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 650;
     letter-spacing: 0.06em;
@@ -10387,7 +10387,7 @@
   .featured-build > span,
   .supporting-builds > article > span {
     color: #8b867f;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.64rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -11369,7 +11369,7 @@ body.personalize-lock {
   border-bottom: 1px solid #efede7;
   background: #faf9f6;
   color: #6a665f;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
 }
 
@@ -11397,7 +11397,7 @@ body.personalize-lock {
 
 .sconf-messy {
   color: #b04a3a;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.86rem;
 }
 
@@ -12182,7 +12182,7 @@ body.personalize-lock {
   overflow: hidden;
   margin: 0 auto;
   max-width: 84rem;
-  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(3.4rem, 6.5vw, 5.8rem) clamp(1.6rem, 5.8vw, 5rem);
   border-radius: var(--radius-panel);
   background: var(--panel-dark);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -12191,29 +12191,50 @@ body.personalize-lock {
 .proof-band-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  padding-bottom: 2.25rem;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  padding-bottom: clamp(2.6rem, 4.5vw, 3.8rem);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 .proof-band-stat {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.72rem;
+  min-width: 0;
+}
+.proof-band-stat + .proof-band-stat::before {
+  content: "";
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0.2rem;
+  left: calc(clamp(1.75rem, 4vw, 3.5rem) / -2);
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.14) 22%,
+    rgba(255, 255, 255, 0.08) 76%,
+    rgba(255, 255, 255, 0)
+  );
 }
 .proof-band-value {
-  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-size: clamp(2.55rem, 4.45vw, 3.85rem);
   font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
   color: #ffffff;
+  text-wrap: balance;
 }
 .proof-band-label {
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: rgba(233, 233, 247, 0.66);
+  max-width: 19rem;
+  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  font-weight: 520;
+  letter-spacing: 0.015em;
+  line-height: 1.45;
+  color: rgba(233, 233, 247, 0.72);
 }
 .proof-band-quote {
-  margin: 2.25rem 0 0;
+  margin: clamp(2.6rem, 4.5vw, 3.7rem) 0 0;
   font-size: clamp(1.25rem, 2.6vw, 1.9rem);
   font-weight: 480;
   line-height: 1.4;
@@ -12367,6 +12388,20 @@ body.personalize-lock {
   .proof-band-grid {
     grid-template-columns: 1fr;
     gap: 1.1rem;
+    padding-bottom: 2rem;
+  }
+  .proof-band-stat {
+    gap: 0.45rem;
+  }
+  .proof-band-stat + .proof-band-stat {
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+  }
+  .proof-band-stat + .proof-band-stat::before {
+    content: none;
+  }
+  .proof-band-label {
+    max-width: 24rem;
   }
   .circular-cta {
     width: 100%;
@@ -12718,7 +12753,7 @@ body.personalize-lock {
 .workflow-sim-doc {
   width: fit-content;
   color: rgba(24, 23, 77, 0.58);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 760;
 }
@@ -12804,15 +12839,26 @@ body.personalize-lock {
     #18174d;
 }
 .workflow-system-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 2.45rem;
   height: 2.45rem;
   border-radius: 10px;
   color: var(--brand-charcoal);
-  background: #f1d0b1;
+  background:
+    radial-gradient(circle at 68% 26%, rgba(255, 255, 255, 0.58), transparent 0.42rem),
+    #f1d0b1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48);
 }
-.workflow-system-card span {
+.workflow-system-icon svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+.workflow-system-card > div > span {
   display: block;
   color: rgba(255, 255, 255, 0.62);
   font-size: 0.76rem;
@@ -13247,6 +13293,7 @@ body.personalize-lock {
 /* ---- OneWorkflowRetainers ----------------------------------------------- */
 .retainer-section {
   padding: clamp(2.9rem, 5.5vw, 5.25rem) 1.25rem;
+  font-family: var(--font-sans);
   background:
     radial-gradient(60% 72% at 8% 0%, rgba(221, 233, 252, 0.46), transparent 62%),
     linear-gradient(180deg, #fbfbf9 0%, #f7f6f1 100%);
@@ -13325,9 +13372,11 @@ body.personalize-lock {
 }
 .retainer-picker span {
   min-width: 0;
-  font-size: 0.84rem;
-  font-weight: 700;
-  line-height: 1.18;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 640;
+  letter-spacing: -0.005em;
+  line-height: 1.22;
 }
 .retainer-card,
 .retainer-rule {
@@ -13348,30 +13397,54 @@ body.personalize-lock {
   align-items: center;
 }
 .retainer-card-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 3rem;
   height: 3rem;
   border-radius: 12px;
-  color: #ffffff;
-  background: var(--brand-indigo);
+  color: #fff7ed;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(241, 208, 177, 0.34), transparent 0.8rem),
+    linear-gradient(145deg, #2a2880 0%, var(--brand-indigo) 58%, #111034 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
+    0 10px 22px rgba(24, 23, 77, 0.16);
 }
-.retainer-card-top span,
+.retainer-card-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem;
+  z-index: 0;
+  border-radius: 8px;
+  background: rgba(241, 208, 177, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(241, 208, 177, 0.22);
+}
+.retainer-card-icon svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+.retainer-card-top > div > span,
 .retainer-build > div > span {
   display: block;
   color: rgba(24, 23, 77, 0.58);
-  font-size: 0.84rem;
-  font-weight: 650;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 680;
   letter-spacing: 0;
   text-transform: none;
 }
 .retainer-card h3 {
   margin-top: 0.16rem;
   color: var(--brand-charcoal);
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-  font-weight: 760;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
+  font-family: var(--font-sans);
+  font-size: clamp(1.3rem, 1.9vw, 1.68rem);
+  font-weight: 720;
+  letter-spacing: -0.018em;
+  line-height: 1.12;
 }
 .retainer-problem {
   margin: 0;
