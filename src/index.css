@@ -1,7 +1,5 @@
 @import "@fontsource-variable/hanken-grotesk";
 @import "@fontsource-variable/fraunces";
-@import "@fontsource/instrument-serif/400.css";
-@import "@fontsource/instrument-serif/400-italic.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8285,11 +8283,11 @@
     position: relative;
     display: inline-flex;
     align-items: baseline;
-    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-family: var(--font-serif);
     color: #ffffff;
     font-size: clamp(2.05rem, 6.8vw, 2.7rem);
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 520;
+    letter-spacing: -0.025em;
     line-height: 1;
     white-space: nowrap;
     opacity: 0;
@@ -12806,15 +12804,26 @@ body.personalize-lock {
     #18174d;
 }
 .workflow-system-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 2.45rem;
   height: 2.45rem;
   border-radius: 10px;
   color: var(--brand-charcoal);
-  background: #f1d0b1;
+  background:
+    radial-gradient(circle at 68% 26%, rgba(255, 255, 255, 0.58), transparent 0.42rem),
+    #f1d0b1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48);
 }
-.workflow-system-card span {
+.workflow-system-icon svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+.workflow-system-card > div > span {
   display: block;
   color: rgba(255, 255, 255, 0.62);
   font-size: 0.76rem;
@@ -13249,6 +13258,7 @@ body.personalize-lock {
 /* ---- OneWorkflowRetainers ----------------------------------------------- */
 .retainer-section {
   padding: clamp(2.9rem, 5.5vw, 5.25rem) 1.25rem;
+  font-family: var(--font-sans);
   background:
     radial-gradient(60% 72% at 8% 0%, rgba(221, 233, 252, 0.46), transparent 62%),
     linear-gradient(180deg, #fbfbf9 0%, #f7f6f1 100%);
@@ -13327,9 +13337,11 @@ body.personalize-lock {
 }
 .retainer-picker span {
   min-width: 0;
-  font-size: 0.84rem;
-  font-weight: 700;
-  line-height: 1.18;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 640;
+  letter-spacing: -0.005em;
+  line-height: 1.22;
 }
 .retainer-card,
 .retainer-rule {
@@ -13350,30 +13362,54 @@ body.personalize-lock {
   align-items: center;
 }
 .retainer-card-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 3rem;
   height: 3rem;
   border-radius: 12px;
-  color: #ffffff;
-  background: var(--brand-indigo);
+  color: #fff7ed;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(241, 208, 177, 0.34), transparent 0.8rem),
+    linear-gradient(145deg, #2a2880 0%, var(--brand-indigo) 58%, #111034 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
+    0 10px 22px rgba(24, 23, 77, 0.16);
 }
-.retainer-card-top span,
+.retainer-card-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem;
+  z-index: 0;
+  border-radius: 8px;
+  background: rgba(241, 208, 177, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(241, 208, 177, 0.22);
+}
+.retainer-card-icon svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+.retainer-card-top > div > span,
 .retainer-build > div > span {
   display: block;
   color: rgba(24, 23, 77, 0.58);
-  font-size: 0.84rem;
-  font-weight: 650;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 680;
   letter-spacing: 0;
   text-transform: none;
 }
 .retainer-card h3 {
   margin-top: 0.16rem;
   color: var(--brand-charcoal);
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-  font-weight: 760;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
+  font-family: var(--font-sans);
+  font-size: clamp(1.3rem, 1.9vw, 1.68rem);
+  font-weight: 720;
+  letter-spacing: -0.018em;
+  line-height: 1.12;
 }
 .retainer-problem {
   margin: 0;
