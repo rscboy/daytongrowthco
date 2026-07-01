@@ -2500,10 +2500,6 @@ function ProjectForm() {
           <span className="form-submit-label">Send the workflow</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
-        <p className="cta-trust form-cta-trust">
-          Free consultation · No obligation ·{" "}
-          <a href="/privacy-policy/">Privacy policy</a>
-        </p>
         <div id="auditStatus" aria-live="assertive" className="form-status" />
       </form>
       <dialog
@@ -4001,8 +3997,8 @@ const premiumProcess = [
     step: 1,
     phase: "Week 01",
     title: "We map the manual work.",
-    deliverables: ["A walkthrough of how the work flows today", "The handoffs that cost you time", "A written spec, in plain language"],
-    result: "You see exactly what we will build and why, before a dollar is spent.",
+    deliverables: ["How the work flows today", "The handoffs costing time"],
+    result: "You know what we will build and why.",
     dashboard: (
       <MiniDashboard
         title="discovery · mapped"
@@ -4018,8 +4014,8 @@ const premiumProcess = [
     step: 2,
     phase: "Weeks 02 to 03",
     title: "We build the smallest tool that pays.",
-    deliverables: ["A working build on your real data", "Your pricing and rules, loaded in", "Reviews with you as it takes shape"],
-    result: "A tool that saves real time before it ever asks for real budget.",
+    deliverables: ["A working build on real data", "Your pricing and rules loaded in"],
+    result: "A useful tool before a bigger budget.",
     dashboard: (
       <MiniDashboard
         title="build · in progress"
@@ -4035,8 +4031,8 @@ const premiumProcess = [
     step: 3,
     phase: "Week 04+",
     title: "We ship it and hand it over.",
-    deliverables: ["Live tool your team actually uses", "Training so it sticks", "Tuning as the work changes"],
-    result: "Hours come back every week, and the savings stay in your business.",
+    deliverables: ["A live tool your team uses", "Training and tuning as it changes"],
+    result: "Hours come back every week.",
     dashboard: (
       <MiniDashboard
         title="live · this week"
@@ -4058,7 +4054,7 @@ function ProcessSteps() {
           <h2 id="process-title" data-scroll-words>
             How a build actually goes.
           </h2>
-          <p>No long discovery decks. No surprise invoices. A short, visible path from manual work to a tool your team uses.</p>
+          <p>No long decks. No surprise invoices. Just a visible path from manual work to a useful tool.</p>
         </div>
         <div className="process-section-track">
           {premiumProcess.map((step) => (
