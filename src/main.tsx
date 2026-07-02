@@ -4333,8 +4333,8 @@ function OneWorkflowRetainers() {
             One repetitive problem = one AI retainer.
           </h2>
           <p>
-            “Custom AI systems” is too vague. One repeated problem, one working system, kept from getting weird.
-            Setup gets it live. Monthly support keeps it useful.
+            Pick one task your team repeats every week. We build a single system that handles it, then keep it
+            running as the work changes. The setup fee gets it live. The monthly retainer keeps it useful.
           </p>
         </div>
 
