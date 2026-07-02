@@ -31,6 +31,7 @@ import {
   Phone,
   PhoneCall,
   Radar,
+  Scissors,
   Search,
   Send,
   Sparkles,
@@ -2387,8 +2388,26 @@ function ProjectForm() {
   const [business, setBusiness] = useState(profile?.business ?? "");
   const [email, setEmail] = useState("");
   const [faviconReady, setFaviconReady] = useState(false);
+  const [serviceTier, setServiceTier] = useState("Discuss the process");
   const nameEdited = useRef(false);
   const businessEdited = useRef(false);
+  const detailsRef = useRef<HTMLTextAreaElement>(null);
+
+  // The $999 audit CTA sends visitors here. Tag the submission so the owner sees
+  // the intent, and seed the details field if the visitor has not typed anything.
+  useEffect(() => {
+    const onAuditRequest = () => {
+      setServiceTier("$999 AI Audit");
+      const field = detailsRef.current;
+      if (field && !field.value.trim()) {
+        field.value = business.trim()
+          ? `We would like the $999 AI audit for ${business.trim()}. Here is roughly how we run things today: `
+          : "We would like the $999 AI audit. Here is roughly how we run things today: ";
+      }
+    };
+    window.addEventListener("dgc:audit-request", onAuditRequest);
+    return () => window.removeEventListener("dgc:audit-request", onAuditRequest);
+  }, [business]);
 
   // Derive the business favicon from the email domain. Reset the loaded state
   // whenever the domain changes so the logo only animates in once it has loaded.
@@ -2413,7 +2432,7 @@ function ProjectForm() {
     <div className="form-card">
       <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
-        <input type="hidden" name="serviceTier" value="Discuss the process" readOnly />
+        <input type="hidden" name="serviceTier" value={serviceTier} readOnly />
         <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
         <input type="hidden" name="selectedWorkflow" value={selectedWorkflow.label} readOnly />
         <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow.build} readOnly />
@@ -2486,6 +2505,7 @@ function ProjectForm() {
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
           <textarea
+            ref={detailsRef}
             id="details"
             name="notes"
             rows={4}
@@ -4382,6 +4402,136 @@ function OneWorkflowRetainers() {
   );
 }
 
+// Audit, Optimize, Automate. The order is the offer: a broken process plus AI is
+// just a faster mess, so we audit and optimize before we automate. The paid $999
+// audit is step one. Its CTA reuses the existing #cta form, tagging the request
+// as an audit so the intent arrives with the lead. Removes no existing copy.
+const aoaSteps = [
+  {
+    num: "01",
+    icon: Search,
+    title: "Audit",
+    tag: "Watch the workflow happen.",
+    featured: true,
+    items: [
+      "Where does the request come in?",
+      "Who touches it?",
+      "What gets copied and pasted?",
+      "Where does it wait?",
+      "What information is missing?",
+      "What breaks when the usual person is out?",
+    ],
+  },
+  {
+    num: "02",
+    icon: Scissors,
+    title: "Optimize",
+    tag: "Cut the fat before adding AI.",
+    items: [
+      "Intake forms before phone agents",
+      "Clean CRM stages before follow-up automation",
+      "A clear refund policy before support drafts",
+      "Quote rules before quote automation",
+      "An owner or reviewer before outbound messages",
+    ],
+  },
+  {
+    num: "03",
+    icon: Workflow,
+    title: "Automate",
+    tag: "Only once the workflow is clear.",
+    lead: "Then AI can safely carry:",
+    items: ["Drafting", "Triage", "Classification", "Reminders", "Summaries", "Routing", "Reporting"],
+  },
+];
+
+const auditDeliverables = [
+  "A map of where the work actually goes today",
+  "The 3 to 7 highest-value places AI fits",
+  "What each fix is worth, in hours or dollars",
+  "A ranked build order, with no obligation to continue",
+];
+
+function requestAudit() {
+  try {
+    window.dispatchEvent(new CustomEvent("dgc:audit-request"));
+  } catch {
+    /* The #cta anchor still scrolls to the form even if tagging is unavailable. */
+  }
+}
+
+function AiAuditOffer() {
+  return (
+    <section className="audit-offer" id="ai-audit" aria-labelledby="audit-offer-title" data-reveal>
+      <div className="audit-offer-inner">
+        <div className="audit-offer-head">
+          <h2 id="audit-offer-title" data-scroll-words>
+            A broken process plus AI is just a faster mess.
+          </h2>
+          <p>
+            So we go in order: audit, then optimize, then automate. Most teams skip the first two, automate the mess, and
+            decide AI does not work. You can never skip a step. Step one is a $999 audit.
+          </p>
+        </div>
+
+        <ol className="aoa-steps" data-stagger>
+          {aoaSteps.map((step) => {
+            const StepIcon = step.icon;
+            return (
+              <li className={`aoa-step ${step.featured ? "is-featured" : ""}`} key={step.num}>
+                <div className="aoa-step-head">
+                  <span className="aoa-step-icon" aria-hidden="true">
+                    <StepIcon size={20} strokeWidth={1.8} />
+                  </span>
+                  <span className="aoa-step-num" aria-hidden="true">
+                    {step.num}
+                  </span>
+                  <div className="aoa-step-titles">
+                    <h3>{step.title}</h3>
+                    <p>{step.tag}</p>
+                  </div>
+                </div>
+                {step.featured ? <span className="aoa-step-flag">Step one, the $999 audit</span> : null}
+                {step.lead ? <p className="aoa-step-lead">{step.lead}</p> : null}
+                <ul>
+                  {step.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+
+        <aside className="audit-cta-band">
+          <div className="audit-cta-intro">
+            <span>Start with step one</span>
+            <strong>$999</strong>
+            <small>One time. No retainer required.</small>
+            <p className="audit-standalone">
+              If nothing is worth building, we tell you that. The audit stands on its own.
+            </p>
+          </div>
+          <div className="audit-cta-body">
+            <ul className="audit-gets">
+              {auditDeliverables.map((item) => (
+                <li key={item}>
+                  <Check size={14} aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <a className="button button-primary large" href="#cta" onClick={requestAudit}>
+              Book the $999 audit
+              <ArrowRight size={15} aria-hidden="true" />
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
 function MissionStatement() {
   return (
     <PositioningStatement>
@@ -4556,6 +4706,7 @@ function Homepage() {
         <WorkflowSimulation />
         <OldStackUpgrade />
         <OneWorkflowRetainers />
+        <AiAuditOffer />
         <ServicesSticky />
         <ProcessSteps />
         <ProofAndVoices />

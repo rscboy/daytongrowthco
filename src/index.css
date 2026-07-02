@@ -5268,14 +5268,14 @@
     line-height: 1.3;
   }
 
-  .phone-agent-steps svg {
+  .phone-agent-steps button > svg {
     color: #b6b1a9;
     opacity: 0;
     transform: translateX(-0.25rem);
     transition: opacity 180ms ease, transform 180ms ease, color 180ms ease;
   }
 
-  .phone-agent-steps button.is-active svg {
+  .phone-agent-steps button.is-active > svg {
     color: #101048;
     opacity: 1;
     transform: translateX(0);
@@ -13373,10 +13373,10 @@ body.personalize-lock {
 .retainer-picker span {
   min-width: 0;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
-  font-weight: 640;
-  letter-spacing: -0.005em;
-  line-height: 1.22;
+  font-size: 0.88rem;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 .retainer-card,
 .retainer-rule {
@@ -13386,8 +13386,9 @@ body.personalize-lock {
 }
 .retainer-card {
   display: grid;
+  align-content: center;
   gap: 1rem;
-  padding: clamp(1rem, 2vw, 1.35rem);
+  padding: clamp(1.15rem, 2vw, 1.5rem);
   background: #fffdfa;
 }
 .retainer-card-top {
@@ -13441,10 +13442,10 @@ body.personalize-lock {
   margin-top: 0.16rem;
   color: var(--brand-charcoal);
   font-family: var(--font-sans);
-  font-size: clamp(1.3rem, 1.9vw, 1.68rem);
-  font-weight: 720;
-  letter-spacing: -0.018em;
-  line-height: 1.12;
+  font-size: clamp(1.24rem, 1.85vw, 1.6rem);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
 }
 .retainer-problem {
   margin: 0;
@@ -13493,9 +13494,9 @@ body.personalize-lock {
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1.25rem;
-  padding: 1.15rem;
+  justify-content: center;
+  gap: 0.95rem;
+  padding: 1.3rem 1.15rem;
   color: #ffffff;
   background:
     linear-gradient(145deg, rgba(241, 208, 177, 0.14), rgba(255, 255, 255, 0) 40%),
@@ -13510,12 +13511,13 @@ body.personalize-lock {
   line-height: 1.12;
 }
 .retainer-rule p {
-  margin: 0.75rem 0 0;
+  margin: 0;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   line-height: 1.55;
 }
 .retainer-rule .link-arrow {
+  margin-top: 0.55rem;
   color: #f7f6f1;
 }
 @media (max-width: 980px) {
@@ -13556,6 +13558,256 @@ body.personalize-lock {
   .retainer-picker button:hover,
   .retainer-picker button:focus-visible {
     transform: none;
+  }
+}
+
+/* Audit, Optimize, Automate. Three ordered step cards followed by a dark band
+   that carries the $999 price and CTA. Step one is highlighted to tie the audit
+   to the offer. */
+.audit-offer {
+  padding: clamp(2.9rem, 5.5vw, 5.25rem) 1.25rem;
+  background:
+    radial-gradient(58% 70% at 92% 0%, rgba(241, 208, 177, 0.28), transparent 60%),
+    linear-gradient(180deg, #f7f6f1 0%, #fbfbf9 100%);
+}
+.audit-offer-inner {
+  max-width: 78rem;
+  margin: 0 auto;
+}
+.audit-offer-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1fr);
+  gap: clamp(1.2rem, 3vw, 2.25rem);
+  align-items: end;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+.audit-offer-head h2 {
+  max-width: 43rem;
+  color: var(--brand-charcoal);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
+}
+.audit-offer-head p {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.62;
+}
+.aoa-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+}
+.aoa-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: clamp(1.05rem, 2vw, 1.4rem);
+  background: #fffdfa;
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(31, 33, 31, 0.07);
+}
+.aoa-step.is-featured {
+  border-color: rgba(42, 40, 128, 0.4);
+  box-shadow: 0 22px 50px rgba(31, 33, 31, 0.1);
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(221, 233, 252, 0.5), transparent 55%),
+    #fffdfa;
+}
+.aoa-step-head {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+}
+.aoa-step-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 12px;
+  color: #fff7ed;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(241, 208, 177, 0.34), transparent 0.72rem),
+    linear-gradient(145deg, #2a2880 0%, var(--brand-indigo) 58%, #111034 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
+    0 10px 22px rgba(24, 23, 77, 0.14);
+}
+.aoa-step-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0.48rem;
+  z-index: 0;
+  border-radius: 8px;
+  background: rgba(241, 208, 177, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(241, 208, 177, 0.22);
+}
+.aoa-step-icon svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+.aoa-step-num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgba(24, 23, 77, 0.32);
+  letter-spacing: 0.02em;
+}
+.aoa-step-titles {
+  min-width: 0;
+}
+.aoa-step-titles h3 {
+  color: var(--brand-charcoal);
+  font-size: 1.32rem;
+  font-weight: 760;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.aoa-step-titles p {
+  margin: 0.1rem 0 0;
+  color: #5f5c56;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+.aoa-step-flag {
+  align-self: flex-start;
+  color: var(--accent-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.aoa-step-lead {
+  margin: 0;
+  color: #5f5c56;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.aoa-step ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.aoa-step ul li {
+  position: relative;
+  padding-left: 1rem;
+  color: #3f3e3a;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.aoa-step ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+}
+.audit-cta-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(1.1rem, 3vw, 2.25rem);
+  align-items: center;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  color: #ffffff;
+  border: 1px solid rgba(24, 23, 77, 0.1);
+  border-radius: 18px;
+  box-shadow: 0 20px 48px rgba(31, 33, 31, 0.08);
+  background:
+    linear-gradient(145deg, rgba(241, 208, 177, 0.14), rgba(255, 255, 255, 0) 42%),
+    #15142b;
+}
+.audit-cta-intro {
+  display: grid;
+  gap: 0.15rem;
+}
+.audit-cta-intro > span {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.audit-cta-intro strong {
+  color: #ffffff;
+  font-size: clamp(2.3rem, 4.5vw, 3rem);
+  font-weight: 780;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.audit-cta-intro small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.82rem;
+}
+.audit-standalone {
+  margin: 0.75rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.audit-cta-body {
+  display: grid;
+  gap: 1.1rem;
+}
+.audit-gets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.audit-gets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.audit-gets li svg {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+  color: #f1d0b1;
+}
+.audit-cta-body .button {
+  justify-self: start;
+}
+@media (max-width: 980px) {
+  .audit-offer-head {
+    grid-template-columns: 1fr;
+  }
+  .aoa-steps {
+    grid-template-columns: 1fr;
+  }
+  .audit-cta-band {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+@media (max-width: 680px) {
+  .audit-offer {
+    padding-inline: 1rem;
+  }
+  .audit-gets {
+    grid-template-columns: 1fr;
+  }
+  .audit-cta-body .button {
+    justify-self: stretch;
+    justify-content: center;
   }
 }
 
