@@ -4273,6 +4273,7 @@ const retainerExamples = [
   {
     icon: Calendar,
     title: "Veterinary clinic reminders",
+    short: "Fewer missed visits and overdue vaccines.",
     problem: "Missed appointments and overdue vaccines.",
     build: ["Reminder workflow", "Reschedule follow-up", "Overdue patient list", "Staff-approved messages"],
     monthly: "Keep reminder timing, message rules, and overdue lists current.",
@@ -4280,6 +4281,7 @@ const retainerExamples = [
   {
     icon: FileText,
     title: "Tax prep document chase",
+    short: "Stop chasing half-sent client documents.",
     problem: "Clients send half the documents. The team becomes a polite reminder machine.",
     build: ["Missing doc checklist", "Reminder drafts", "Status board", "Escalation list"],
     monthly: "Tune checklists, review reminder language, and keep tax-season chaos slightly less theatrical.",
@@ -4287,6 +4289,7 @@ const retainerExamples = [
   {
     icon: Calculator,
     title: "Home-cleaning quote intake",
+    short: "Quotes that arrive ready to price.",
     problem: "Leads ask for quotes with missing details.",
     build: ["Intake questions", "Quote prep summary", "Follow-up workflow", "Ready-to-price record"],
     monthly: "Improve questions, adjust quote logic, and watch where leads drop off.",
@@ -4294,6 +4297,7 @@ const retainerExamples = [
   {
     icon: UserCheck,
     title: "Recruiting resume triage",
+    short: "Sort candidates without the busywork.",
     problem: "Recruiters lose time sorting unqualified candidates.",
     build: ["Resume classifier", "Candidate summary", "Missing-info request", "Interview reminder"],
     monthly: "Update screening rules, monitor edge cases, and keep good candidates from vanishing.",
@@ -4301,6 +4305,7 @@ const retainerExamples = [
   {
     icon: Camera,
     title: "Podcast clip approval",
+    short: "Clips, titles, and approvals in one place.",
     problem: "Clips, titles, approvals, and publishing steps get scattered.",
     build: ["Clip review workflow", "Title draft assistant", "Publishing QA checklist", "Approval tracker"],
     monthly: "Refresh title patterns, clean up the workflow, and stop the 'where is that clip?' tradition.",
@@ -4308,6 +4313,7 @@ const retainerExamples = [
   {
     icon: ClipboardList,
     title: "Contractor quote follow-up",
+    short: "Follow-ups that never rely on memory.",
     problem: "Quotes go out, then follow-up depends on memory and a heroic inbox.",
     build: ["Quote status board", "Follow-up drafts", "Owner assignment", "Next-step reminders"],
     monthly: "Adjust timing, update templates, and keep the pipeline visible.",
@@ -4347,7 +4353,10 @@ function OneWorkflowRetainers() {
                   onClick={() => setActiveIndex(index)}
                 >
                   <Icon size={18} aria-hidden="true" />
-                  <span>{example.title}</span>
+                  <span>
+                    <strong>{example.title}</strong>
+                    <em>{example.short}</em>
+                  </span>
                 </button>
               );
             })}
@@ -4578,7 +4587,7 @@ function ProofAndVoices() {
       <ProofBand
         stats={[
           { value: "Up to 70%", label: "Lower than a traditional dev shop quote" },
-          { value: "2 to 4 wks", label: "From first call to a live, working tool" },
+          { value: "2 to 4 weeks", label: "From first call to a live, working tool" },
           { value: "100%", label: "Built around your existing workflow" },
         ]}
         statement={
