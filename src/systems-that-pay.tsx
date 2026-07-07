@@ -295,8 +295,8 @@ function FreeRedesignOffer() {
               <strong>Claim your concept</strong>
             </div>
             <div className="lp-field-pair">
-              <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Jane Smith" required /></label>
-              <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Smith HVAC" required /></label>
+              <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Marcus Reed" required /></label>
+              <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Miami Valley HVAC" required /></label>
             </div>
             <label>
               <span>Current website</span>
@@ -318,7 +318,7 @@ function FreeRedesignOffer() {
               />
               <small>No https:// needed.</small>
             </label>
-            <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="jane@yourbusiness.com" required /></label>
+            <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="marcus@yourbusiness.com" required /></label>
             <div ref={widgetRef} className="lp-turnstile" aria-label="Security verification" />
             {status === "error" ? <p className="lp-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
             <button type="submit" disabled={!token || status === "sending"}>

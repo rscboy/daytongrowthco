@@ -418,9 +418,9 @@ function teamSizeToCount(teamSize: string): number | null {
   switch (teamSize) {
     case "Just me":
       return 1;
-    case "2–10":
+    case "2-10":
       return 5;
-    case "11–50":
+    case "11-50":
       return 18;
     case "50+":
       return 20;
@@ -501,7 +501,7 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
   return <PersonalizationContext.Provider value={value}>{children}</PersonalizationContext.Provider>;
 }
 
-const teamSizeOptions = ["Just me", "2–10", "11–50", "50+"];
+const teamSizeOptions = ["Just me", "2-10", "11-50", "50+"];
 
 function PersonalizeInvite() {
   const { profile, save } = usePersonalization();
@@ -656,7 +656,7 @@ function PersonalizeInvite() {
                   type="text"
                   value={name}
                   autoComplete="given-name"
-                  placeholder="Jane"
+                  placeholder="Marcus"
                   onChange={(event) => setName(event.target.value)}
                 />
               </label>
@@ -666,7 +666,7 @@ function PersonalizeInvite() {
                   type="text"
                   value={business}
                   autoComplete="organization"
-                  placeholder="Jane’s Plumbing"
+                  placeholder="Miami Valley HVAC"
                   onChange={(event) => setBusiness(event.target.value)}
                 />
               </label>
@@ -1754,10 +1754,6 @@ function Hero() {
             ]}
           />
         </aside>
-        <a className="hero-scroll-cue" href="#old-stack" aria-label="Continue to what we replace">
-          <span>Explore</span>
-          <i aria-hidden="true" />
-        </a>
       </div>
     </section>
   );
@@ -2444,7 +2440,7 @@ function ProjectForm() {
             name="yourName"
             type="text"
             autoComplete="name"
-            placeholder="Jane Smith"
+            placeholder="Marcus Reed"
             value={name}
             onChange={(event) => {
               nameEdited.current = true;
@@ -2476,7 +2472,7 @@ function ProjectForm() {
               name="emailAddress"
               type="email"
               autoComplete="email"
-              placeholder="jane@company.com"
+              placeholder="marcus@company.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
@@ -4610,7 +4606,6 @@ function BuiltForStrip() {
     <section className="above-fold-proof" aria-labelledby="above-fold-proof-title">
       <div className="above-fold-proof-inner">
         <div className="above-fold-proof-copy">
-          <span>Proof from real teams</span>
           <h2 id="above-fold-proof-title">Sites, systems, and workflow support for companies already doing the work.</h2>
         </div>
         <ul className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
@@ -4795,7 +4790,6 @@ function AboutPage() {
               <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="" />
             </div>
             <div className="about-founder-copy">
-              <span className="about-founder-kicker">Meet the founder</span>
               <h2 id="about-founder-title">Samuel Caruso</h2>
               <p>
                 Born and raised in Dayton, Ohio, Samuel has always loved building things, whether that meant physical
