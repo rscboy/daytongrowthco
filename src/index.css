@@ -13468,11 +13468,11 @@ body.personalize-lock {
 .retainer-card h3 {
   margin-top: 0.16rem;
   color: var(--brand-charcoal);
-  font-family: var(--font-sans);
-  font-size: clamp(1.24rem, 1.85vw, 1.6rem);
-  font-weight: 760;
-  letter-spacing: -0.035em;
-  line-height: 1.06;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 540;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
 }
 .retainer-problem {
   margin: 0;
@@ -13575,7 +13575,7 @@ body.personalize-lock {
     grid-template-columns: 1fr;
   }
   .retainer-card h3 {
-    font-size: 1.28rem;
+    font-size: 1.42rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
