@@ -314,6 +314,7 @@ const socialLinks = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
   { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
+  { label: "Google", href: "https://share.google/KMUawpdd5QY9yhbBB" },
 ];
 
 const videos = {

@@ -75,10 +75,12 @@ const siteSchema = {
         "answer engine optimization",
       ],
       slogan: "Custom business tools and digital systems built around the way your business works.",
+      hasMap: "https://share.google/KMUawpdd5QY9yhbBB",
       sameAs: [
         "https://www.linkedin.com/company/daytongrowthco/",
         "https://www.instagram.com/daytongrowthco/",
         "https://www.facebook.com/profile.php?id=61582225267724",
+        "https://share.google/KMUawpdd5QY9yhbBB",
       ],
       hasOfferCatalog: {
         "@id": `${siteUrl}/#offer-catalog`,

@@ -47,6 +47,12 @@ Email: [help@daytongrowth.co](mailto:help@daytongrowth.co)
 
 Hours: Monday to Friday, 9am to 5pm
 
+## Find us on Google
+
+See our Google Business Profile, check our service area, and leave a review. Reviews are the fastest way to help other Dayton businesses find us.
+
+[View us on Google →](https://share.google/KMUawpdd5QY9yhbBB)
+
 ## Common questions
 
 What areas around Dayton does DaytonGrowthCo serve?
