@@ -3313,6 +3313,7 @@ function SiteFooter() {
             <InteractiveWordmark />
           </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
+          <p className="footer-location">Serving Dayton &amp; the Miami Valley, Ohio.</p>
           <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
           <div className="social-links" aria-label="Social media">
             {socialLinks.map((link) => <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">{link.label}</a>)}

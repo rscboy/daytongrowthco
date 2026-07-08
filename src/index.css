@@ -8200,6 +8200,11 @@
     line-height: 1.55;
   }
 
+  .footer-brand p.footer-location {
+    margin-top: -0.15rem;
+    color: #b6bdc8;
+  }
+
   .client-portal-link {
     width: fit-content;
     border: 1px solid rgba(255, 255, 255, 0.08);
