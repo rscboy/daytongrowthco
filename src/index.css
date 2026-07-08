@@ -50,8 +50,15 @@
     --font-heading: var(--font-sans);
   }
   :root {
-    /* Brand serif for hero + major editorial moments. */
+    /* Typography system:
+       Hanken Grotesk is the workhorse. Fraunces is reserved for large brand
+       and editorial moments so smaller panels do not compete with the page
+       hierarchy. */
     --font-serif: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+    --font-display: var(--font-serif);
+    --font-body: var(--font-sans);
+    --font-ui: var(--font-sans);
+    --font-card-title: var(--font-sans);
     /* Monospace for dashboards, terminal-style UI, code, and tabular data. */
     --font-mono: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
     /* DaytonGrowthCo. brand palette */
@@ -67,8 +74,11 @@
     --section-title-size: clamp(2.45rem, 4.2vw, 4.35rem);
     --section-title-size-compact: clamp(1.95rem, 3vw, 3.05rem);
     --section-title-weight: 520;
-    --section-title-tracking: -0.05em;
+    --section-title-tracking: -0.035em;
     --section-title-leading: 0.98;
+    --card-title-weight: 720;
+    --card-title-tracking: -0.018em;
+    --card-title-leading: 1.12;
     --brand-grid-light: rgba(24, 23, 77, 0.045);
     --brand-grid-white: rgba(255, 255, 255, 0.05);
     /* Warm, indigo-tinted elevation system (not flat gray) so cards read as
@@ -3856,7 +3866,7 @@
   /* "Before": dated, low-trust early-2000s look. */
   .website-mockup.before {
     background: #cfc9bb;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
   }
 
   .website-mockup.after {
@@ -3956,13 +3966,13 @@
 
   .website-mockup.before .mockup-nav strong {
     color: #1a1a8c;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
     text-decoration: underline;
   }
 
   .website-mockup.before .mockup-hero h3 {
     color: #14148a;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
     text-decoration: underline;
   }
 
@@ -3998,7 +4008,7 @@
 
   .website-mockup.before .mockup-hero p {
     color: #4a443b;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
   }
 
   .website-mockup.after .mockup-hero {
@@ -4033,7 +4043,7 @@
     border-radius: 0;
     color: #b00000;
     background: #fff27a;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
   }
 
   .website-mockup.before .mockup-cta-strip {
@@ -4044,13 +4054,13 @@
 
   .website-mockup.before .mockup-cta-strip strong {
     color: #0000cc;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
     text-decoration: underline;
   }
 
   .website-mockup.before .mockup-cta-strip span {
     color: #6b6258;
-    font-family: "Times New Roman", Georgia, serif;
+    font-family: var(--font-ui);
   }
 
   .mockup-cta-strip {
@@ -6014,7 +6024,7 @@
     text-transform: uppercase;
   }
 
-  .final-cta-copy h2 span {
+  .final-cta-copy h2 span:not(.final-cta-desktop-copy):not(.final-cta-mobile-copy) {
     display: block;
     margin-top: 0.28em;
     color: #f1d0b1;
@@ -6025,6 +6035,45 @@
     margin-top: 0.9rem;
     max-width: 31rem;
     line-height: 1.55;
+  }
+
+  .final-cta-copy .final-cta-mobile-copy {
+    display: none;
+  }
+
+  .final-cta-copy .final-cta-desktop-copy {
+    display: inline;
+    margin: 0;
+    color: inherit;
+    font-style: inherit;
+  }
+
+  @media (max-width: 820px) {
+    .final-cta-copy h2 {
+      max-width: 12ch;
+      margin-inline: auto;
+      font-size: clamp(1.9rem, 8.4vw, 2.25rem);
+      line-height: 1.04;
+      letter-spacing: -0.026em;
+    }
+
+    .final-cta-copy p {
+      max-width: 22rem;
+      margin-inline: auto;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .final-cta-copy .final-cta-desktop-copy {
+      display: none;
+    }
+
+    .final-cta-copy .final-cta-mobile-copy {
+      display: inline;
+      margin: 0;
+      color: inherit;
+      font-style: inherit;
+    }
   }
 
   .final-cta-start {
@@ -8288,7 +8337,7 @@
     color: #ffffff;
     font-size: clamp(2.05rem, 6.8vw, 2.7rem);
     font-weight: 520;
-    letter-spacing: -0.025em;
+    letter-spacing: 0.01em;
     line-height: 1;
     white-space: nowrap;
     opacity: 0;
@@ -8299,7 +8348,13 @@
 
   /* Initials (D, G, C) stay; the rest of each word collapses inward. */
   .splash-wordmark .sp-ini {
+    display: inline-block;
     flex: 0 0 auto;
+  }
+
+  .splash-wordmark .sp-growth.sp-ini,
+  .splash-wordmark .sp-co.sp-ini {
+    margin-left: 0.11em;
   }
 
   .splash-wordmark .sp-rest {
@@ -8468,14 +8523,12 @@
 @keyframes scroll-cue-pulse {
   0%,
   100% {
-    opacity: 0.42;
-    transform: scaleY(0.72);
-    transform-origin: top;
+    opacity: 0.58;
+    transform: translateY(-2px);
   }
   50% {
     opacity: 1;
-    transform: scaleY(1);
-    transform-origin: top;
+    transform: translateY(4px);
   }
 }
 
@@ -8982,19 +9035,20 @@
       );
   }
 
-  /* Pull the mobile composition upward so the message lands earlier. */
+  /* Center the mobile composition instead of pulling it toward the header. */
   .hero-content {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-bottom: 4.8rem;
-    transform: translateY(-5.5svh);
+    padding-top: clamp(5.75rem, 13svh, 7.25rem);
+    padding-bottom: clamp(7.25rem, 16svh, 9rem);
+    transform: none;
   }
 
   .clay-hero-copy {
     min-height: auto;
-    padding-top: 1.4rem;
+    padding-top: 0;
     padding-bottom: 1.25rem;
     transform: none;
   }
@@ -9077,26 +9131,26 @@
   .hero-scroll-cue {
     position: absolute;
     left: 50%;
-    bottom: 0.9rem;
-    z-index: 3;
+    bottom: max(1.15rem, env(safe-area-inset-bottom));
+    z-index: 4;
     display: grid;
     justify-items: center;
-    gap: 0.38rem;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.52rem;
-    font-weight: 580;
-    letter-spacing: 0.15em;
+    gap: 0.22rem;
+    width: fit-content;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.55rem;
+    font-weight: 660;
+    letter-spacing: 0.13em;
     text-decoration: none;
     text-transform: uppercase;
     transform: translateX(-50%);
   }
 
-  .hero-scroll-cue i {
+  .hero-scroll-cue svg {
     display: block;
-    width: 1px;
-    height: 1.55rem;
-    background: linear-gradient(180deg, rgba(240, 208, 176, 0.54), rgba(240, 208, 176, 0.05));
-    transform-origin: top;
+    color: #f7dec7;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 8, 0.32));
     animation: scroll-cue-pulse 2.4s ease-in-out infinite;
   }
 
@@ -10725,7 +10779,8 @@
   .circular-cta:hover .circular-cta-core,
   .member-card:hover,
   .premium-media:hover img,
-  .system-map-node:hover {
+  .system-map-node:hover,
+  .trust-strip-marks li:hover {
     transform: none;
   }
 
@@ -11935,6 +11990,9 @@ body.personalize-lock {
   color: #44444c;
   padding-bottom: 0.9rem;
 }
+.hover-card-detail-mobile {
+  display: none;
+}
 .hover-card-cta {
   display: inline-flex;
   align-items: center;
@@ -12350,16 +12408,27 @@ body.personalize-lock {
   gap: 1rem 2rem;
 }
 .trust-strip-marks li {
+  position: relative;
+  display: inline-block;
   font-size: 0.98rem;
   font-weight: 560;
   letter-spacing: -0.01em;
   color: #9b9a93;
   opacity: 0.85;
-  transition: color 200ms ease, opacity 200ms ease;
+  transform-origin: center bottom;
+  transition:
+    color 260ms ease,
+    opacity 260ms ease,
+    text-shadow 320ms ease,
+    transform 420ms var(--ease-out-soft);
+  will-change: transform;
 }
 .trust-strip-marks li:hover {
   color: var(--brand-charcoal);
   opacity: 1;
+  text-shadow: 0 10px 26px rgba(24, 23, 77, 0.16);
+  transform: translateY(-0.28rem) scale(1.08);
+  z-index: 1;
 }
 
 /* ---- Responsive ---------------------------------------------------------- */
@@ -12758,6 +12827,11 @@ body.personalize-lock {
   font-size: 0.72rem;
   font-weight: 760;
 }
+.workflow-sim-doc-mobile,
+.workflow-sim-title-mobile,
+.workflow-sim-copy-mobile {
+  display: none;
+}
 .workflow-sim-brief h3 {
   color: var(--brand-charcoal);
   font-size: clamp(1.12rem, 1.85vw, 1.55rem);
@@ -12933,6 +13007,56 @@ body.personalize-lock {
   .workflow-sim-shell {
     border-radius: 16px;
     padding: 0.7rem;
+  }
+
+  .workflow-sim-board {
+    gap: 0.68rem;
+    border-radius: 13px;
+    padding: 0.9rem;
+    background: #fffefa;
+  }
+
+  .workflow-sim-brief {
+    gap: 0.34rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .workflow-sim-doc {
+    font-family: var(--font-ui);
+    color: rgba(24, 23, 77, 0.54);
+    font-size: 0.66rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .workflow-sim-doc-desktop,
+  .workflow-sim-title-desktop,
+  .workflow-sim-copy-desktop {
+    display: none;
+  }
+
+  .workflow-sim-doc-mobile,
+  .workflow-sim-title-mobile,
+  .workflow-sim-copy-mobile {
+    display: inline;
+  }
+
+  .workflow-sim-brief h3 {
+    max-width: 13ch;
+    font-size: clamp(1.28rem, 6.6vw, 1.72rem);
+    font-weight: 780;
+    letter-spacing: -0.026em;
+    line-height: 1.02;
+    text-transform: none;
+  }
+
+  .workflow-sim-brief p {
+    max-width: 18rem;
+    color: #68645d;
+    font-size: 0.84rem;
+    line-height: 1.42;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -13254,6 +13378,14 @@ body.personalize-lock {
   .old-stack-row p:last-child::before {
     content: "Why switch";
   }
+  .old-stack-row p {
+    display: block;
+    overflow: visible;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+  }
   .old-stack-more {
     border: 0;
   }
@@ -13428,28 +13560,18 @@ body.personalize-lock {
 .retainer-card-icon {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 3rem;
   height: 3rem;
   border-radius: 12px;
-  color: #fff7ed;
-  background:
-    radial-gradient(circle at 72% 22%, rgba(241, 208, 177, 0.34), transparent 0.8rem),
-    linear-gradient(145deg, #2a2880 0%, var(--brand-indigo) 58%, #111034 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
-    0 10px 22px rgba(24, 23, 77, 0.16);
+  color: var(--brand-indigo);
+  background: #f7f6f1;
+  border: 1px solid rgba(24, 23, 77, 0.14);
+  box-shadow: 0 10px 22px rgba(31, 33, 31, 0.06);
 }
 .retainer-card-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0.55rem;
-  z-index: 0;
-  border-radius: 8px;
-  background: rgba(241, 208, 177, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(241, 208, 177, 0.22);
+  content: none;
 }
 .retainer-card-icon svg {
   position: relative;
@@ -13526,9 +13648,7 @@ body.personalize-lock {
   gap: 0.95rem;
   padding: 1.3rem 1.15rem;
   color: #ffffff;
-  background:
-    linear-gradient(145deg, rgba(241, 208, 177, 0.14), rgba(255, 255, 255, 0) 40%),
-    #15142b;
+  background: #15142b;
 }
 .retainer-rule h3 {
   max-width: 17rem;
@@ -13590,13 +13710,11 @@ body.personalize-lock {
 }
 
 /* Audit, Optimize, Automate. Three ordered step cards followed by a dark band
-   that carries the $999 price and CTA. Step one is highlighted to tie the audit
+   that carries the consultation CTA. Step one is highlighted to tie the audit
    to the offer. */
 .audit-offer {
   padding: clamp(2.9rem, 5.5vw, 5.25rem) 1.25rem;
-  background:
-    radial-gradient(58% 70% at 92% 0%, rgba(241, 208, 177, 0.28), transparent 60%),
-    linear-gradient(180deg, #f7f6f1 0%, #fbfbf9 100%);
+  background: #f7f6f1;
 }
 .audit-offer-inner {
   max-width: 78rem;
@@ -13645,9 +13763,7 @@ body.personalize-lock {
 .aoa-step.is-featured {
   border-color: rgba(42, 40, 128, 0.4);
   box-shadow: 0 22px 50px rgba(31, 33, 31, 0.1);
-  background:
-    radial-gradient(120% 90% at 0% 0%, rgba(221, 233, 252, 0.5), transparent 55%),
-    #fffdfa;
+  background: #fffdfa;
 }
 .aoa-step-head {
   display: grid;
@@ -13658,28 +13774,18 @@ body.personalize-lock {
 .aoa-step-icon {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   display: inline-grid;
   place-items: center;
   width: 2.6rem;
   height: 2.6rem;
   border-radius: 12px;
-  color: #fff7ed;
-  background:
-    radial-gradient(circle at 72% 22%, rgba(241, 208, 177, 0.34), transparent 0.72rem),
-    linear-gradient(145deg, #2a2880 0%, var(--brand-indigo) 58%, #111034 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
-    0 10px 22px rgba(24, 23, 77, 0.14);
+  color: var(--brand-indigo);
+  background: #f7f6f1;
+  border: 1px solid rgba(24, 23, 77, 0.14);
+  box-shadow: 0 10px 22px rgba(31, 33, 31, 0.06);
 }
 .aoa-step-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0.48rem;
-  z-index: 0;
-  border-radius: 8px;
-  background: rgba(241, 208, 177, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(241, 208, 177, 0.22);
+  content: none;
 }
 .aoa-step-icon svg {
   position: relative;
@@ -13756,9 +13862,7 @@ body.personalize-lock {
   border: 1px solid rgba(24, 23, 77, 0.1);
   border-radius: 18px;
   box-shadow: 0 20px 48px rgba(31, 33, 31, 0.08);
-  background:
-    linear-gradient(145deg, rgba(241, 208, 177, 0.14), rgba(255, 255, 255, 0) 42%),
-    #15142b;
+  background: #15142b;
 }
 .audit-cta-intro {
   display: grid;
@@ -14523,13 +14627,15 @@ body.personalize-lock {
 @media (max-width: 700px) {
   .hero-section,
   .hero-content {
-    min-height: auto;
+    min-height: 100dvh;
   }
 
   .hero-content {
     align-items: flex-start;
-    padding-top: 8.5rem;
-    padding-bottom: 5.5rem;
+    justify-content: center;
+    padding-top: clamp(5.75rem, 13dvh, 7.25rem);
+    padding-bottom: clamp(7.25rem, 16dvh, 9rem);
+    transform: none;
   }
 
   .above-fold-proof-inner,
@@ -14834,6 +14940,962 @@ dialog[open],
   .form-success:not([hidden]) {
     opacity: 0;
     transform: translateY(0.75rem) scale(0.97);
+  }
+}
+
+/* ==========================================================================
+   TYPOGRAPHY CONSOLIDATION
+   Keep the page to two voices: Fraunces for large display moments, Hanken
+   Grotesk for body, UI, panels, and card titles.
+   ========================================================================== */
+.clay-hero-copy h1,
+.container-showcase-copy h2,
+.business-journey-heading h2,
+.who-its-for-heading h2,
+.economic-case-thesis h2,
+.labor-calculator-copy h2,
+.workflow-principles-heading h2,
+.workflow-copy h2,
+.section-heading h2,
+.final-cta h2,
+.website-migration-card h3,
+.margin-leak-heading h2,
+.founder-preview h2,
+.page-hero h1,
+.about-founder-copy h2,
+.homepage-preview-copy h2,
+.homepage-preview-heading h2,
+.dedicated-heading h2,
+.page-cta h2,
+.process-section-head h2,
+.system-map-head h2,
+.workflow-sim-head h2,
+.old-stack-head h2,
+.retainer-head h2,
+.audit-offer-head h2,
+.home-faq-aside h2,
+.above-fold-proof-copy h2,
+.personalize-inline h2 {
+  font-family: var(--font-display);
+}
+
+.system-dashboard-header strong,
+.system-dashboard-footer strong,
+.system-lead-card h3,
+.business-journey-card h3,
+.homepage-sheet-title h3,
+.pricing-card h3,
+.feature-category-card h3,
+.phone-agent-demo-header h3,
+.featured-build h3,
+.supporting-builds h3,
+.retainer-card h3,
+.retainer-rule h3 {
+  font-family: var(--font-card-title);
+  font-weight: var(--card-title-weight);
+  letter-spacing: var(--card-title-tracking);
+  line-height: var(--card-title-leading);
+}
+
+.homepage-sheet-total strong {
+  font-family: var(--font-ui);
+  letter-spacing: -0.025em;
+}
+
+/* ==========================================================================
+   MOBILE DENSITY PASS
+   Phones should feel lighter after the hero: smaller section headings, tighter
+   repeated cards, fewer visible bullets, and a less intimidating final form.
+   ========================================================================== */
+@media (max-width: 700px) {
+  [data-reveal],
+  [data-stagger] > *,
+  .scroll-word {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .business-journey-heading h2,
+  .who-its-for-heading h2,
+  .economic-case-thesis h2,
+  .labor-calculator-copy h2,
+  .workflow-principles-heading h2,
+  .workflow-copy h2,
+  .section-heading h2,
+  .website-migration-card h3,
+  .margin-leak-heading h2,
+  .founder-preview h2,
+  .page-hero h1,
+  .about-founder-copy h2,
+  .homepage-preview-copy h2,
+  .homepage-preview-heading h2,
+  .dedicated-heading h2,
+  .page-cta h2,
+  .process-section-head h2,
+  .system-map-head h2,
+  .workflow-sim-head h2,
+  .old-stack-head h2,
+  .retainer-head h2,
+  .audit-offer-head h2,
+  .home-faq-aside h2,
+  .above-fold-proof-copy h2,
+  .personalize-inline h2 {
+    font-size: clamp(1.85rem, 8vw, 2.2rem);
+    letter-spacing: -0.026em;
+    line-height: 1.06;
+  }
+
+  .section-heading p,
+  .workflow-copy p:not(.step-count),
+  .business-journey-heading + p,
+  .who-its-for-heading p,
+  .economic-case-thesis p,
+  .labor-calculator-copy p,
+  .workflow-principles-heading > p,
+  .dedicated-heading p,
+  .process-section-head p,
+  .system-map-head p,
+  .workflow-sim-head p,
+  .old-stack-head p,
+  .retainer-head p,
+  .audit-offer-head p,
+  .home-faq-note p,
+  .final-cta-copy p {
+    max-width: 34rem;
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .business-journey,
+  .who-its-for,
+  .workflow-principles,
+  .workflow-sim,
+  .old-stack,
+  .retainer-section,
+  .audit-offer,
+  .home-faq,
+  .process-section,
+  .system-map {
+    padding-block: clamp(2.8rem, 10vw, 4rem);
+  }
+
+  .business-journey-card,
+  .who-its-for-card,
+  .pricing-card,
+  .feature-category-card,
+  .feature-cell,
+  .workflow-sim-board,
+  .old-stack-decision,
+  .retainer-card,
+  .retainer-rule,
+  .audit-offer-card,
+  .system-map-node,
+  .home-faq-item {
+    border-radius: 12px;
+  }
+
+  .business-journey-card,
+  .who-its-for-card,
+  .pricing-card,
+  .feature-category-card,
+  .feature-cell,
+  .old-stack-decision,
+  .retainer-card,
+  .retainer-rule,
+  .system-map-node {
+    padding: 1rem;
+  }
+
+  .business-journey-card h3,
+  .who-its-for-card h3,
+  .system-lead-card h3,
+  .pricing-card h3,
+  .feature-category-card h3,
+  .feature-cell h3,
+  .phone-agent-demo-header h3,
+  .featured-build h3,
+  .supporting-builds h3,
+  .workflow-sim-brief h3,
+  .old-stack-decision h3,
+  .retainer-card h3,
+  .retainer-rule h3,
+  .aoa-step-titles h3 {
+    font-size: clamp(1.05rem, 4.9vw, 1.28rem);
+    letter-spacing: -0.018em;
+    line-height: 1.14;
+  }
+
+  .business-journey-card > p,
+  .who-its-for-card p,
+  .pricing-card p,
+  .feature-category-card > p,
+  .feature-cell p,
+  .phone-agent-call p,
+  .phone-agent-summary > p,
+  .featured-build > p,
+  .supporting-builds p,
+  .workflow-sim-brief p,
+  .workflow-sim-notes p,
+  .old-stack-row p,
+  .old-stack-decision > p,
+  .retainer-problem,
+  .retainer-build p,
+  .retainer-rule p,
+  .home-faq-a > p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .home-faq-item.is-open .home-faq-a > p {
+    -webkit-line-clamp: 4;
+  }
+
+  .old-stack-row p {
+    display: block;
+    overflow: visible;
+    font-size: 0.86rem;
+    line-height: 1.42;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+  }
+
+  .old-stack-row p::before {
+    margin-bottom: 0.28rem;
+  }
+
+  .workflow-sim-board {
+    gap: 0.68rem;
+    padding: 0.9rem;
+    border-radius: 12px;
+  }
+
+  .workflow-sim-brief {
+    gap: 0.34rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .workflow-sim-doc {
+    font-family: var(--font-ui);
+    color: rgba(24, 23, 77, 0.54);
+    font-size: 0.66rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .workflow-sim-doc-desktop,
+  .workflow-sim-title-desktop,
+  .workflow-sim-copy-desktop {
+    display: none;
+  }
+
+  .workflow-sim-doc-mobile,
+  .workflow-sim-title-mobile,
+  .workflow-sim-copy-mobile {
+    display: inline;
+  }
+
+  .workflow-sim-brief h3 {
+    max-width: 13ch;
+    font-size: clamp(1.28rem, 6.6vw, 1.72rem);
+    font-weight: 780;
+    letter-spacing: -0.026em;
+    line-height: 1.02;
+  }
+
+  .workflow-sim-brief p {
+    display: block;
+    max-width: 18rem;
+    overflow: visible;
+    color: #68645d;
+    font-size: 0.84rem;
+    line-height: 1.42;
+    -webkit-line-clamp: unset;
+  }
+
+  .business-journey-card ul,
+  .pricing-card ul,
+  .feature-category-card ul,
+  .workflow-lane ol,
+  .retainer-build ul,
+  .old-stack-reasons {
+    gap: 0.35rem;
+    margin-top: 0.65rem;
+  }
+
+  .business-journey-card li,
+  .pricing-card li,
+  .feature-category-card li,
+  .workflow-lane li,
+  .retainer-build li,
+  .old-stack-reasons li {
+    font-size: 0.78rem;
+    line-height: 1.32;
+  }
+
+  .business-journey-card li:nth-child(n + 4),
+  .pricing-card li:nth-child(n + 4),
+  .feature-category-card li:nth-child(n + 4),
+  .workflow-lane li:nth-child(n + 4),
+  .retainer-build li:nth-child(n + 4),
+  .old-stack-reasons li:nth-child(n + 4) {
+    display: none;
+  }
+
+  .business-journey-card {
+    flex-basis: min(82vw, 20rem);
+    min-height: 13.25rem;
+  }
+
+  .business-journey-card > p {
+    min-height: 0;
+  }
+
+  .workflow-sim-picker button,
+  .retainer-picker button {
+    flex-basis: min(68vw, 16rem);
+    min-height: 3.35rem;
+  }
+
+  .workflow-sim-picker em,
+  .retainer-picker em {
+    display: none;
+  }
+
+  .above-fold-proof {
+    padding-block: 0.9rem;
+  }
+
+  .above-fold-proof-copy h2 {
+    font-size: 1.05rem;
+    line-height: 1.16;
+  }
+
+  .above-fold-proof-clients li {
+    flex-basis: min(78vw, 19rem);
+    padding: 0.58rem;
+  }
+
+  .above-fold-proof-clients em {
+    display: none;
+  }
+
+  .final-cta {
+    padding-top: 2.1rem;
+    padding-bottom: calc(2.35rem + env(safe-area-inset-bottom));
+  }
+
+  .final-cta h2 {
+    max-width: 12ch;
+    font-size: clamp(1.9rem, 8.4vw, 2.25rem);
+    line-height: 1.04;
+  }
+
+  .final-cta-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    max-width: 22rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .final-cta-desktop-copy {
+    display: none;
+  }
+
+  .final-cta-mobile-copy {
+    display: inline;
+  }
+
+  .final-cta-copy .intake-list,
+  .form-trust-cues {
+    display: none;
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .project-form {
+    gap: 0.72rem;
+  }
+
+  .form-field span {
+    font-size: 0.72rem;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+
+  .form-field textarea {
+    min-height: 7rem;
+  }
+
+  .aoa-steps {
+    gap: 0.7rem;
+  }
+
+  .aoa-step {
+    gap: 0.72rem;
+    padding: 0.95rem;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(31, 33, 31, 0.06);
+  }
+
+  .aoa-step.is-featured {
+    border-color: rgba(42, 40, 128, 0.2);
+    box-shadow: 0 14px 34px rgba(31, 33, 31, 0.08);
+  }
+
+  .aoa-step-head {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.7rem;
+  }
+
+  .aoa-step-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 10px;
+    color: var(--accent-ink);
+    background: #f7f6f1;
+    box-shadow: inset 0 0 0 1px rgba(24, 23, 77, 0.1);
+  }
+
+  .aoa-step-icon::before {
+    content: none;
+  }
+
+  .aoa-step-icon svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .aoa-step-num {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    font-size: 0.82rem;
+    font-weight: 760;
+    color: rgba(24, 23, 77, 0.26);
+  }
+
+  .aoa-step-titles {
+    grid-column: 2;
+  }
+
+  .aoa-step-titles p {
+    margin-top: 0.16rem;
+    font-size: 0.82rem;
+    line-height: 1.32;
+  }
+
+  .aoa-step-flag {
+    display: none;
+  }
+
+  .aoa-step-lead {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .aoa-step ul {
+    gap: 0.38rem;
+    padding-top: 0.1rem;
+  }
+
+  .aoa-step ul li {
+    padding-left: 0.9rem;
+    font-size: 0.84rem;
+    line-height: 1.34;
+  }
+
+  .aoa-step ul li:nth-child(n + 4) {
+    display: none;
+  }
+
+  .sticky-story {
+    padding-block: clamp(2.6rem, 9vw, 3.8rem);
+  }
+
+  .sticky-story-inner {
+    gap: 1rem;
+  }
+
+  .sticky-story-rail-inner {
+    position: static;
+  }
+
+  .sticky-story-heading {
+    font-size: clamp(1.85rem, 8vw, 2.2rem);
+    letter-spacing: -0.026em;
+    line-height: 1.06;
+  }
+
+  .sticky-story-intro {
+    max-width: 34rem;
+    margin-top: 0.7rem;
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .sticky-story-aside {
+    justify-content: stretch;
+    margin-top: 1rem;
+  }
+
+  .sticky-story-track {
+    gap: 0.8rem;
+    margin-top: 0.45rem;
+  }
+
+  .sticky-story-track[data-stagger] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hover-card {
+    min-height: auto;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .hover-card-icon {
+    width: 2.45rem;
+    height: 2.45rem;
+    margin-bottom: 0.75rem;
+    border-radius: 10px;
+  }
+
+  .hover-card-name {
+    font-size: 1.05rem;
+    line-height: 1.14;
+  }
+
+  .hover-card-summary,
+  .hover-card-detail {
+    font-size: 0.86rem;
+    line-height: 1.42;
+  }
+
+  .hover-card-summary {
+    display: block;
+    overflow: visible;
+  }
+
+  .hover-card-detail {
+    display: block;
+    overflow: visible;
+  }
+
+  .hover-card-detail-desktop {
+    display: none;
+  }
+
+  .hover-card-detail-mobile {
+    display: inline;
+  }
+
+  .hover-card-reveal {
+    margin-top: 0.7rem;
+  }
+
+  .hover-card-detail {
+    padding-bottom: 0.65rem;
+  }
+
+  .circular-cta {
+    grid-template-columns: auto minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .circular-cta-core {
+    order: 0;
+  }
+
+  .circular-cta-text {
+    order: 1;
+    min-width: 0;
+  }
+
+  .circular-cta-text strong,
+  .circular-cta-text span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   MOBILE UX POLISH PASS
+   Clean mobile surfaces: one card language, shorter copy, solid section bands,
+   larger touch targets, quieter motion, and a lighter final form.
+   ========================================================================== */
+.mobile-copy-short {
+  display: none;
+}
+
+.mobile-sticky-cta {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  html {
+    scroll-padding-bottom: 5.75rem;
+  }
+
+  .mobile-copy-desktop {
+    display: none;
+  }
+
+  .mobile-copy-short {
+    display: inline;
+  }
+
+  .workflow-sim,
+  .retainer-section,
+  .home-faq,
+  .process-section {
+    background: #fbfbf9;
+  }
+
+  .old-stack,
+  .sticky-story,
+  .system-map,
+  .audit-offer {
+    background: #f7f6f1;
+  }
+
+  .workflow-sim,
+  .old-stack,
+  .retainer-section,
+  .audit-offer,
+  .sticky-story,
+  .process-section,
+  .system-map,
+  .home-faq {
+    border-top: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .business-journey-card,
+  .who-its-for-card,
+  .pricing-card,
+  .feature-category-card,
+  .feature-cell,
+  .workflow-sim-board,
+  .old-stack-row,
+  .old-stack-decision,
+  .retainer-card,
+  .retainer-rule,
+  .aoa-step,
+  .system-map-node,
+  .home-faq-item,
+  .hover-card {
+    border: 1px solid rgba(24, 23, 77, 0.1);
+    border-radius: 12px;
+    background: #fffefa;
+    box-shadow: 0 12px 28px rgba(31, 33, 31, 0.055);
+  }
+
+  .retainer-rule,
+  .old-stack-decision {
+    color: #ffffff;
+    background: #15142b;
+  }
+
+  .hover-card-icon,
+  .old-stack-icon,
+  .retainer-card-icon,
+  .aoa-step-icon,
+  .feature-category-icon,
+  .feature-cell .feature-icon,
+  .system-map-icon {
+    width: 2.45rem;
+    height: 2.45rem;
+    border-radius: 10px;
+    color: var(--accent-ink);
+    background: #f7f6f1;
+    border: 1px solid rgba(24, 23, 77, 0.12);
+    box-shadow: none;
+  }
+
+  .button,
+  .old-stack-cta,
+  .workflow-sim-link,
+  .link-arrow,
+  .home-faq-q,
+  .old-stack-more summary,
+  .mobile-menu-toggle,
+  .mobile-nav-panel a {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .workflow-sim-board,
+  .retainer-card,
+  .workflow-lane li,
+  .retainer-build li,
+  .old-stack-more-rows,
+  .old-stack-row,
+  .sticky-story-track[data-stagger] > *,
+  [data-reveal],
+  [data-stagger] > *,
+  .scroll-word {
+    animation: none !important;
+    transition-duration: 160ms;
+  }
+
+  .old-stack-row:hover,
+  .workflow-sim-board:hover .workflow-system-card,
+  .retainer-card:hover .retainer-card-icon,
+  .hover-card:hover,
+  .system-map-node:hover {
+    transform: none;
+  }
+
+  .mobile-nav-panel {
+    padding-inline: 0.85rem;
+  }
+
+  .mobile-nav-panel nav {
+    gap: 0.45rem;
+  }
+
+  .mobile-nav-panel a:not(.button) {
+    border: 1px solid rgba(24, 23, 77, 0.08);
+    background: rgba(255, 255, 255, 0.48);
+  }
+
+  .site-header .mobile-nav-panel .button-primary {
+    min-height: 46px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(24, 23, 77, 0.1);
+  }
+
+  .final-cta {
+    background: #15142b;
+    padding-bottom: calc(5.4rem + env(safe-area-inset-bottom));
+  }
+
+  .form-background-video,
+  .form-video-mask {
+    display: none;
+  }
+
+  .form-card {
+    width: 100%;
+    justify-self: stretch;
+    padding: 0.9rem;
+    border-color: rgba(24, 23, 77, 0.1);
+    background: #fffefa;
+    box-shadow: 0 16px 36px rgba(0, 0, 8, 0.18);
+    backdrop-filter: none;
+  }
+
+  .project-form {
+    gap: 0.66rem;
+  }
+
+  .form-field {
+    gap: 0.32rem;
+  }
+
+  .form-field span,
+  .form-choice-group legend {
+    color: rgba(24, 23, 77, 0.68);
+    font-size: 0.82rem;
+    font-weight: 720;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .project-details-field small {
+    display: block;
+    max-width: 21rem;
+    margin: -0.1rem 0 0.08rem;
+    color: #68645d;
+    font-size: 0.82rem;
+    line-height: 1.36;
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    min-height: 48px;
+    border-color: rgba(24, 23, 77, 0.14);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--brand-charcoal);
+    font-size: 1rem;
+    padding: 0.72rem 0.78rem;
+  }
+
+  .form-field textarea {
+    min-height: 6.4rem;
+  }
+
+  .form-field input::placeholder,
+  .form-field textarea::placeholder {
+    color: rgba(68, 68, 76, 0.45);
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    border-color: rgba(42, 40, 128, 0.5);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(42, 40, 128, 0.1);
+  }
+
+  .turnstile-field {
+    min-height: 66px;
+    margin-top: 0.08rem;
+  }
+
+  .turnstile-field:empty {
+    min-height: 66px;
+    border: 1px dashed rgba(24, 23, 77, 0.1);
+    border-radius: 10px;
+    background: rgba(247, 246, 241, 0.46);
+  }
+
+  .form-submit {
+    min-height: 48px;
+    border-radius: 10px;
+  }
+
+  .form-status {
+    color: #5f5c56;
+  }
+
+  .form-status[data-variant="pending"] {
+    color: var(--brand-charcoal);
+  }
+
+  .form-status[data-variant="error"] {
+    color: #b42318;
+  }
+
+  .form-status[data-variant="success"] {
+    color: #1f7a52;
+  }
+
+  .business-journey-card > p,
+  .who-its-for-card p,
+  .pricing-card p,
+  .feature-category-card > p,
+  .feature-cell p,
+  .phone-agent-call p,
+  .phone-agent-summary > p,
+  .featured-build > p,
+  .supporting-builds p,
+  .workflow-sim-brief p,
+  .workflow-sim-notes p,
+  .old-stack-row p,
+  .old-stack-decision > p,
+  .retainer-problem,
+  .retainer-build p,
+  .retainer-rule p,
+  .home-faq-a > p,
+  .hover-card-summary,
+  .hover-card-detail,
+  .aoa-step-lead,
+  .aoa-step ul li,
+  .aoa-step-titles p {
+    font-size: 0.9rem;
+    line-height: 1.46;
+  }
+
+  .business-journey-card li,
+  .pricing-card li,
+  .feature-category-card li,
+  .workflow-lane li,
+  .retainer-build li,
+  .old-stack-reasons li {
+    font-size: 0.84rem;
+    line-height: 1.36;
+  }
+
+  .home-faq-item.is-open .home-faq-a > p {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+  }
+
+  .sticky-story-intro {
+    max-width: 23rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .form-success-dialog {
+    width: min(27rem, calc(100vw - 1.5rem));
+    border-color: rgba(24, 23, 77, 0.12);
+    background: #fffefa;
+    color: var(--brand-charcoal);
+    box-shadow: 0 22px 70px rgba(8, 8, 20, 0.34);
+  }
+
+  .form-success-dialog::backdrop {
+    background: rgba(8, 8, 20, 0.48);
+    backdrop-filter: none;
+  }
+
+  .form-success-close {
+    background: #f7f6f1;
+    color: var(--brand-charcoal);
+  }
+
+  .form-success-title {
+    color: var(--brand-charcoal);
+  }
+
+  .form-success-message {
+    color: #5f5c56;
+  }
+
+  .mobile-sticky-cta {
+    position: fixed;
+    left: max(0.85rem, env(safe-area-inset-left));
+    right: max(0.85rem, env(safe-area-inset-right));
+    bottom: max(0.8rem, env(safe-area-inset-bottom));
+    z-index: 80;
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: #ffffff;
+    background: #18174d;
+    box-shadow: 0 18px 42px rgba(8, 8, 20, 0.28);
+    font-size: 0.95rem;
+    font-weight: 760;
+    text-decoration: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(100% + 1.2rem));
+    transition:
+      opacity 180ms ease,
+      transform 220ms var(--ease-out-soft);
+  }
+
+  .mobile-sticky-cta.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 }
 

@@ -250,6 +250,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 if (!isHome || window.sessionStorage.getItem("dgc:splash-seen") === "1") {
                   document.documentElement.classList.add("dgc-splash-seen");
                 } else {
+                  window.sessionStorage.setItem("dgc:splash-seen", "1");
                   document.documentElement.classList.add("dgc-splash-pending");
                 }
                 window.setTimeout(function () {

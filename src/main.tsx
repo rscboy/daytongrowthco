@@ -797,8 +797,11 @@ function WorkflowSimulation() {
               Pick the workflow that is annoying this week.
             </h2>
             <p>
-              {firstName ? `${firstName}, ` : ""}choose the part of {business} currently held together by memory,
-              inbox searches, and one very tired person. We sketch the first sane version from there.
+              <span className="mobile-copy-desktop">
+                {firstName ? `${firstName}, ` : ""}choose the part of {business} currently held together by memory,
+                inbox searches, and one very tired person. We sketch the first sane version from there.
+              </span>
+              <span className="mobile-copy-short">Choose one repeated workflow. We’ll sketch the cleaner version.</span>
             </p>
           </div>
           <a className="workflow-sim-link" href="#cta">
@@ -833,10 +836,21 @@ function WorkflowSimulation() {
 
           <div className="workflow-sim-board" key={active.id} role="tabpanel" aria-live="polite">
             <div className="workflow-sim-brief">
-              <span className="workflow-sim-doc">DGC / draft brief</span>
-              <h3>{briefLine}</h3>
+              <span className="workflow-sim-doc">
+                <span className="workflow-sim-doc-desktop">DGC / draft brief</span>
+                <span className="workflow-sim-doc-mobile">Selected workflow</span>
+              </span>
+              <h3>
+                <span className="workflow-sim-title-desktop">{briefLine}</span>
+                <span className="workflow-sim-title-mobile">{active.build}</span>
+              </h3>
               <p>
-                First pass for a {teamSize} setup. Useful enough to discuss. Not a prophecy, which is probably healthy.
+                <span className="workflow-sim-copy-desktop">
+                  First pass for a {teamSize} setup. Useful enough to discuss. Not a prophecy, which is probably healthy.
+                </span>
+                <span className="workflow-sim-copy-mobile">
+                  A cleaner first version your team can review.
+                </span>
               </p>
             </div>
 
@@ -1731,6 +1745,10 @@ function Hero() {
             </p>
           ) : null}
         </div>
+        <a className="hero-scroll-cue" href="#old-stack" aria-label="Scroll to the next section">
+          <span>Scroll</span>
+          <ChevronDown size={18} aria-hidden="true" />
+        </a>
         <aside className={`hero-proof hero-entrance${entranceClass}`} aria-label="What a typical build looks like">
           <ProofCard
             tone="glass"
@@ -2389,16 +2407,16 @@ function ProjectForm() {
   const businessEdited = useRef(false);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
 
-  // The $999 audit CTA sends visitors here. Tag the submission so the owner sees
+  // The consultation CTA sends visitors here. Tag the submission so the owner sees
   // the intent, and seed the details field if the visitor has not typed anything.
   useEffect(() => {
     const onAuditRequest = () => {
-      setServiceTier("$999 AI Audit");
+      setServiceTier("Schedule a consultation");
       const field = detailsRef.current;
       if (field && !field.value.trim()) {
         field.value = business.trim()
-          ? `We would like the $999 AI audit for ${business.trim()}. Here is roughly how we run things today: `
-          : "We would like the $999 AI audit. Here is roughly how we run things today: ";
+          ? `We would like to schedule a consultation for ${business.trim()}. Here is roughly how we run things today: `
+          : "We would like to schedule a consultation. Here is roughly how we run things today: ";
       }
     };
     window.addEventListener("dgc:audit-request", onAuditRequest);
@@ -2500,6 +2518,7 @@ function ProjectForm() {
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
+          <small>One or two sentences is enough. Tell us the repeated workflow, where it starts, and where it gets stuck.</small>
           <textarea
             ref={detailsRef}
             id="details"
@@ -2559,13 +2578,23 @@ function FinalCTA() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
           <h2>
-            {firstName ? `${firstName}, bring us the repeated workflow. ` : "Bring us the repeated workflow. "}
-            We’ll tell you what is worth fixing.
+            <span className="final-cta-desktop-copy">
+              {firstName ? `${firstName}, bring us the repeated workflow. ` : "Bring us the repeated workflow. "}
+              We’ll tell you what is worth fixing.
+            </span>
+            <span className="final-cta-mobile-copy">
+              {firstName ? `${firstName}, show us the workflow.` : "Show us the workflow."}
+            </span>
           </h2>
           <p>
-            {business
-              ? `Tell us what your team keeps doing by hand at ${business}. We will look for the smallest useful fix. If it is not worth building, we will say that too.`
-              : "Tell us what your team keeps doing by hand. We will look for the smallest useful fix. If it is not worth building, we will say that too."}
+            <span className="final-cta-desktop-copy">
+              {business
+                ? `Tell us what your team keeps doing by hand at ${business}. We will look for the smallest useful fix. If it is not worth building, we will say that too.`
+                : "Tell us what your team keeps doing by hand. We will look for the smallest useful fix. If it is not worth building, we will say that too."}
+            </span>
+            <span className="final-cta-mobile-copy">
+              Tell us what keeps getting repeated. We’ll find the smallest useful fix.
+            </span>
           </p>
         </div>
         <ProjectForm />
@@ -2574,10 +2603,49 @@ function FinalCTA() {
   );
 }
 
+function MobileStickyCTA() {
+  const [show, setShow] = useState(false);
+  const [formVisible, setFormVisible] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      setShow(window.scrollY > Math.max(360, window.innerHeight * 0.55));
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    const target = document.getElementById("cta");
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFormVisible(entry.isIntersecting);
+      },
+      { rootMargin: "0px 0px -20% 0px", threshold: 0.08 },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <a className={`mobile-sticky-cta ${show && !formVisible ? "is-visible" : ""}`} href="#cta">
+      <span>Schedule consultation</span>
+      <ArrowRight size={16} aria-hidden="true" />
+    </a>
+  );
+}
+
 function SplashScreen() {
   const [skipSplash] = useState(() => {
     try {
-      return window.sessionStorage.getItem("dgc:splash-seen") === "1";
+      const bootPending = document.documentElement.classList.contains("dgc-splash-pending");
+      return !bootPending && window.sessionStorage.getItem("dgc:splash-seen") === "1";
     } catch {
       return false;
     }
@@ -3951,6 +4019,7 @@ const premiumServices = [
     summary: "Calls answered and qualified, day or night.",
     detail:
       "An AI agent picks up, answers common questions, captures the job details, and texts you a clean summary. No more missed calls turning into lost work.",
+    mobileDetail: "Answers calls, captures job details, and sends a clean summary.",
   },
   {
     icon: <Calculator size={22} strokeWidth={1.7} aria-hidden="true" />,
@@ -3958,6 +4027,7 @@ const premiumServices = [
     summary: "Sendable quotes priced from your real sheet.",
     detail:
       "Your rates, materials, and markups become rules. Your team builds an accurate quote in a minute instead of an evening, and it goes out while the lead is still warm.",
+    mobileDetail: "Your rates become a fast quote your team can send confidently.",
   },
   {
     icon: <LayoutDashboard size={22} strokeWidth={1.7} aria-hidden="true" />,
@@ -3965,6 +4035,7 @@ const premiumServices = [
     summary: "One place for every job and customer.",
     detail:
       "Stop digging through texts, spreadsheets, and inboxes. A custom dashboard or customer portal keeps jobs, files, and status in one view your whole team trusts.",
+    mobileDetail: "Jobs, files, customers, and status in one trusted view.",
   },
   {
     icon: <Globe2 size={22} strokeWidth={1.7} aria-hidden="true" />,
@@ -3972,6 +4043,7 @@ const premiumServices = [
     summary: "Fast, modern, and built to convert.",
     detail:
       "A site that loads instantly, shows up in search and AI answers, and turns visitors into booked calls, wired straight into the tools that run your business.",
+    mobileDetail: "A faster site that turns visitors into calls and leads.",
   },
   {
     icon: <Workflow size={22} strokeWidth={1.7} aria-hidden="true" />,
@@ -3979,6 +4051,7 @@ const premiumServices = [
     summary: "The manual handoffs, gone.",
     detail:
       "Intake, follow-up, scheduling, and reminders run themselves. We connect the steps your team does by hand so nothing slips and no one re-types the same thing twice.",
+    mobileDetail: "Follow-ups, scheduling, reminders, and handoffs run cleaner.",
   },
   {
     icon: <AppWindow size={22} strokeWidth={1.7} aria-hidden="true" />,
@@ -3986,6 +4059,7 @@ const premiumServices = [
     summary: "Software shaped to how you already work.",
     detail:
       "When off-the-shelf almost fits but never quite does, we build the exact tool around your process, for a fraction of what a traditional dev shop would charge.",
+    mobileDetail: "The exact tool your process needs, without dev-shop bloat.",
   },
 ];
 
@@ -3994,10 +4068,17 @@ function ServicesSticky() {
     <StickyStorySection
       id="services"
       heading="One team for the whole system."
-      intro="Most shops sell you a single piece. We build the connected layer that quotes, answers, organizes, and follows up, so the parts actually talk to each other."
+      intro={
+        <>
+          <span className="mobile-copy-desktop">
+            Most shops sell you a single piece. We build the connected layer that quotes, answers, organizes, and follows up, so the parts actually talk to each other.
+          </span>
+          <span className="mobile-copy-short">One connected system for quotes, calls, follow-up, and customer work.</span>
+        </>
+      }
       aside={
         <div className="sticky-story-aside">
-          <CircularCTA href="#cta" label="Start building" sub="Free consultation" />
+          <CircularCTA href="#cta" label="Schedule consultation" sub="Free consultation" />
         </div>
       }
     >
@@ -4209,8 +4290,11 @@ function OldStackUpgrade() {
               Replace the old stack, one workflow at a time.
             </h2>
             <p>
-              If the system only works because one employee knows the secret ritual, it is not a system. We help you
-              move the parts that are ready, without turning the whole company upside down.
+              <span className="mobile-copy-desktop">
+                If the system only works because one employee knows the secret ritual, it is not a system. We help you
+                move the parts that are ready, without turning the whole company upside down.
+              </span>
+              <span className="mobile-copy-short">Move the outdated parts first. Leave what still works alone.</span>
             </p>
           </div>
           <a className="old-stack-cta" href="#cta">
@@ -4329,8 +4413,11 @@ function OneWorkflowRetainers() {
             One repetitive problem = one AI retainer.
           </h2>
           <p>
-            Pick one task your team repeats every week. We build a single system that handles it, then keep it
-            running as the work changes. The setup fee gets it live. The monthly retainer keeps it useful.
+            <span className="mobile-copy-desktop">
+              Pick one task your team repeats every week. We build a single system that handles it, then keep it
+              running as the work changes. The setup fee gets it live. The monthly retainer keeps it useful.
+            </span>
+            <span className="mobile-copy-short">Pick one repeated task. We build it, tune it, and keep it useful.</span>
           </p>
         </div>
 
@@ -4474,8 +4561,11 @@ function AiAuditOffer() {
             A broken process plus AI is just a faster mess.
           </h2>
           <p>
-            So we go in order: audit, then optimize, then automate. Most teams skip the first two, automate the mess, and
-            decide AI does not work. You can never skip a step. Step one is a $999 audit.
+            <span className="mobile-copy-desktop">
+              So we go in order: audit, then optimize, then automate. Most teams skip the first two, automate the mess, and
+              decide AI does not work. You can never skip a step. Step one is a consultation.
+            </span>
+            <span className="mobile-copy-short">Audit first. Then optimize. Then automate what is actually ready.</span>
           </p>
         </div>
 
@@ -4496,7 +4586,7 @@ function AiAuditOffer() {
                     <p>{step.tag}</p>
                   </div>
                 </div>
-                {step.featured ? <span className="aoa-step-flag">Step one, the $999 audit</span> : null}
+                {step.featured ? <span className="aoa-step-flag">Consultation first</span> : null}
                 {step.lead ? <p className="aoa-step-lead">{step.lead}</p> : null}
                 <ul>
                   {step.items.map((item) => (
@@ -4511,8 +4601,8 @@ function AiAuditOffer() {
         <aside className="audit-cta-band">
           <div className="audit-cta-intro">
             <span>Start with step one</span>
-            <strong>$999</strong>
-            <small>One time. No retainer required.</small>
+            <strong>Schedule a consultation</strong>
+            <small>No retainer required.</small>
             <p className="audit-standalone">
               If nothing is worth building, we tell you that. The audit stands on its own.
             </p>
@@ -4527,7 +4617,7 @@ function AiAuditOffer() {
               ))}
             </ul>
             <a className="button button-primary large" href="#cta" onClick={requestAudit}>
-              Book the $999 audit
+              Schedule a consultation
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           </div>
@@ -4663,8 +4753,11 @@ function HomeFaq() {
               DG
             </span>
             <p>
-              Not sure if this fits your business? Tell us what eats your time and we will tell you straight whether a tool is
-              worth building. No pressure either way.
+              <span className="mobile-copy-desktop">
+                Not sure if this fits your business? Tell us what eats your time and we will tell you straight whether a tool is
+                worth building. No pressure either way.
+              </span>
+              <span className="mobile-copy-short">Tell us what eats your time. We’ll tell you if it is worth building.</span>
             </p>
             <a className="link-arrow" href="#cta">
               Ask us directly
@@ -4717,6 +4810,7 @@ function Homepage() {
         <HomeFaq />
         <FinalCTA />
       </main>
+      <MobileStickyCTA />
       <SiteFooter />
     </>
   );

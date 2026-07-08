@@ -201,11 +201,12 @@ type HoverRevealCardProps = {
   name: string;
   summary: string;
   detail: string;
+  mobileDetail?: string;
   href?: string;
   cta?: string;
 };
 
-export function HoverRevealCard({ index, icon, name, summary, detail, href = "#cta", cta = "Start here" }: HoverRevealCardProps) {
+export function HoverRevealCard({ index, icon, name, summary, detail, mobileDetail, href = "#cta", cta = "Start here" }: HoverRevealCardProps) {
   return (
     <article className="hover-card" tabIndex={0}>
       <div className="hover-card-glow" aria-hidden="true" />
@@ -219,7 +220,10 @@ export function HoverRevealCard({ index, icon, name, summary, detail, href = "#c
       </div>
       <div className="hover-card-reveal">
         <div className="hover-card-reveal-inner">
-          <p className="hover-card-detail">{detail}</p>
+          <p className="hover-card-detail">
+            <span className="hover-card-detail-desktop">{detail}</span>
+            <span className="hover-card-detail-mobile">{mobileDetail ?? detail}</span>
+          </p>
           <a className="hover-card-cta" href={href}>
             {cta}
             <ArrowRight size={15} aria-hidden="true" />
@@ -277,7 +281,7 @@ export function ProcessStepCard({ step, phase, title, deliverables, result, dash
 type StickyStorySectionProps = {
   id?: string;
   heading: string;
-  intro: string;
+  intro: React.ReactNode;
   aside?: React.ReactNode;
   children: React.ReactNode;
 };
