@@ -43,8 +43,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.daytongrowth.co/aboutus</loc>
-    <lastmod>2026-06-24</lastmod>
+    <loc>https://www.daytongrowth.co/aboutus/</loc>
+    <lastmod>2026-07-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -53,6 +53,42 @@
     <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.55</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/custom-software-vs-off-the-shelf/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/ai-phone-agent-vs-answering-service/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/dev-shop-vs-ai-assisted-development/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/custom-software-for-roofing-companies/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/custom-software-for-hvac-companies/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.daytongrowth.co/custom-software-for-landscaping-companies/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.daytongrowth.co/pricing.md</loc>

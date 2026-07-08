@@ -17,6 +17,12 @@ const legacyFiles = [
   "watson-roofing.html",
   "website-design/index.html",
   "website-maintenance/index.html",
+  "custom-software-vs-off-the-shelf/index.html",
+  "ai-phone-agent-vs-answering-service/index.html",
+  "dev-shop-vs-ai-assisted-development/index.html",
+  "custom-software-for-roofing-companies/index.html",
+  "custom-software-for-hvac-companies/index.html",
+  "custom-software-for-landscaping-companies/index.html",
 ] as const;
 
 type LegacyFile = (typeof legacyFiles)[number];

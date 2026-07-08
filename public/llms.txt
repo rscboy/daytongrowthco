@@ -2,7 +2,7 @@
 
 > DaytonGrowthCo builds custom business tools, automations, websites, and digital systems for small and midsized businesses. The company uses AI-assisted development to deliver custom-fit work at a fraction of traditional custom development cost.
 
-Last updated: 2026-06-24
+Last updated: 2026-07-07
 
 ## Primary Website
 
@@ -13,9 +13,21 @@ Last updated: 2026-06-24
 - Website design: https://www.daytongrowth.co/website-design/
 - Local SEO: https://www.daytongrowth.co/local-seo/
 - Website maintenance: https://www.daytongrowth.co/website-maintenance/
-- About: https://www.daytongrowth.co/aboutus
+- About: https://www.daytongrowth.co/aboutus/
 - Pricing summary for agents: https://www.daytongrowth.co/pricing.md
 - Contact: help@daytongrowth.co
+
+## Comparisons
+
+- Custom software vs off-the-shelf: https://www.daytongrowth.co/custom-software-vs-off-the-shelf/
+- AI phone agent vs answering service: https://www.daytongrowth.co/ai-phone-agent-vs-answering-service/
+- Dev shop vs AI-assisted development: https://www.daytongrowth.co/dev-shop-vs-ai-assisted-development/
+
+## Industry Pages
+
+- Custom software for roofing companies: https://www.daytongrowth.co/custom-software-for-roofing-companies/
+- Custom software for HVAC companies: https://www.daytongrowth.co/custom-software-for-hvac-companies/
+- Custom software for landscaping companies: https://www.daytongrowth.co/custom-software-for-landscaping-companies/
 
 ## Entity Summary
 
@@ -64,6 +76,12 @@ Small businesses often need custom tools, but traditional custom software is pri
 - answer engine optimization for small business
 - custom apps for contractors
 - automation for small business workflows
+- custom software vs off-the-shelf for small business
+- AI phone agent vs answering service
+- dev shop vs AI-assisted development cost
+- custom software for roofing companies
+- custom software for HVAC companies
+- custom software for landscaping companies
 
 ## Structured Data and Crawl Notes
 

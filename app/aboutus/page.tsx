@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Meet DaytonGrowthCo. We build phone agents, quote tools, dashboards, portals, content, and custom apps for small businesses in Dayton, Ohio and beyond.",
   alternates: {
-    canonical: "https://www.daytongrowth.co/aboutus",
+    canonical: "https://www.daytongrowth.co/aboutus/",
     types: { "text/markdown": "/md/about.md" },
   },
 };
@@ -17,7 +17,7 @@ const aboutSchema = {
     {
       "@type": "AboutPage",
       "@id": "https://www.daytongrowth.co/aboutus#webpage",
-      url: "https://www.daytongrowth.co/aboutus",
+      url: "https://www.daytongrowth.co/aboutus/",
       name: "About DaytonGrowthCo.",
       description:
         "About DaytonGrowthCo, a Dayton, Ohio company building custom business tools, automations, websites, phone agents, quote tools, dashboards, portals, and custom apps.",
@@ -37,7 +37,7 @@ const aboutSchema = {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: "https://www.daytongrowth.co/" },
-        { "@type": "ListItem", position: 2, name: "About", item: "https://www.daytongrowth.co/aboutus" },
+        { "@type": "ListItem", position: 2, name: "About", item: "https://www.daytongrowth.co/aboutus/" },
       ],
     },
   ],
