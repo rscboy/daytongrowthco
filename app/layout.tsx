@@ -31,8 +31,31 @@ const siteSchema = {
         addressRegion: "OH",
         addressCountry: "US",
       },
+      // Service-area business centered on Dayton; coordinates anchor the entity
+      // to the Miami Valley for local relevance. priceRange + hours are local
+      // ranking/eligibility signals. Hours default to weekday business hours;
+      // confirm and adjust to match the Google Business Profile exactly.
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 39.7589,
+        longitude: -84.1916,
+      },
+      priceRange: "$$",
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "09:00",
+          closes: "17:00",
+        },
+      ],
       areaServed: [
         { "@type": "City", name: "Dayton", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "City", name: "Kettering", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "City", name: "Beavercreek", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "City", name: "Centerville", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "City", name: "Huber Heights", addressRegion: "OH", addressCountry: "US" },
+        { "@type": "City", name: "Springboro", addressRegion: "OH", addressCountry: "US" },
         { "@type": "AdministrativeArea", name: "Miami Valley", addressRegion: "OH", addressCountry: "US" },
         { "@type": "Country", name: "United States" },
       ],

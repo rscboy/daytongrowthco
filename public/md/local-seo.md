@@ -1,25 +1,75 @@
 # Local SEO in Dayton, OH | Get Found on Google
 
-> Local SEO services in Dayton, Ohio. Rank higher in Google Maps, attract more local customers, and increase calls.
+> Local SEO for Dayton and Miami Valley businesses. Rank higher in Google Maps and the local pack, earn more reviews, and turn local visibility into calls and leads.
 
-## Local SEO Services in Dayton, Ohio
+[Home](/) / Local SEO
 
-If local buyers can’t find you in search and maps, they call someone else. We optimize your local presence so your business shows up when intent is highest.
+## Local SEO in Dayton, Ohio
 
-## Why Local SEO Matters
+If Dayton buyers cannot find you in Google Maps and the local pack, they call the business that shows up first. We optimize your Google Business Profile, reviews, and local signals so you appear when local intent is highest.
 
-- Improves map pack and “near me” visibility
+[Improve my local ranking](/#cta) [See website design](/website-design/)
+
+## Why local ranking matters
+
+- Improves map pack and "near me" visibility
 - Drives high-intent calls and lead form submissions
 - Builds trust through consistent local signals
-- Increases share against nearby competitors
+- Wins share against nearby competitors
 
-## What We Optimize
+## What we optimize
 
-Google Business Profile, local relevance content, review velocity, citation consistency, and on-page location targeting aligned to your priority services.
+Google Business Profile categories and services, review growth and responses, citation and NAP consistency, local relevance content, and on-page structured data aligned to your priority services.
 
-## Built for Sustainable Growth
+## Areas we serve
 
-Our process focuses on durable local ranking signals and lead quality, not vanity metrics. You get measurable visibility in the ZIP codes that matter most.
+DaytonGrowthCo is a service-area business based in Dayton. We work on site and remotely across the Miami Valley, and with small and midsized businesses nationwide.
+
+- Dayton
+- Kettering
+- Beavercreek
+- Centerville
+- Huber Heights
+- Springboro
+- Miamisburg
+- Vandalia
+- Fairborn
+
+## Contact
+
+DaytonGrowthCo.
+
+Serving Dayton & the Miami Valley, Ohio
+
+Phone: [(937) 367-7089](tel:+19373677089)
+
+Email: [help@daytongrowth.co](mailto:help@daytongrowth.co)
+
+Hours: Monday to Friday, 9am to 5pm
+
+## Common questions
+
+What areas around Dayton does DaytonGrowthCo serve?
+
+DaytonGrowthCo serves Dayton, Kettering, Beavercreek, Centerville, Huber Heights, Springboro, and the wider Miami Valley in Ohio, and works remotely with small and midsized businesses across the United States.
+
+How do you help a Dayton business rank higher in Google Maps?
+
+We optimize your Google Business Profile categories, services, and service area, build a steady flow of genuine reviews, keep your name, phone, and service area consistent across citations, and align your website's local content and structured data. Together those signals lift relevance and prominence in the local pack.
+
+Do I need a storefront to rank in local search?
+
+No. As a service-area business you can rank in Google Maps and the local pack without a public street address by defining the areas you serve and building prominence through reviews, citations, and local content.
+
+How long does local SEO take to show results?
+
+Profile and citation fixes can move visibility within a few weeks. Competitive map-pack rankings build over a few months as reviews, consistent citations, and local signals accumulate.
+
+## Show up when Dayton searches
+
+Tell us the services you want to be found for and the areas you serve. We will map the fastest path to more local visibility and better leads. No obligation.
+
+[Start a conversation](/#cta)
 
 ---
 
