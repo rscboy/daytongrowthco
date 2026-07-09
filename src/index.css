@@ -18150,6 +18150,166 @@ dialog[open],
   }
 }
 
+/* Mobile footer composition: one compact, deliberate stack instead of a set of
+   inherited desktop blocks fighting for space. */
+@media (max-width: 640px) {
+  .site-footer {
+    border-top-color: rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(circle at 22% 0%, rgba(87, 150, 200, 0.16), transparent 16rem),
+      radial-gradient(circle at 92% 8%, rgba(42, 40, 128, 0.32), transparent 18rem),
+      linear-gradient(180deg, #080918 0%, #05070c 64%, #040509 100%) !important;
+  }
+
+  .site-footer::after {
+    right: -2.5rem;
+    bottom: 0.35rem;
+    font-size: 4.7rem;
+    opacity: 0.018;
+  }
+
+  .site-footer > .mx-auto {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 1.55rem 1.15rem 1.25rem !important;
+  }
+
+  .site-footer .footer-brand {
+    gap: 0.82rem !important;
+    max-width: none;
+    padding-bottom: 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .site-footer .footer-logo {
+    width: fit-content;
+    min-height: 40px !important;
+    gap: 0.58rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.32rem 0.62rem 0.32rem 0.34rem !important;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .site-footer .footer-logo img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 7px;
+  }
+
+  .site-footer .footer-logo .nav-wordmark {
+    font-size: 0.94rem;
+  }
+
+  .site-footer .footer-logo .nav-wordmark-dayton span {
+    color: #182018 !important;
+  }
+
+  .site-footer .footer-logo .nav-wordmark-growth span {
+    color: #7a766f !important;
+  }
+
+  .site-footer .footer-logo .nav-wordmark b,
+  .site-footer .footer-logo .nav-wordmark b span {
+    color: #5796c8 !important;
+  }
+
+  .site-footer .footer-brand p {
+    max-width: 21rem !important;
+    margin: 0;
+    color: #c9ced8 !important;
+    font-size: 0.94rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .site-footer .client-portal-link {
+    min-height: 42px !important;
+    border-radius: 12px !important;
+    padding: 0 1rem !important;
+    font-size: 0.88rem !important;
+  }
+
+  .site-footer .social-links {
+    gap: 0.5rem !important;
+    margin-top: 0.12rem;
+  }
+
+  .site-footer .social-links .social-widget {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    border-radius: 11px !important;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.035)) !important;
+  }
+
+  .site-footer .footer-links[aria-label="Explore"],
+  .site-footer .footer-contact-stack {
+    padding-top: 1.25rem;
+  }
+
+  .site-footer .footer-links[aria-label="Explore"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.34rem 1.1rem !important;
+    padding-bottom: 1.25rem !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .site-footer .footer-section-label {
+    margin-bottom: 0.35rem !important;
+    color: #8993a4 !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0.16em !important;
+  }
+
+  .site-footer .footer-links[aria-label="Explore"] a {
+    min-height: 38px !important;
+    color: #f2f4f8 !important;
+    font-size: 0.95rem !important;
+    font-weight: 610 !important;
+    line-height: 1.2;
+  }
+
+  .site-footer .footer-contact-stack {
+    gap: 1rem !important;
+  }
+
+  .site-footer .footer-contact-card {
+    gap: 0.62rem !important;
+    border-radius: 14px !important;
+    padding: 1rem !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+  }
+
+  .site-footer .footer-contact-card a {
+    min-height: 36px !important;
+    font-size: 0.94rem !important;
+  }
+
+  .site-footer .footer-legal-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.36rem 1.1rem !important;
+  }
+
+  .site-footer .footer-legal-links a {
+    min-height: 36px !important;
+    color: #a7afbd !important;
+    font-size: 0.82rem !important;
+  }
+
+  .site-footer .footer-bottom {
+    justify-content: center !important;
+    padding: 1rem 1.15rem calc(1.1rem + env(safe-area-inset-bottom)) !important;
+    color: #949daa !important;
+    font-size: 0.72rem !important;
+    line-height: 1.35;
+    text-align: center !important;
+  }
+}
+
 @media (hover: none), (pointer: coarse) {
   .logo-lockup:hover,
   .segment-card:hover,
