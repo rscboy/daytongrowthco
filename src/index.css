@@ -7831,20 +7831,39 @@
     border-top: 1px solid rgba(24, 23, 77, 0.14);
   }
 
-  .engagement-faq details {
+  .engagement-faq details,
+  .engagement-faq-item {
     border-bottom: 1px solid rgba(24, 23, 77, 0.14);
     padding: 1rem 0;
   }
 
-  .engagement-faq summary {
+  .engagement-faq summary,
+  .engagement-faq-summary {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 0;
+    padding: 0;
+    background: transparent;
     color: #282830;
     font-size: 0.9rem;
     font-weight: 680;
+    line-height: 1.35;
+    text-align: left;
     cursor: pointer;
   }
 
-  .engagement-faq p {
+  .engagement-faq-summary svg {
+    flex: 0 0 auto;
+    color: var(--brand-accent);
+  }
+
+  .engagement-faq p,
+  .engagement-faq-panel-inner p {
     max-width: 42rem;
+    margin: 0.45rem 0 0;
   }
 
   .engagement-process li {
@@ -8214,6 +8233,65 @@
 
   .case-study-future-card a:hover {
     color: var(--brand-accent-hover);
+  }
+
+  .t-acc {
+    --acc-expand: 250ms;
+    --acc-collapse: 250ms;
+    --acc-chevron: 250ms;
+    --acc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .t-acc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--acc-collapse) var(--acc-ease);
+  }
+
+  .t-acc[data-open="true"] .t-acc-panel {
+    grid-template-rows: 1fr;
+    transition: grid-template-rows var(--acc-expand) var(--acc-ease);
+  }
+
+  .t-acc-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    filter: blur(2px);
+    transition:
+      opacity var(--acc-collapse) var(--acc-ease),
+      filter var(--acc-collapse) var(--acc-ease);
+  }
+
+  .t-acc[data-open="true"] .t-acc-panel-inner {
+    opacity: 1;
+    filter: blur(0);
+    transition:
+      opacity var(--acc-expand) var(--acc-ease),
+      filter var(--acc-expand) var(--acc-ease);
+  }
+
+  .t-acc-chevron {
+    display: inline-flex;
+    transform: scaleY(1);
+    transform-origin: center;
+    transition: transform var(--acc-chevron) var(--acc-ease);
+  }
+
+  .t-acc-chevron path {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .t-acc[data-open="true"] .t-acc-chevron {
+    transform: scaleY(-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .t-acc-panel,
+    .t-acc-panel-inner,
+    .t-acc-chevron {
+      transition: none !important;
+    }
   }
 
   .site-footer a {
@@ -14934,43 +15012,19 @@ body.mobile-nav-lock {
 .home-faq-q:hover {
   color: var(--accent-ink);
 }
-.home-faq-q:hover svg {
-  transform: translateY(1px);
-}
-.home-faq-item.is-open .home-faq-q:hover svg {
-  transform: rotate(180deg) translateY(1px);
-}
 .home-faq-q svg {
   flex: none;
   color: var(--accent-ink);
-  transition: transform 280ms var(--ease-out-soft);
-}
-.home-faq-item.is-open .home-faq-q svg {
-  transform: rotate(180deg);
 }
 .home-faq-a {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 320ms var(--ease-out-soft);
+  padding-inline: 1.35rem;
 }
-.home-faq-a > p {
-  overflow: hidden;
-  min-height: 0;
+.home-faq-a-inner > p {
   margin: 0;
-  /* Constant padding; the grid-template-rows collapse clips it when closed,
-     so there is no layout property to animate. */
-  padding: 0 1.35rem 1.3rem;
+  padding: 0 0 1.3rem;
   font-size: 0.96rem;
   line-height: 1.6;
   color: var(--text-muted);
-  opacity: 0;
-  transition: opacity 280ms var(--ease-out-soft);
-}
-.home-faq-item.is-open .home-faq-a {
-  grid-template-rows: 1fr;
-}
-.home-faq-item.is-open .home-faq-a > p {
-  opacity: 1;
 }
 @media (max-width: 820px) {
   .home-faq-inner {
@@ -15716,6 +15770,15 @@ body.mobile-nav-lock {
 }
 
 .home-faq-item.is-open .home-faq-a > p {
+  transform: translateY(0);
+}
+
+.home-faq-a-inner > p {
+  transform: translateY(-0.25rem);
+  transition: transform var(--acc-expand, 250ms) var(--acc-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.home-faq-item.is-open .home-faq-a-inner > p {
   transform: translateY(0);
 }
 
@@ -17584,7 +17647,8 @@ dialog[open],
   }
 
   .home-faq-q,
-  .engagement-faq summary {
+  .engagement-faq summary,
+  .engagement-faq-summary {
     min-height: 2.65rem !important;
     padding: 0.68rem 0.78rem !important;
     font-size: 0.9rem !important;
@@ -17592,6 +17656,8 @@ dialog[open],
   }
 
   .home-faq-a p,
+  .home-faq-a-inner p,
+  .engagement-faq-panel-inner p,
   .engagement-faq p {
     font-size: 0.82rem !important;
     line-height: 1.32 !important;

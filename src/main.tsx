@@ -3308,6 +3308,7 @@ function EngagementNotes() {
 }
 
 function HowItWorksFaq() {
+  const [open, setOpen] = useState(0);
   const faqs = [
     ["Do we need custom software?", "Often no. Many problems are solved by setting up or connecting tools you already have. Custom is for the steps where your process is genuinely different."],
     ["How can custom work be this affordable?", "We build with AI, which removes most of the hours a traditional dev shop would bill for. You get the same custom result for up to 70% less."],
@@ -3328,12 +3329,31 @@ function HowItWorksFaq() {
           <p>Straight answers about scope, tools, and what an engagement actually requires.</p>
         </div>
         <div className="engagement-faq">
-          {faqs.map(([q, a]) => (
-            <details key={q}>
-              <summary>{q}</summary>
-              <p>{a}</p>
-            </details>
-          ))}
+          {faqs.map(([q, a], index) => {
+            const isOpen = open === index;
+            return (
+              <div
+                key={q}
+                className={`engagement-faq-item t-acc ${isOpen ? "is-open" : ""}`}
+                data-open={isOpen ? "true" : "false"}
+              >
+                <button
+                  type="button"
+                  className="engagement-faq-summary t-acc-head"
+                  aria-expanded={isOpen}
+                  onClick={() => setOpen(isOpen ? -1 : index)}
+                >
+                  <span>{q}</span>
+                  <ChevronDown className="t-acc-chevron" size={18} aria-hidden="true" />
+                </button>
+                <div className="engagement-faq-panel t-acc-panel">
+                  <div className="engagement-faq-panel-inner t-acc-panel-inner">
+                    <p>{a}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -4850,18 +4870,24 @@ function HomeFaq() {
           {homeFaqs.map((item, index) => {
             const isOpen = open === index;
             return (
-              <li key={item.q} className={`home-faq-item ${isOpen ? "is-open" : ""}`}>
+              <li
+                key={item.q}
+                className={`home-faq-item t-acc ${isOpen ? "is-open" : ""}`}
+                data-open={isOpen ? "true" : "false"}
+              >
                 <button
                   type="button"
-                  className="home-faq-q"
+                  className="home-faq-q t-acc-head"
                   aria-expanded={isOpen}
                   onClick={() => setOpen(isOpen ? -1 : index)}
                 >
                   <span>{item.q}</span>
-                  <ChevronDown size={18} aria-hidden="true" />
+                  <ChevronDown className="t-acc-chevron" size={18} aria-hidden="true" />
                 </button>
-                <div className="home-faq-a" role="region">
-                  <p>{item.a}</p>
+                <div className="home-faq-a t-acc-panel" role="region">
+                  <div className="home-faq-a-inner t-acc-panel-inner">
+                    <p>{item.a}</p>
+                  </div>
                 </div>
               </li>
             );
