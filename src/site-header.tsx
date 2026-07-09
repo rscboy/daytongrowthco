@@ -55,8 +55,12 @@ export function Header() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMobileOpen(false);
     };
+    document.body.classList.add("mobile-nav-lock");
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.classList.remove("mobile-nav-lock");
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [mobileOpen]);
 
   return (
@@ -130,6 +134,7 @@ export function Header() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={active ? "is-active" : undefined}
+                onClick={() => setMobileOpen(false)}
               >
                 {link.mobileLabel ?? link.label}
               </Link>
@@ -141,7 +146,7 @@ export function Header() {
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
-            <Link className="button button-primary" href="/#cta">
+            <Link className="button button-primary" href="/#cta" onClick={() => setMobileOpen(false)}>
               Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </Link>

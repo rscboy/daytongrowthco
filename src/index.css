@@ -81,6 +81,8 @@
     --card-title-leading: 1.12;
     --brand-grid-light: rgba(24, 23, 77, 0.045);
     --brand-grid-white: rgba(255, 255, 255, 0.05);
+    --section-dot-grid: radial-gradient(rgba(24, 23, 77, 0.105) 0.8px, transparent 0.9px);
+    --section-dot-grid-size: 36px 36px;
     /* Warm, indigo-tinted elevation system (not flat gray) so cards read as
        "designed" rather than templated. Resting -> hover -> active. */
     --shadow-rest: 0 1px 2px rgba(24, 23, 77, 0.04), 0 8px 24px rgba(24, 23, 77, 0.05);
@@ -6872,6 +6874,59 @@
     z-index: 1;
   }
 
+  .page-hero,
+  .about-founder,
+  .homepage-preview,
+  .service-architecture,
+  .quote-workflow-example,
+  .engagement-notes,
+  .case-study-future,
+  .business-journey,
+  .who-its-for,
+  .above-fold-proof,
+  .home-faq {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero::after,
+  .about-founder::after,
+  .homepage-preview::after,
+  .service-architecture::after,
+  .quote-workflow-example::after,
+  .engagement-notes::after,
+  .case-study-future::after,
+  .business-journey::after,
+  .who-its-for::after,
+  .above-fold-proof::after,
+  .home-faq::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--section-dot-grid);
+    background-position: 14px 12px;
+    background-size: var(--section-dot-grid-size);
+    opacity: 0.5;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  }
+
+  .page-hero > .mx-auto,
+  .about-founder-inner,
+  .homepage-preview > .mx-auto,
+  .service-architecture > .mx-auto,
+  .quote-workflow-example > .mx-auto,
+  .engagement-notes > .mx-auto,
+  .case-study-future > .mx-auto,
+  .business-journey > .mx-auto,
+  .who-its-for > .mx-auto,
+  .above-fold-proof-inner,
+  .home-faq-inner {
+    position: relative;
+    z-index: 1;
+  }
+
   .page-hero {
     position: relative;
     overflow: hidden;
@@ -9791,13 +9846,18 @@
   }
 
   .mobile-nav-panel {
-    position: absolute;
-    inset: calc(100% - 1px) 0 auto;
+    position: fixed;
+    inset: calc(2.45rem + 3.5rem - 1px) 0 auto;
     display: block;
-    padding: 0 1rem 1rem;
-    background: rgba(236, 233, 225, 0.992);
-    border-bottom: 1px solid rgba(24, 32, 24, 0.11);
-    box-shadow: 0 20px 40px rgba(24, 32, 24, 0.1);
+    height: calc(100dvh - (2.45rem + 3.5rem - 1px));
+    padding: 0.7rem 1rem max(1rem, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: rgba(5, 7, 13, 0.42);
+    border-bottom: 0;
+    box-shadow: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     transform-origin: top center;
     /* Animation fires each time the panel flips from display:none to block
        (i.e. when the [hidden] attribute is removed on open). Reduced-motion
@@ -9811,7 +9871,11 @@
     height: auto;
     max-width: 42rem;
     margin: 0 auto;
-    padding: 0.55rem 0 0.25rem;
+    padding: 0.72rem;
+    border: 1px solid rgba(24, 32, 24, 0.11);
+    border-radius: 0 0 16px 16px;
+    background: rgba(236, 233, 225, 0.992);
+    box-shadow: 0 20px 40px rgba(5, 7, 13, 0.18);
   }
 
   .mobile-nav-panel a {
@@ -9826,9 +9890,14 @@
     padding: 0 0.82rem;
   }
 
-  .mobile-nav-panel a:not(.button):hover,
   .mobile-nav-panel a:not(.button):focus-visible {
     background: rgba(24, 23, 77, 0.07);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mobile-nav-panel a:not(.button):hover {
+      background: rgba(24, 23, 77, 0.07);
+    }
   }
 
   .mobile-nav-panel .button {
@@ -9851,7 +9920,6 @@
     font-weight: 760;
   }
 
-  .site-header .mobile-nav-panel .button-primary:hover,
   .site-header .mobile-nav-panel .button-primary:focus-visible {
     border-color: rgba(24, 23, 77, 0.28);
     color: var(--brand-indigo);
@@ -9861,6 +9929,19 @@
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.9) inset,
       0 12px 28px rgba(24, 23, 77, 0.16);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-header .mobile-nav-panel .button-primary:hover {
+      border-color: rgba(24, 23, 77, 0.28);
+      color: var(--brand-indigo);
+      background:
+        linear-gradient(180deg, #ffffff, rgba(221, 233, 252, 0.62)),
+        #ffffff;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 12px 28px rgba(24, 23, 77, 0.16);
+    }
   }
 
   .logo-lockup {
@@ -11468,7 +11549,8 @@
 /* ===========================================================================
    Visitor personalization invite + inline accents
    =========================================================================== */
-body.personalize-lock {
+body.personalize-lock,
+body.mobile-nav-lock {
   overflow: hidden;
 }
 
@@ -11509,8 +11591,8 @@ body.personalize-lock {
   top: 0.85rem;
   right: 0.85rem;
   display: inline-grid;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 0;
   border-radius: 999px;
@@ -11520,11 +11602,18 @@ body.personalize-lock {
   transition: background-color 160ms ease, color 160ms ease, transform 200ms ease;
 }
 
-.personalize-close:hover,
 .personalize-close:focus-visible {
   background: rgba(31, 33, 31, 0.16);
   color: #1f211f;
   transform: rotate(90deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .personalize-close:hover {
+    background: rgba(31, 33, 31, 0.16);
+    color: #1f211f;
+    transform: rotate(90deg);
+  }
 }
 
 .personalize-close:focus-visible {
@@ -15221,10 +15310,12 @@ body.personalize-lock {
     background 220ms ease;
 }
 
-.above-fold-proof-clients li:hover {
-  transform: translateY(-2px);
-  border-color: rgba(24, 23, 77, 0.16);
-  background: #ffffff;
+@media (hover: hover) and (pointer: fine) {
+  .above-fold-proof-clients li:hover {
+    transform: translateY(-2px);
+    border-color: rgba(24, 23, 77, 0.16);
+    background: #ffffff;
+  }
 }
 
 .above-fold-proof-logo {
@@ -17933,6 +18024,166 @@ dialog[open],
     font-weight: 780;
     line-height: 1;
     text-align: center !important;
+    transform: none !important;
+  }
+}
+
+/* About page mission section: the generic mobile compaction makes this section
+   feel clipped, so restore enough room for the story and principle cards. */
+@media (max-width: 700px) {
+  .about-mission-native {
+    position: relative;
+    overflow: hidden;
+    padding-top: 2.65rem !important;
+    padding-bottom: 3.35rem !important;
+    background:
+      linear-gradient(180deg, #171821 0%, #171821 72%, #111121 100%) !important;
+  }
+
+  .about-mission-native::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 5rem;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(17, 17, 33, 0), #111121 72%, #141329 100%);
+  }
+
+  .about-mission-native > .mx-auto {
+    position: relative;
+    z-index: 1;
+  }
+
+  .about-mission-native + .page-cta {
+    margin-top: -1px;
+    padding-top: 3.8rem !important;
+    background:
+      radial-gradient(circle at 50% -8%, rgba(42, 40, 128, 0.56), transparent 42%),
+      radial-gradient(circle at 16% 12%, rgba(241, 208, 177, 0.12), transparent 22rem),
+      linear-gradient(180deg, #141329 0%, #0b0d17 42%, #05070c 100%) !important;
+  }
+
+  .about-mission-native .dedicated-heading {
+    margin-bottom: 1.2rem !important;
+  }
+
+  .about-mission-native .dedicated-heading h2 {
+    max-width: 9.5ch !important;
+  }
+
+  .about-mission-native .dedicated-heading p {
+    display: block !important;
+    overflow: visible !important;
+    max-width: 24rem !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .about-mission-native .build-principles-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1px !important;
+    margin-top: 1.45rem !important;
+  }
+
+  .about-mission-native .build-principles-list li,
+  .about-mission-native .build-principles-list li:first-child {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    min-height: 8.5rem !important;
+    gap: 0.78rem 0.9rem !important;
+    padding: 1.05rem !important;
+  }
+
+  .about-mission-native .build-principles-list li > span {
+    display: grid !important;
+    grid-row: 1 / span 2;
+  }
+
+  .about-mission-native .build-principles-list strong,
+  .about-mission-native .build-principles-list li:first-child strong {
+    align-self: end;
+    font-size: 1.24rem !important;
+    line-height: 1.14 !important;
+  }
+
+  .about-mission-native .build-principles-list p,
+  .about-mission-native .build-principles-list li:first-child p {
+    display: block !important;
+    max-width: none !important;
+    margin-top: 0 !important;
+    font-size: 0.84rem !important;
+    line-height: 1.42 !important;
+  }
+}
+
+/* Mobile interaction polish: keep touch targets large, avoid iOS input zoom,
+   and disable hover-only lift effects on coarse pointers. */
+@media (max-width: 700px) {
+  .project-form .form-field input,
+  .project-form .form-field select,
+  .project-form .form-field textarea,
+  .personalize-field input {
+    font-size: 1rem !important;
+  }
+
+  .site-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  .above-fold-proof .picker-swipe-hint {
+    display: inline-flex;
+    margin: 0.15rem 0 0.25rem 0.35rem;
+    color: rgba(24, 23, 77, 0.48);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .logo-lockup:hover,
+  .segment-card:hover,
+  .business-journey-card:hover,
+  .who-its-for-card:hover,
+  .pricing-card:hover,
+  .pricing-card.featured:hover,
+  .margin-leak-row:hover,
+  .feature-cell:hover,
+  .final-cta-start:hover,
+  .choice-option:hover,
+  .founder-preview-link:hover,
+  .advanced-preview-flow > button:hover,
+  .how-preview-steps li:hover,
+  .service-detail-grid article:hover,
+  .connected-node:hover .connected-node-orb,
+  .engagement-process li:hover,
+  .hover-card:hover,
+  .process-step:hover,
+  .circular-cta:hover,
+  .circular-cta:hover .circular-cta-core,
+  .member-card:hover,
+  .premium-media:hover img,
+  .system-map-node:hover,
+  .trust-strip-marks li:hover,
+  .above-fold-proof-clients li:hover,
+  .workflow-sim-board:hover .workflow-system-card,
+  .retainer-card:hover .retainer-card-icon,
+  .old-stack-row:hover {
+    transform: none !important;
+  }
+
+  .site-offer-banner:hover .site-offer-action svg,
+  .economic-case-link:hover svg,
+  .final-cta-start:hover svg,
+  .form-submit:hover svg,
+  .founder-preview-link:hover svg,
+  .hover-card:hover .hover-card-cta svg,
+  .workflow-sim-link:hover svg,
+  .old-stack-cta:hover svg,
+  .home-faq-q:hover svg,
+  .home-faq-item.is-open .home-faq-q:hover svg {
     transform: none !important;
   }
 }

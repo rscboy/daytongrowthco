@@ -523,14 +523,22 @@ function PersonalizeInvite() {
 
   useEffect(() => {
     if (profile || hidden || open) return;
-    let delay = 3350;
-    try {
-      delay = document.documentElement.classList.contains("dgc-splash-seen") ? 650 : 3350;
-    } catch {
-      /* Use the normal post-splash delay when storage is unavailable. */
-    }
-    const timer = window.setTimeout(() => setOpen(true), delay);
-    return () => window.clearTimeout(timer);
+    let hasOpened = false;
+    const openInvite = () => {
+      if (hasOpened) return;
+      hasOpened = true;
+      setOpen(true);
+    };
+    const onScroll = () => {
+      if (window.scrollY > Math.min(900, window.innerHeight * 1.1)) openInvite();
+    };
+    const timer = window.setTimeout(openInvite, 12000);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [profile, hidden, open]);
 
   // Move focus into the dialog when it opens and lock background scroll.
@@ -4764,13 +4772,15 @@ function ProofAndVoices() {
 
 function BuiltForStrip() {
   const proofClients = orbitClients.slice(0, 4);
+  const { ref: clientsRef, scrolled: clientsScrolled } = useSwipeHint<HTMLUListElement>();
   return (
     <section className="above-fold-proof" aria-labelledby="above-fold-proof-title">
       <div className="above-fold-proof-inner">
         <div className="above-fold-proof-copy">
           <h2 id="above-fold-proof-title">Sites, systems, and workflow support for companies already doing the work.</h2>
         </div>
-        <ul className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
+        <SwipeHint hidden={clientsScrolled} />
+        <ul ref={clientsRef} className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
           {proofClients.map((client) => (
             <li key={client.name}>
               <span className="above-fold-proof-logo" aria-hidden="true">
