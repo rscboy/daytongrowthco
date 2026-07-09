@@ -76,7 +76,7 @@ function SiteFooter() {
         <nav className="lp-footer-col" aria-label="Legal and contact">
           <span className="lp-footer-label">Contact</span>
           <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
-          <a href="tel:+19373677089">(937) 367-7089</a>
+          <a href="tel:+19373690829">(937) 369-0829</a>
           <a href="/privacy-policy/">Privacy</a>
           <a href="/terms-of-service/">Terms</a>
           <a href="/accessibility/">Accessibility</a>

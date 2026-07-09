@@ -9,7 +9,7 @@ const FROM_ALIAS = "sam@daytongrowth.co";   // must be configured in Gmail under
 const LOGO_URL   = "https://github.com/rscboy/daytongrowthco/blob/main/favicon.png?raw=true";
 const SITE_URL   = "https://www.daytongrowth.co/";
 const REPLY_TO   = "sam@daytongrowth.co";
-const PHONE      = "(937) 367-7089";
+const PHONE      = "(937) 369-0829";
 const C_BLUE     = "#2563EB";
 const C_DARK     = "#0A0E1A";
 

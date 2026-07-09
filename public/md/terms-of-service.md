@@ -112,7 +112,7 @@ Questions about these Terms?
 
  help@daytongrowth.co
 
- (937) 367-7089
+ (937) 369-0829
 
 [Home](/) [Privacy Policy](/privacy-policy/) [Disclaimer](/disclaimer/) [Accessibility](/accessibility/)
 

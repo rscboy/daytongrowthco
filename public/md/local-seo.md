@@ -41,7 +41,7 @@ DaytonGrowthCo.
 
 Serving Dayton & the Miami Valley, Ohio
 
-Phone: [(937) 367-7089](tel:+19373677089)
+Phone: [(937) 369-0829](tel:+19373690829)
 
 Email: [help@daytongrowth.co](mailto:help@daytongrowth.co)
 

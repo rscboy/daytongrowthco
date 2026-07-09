@@ -3436,7 +3436,7 @@ function SiteFooter() {
         </nav>
         <nav className="footer-links" aria-label="Legal and contact">
           <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
-          <a href="tel:+19373677089">(937) 367-7089</a>
+          <a href="tel:+19373690829">(937) 369-0829</a>
           <a href="/privacy-policy/">Privacy</a>
           <a href="/terms-of-service/">Terms</a>
           <a href="/disclaimer/">Disclaimer</a>

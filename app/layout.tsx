@@ -20,7 +20,7 @@ const siteSchema = {
       description:
         "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, training systems, sales materials, and custom apps for small and midsized businesses.",
       email: "help@daytongrowth.co",
-      telephone: "+1-937-367-7089",
+      telephone: "+1-937-369-0829",
       founder: {
         "@type": "Person",
         name: "Samuel Caruso",
