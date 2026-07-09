@@ -5,10 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 
-export const primaryNavLinks = [
+type PrimaryNavLink = { href: string; label: string; mobileLabel?: string };
+
+export const primaryNavLinks: PrimaryNavLink[] = [
   { href: "/what-we-build/", label: "What We Build" },
   { href: "/examples/", label: "Examples" },
-  { href: "/how-it-works/", label: "How It Works" },
+  // Shorter label on the mobile menu only; desktop keeps the fuller phrasing.
+  { href: "/how-it-works/", label: "How It Works", mobileLabel: "Process" },
   { href: "/aboutus", label: "About" },
 ];
 
@@ -128,7 +131,7 @@ export function Header() {
                 aria-current={active ? "page" : undefined}
                 className={active ? "is-active" : undefined}
               >
-                {link.label}
+                {link.mobileLabel ?? link.label}
               </Link>
             );
           })}

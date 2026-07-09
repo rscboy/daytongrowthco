@@ -774,6 +774,33 @@ const workflowSimulationOptions = [
   },
 ];
 
+// The workflow and retainer pickers turn into horizontal scrollers on small
+// screens. A quiet mobile-only "Swipe" cue signals the extra options exist,
+// then fades the first time the track is actually scrolled.
+function useSwipeHint<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollLeft > 6) setScrolled(true);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+  return { ref, scrolled };
+}
+
+function SwipeHint({ hidden }: { hidden: boolean }) {
+  return (
+    <span className="picker-swipe-hint" data-hidden={hidden || undefined} aria-hidden="true">
+      Swipe
+      <ArrowRight size={13} aria-hidden="true" />
+    </span>
+  );
+}
+
 function WorkflowSimulation() {
   const { profile, workflowChoice, chooseWorkflow } = usePersonalization();
   const firstName = firstNameOf(profile?.name ?? "");
@@ -784,6 +811,7 @@ function WorkflowSimulation() {
   const active = workflowSimulationOptions.find((option) => option.id === activeId) ?? workflowSimulationOptions[0];
   const ActiveIcon = active.icon;
   const briefLine = `${business}: ${active.build} for ${active.label.toLowerCase()}`;
+  const { ref: pickerRef, scrolled: pickerScrolled } = useSwipeHint<HTMLDivElement>();
 
   useEffect(() => {
     chooseWorkflow(activeId);
@@ -812,7 +840,8 @@ function WorkflowSimulation() {
         </div>
 
         <div className="workflow-sim-shell">
-          <div className="workflow-sim-picker" role="tablist" aria-label="Choose a workflow to simulate">
+          <SwipeHint hidden={pickerScrolled} />
+          <div className="workflow-sim-picker" ref={pickerRef} role="tablist" aria-label="Choose a workflow to simulate">
             {workflowSimulationOptions.map((option) => {
               const Icon = option.icon;
               const selected = active.id === option.id;
@@ -1014,18 +1043,82 @@ function useTurnstileProtection() {
         if (status) status.textContent = "Verification failed to load. Please refresh and try again.";
       });
 
+    // Field-level validation: instead of the browser's native bubbles, write a
+    // specific message into the .field-error slot under each field and mark the
+    // control aria-invalid. Errors clear as soon as the field becomes valid.
+    type FieldControl = HTMLInputElement | HTMLTextAreaElement;
+    const fieldConfig: Array<{ id: string; errorId: string; empty: string; invalid?: string }> = [
+      { id: "contactName", errorId: "contactName-error", empty: "Enter your name so we know who to reply to." },
+      {
+        id: "email",
+        errorId: "email-error",
+        empty: "Enter your email so we can send you next steps.",
+        invalid: "Enter a valid email address, like name@company.com.",
+      },
+      { id: "details", errorId: "details-error", empty: "Tell us the workflow you want to fix, even one line helps." },
+    ];
+
+    const setFieldError = (control: FieldControl, errorEl: HTMLElement | null, message: string) => {
+      if (message) {
+        control.setAttribute("aria-invalid", "true");
+        if (errorEl) errorEl.textContent = message;
+      } else {
+        control.removeAttribute("aria-invalid");
+        if (errorEl) errorEl.textContent = "";
+      }
+    };
+
+    const messageFor = (control: FieldControl, cfg: (typeof fieldConfig)[number]) => {
+      if (control.validity.valid) return "";
+      if (control.validity.valueMissing) return cfg.empty;
+      if (control.validity.typeMismatch && cfg.invalid) return cfg.invalid;
+      return cfg.invalid ?? cfg.empty;
+    };
+
+    const validateFields = (): FieldControl | null => {
+      let firstInvalid: FieldControl | null = null;
+      for (const cfg of fieldConfig) {
+        const control = document.getElementById(cfg.id) as FieldControl | null;
+        if (!control) continue;
+        const message = messageFor(control, cfg);
+        setFieldError(control, document.getElementById(cfg.errorId), message);
+        if (message && !firstInvalid) firstInvalid = control;
+      }
+      return firstInvalid;
+    };
+
+    const clearAllFieldErrors = () => {
+      for (const cfg of fieldConfig) {
+        const control = document.getElementById(cfg.id) as FieldControl | null;
+        if (control) setFieldError(control, document.getElementById(cfg.errorId), "");
+      }
+    };
+
+    // Clear a field's error the moment it becomes valid while the user types.
+    const clearFieldListeners: Array<() => void> = [];
+    for (const cfg of fieldConfig) {
+      const control = document.getElementById(cfg.id) as FieldControl | null;
+      if (!control) continue;
+      const onInput = () => {
+        if (control.getAttribute("aria-invalid") === "true" && control.validity.valid) {
+          setFieldError(control, document.getElementById(cfg.errorId), "");
+        }
+      };
+      control.addEventListener("input", onInput);
+      clearFieldListeners.push(() => control.removeEventListener("input", onInput));
+    }
+
     const onSubmit = (event: SubmitEvent) => {
       event.preventDefault();
       const status = getStatus();
 
-      if (!form.checkValidity()) {
-        const firstInvalid = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(":invalid");
+      const firstInvalid = validateFields();
+      if (firstInvalid) {
         if (status) {
           status.dataset.variant = "error";
-          status.textContent = "Please complete the highlighted fields before sending.";
+          status.textContent = "Please fix the highlighted fields before sending.";
         }
-        firstInvalid?.focus();
-        form.reportValidity();
+        firstInvalid.focus();
         return;
       }
 
@@ -1055,6 +1148,7 @@ function useTurnstileProtection() {
       fetch(form.action, { method: "POST", mode: "no-cors", body: payload })
         .then(() => {
           form.reset();
+          clearAllFieldErrors();
           if (submitButton) submitButton.dataset.state = "sent";
           if (submitLabel) submitLabel.textContent = "Received";
           if (status) {
@@ -1092,6 +1186,7 @@ function useTurnstileProtection() {
     return () => {
       cancelled = true;
       form.removeEventListener("submit", onSubmit);
+      clearFieldListeners.forEach((remove) => remove());
       successDialog?.removeEventListener("close", onDialogClose);
       closeSuccessDialog?.removeEventListener("click", dismissSuccessDialog);
       if (turnstileApi && widgetId !== undefined) turnstileApi.remove(widgetId);
@@ -2465,8 +2560,10 @@ function ProjectForm() {
               nameEdited.current = true;
               setName(event.target.value);
             }}
+            aria-describedby="contactName-error"
             required
           />
+          <small className="field-error" id="contactName-error" role="alert" />
         </label>
         <label className="form-field" htmlFor="businessName">
           <span>Business</span>
@@ -2494,6 +2591,7 @@ function ProjectForm() {
               placeholder="marcus@company.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              aria-describedby="email-error"
               required
             />
             {faviconSrc ? (
@@ -2516,18 +2614,21 @@ function ProjectForm() {
               </span>
             ) : null}
           </div>
+          <small className="field-error" id="email-error" role="alert" />
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
           <span>What should we build? *</span>
-          <small>One or two sentences is enough. Tell us the repeated workflow, where it starts, and where it gets stuck.</small>
+          <small id="details-hint">One or two sentences is enough. Tell us the repeated workflow, where it starts, and where it gets stuck.</small>
           <textarea
             ref={detailsRef}
             id="details"
             name="notes"
             rows={4}
             placeholder={detailsPlaceholder}
+            aria-describedby="details-hint details-error"
             required
           />
+          <small className="field-error" id="details-error" role="alert" />
         </label>
 
         <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
@@ -2622,15 +2723,25 @@ function MobileStickyCTA() {
   }, []);
 
   useEffect(() => {
-    const target = document.getElementById("cta");
-    if (!target) return;
+    // Hide the floating CTA whenever the form or the footer is on screen, so it
+    // never sits on top of the footer's links near the bottom of the page.
+    const targets = [
+      document.getElementById("cta"),
+      document.querySelector(".site-footer"),
+    ].filter((el): el is Element => el !== null);
+    if (targets.length === 0) return;
+    const visible = new Set<Element>();
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setFormVisible(entry.isIntersecting);
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        }
+        setFormVisible(visible.size > 0);
       },
       { rootMargin: "0px 0px -20% 0px", threshold: 0.08 },
     );
-    observer.observe(target);
+    targets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
   }, []);
 
@@ -4406,6 +4517,7 @@ function OneWorkflowRetainers() {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = retainerExamples[activeIndex] ?? retainerExamples[0];
   const ActiveIcon = active.icon;
+  const { ref: pickerRef, scrolled: pickerScrolled } = useSwipeHint<HTMLDivElement>();
 
   return (
     <section className="retainer-section" id="ai-retainers" aria-labelledby="retainer-title" data-reveal>
@@ -4424,7 +4536,8 @@ function OneWorkflowRetainers() {
         </div>
 
         <div className="retainer-layout" data-stagger>
-          <div className="retainer-picker" role="tablist" aria-label="Repeated workflow examples">
+          <SwipeHint hidden={pickerScrolled} />
+          <div className="retainer-picker" ref={pickerRef} role="tablist" aria-label="Repeated workflow examples">
             {retainerExamples.map((example, index) => {
               const Icon = example.icon;
               const selected = index === activeIndex;

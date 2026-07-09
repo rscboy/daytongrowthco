@@ -6339,9 +6339,24 @@
 
   .form-field input:user-invalid,
   .form-field textarea:user-invalid,
-  .form-field select:user-invalid {
+  .form-field select:user-invalid,
+  .form-field input[aria-invalid="true"],
+  .form-field textarea[aria-invalid="true"] {
     border-color: rgba(254, 202, 202, 0.82);
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.13);
+  }
+
+  /* Inline, field-level error text populated on submit. Hidden until it holds a
+     message so it takes no space in the normal state. */
+  .form-field .field-error {
+    margin-top: 0.14rem;
+    color: #fecaca;
+    font-weight: 620;
+  }
+
+  .form-field .field-error:empty {
+    display: none;
+    margin: 0;
   }
 
   .form-choice-group {
@@ -12996,6 +13011,10 @@ body.personalize-lock {
     flex: 0 0 min(74vw, 18rem);
     scroll-snap-align: start;
   }
+  .workflow-sim-shell .picker-swipe-hint {
+    display: inline-flex;
+    color: rgba(255, 255, 255, 0.62);
+  }
 }
 @media (max-width: 680px) {
   .workflow-sim {
@@ -13075,6 +13094,43 @@ body.personalize-lock {
   .workflow-sim-picker button:hover,
   .workflow-sim-picker button:focus-visible {
     transform: none;
+  }
+}
+
+/* Mobile-only swipe cue for the horizontal workflow / retainer pickers. Hidden
+   on desktop (where the pickers stack vertically) and once the track is
+   scrolled. Color is set per section in the mobile media queries below. */
+.picker-swipe-hint {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  width: fit-content;
+  margin: 0 0 0.15rem;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 720;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: opacity 240ms ease;
+}
+.picker-swipe-hint svg {
+  animation: picker-swipe-nudge 1.7s var(--ease-out-soft) infinite;
+}
+.picker-swipe-hint[data-hidden] {
+  opacity: 0;
+}
+@keyframes picker-swipe-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker-swipe-hint svg {
+    animation: none;
   }
 }
 
@@ -13691,6 +13747,10 @@ body.personalize-lock {
   .retainer-picker button {
     flex: 0 0 min(72vw, 17rem);
     scroll-snap-align: start;
+  }
+  .retainer-layout .picker-swipe-hint {
+    display: inline-flex;
+    color: rgba(24, 23, 77, 0.5);
   }
 }
 @media (max-width: 680px) {
@@ -14775,6 +14835,22 @@ body.personalize-lock {
   transform: translateY(1px) scale(0.98);
 }
 
+/* Touch-only tap feedback: a subtle, immediate dim on press so taps feel
+   tactile on phones. Layered on top of the shared :active transform above and
+   scoped to touch devices so desktop hover behavior is untouched. */
+@media (hover: none) and (pointer: coarse) {
+  .button:active,
+  .workflow-sim-link:active,
+  .old-stack-cta:active,
+  .link-arrow:active,
+  .home-faq-q:active,
+  .workflow-sim-picker button:active,
+  .retainer-picker button:active,
+  .mobile-sticky-cta:active {
+    opacity: 0.9;
+  }
+}
+
 .workflow-sim-board,
 .retainer-card {
   transform-origin: 50% 20%;
@@ -15557,6 +15633,12 @@ dialog[open],
 @media (max-width: 700px) {
   html {
     scroll-padding-bottom: 5.75rem;
+  }
+
+  /* Reserve room below the footer so the floating sticky CTA never covers the
+     last footer links when the page is scrolled to the bottom. */
+  .site-footer {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.25rem);
   }
 
   .mobile-copy-desktop {
