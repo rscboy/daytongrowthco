@@ -99,12 +99,12 @@ export function Header() {
         <div className="header-actions">
           {isHome ? (
             <a className="button button-primary" href="#cta">
-              Schedule consultation
+              Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Schedule consultation
+              Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}
@@ -137,12 +137,12 @@ export function Header() {
           })}
           {isHome ? (
             <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
-              Schedule consultation
+              Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
             <Link className="button button-primary" href="/#cta">
-              Schedule consultation
+              Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
           )}

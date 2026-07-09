@@ -98,6 +98,7 @@
     --radius-card: 18px;
     --radius-panel: 28px;
     --radius-full: 999px;
+    --radius-button: 10px;
     /* The single restrained brand gradient. Used for one hero keyword, the
        circular CTA, and the final CTA panel. Indigo -> accent ink -> peach. */
     --brand-gradient: linear-gradient(105deg, #2a2880 0%, #4744c4 45%, #f1d0b1 115%);
@@ -490,7 +491,7 @@
     justify-content: center;
     gap: 0.45rem;
     min-height: 2.5rem;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-button);
     padding: 0 0.95rem;
     font-size: 0.88rem;
     font-weight: 650;
@@ -10774,6 +10775,539 @@
   }
 }
 
+/* Must stay at EOF: contrast repair for the mobile final CTA after every
+   page-specific mobile block has run. */
+@media (max-width: 900px) {
+  .final-cta {
+    color: #ffffff !important;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(248, 206, 173, 0.16), transparent 38%),
+      linear-gradient(180deg, #211c19 0%, #14110e 52%, #05070c 100%) !important;
+  }
+
+  .final-cta h2,
+  .final-cta-copy h2,
+  .final-cta-copy h2 span,
+  .final-cta-copy .final-cta-mobile-copy,
+  .final-cta-copy .final-cta-desktop-copy {
+    color: #ffffff !important;
+  }
+
+  .final-cta p,
+  .final-cta-copy p,
+  .final-cta-copy p span {
+    color: #d0d3dc !important;
+  }
+
+  .final-cta .form-background-video,
+  .final-cta .form-video-mask {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+  }
+
+  .final-cta .form-background-video {
+    z-index: 0 !important;
+    opacity: 0.34 !important;
+    object-fit: cover !important;
+    filter: saturate(0.92) contrast(0.9) !important;
+  }
+
+  .final-cta .form-video-mask {
+    z-index: 1 !important;
+    background:
+      radial-gradient(circle at 80% 0%, rgba(37, 99, 235, 0.2), transparent 38%),
+      radial-gradient(circle at 10% 100%, rgba(79, 70, 229, 0.14), transparent 32%),
+      linear-gradient(180deg, rgba(5, 7, 13, 0.64), rgba(5, 5, 5, 0.78)) !important;
+  }
+
+  .final-cta > .mx-auto {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .final-cta .form-card {
+    border-color: #dedbd2 !important;
+    background: #fffefa !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .final-cta .form-field span,
+  .final-cta .form-choice-group legend {
+    color: #35335d !important;
+  }
+
+  .final-cta .form-field input,
+  .final-cta .form-field textarea,
+  .final-cta .form-field select {
+    border-color: #cbc8d6 !important;
+    color: #1f211f !important;
+    background: #ffffff !important;
+  }
+
+  .final-cta .form-field input::placeholder,
+  .final-cta .form-field textarea::placeholder {
+    color: #8d8b91 !important;
+  }
+
+  .final-cta .project-details-field small,
+  .final-cta .form-status {
+    color: #5f5c56 !important;
+  }
+
+  .site-footer {
+    color: #d7dbe3 !important;
+    background:
+      radial-gradient(circle at 86% 0%, rgba(42, 40, 128, 0.34), transparent 42%),
+      #05070c !important;
+  }
+
+  .site-footer p,
+  .site-footer span,
+  .site-footer .footer-brand p,
+  .site-footer .footer-location,
+  .site-footer .footer-bottom {
+    color: #c9ced8 !important;
+  }
+
+  .site-footer a,
+  .site-footer .footer-links a,
+  .site-footer .social-links a,
+  .site-footer .client-portal-link {
+    color: #eef1f6 !important;
+    text-decoration: none !important;
+  }
+
+  .site-footer .footer-links a {
+    min-height: 44px !important;
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .site-footer .social-links a,
+  .site-footer .client-portal-link {
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus-visible {
+    color: #ffffff !important;
+  }
+
+  .site-footer .nav-wordmark-dayton {
+    color: #ffffff !important;
+  }
+
+  .site-footer .nav-wordmark-growth {
+    color: #c9ced8 !important;
+  }
+
+  .site-footer .nav-wordmark b {
+    color: #8fc6f0 !important;
+  }
+}
+
+/* Final mobile hit-area pass: catches unclassed editorial links, FAQ summaries,
+   range sliders, and footer items after page-specific rules have run. */
+@media (max-width: 700px) {
+  main a:not(.button):not(.mobile-sticky-cta):not(.logo-lockup),
+  .site-footer a,
+  details summary,
+  .personalize-skip,
+  .hero-section .button-secondary,
+  input[type="range"] {
+    min-height: 44px !important;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  main a:not(.button):not(.mobile-sticky-cta):not(.logo-lockup),
+  .site-footer a,
+  details summary {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .site-footer a {
+    justify-content: flex-start;
+    padding-inline: 0.15rem;
+  }
+
+  input[type="range"] {
+    display: block;
+    width: 100%;
+  }
+
+  .personalize-skip {
+    border-radius: 8px !important;
+  }
+
+  .final-cta {
+    color: var(--mobile-ink) !important;
+    background: var(--mobile-paper) !important;
+  }
+
+  .final-cta h2,
+  .final-cta-copy h2,
+  .final-cta-copy h2 span,
+  .final-cta-copy .final-cta-mobile-copy,
+  .final-cta-copy .final-cta-desktop-copy {
+    color: var(--mobile-ink) !important;
+  }
+
+  .final-cta p,
+  .final-cta-copy p,
+  .final-cta-copy p span,
+  .final-cta-mobile-copy,
+  .final-cta-desktop-copy {
+    color: #5f5c56 !important;
+  }
+
+  .form-card {
+    border-color: #dedbd2 !important;
+    background: #fffefa !important;
+  }
+
+  .form-field span,
+  .form-choice-group legend {
+    color: #35335d !important;
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    border-color: #cbc8d6 !important;
+    color: #1f211f !important;
+    background: #ffffff !important;
+  }
+
+  .form-field input::placeholder,
+  .form-field textarea::placeholder {
+    color: #8d8b91 !important;
+  }
+
+  .project-details-field small,
+  .form-status {
+    color: #5f5c56 !important;
+  }
+}
+
+/* ==========================================================================
+   MOBILE MINIMALIST CONSOLIDATION
+   One warm editorial system after the hero: flatter surfaces, fewer decorative
+   icons, larger touch targets, and quieter section rhythm across core pages.
+   ========================================================================== */
+@media (max-width: 700px) {
+  :root {
+    --mobile-paper: #fbfbfa;
+    --mobile-paper-alt: #f7f6f3;
+    --mobile-surface: #ffffff;
+    --mobile-line: #e8e6df;
+    --mobile-ink: #171717;
+    --mobile-muted: #6f6d68;
+  }
+
+  body {
+    background: var(--mobile-paper);
+  }
+
+  body::after {
+    opacity: 0.018;
+  }
+
+  .site-header {
+    background: rgba(251, 251, 250, 0.97);
+    border-bottom-color: var(--mobile-line);
+    box-shadow: none;
+  }
+
+  .logo-lockup,
+  .footer-logo {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .button,
+  .button.large,
+  .button.compact,
+  .old-stack-cta,
+  .workflow-sim-link,
+  .feature-view-all,
+  .link-arrow,
+  .hover-card-cta,
+  .economic-case-link,
+  .client-portal-link,
+  .home-faq-q,
+  .old-stack-more summary,
+  .site-footer a,
+  .mobile-nav-panel a,
+  .workflow-sim-picker button,
+  .retainer-picker button {
+    min-height: 44px;
+    border-radius: 8px;
+    box-shadow: none !important;
+    touch-action: manipulation;
+  }
+
+  .link-arrow,
+  .hover-card-cta,
+  .economic-case-link,
+  .site-footer a:not(.footer-logo):not(.client-portal-link) {
+    display: inline-flex;
+    align-items: center;
+    padding-block: 0.35rem;
+    color: var(--mobile-ink);
+    text-decoration: underline;
+    text-decoration-color: rgba(23, 23, 23, 0.24);
+    text-underline-offset: 0.22em;
+  }
+
+  .business-journey,
+  .who-its-for,
+  .workflow-principles,
+  .workflow-sim,
+  .old-stack,
+  .retainer-section,
+  .audit-offer,
+  .sticky-story,
+  .process-section,
+  .system-map,
+  .home-faq,
+  .platform-section,
+  .outcome-section,
+  .transformation-section,
+  .spreadsheet-transform,
+  .economic-case,
+  .labor-calculator,
+  .about-section {
+    padding-block: clamp(3.1rem, 11vw, 4.35rem);
+    background: var(--mobile-paper) !important;
+    border-top: 1px solid var(--mobile-line);
+  }
+
+  .old-stack,
+  .sticky-story,
+  .system-map,
+  .audit-offer,
+  .retainer-section,
+  .home-faq {
+    background: var(--mobile-paper-alt) !important;
+  }
+
+  .business-journey-heading h2,
+  .who-its-for-heading h2,
+  .section-heading h2,
+  .margin-leak-heading h2,
+  .process-section-head h2,
+  .system-map-head h2,
+  .workflow-sim-head h2,
+  .old-stack-head h2,
+  .retainer-head h2,
+  .audit-offer-head h2,
+  .home-faq-aside h2,
+  .sticky-story-heading,
+  .economic-case-thesis h2,
+  .labor-calculator-copy h2 {
+    max-width: 13.5ch;
+    color: var(--mobile-ink);
+    font-size: clamp(1.72rem, 7.1vw, 2.05rem);
+    font-weight: 680;
+    letter-spacing: -0.018em;
+    line-height: 1.08;
+  }
+
+  .business-journey-heading h2 span,
+  .section-heading h2 span,
+  .process-section-head h2 span,
+  .sticky-story-heading span {
+    color: inherit;
+    font-family: inherit;
+    font-style: normal;
+  }
+
+  .business-journey-heading p,
+  .who-its-for-heading p,
+  .section-heading p,
+  .margin-leak-heading p,
+  .process-section-head p,
+  .system-map-head p,
+  .workflow-sim-head p,
+  .old-stack-head p,
+  .retainer-head p,
+  .audit-offer-head p,
+  .sticky-story-intro,
+  .economic-case-thesis p,
+  .labor-calculator-copy p {
+    max-width: 24rem;
+    color: var(--mobile-muted);
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .business-journey-card,
+  .who-its-for-card,
+  .pricing-card,
+  .feature-category-card,
+  .feature-cell,
+  .workflow-sim-board,
+  .workflow-system-card,
+  .old-stack-row,
+  .old-stack-decision,
+  .retainer-card,
+  .retainer-rule,
+  .aoa-step,
+  .audit-cta-band,
+  .system-map-node,
+  .home-faq-item,
+  .hover-card,
+  .process-step,
+  .member-card,
+  .website-migration-card,
+  .form-card {
+    border: 1px solid var(--mobile-line) !important;
+    border-radius: 10px !important;
+    background: var(--mobile-surface) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .old-stack-decision,
+  .retainer-rule,
+  .audit-cta-band,
+  .final-cta,
+  .pricing-card.featured {
+    color: var(--mobile-ink) !important;
+    background: var(--mobile-surface) !important;
+  }
+
+  .old-stack-decision *,
+  .retainer-rule *,
+  .audit-cta-band *,
+  .pricing-card.featured * {
+    color: inherit;
+  }
+
+  .business-journey-icon,
+  .hover-card-icon,
+  .old-stack-icon,
+  .retainer-card-icon,
+  .aoa-step-icon,
+  .feature-category-icon,
+  .feature-cell .feature-icon,
+  .system-map-icon,
+  .process-step-num,
+  .business-journey-number,
+  .feature-index {
+    display: none !important;
+  }
+
+  .hover-card-glow,
+  .hover-card::before,
+  .business-journey-card::after,
+  .who-its-for-card::after,
+  .shader-field,
+  .accent-path,
+  .workflow-sim-shell::before,
+  .workflow-sim-shell::after,
+  .process-section::before,
+  .system-map::before,
+  .retainer-section::before,
+  .audit-offer::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .business-journey-card > p,
+  .who-its-for-card p,
+  .pricing-card p,
+  .feature-category-card > p,
+  .feature-cell p,
+  .workflow-sim-brief p,
+  .workflow-sim-notes p,
+  .old-stack-row p,
+  .old-stack-decision > p,
+  .retainer-problem,
+  .retainer-build p,
+  .retainer-rule p,
+  .home-faq-a > p,
+  .hover-card-summary,
+  .hover-card-detail,
+  .aoa-step-lead,
+  .aoa-step ul li,
+  .aoa-step-titles p,
+  .process-step-deliverables li,
+  .process-step-result {
+    color: var(--mobile-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .business-journey-card ul,
+  .pricing-card ul,
+  .feature-category-card ul,
+  .workflow-lane ol,
+  .retainer-build ul,
+  .old-stack-reasons,
+  .process-step-deliverables,
+  .audit-gets,
+  .aoa-step ul {
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+  }
+
+  .business-journey-card li:nth-child(n + 3),
+  .pricing-card li:nth-child(n + 3),
+  .feature-category-card li:nth-child(n + 3),
+  .workflow-lane li:nth-child(n + 3),
+  .retainer-build li:nth-child(n + 3),
+  .old-stack-reasons li:nth-child(n + 3),
+  .process-step-deliverables li:nth-child(n + 3),
+  .audit-gets li:nth-child(n + 3),
+  .aoa-step ul li:nth-child(n + 3) {
+    display: none;
+  }
+
+  .workflow-sim-picker,
+  .retainer-picker,
+  .business-journey-grid {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    overflow: visible;
+    gap: 0.7rem;
+  }
+
+  .workflow-sim-picker button,
+  .retainer-picker button,
+  .business-journey-card {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .home-faq-item {
+    padding: 0;
+    border-width: 0 0 1px !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .home-faq-q {
+    padding: 1rem 0;
+  }
+
+  .home-faq-a {
+    padding-bottom: 1rem;
+  }
+}
+
 @media (hover: none), (pointer: coarse) {
   .logo-lockup:hover,
   .segment-card:hover,
@@ -15635,6 +16169,71 @@ dialog[open],
     scroll-padding-bottom: 5.75rem;
   }
 
+  .site-offer-banner {
+    display: none;
+  }
+
+  #scroll-progress-bar {
+    background: var(--brand-accent);
+  }
+
+  .hero-section {
+    background: #08090d;
+  }
+
+  .hero-product-video {
+    opacity: 0.94;
+    filter: brightness(0.62) contrast(1.08) saturate(0.72);
+  }
+
+  .hero-product-video-mask {
+    background:
+      radial-gradient(92% 86% at 26% 44%, rgba(0, 0, 8, 0.78) 0%, rgba(0, 0, 8, 0.64) 46%, rgba(0, 0, 8, 0.28) 78%, transparent 100%),
+      linear-gradient(180deg, rgba(0, 0, 8, 0.26) 0%, rgba(0, 0, 8, 0.16) 42%, rgba(0, 0, 8, 0.76) 100%);
+  }
+
+  .hero-section .ink-accent {
+    color: #ffffff;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+
+  .hero-actions {
+    align-items: flex-start;
+  }
+
+  .hero-section .button-primary {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    background: var(--brand-accent);
+    box-shadow: none;
+  }
+
+  .hero-section .button-primary svg {
+    color: #ffffff;
+  }
+
+  .hero-section .button-secondary {
+    min-height: 2.4rem;
+    border: 0;
+    padding: 0.38rem 0;
+    color: rgba(255, 255, 255, 0.82);
+    background: transparent;
+    box-shadow: none;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.34);
+    text-underline-offset: 0.24em;
+  }
+
+  .button.large svg {
+    margin-right: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent !important;
+  }
+
   /* Reserve room below the footer so the floating sticky CTA never covers the
      last footer links when the page is scrolled to the bottom. */
   .site-footer {
@@ -15689,9 +16288,9 @@ dialog[open],
   .home-faq-item,
   .hover-card {
     border: 1px solid rgba(24, 23, 77, 0.1);
-    border-radius: 12px;
+    border-radius: var(--radius-button);
     background: #fffefa;
-    box-shadow: 0 12px 28px rgba(31, 33, 31, 0.055);
+    box-shadow: none;
   }
 
   .retainer-rule,
@@ -15707,12 +16306,12 @@ dialog[open],
   .feature-category-icon,
   .feature-cell .feature-icon,
   .system-map-icon {
-    width: 2.45rem;
-    height: 2.45rem;
-    border-radius: 10px;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0;
     color: var(--accent-ink);
-    background: #f7f6f1;
-    border: 1px solid rgba(24, 23, 77, 0.12);
+    background: transparent;
+    border: 0;
     box-shadow: none;
   }
 
@@ -15765,8 +16364,9 @@ dialog[open],
 
   .site-header .mobile-nav-panel .button-primary {
     min-height: 46px;
-    background: #ffffff;
-    box-shadow: 0 10px 24px rgba(24, 23, 77, 0.1);
+    background: var(--brand-accent);
+    color: #ffffff;
+    box-shadow: none;
   }
 
   .final-cta {
@@ -15785,7 +16385,7 @@ dialog[open],
     padding: 0.9rem;
     border-color: rgba(24, 23, 77, 0.1);
     background: #fffefa;
-    box-shadow: 0 16px 36px rgba(0, 0, 8, 0.18);
+    box-shadow: none;
     backdrop-filter: none;
   }
 
@@ -15964,10 +16564,10 @@ dialog[open],
     justify-content: center;
     gap: 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 999px;
+    border-radius: var(--radius-button);
     color: #ffffff;
     background: #18174d;
-    box-shadow: 0 18px 42px rgba(8, 8, 20, 0.28);
+    box-shadow: none;
     font-size: 0.95rem;
     font-weight: 760;
     text-decoration: none;
@@ -15983,6 +16583,62 @@ dialog[open],
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
+  }
+
+  .retainer-build {
+    gap: 0;
+    border-top: 1px solid rgba(24, 23, 77, 0.08);
+    border-bottom: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .retainer-build > div {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0.85rem 0;
+  }
+
+  .retainer-build > div + div {
+    border-top: 1px solid rgba(24, 23, 77, 0.08);
+  }
+
+  .retainer-build li svg {
+    color: var(--brand-accent);
+  }
+
+  .workflow-sim-doc,
+  .retainer-card-top > div > span,
+  .retainer-build > div > span,
+  .audit-cta-intro > span,
+  .aoa-step-num,
+  .aoa-step-flag {
+    display: none;
+  }
+
+  .aoa-step-head {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer .footer-links[aria-label="Explore"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.64rem;
+  }
+
+  .site-footer .footer-links[aria-label="Explore"] a {
+    display: inline-flex;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 0.86rem;
+  }
+
+  .site-footer .footer-links[aria-label="Explore"] a::after {
+    content: none;
   }
 }
 
@@ -16029,5 +16685,973 @@ dialog[open],
 
   .form-submit[data-state="sending"] .form-submit-label {
     filter: none !important;
+  }
+}
+
+/* Must stay at EOF: contrast repair for the mobile final CTA after every
+   page-specific mobile block has run. */
+@media (max-width: 900px) {
+  .final-cta {
+    color: #ffffff !important;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(248, 206, 173, 0.16), transparent 38%),
+      linear-gradient(180deg, #211c19 0%, #14110e 52%, #05070c 100%) !important;
+  }
+
+  .final-cta h2,
+  .final-cta-copy h2,
+  .final-cta-copy h2 span,
+  .final-cta-copy .final-cta-mobile-copy,
+  .final-cta-copy .final-cta-desktop-copy {
+    color: #ffffff !important;
+  }
+
+  .final-cta p,
+  .final-cta-copy p,
+  .final-cta-copy p span {
+    color: #d0d3dc !important;
+  }
+
+  .final-cta .form-background-video,
+  .final-cta .form-video-mask {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+  }
+
+  .final-cta .form-background-video {
+    z-index: 0 !important;
+    opacity: 0.34 !important;
+    object-fit: cover !important;
+    filter: saturate(0.92) contrast(0.9) !important;
+  }
+
+  .final-cta .form-video-mask {
+    z-index: 1 !important;
+    background:
+      radial-gradient(circle at 80% 0%, rgba(37, 99, 235, 0.2), transparent 38%),
+      radial-gradient(circle at 10% 100%, rgba(79, 70, 229, 0.14), transparent 32%),
+      linear-gradient(180deg, rgba(5, 7, 13, 0.64), rgba(5, 5, 5, 0.78)) !important;
+  }
+
+  .final-cta > .mx-auto {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .final-cta .form-card {
+    border-color: #dedbd2 !important;
+    background: #fffefa !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .final-cta .form-field span,
+  .final-cta .form-choice-group legend {
+    color: #35335d !important;
+  }
+
+  .final-cta .form-field input,
+  .final-cta .form-field textarea,
+  .final-cta .form-field select {
+    border-color: #cbc8d6 !important;
+    color: #1f211f !important;
+    background: #ffffff !important;
+  }
+
+  .final-cta .form-field input::placeholder,
+  .final-cta .form-field textarea::placeholder {
+    color: #8d8b91 !important;
+  }
+
+  .final-cta .project-details-field small,
+  .final-cta .form-status {
+    color: #5f5c56 !important;
+  }
+
+  .retainer-rule .link-arrow,
+  .old-stack-decision .link-arrow,
+  .audit-cta-band .link-arrow,
+  .home-faq-note .link-arrow,
+  .retainer-rule .link-arrow *,
+  .old-stack-decision .link-arrow *,
+  .audit-cta-band .link-arrow *,
+  .home-faq-note .link-arrow * {
+    color: #18174d !important;
+  }
+
+  .retainer-rule,
+  .old-stack-decision,
+  .audit-cta-band,
+  .home-faq-note {
+    color: #171717 !important;
+    border-color: #e8e6df !important;
+    background: #fffefa !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .retainer-rule h3,
+  .old-stack-decision h3,
+  .audit-cta-band strong,
+  .home-faq-note strong {
+    color: #171717 !important;
+  }
+
+  .retainer-rule p,
+  .old-stack-decision p,
+  .old-stack-decision dd,
+  .old-stack-decision li,
+  .audit-cta-band p,
+  .home-faq-note p {
+    color: #5f5c56 !important;
+  }
+
+  .old-stack-decision dt,
+  .old-stack-decision .old-stack-reasons li,
+  .audit-cta-band .audit-gets li,
+  .audit-cta-band .audit-gets li svg {
+    color: #18174d !important;
+  }
+
+  .audit-cta-band .audit-gets {
+    border-color: #e8e6df !important;
+  }
+
+  .audit-cta-band .button,
+  .audit-cta-band .button *,
+  .audit-cta-band .button-primary,
+  .audit-cta-band .button-primary * {
+    color: #ffffff !important;
+  }
+
+  .audit-cta-band .button,
+  .audit-cta-band .button-primary {
+    border-color: #171717 !important;
+    background: #171717 !important;
+    background-image: none !important;
+    text-decoration: none !important;
+  }
+
+  .workflow-system-card {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    gap: 0.7rem !important;
+    align-items: center !important;
+    border: 1px solid #e8e6df !important;
+    border-radius: 10px !important;
+    padding: 0.85rem !important;
+    color: #171717 !important;
+    background: #fffefa !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .workflow-system-icon {
+    display: inline-grid !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 8px !important;
+    color: #171717 !important;
+    background: #f4d7bd !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 1px rgba(24, 23, 77, 0.12) !important;
+  }
+
+  .workflow-system-card > div > span {
+    display: block !important;
+    color: #6f6d68 !important;
+  }
+
+  .workflow-system-card strong {
+    display: block !important;
+    color: #171717 !important;
+  }
+
+  .old-stack-decision dl,
+  .old-stack-decision dl div,
+  .old-stack-decision .old-stack-reasons {
+    border-color: #e8e6df !important;
+  }
+
+  .retainer-rule .link-arrow,
+  .old-stack-decision .link-arrow,
+  .audit-cta-band .link-arrow,
+  .home-faq-note .link-arrow {
+    display: inline-flex !important;
+    min-height: 44px !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    text-decoration: underline !important;
+    text-decoration-color: rgba(24, 23, 77, 0.28) !important;
+    text-underline-offset: 0.24em !important;
+  }
+
+  .economic-case {
+    padding-top: 3.1rem !important;
+    padding-bottom: 2.4rem !important;
+    color: #171717 !important;
+    background:
+      linear-gradient(180deg, rgba(255, 254, 250, 0.88), rgba(255, 254, 250, 0.96)),
+      #fffefa !important;
+  }
+
+  .economic-case::after {
+    background:
+      linear-gradient(180deg, rgba(247, 246, 241, 0.82), transparent 5rem),
+      linear-gradient(0deg, rgba(247, 246, 241, 0.65), transparent 4rem) !important;
+  }
+
+  .economic-case-grid {
+    gap: 1.15rem !important;
+  }
+
+  .economic-case-thesis h2 {
+    max-width: 10.5ch !important;
+    color: #171717 !important;
+    font-size: clamp(2.05rem, 9.6vw, 2.55rem) !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.02 !important;
+  }
+
+  .economic-case-thesis h2 span {
+    max-width: 10.5ch !important;
+    margin-top: 0.08em !important;
+    color: var(--brand-indigo) !important;
+    font-size: 1em !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+  }
+
+  .economic-case-thesis > p {
+    max-width: 20rem !important;
+    margin-top: 0.85rem !important;
+    color: #595650 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.46 !important;
+  }
+
+  .labor-calculator {
+    padding-top: 1.55rem !important;
+    padding-bottom: 1.25rem !important;
+    background-size: 22px 22px !important;
+  }
+
+  .labor-calculator > .mx-auto {
+    display: grid !important;
+    gap: 0.75rem !important;
+    padding-inline: 0.72rem !important;
+  }
+
+  .labor-calculator-copy h2 {
+    max-width: 12ch !important;
+    font-size: clamp(1.9rem, 8.4vw, 2.35rem) !important;
+    letter-spacing: -0.026em !important;
+    line-height: 1.02 !important;
+  }
+
+  .labor-calculator-copy > p {
+    max-width: 21rem !important;
+    margin-top: 0.48rem !important;
+    color: #5f5c56 !important;
+    font-size: 0.92rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .labor-formula {
+    margin-top: 0.62rem !important;
+    border-radius: 8px !important;
+    padding: 0.55rem 0.68rem !important;
+    color: #35335d !important;
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .labor-console {
+    padding: 0.78rem !important;
+    border-color: #dedbd2 !important;
+    background: rgba(255, 254, 250, 0.92) !important;
+    box-shadow: none !important;
+  }
+
+  .labor-controls {
+    gap: 0.62rem !important;
+  }
+
+  .labor-controls label {
+    display: block !important;
+    padding: 0 !important;
+  }
+
+  .labor-controls label > span {
+    gap: 0.65rem !important;
+    font-size: 0.76rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .labor-controls label b {
+    font-weight: 760 !important;
+  }
+
+  .labor-controls output {
+    min-width: 2.35rem !important;
+    text-align: right !important;
+  }
+
+  .labor-controls input {
+    height: 1.75rem !important;
+    margin-top: 0.22rem !important;
+  }
+
+  .labor-results {
+    margin-top: 0.72rem !important;
+    border-color: #dedbd2 !important;
+  }
+
+  .labor-results > div {
+    min-height: 0 !important;
+    padding: 0.58rem 0.7rem !important;
+  }
+
+  .labor-results span {
+    font-size: 0.6rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .labor-results strong {
+    font-size: 1.22rem !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  .labor-disclaimer {
+    display: none !important;
+  }
+
+  .labor-lead-bridge {
+    display: none !important;
+  }
+
+  /* Cross-page mobile compaction pass.
+     Goal: each non-hero section should read as a tight mobile screen, not a
+     desktop page slice stacked vertically. */
+  .workflow-sim,
+  .old-stack,
+  .sticky-story,
+  .process-section,
+  .audit-offer,
+  .home-faq,
+  .service-architecture,
+  .platform-section,
+  .who-its-for,
+  .transformation-section,
+  .quote-workflow-example,
+  .build-principles,
+  .engagement-process,
+  .engagement-notes,
+  .how-faq,
+  .about-founder,
+  .page-cta {
+    padding-top: 1.65rem !important;
+    padding-bottom: 1.65rem !important;
+  }
+
+  .workflow-sim-inner,
+  .old-stack-inner,
+  .sticky-story-inner,
+  .process-section-inner,
+  .audit-offer-inner,
+  .home-faq-inner,
+  .about-founder-inner {
+    gap: 0.85rem !important;
+  }
+
+  .dedicated-heading,
+  .section-heading,
+  .workflow-sim-head,
+  .old-stack-head,
+  .sticky-story-rail-inner,
+  .process-section-head,
+  .audit-offer-head,
+  .home-faq-aside,
+  .margin-leak-heading,
+  .homepage-preview-copy {
+    margin-bottom: 0.82rem !important;
+  }
+
+  .dedicated-heading h2,
+  .section-heading h2,
+  .workflow-sim-head h2,
+  .old-stack-head h2,
+  .sticky-story-heading,
+  .process-section-head h2,
+  .audit-offer-head h2,
+  .home-faq-aside h2,
+  .margin-leak-heading h2,
+  .homepage-preview-copy h2,
+  .about-founder-copy h2,
+  .page-cta h2 {
+    max-width: 13ch !important;
+    font-size: clamp(1.85rem, 8.2vw, 2.25rem) !important;
+    letter-spacing: -0.026em !important;
+    line-height: 1.04 !important;
+  }
+
+  .dedicated-heading p,
+  .section-heading p,
+  .workflow-sim-head p,
+  .old-stack-head p,
+  .sticky-story-intro,
+  .process-section-head p,
+  .audit-offer-head p,
+  .home-faq-note p,
+  .margin-leak-heading p,
+  .homepage-preview-copy p,
+  .about-founder-copy p,
+  .page-cta p {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    max-width: 22rem !important;
+    margin-top: 0.45rem !important;
+    color: #5f5c56 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.36 !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .workflow-sim-board,
+  .old-stack-ledger,
+  .old-stack-decision,
+  .hover-card,
+  .process-step,
+  .aoa-step,
+  .audit-cta-band,
+  .home-faq-item,
+  .service-detail-grid article,
+  .margin-leak-row,
+  .who-its-for-card,
+  .build-principles-list li,
+  .engagement-notes-grid article,
+  .engagement-inputs,
+  .about-founder-copy,
+  .website-migration-card {
+    border-radius: 10px !important;
+    box-shadow: none !important;
+  }
+
+  .workflow-sim-layout,
+  .old-stack-layout,
+  .process-section-track,
+  .aoa-steps,
+  .service-detail-grid,
+  .margin-leak-table,
+  .who-its-for-grid,
+  .build-principles-list,
+  .engagement-notes-grid,
+  .engagement-faq,
+  .home-faq-list {
+    gap: 0.65rem !important;
+  }
+
+  .workflow-sim-picker button:nth-child(n + 5),
+  .workflow-lane li:nth-child(n + 3),
+  .retainer-picker button:nth-child(n + 5),
+  .sticky-story-track .hover-card:nth-child(n + 4),
+  .service-detail-grid article:nth-child(n + 3),
+  .margin-leak-row:nth-of-type(n + 5),
+  .who-its-for-card:nth-child(n + 4),
+  .build-principles-list li:nth-child(n + 4),
+  .engagement-notes-grid article:nth-child(n + 3),
+  .engagement-inputs li:nth-child(n + 5),
+  .home-faq-list li:nth-child(n + 4),
+  .engagement-faq details:nth-child(n + 5) {
+    display: none !important;
+  }
+
+  .old-stack-ledger > .old-stack-row:nth-of-type(n + 4),
+  .old-stack-more,
+  .old-stack-decision > p,
+  .old-stack-decision dl,
+  .old-stack-decision .link-arrow,
+  .sticky-story-aside,
+  .hover-card-detail,
+  .hover-card-cta,
+  .process-step-deliverables li:nth-child(n + 2),
+  .process-step-result,
+  .process-step .mini-dash,
+  .aoa-step ul li:nth-child(n + 4),
+  .audit-standalone,
+  .audit-gets li:nth-child(n + 3),
+  .home-faq-note,
+  .about-founder-copy blockquote,
+  .website-migration-card ul,
+  .website-migration-card p,
+  .quote-workflow-demo .product-scene-card-footer,
+  .comparison-hint {
+    display: none !important;
+  }
+
+  .old-stack-head,
+  .audit-offer-head,
+  .process-section-head,
+  .home-faq-inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  .old-stack-cta,
+  .audit-cta-body .button,
+  .page-cta .button,
+  .website-migration-card .button,
+  .homepage-preview-copy a {
+    width: 100% !important;
+    min-height: 2.65rem !important;
+    justify-content: center !important;
+  }
+
+  .workflow-sim-board,
+  .process-step,
+  .aoa-step,
+  .service-detail-grid article,
+  .margin-leak-row,
+  .build-principles-list li,
+  .engagement-notes-grid article {
+    padding: 0.78rem !important;
+  }
+
+  .old-stack-row {
+    border-radius: 10px !important;
+  }
+
+  .old-stack-row > *,
+  .old-stack-current {
+    padding: 0.68rem 0.78rem !important;
+  }
+
+  .old-stack-row p,
+  .hover-card-summary,
+  .hover-card-detail,
+  .aoa-step ul li,
+  .service-detail-grid dd,
+  .margin-leak-row p,
+  .who-its-for-card p,
+  .build-principles-list p,
+  .engagement-notes-grid p,
+  .engagement-inputs li {
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .hover-card {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 0.7rem !important;
+    padding: 0.78rem !important;
+  }
+
+  .hover-card-index,
+  .hover-card-glow {
+    display: none !important;
+  }
+
+  .hover-card-icon,
+  .aoa-step-icon,
+  .workflow-system-icon,
+  .old-stack-icon,
+  .who-its-for-icon {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .hover-card-name,
+  .aoa-step-titles h3,
+  .service-detail-grid h3,
+  .margin-leak-row h3,
+  .who-its-for-card h3,
+  .build-principles-list strong,
+  .engagement-notes-grid h3 {
+    font-size: 0.98rem !important;
+    line-height: 1.16 !important;
+  }
+
+  .process-step {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .process-step-head {
+    gap: 0.55rem !important;
+  }
+
+  .process-step-num {
+    width: 2rem !important;
+    height: 2rem !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .process-step-title {
+    font-size: 1rem !important;
+  }
+
+  .aoa-step-head {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+  }
+
+  .aoa-step-flag,
+  .aoa-step-lead {
+    font-size: 0.76rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .audit-cta-band {
+    gap: 0.7rem !important;
+    padding: 0.9rem !important;
+  }
+
+  .audit-cta-intro strong {
+    font-size: 1.25rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .audit-gets {
+    gap: 0.38rem !important;
+  }
+
+  .audit-gets li {
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .home-faq-q,
+  .engagement-faq summary {
+    min-height: 2.65rem !important;
+    padding: 0.68rem 0.78rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.18 !important;
+  }
+
+  .home-faq-a p,
+  .engagement-faq p {
+    font-size: 0.82rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .service-detail-grid article > span,
+  .build-principles-list li > span,
+  .engagement-notes-grid article > span,
+  .aoa-step-num {
+    display: none !important;
+  }
+
+  .service-detail-grid dl,
+  .service-detail-grid dl div {
+    gap: 0.35rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .service-detail-grid dl div:nth-child(n + 3) {
+    display: none !important;
+  }
+
+  .margin-leak-head {
+    display: none !important;
+  }
+
+  .margin-leak-row {
+    min-height: 0 !important;
+  }
+
+  .margin-leak-row > *:nth-child(n + 4) {
+    display: none !important;
+  }
+
+  .transformation-showcase,
+  .quote-workflow-demo {
+    max-height: 22rem !important;
+    overflow: hidden !important;
+  }
+
+  .website-migration-offer {
+    margin-top: 0.7rem !important;
+  }
+
+  .website-migration-card {
+    gap: 0.65rem !important;
+    padding: 0.8rem !important;
+  }
+
+  .about-founder-inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  .about-founder-portrait {
+    max-width: 11rem !important;
+    margin-inline: auto !important;
+  }
+
+  .about-founder-copy p:nth-of-type(n + 3) {
+    display: none !important;
+  }
+
+  .workflow-sim-brief,
+  .workflow-sim-notes {
+    display: none !important;
+  }
+
+  .workflow-sim-shell {
+    gap: 0.55rem !important;
+  }
+
+  .workflow-sim-picker {
+    min-height: 0 !important;
+    padding-bottom: 0.1rem !important;
+  }
+
+  .workflow-sim-picker button {
+    flex-basis: 12rem !important;
+    padding: 0.55rem 0.65rem !important;
+  }
+
+  .workflow-sim-picker button em {
+    display: none !important;
+  }
+
+  .workflow-sim-board {
+    gap: 0.62rem !important;
+    padding: 0.72rem !important;
+  }
+
+  .workflow-lanes {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.55rem !important;
+  }
+
+  .workflow-lane {
+    padding: 0.62rem !important;
+  }
+
+  .workflow-lane h3 {
+    font-size: 0.78rem !important;
+  }
+
+  .workflow-lane li {
+    font-size: 0.74rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .final-cta {
+    padding-top: 1.35rem !important;
+    padding-bottom: calc(1.45rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .final-cta > .mx-auto {
+    gap: 0.8rem !important;
+  }
+
+  .final-cta h2 {
+    max-width: 14ch !important;
+    font-size: clamp(1.75rem, 7.6vw, 2.1rem) !important;
+  }
+
+  .final-cta-copy p {
+    display: none !important;
+  }
+
+  .final-cta .form-card {
+    padding: 0.75rem !important;
+  }
+
+  .final-cta .project-form {
+    gap: 0.48rem !important;
+  }
+
+  .final-cta .form-field {
+    gap: 0.22rem !important;
+  }
+
+  .final-cta .form-field span {
+    font-size: 0.66rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .final-cta .form-field input,
+  .final-cta .form-field select {
+    min-height: 2.38rem !important;
+    border-radius: 8px !important;
+    font-size: 0.92rem !important;
+  }
+
+  .final-cta .form-field textarea {
+    min-height: 4.7rem !important;
+    border-radius: 8px !important;
+    font-size: 0.92rem !important;
+  }
+
+  .final-cta .project-details-field small {
+    display: none !important;
+  }
+
+  .final-cta .turnstile-field {
+    min-height: 0 !important;
+    max-height: 3.2rem !important;
+    overflow: hidden !important;
+  }
+
+  .final-cta .form-submit {
+    min-height: 2.55rem !important;
+  }
+
+  .old-stack-decision {
+    display: none !important;
+  }
+
+  .old-stack-ledger > .old-stack-row:nth-of-type(n + 3) {
+    display: none !important;
+  }
+
+  .platform-section {
+    padding-top: 1.35rem !important;
+    padding-bottom: 1.35rem !important;
+  }
+
+  .margin-leak-row:nth-of-type(n + 4) {
+    display: none !important;
+  }
+
+  .margin-leak-row {
+    gap: 0.45rem !important;
+    padding: 0.62rem !important;
+  }
+
+  .margin-leak-row > div {
+    padding-top: 0.35rem !important;
+  }
+
+  .margin-leak-row > div:nth-of-type(n + 2) {
+    display: none !important;
+  }
+
+  .feature-view-all {
+    display: none !important;
+  }
+
+  .service-architecture {
+    padding-top: 1.35rem !important;
+    padding-bottom: 1.35rem !important;
+  }
+
+  .service-detail-grid article {
+    padding: 0.78rem !important;
+  }
+
+  .service-detail-grid article:nth-child(n + 3) {
+    display: none !important;
+  }
+
+  .service-detail-grid article dl div:nth-child(n + 2),
+  .service-detail-grid article a {
+    display: none !important;
+  }
+
+  .service-detail-grid article dl {
+    margin-top: 0.45rem !important;
+  }
+
+  .service-detail-grid dt,
+  .service-detail-grid dd {
+    font-size: 0.78rem !important;
+    line-height: 1.28 !important;
+  }
+
+  .economic-case {
+    padding-top: 1.45rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+
+  .economic-case-grid {
+    gap: 0.75rem !important;
+  }
+
+  .economic-case-thesis h2 {
+    max-width: 12ch !important;
+    font-size: clamp(1.85rem, 8.4vw, 2.25rem) !important;
+  }
+
+  .economic-case-thesis > p {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    max-width: 21rem !important;
+    margin-top: 0.5rem !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .homepage-cost-sheet-wrap {
+    padding: 0 !important;
+  }
+
+  .homepage-cost-sheet {
+    transform: none !important;
+    padding: 0.7rem !important;
+    box-shadow: none !important;
+  }
+
+  .homepage-cost-sheet::before,
+  .homepage-sheet-recovery,
+  .homepage-sheet-note {
+    display: none !important;
+  }
+
+  .homepage-sheet-top {
+    padding: 0.08rem 0 0.5rem !important;
+    font-size: 0.54rem !important;
+  }
+
+  .homepage-sheet-title {
+    padding: 0.55rem 0 0.45rem !important;
+  }
+
+  .homepage-sheet-title h3 {
+    font-size: 1.12rem !important;
+  }
+
+  .homepage-sheet-title p {
+    display: none !important;
+  }
+
+  .homepage-sheet-inputs > div {
+    padding: 0.42rem 0 !important;
+  }
+
+  .homepage-sheet-inputs > div:nth-child(n + 3) {
+    display: none !important;
+  }
+
+  .homepage-sheet-total {
+    margin-top: 0.42rem !important;
+    padding: 0.52rem 0 0.24rem !important;
+  }
+
+  .homepage-sheet-total strong {
+    font-size: 1.72rem !important;
+  }
+
+  .build-principles-list p {
+    display: none !important;
+  }
+
+  .build-principles-list li {
+    min-height: 0 !important;
+    padding: 0.72rem !important;
+  }
+
+  .outcome-section {
+    padding-top: 1.35rem !important;
+    padding-bottom: 1.35rem !important;
   }
 }

@@ -1444,13 +1444,12 @@ function EconomicCase() {
         <div className="economic-case-grid">
           <div className="economic-case-thesis" data-reveal>
             <h2 id="economic-case-title">
-              Your best people are too expensive for
+              Stop spending expert time on
               <span>copy, paste, repeat.</span>
             </h2>
             <p>
-              Skilled time should go toward judgment, customer work, and decisions, not rebuilding the same quote,
-              moving the same details, or searching for the same file. The savings are two-sided: recover wasted labor
-              and avoid the traditional custom-dev bill.
+              Give skilled time back to judgment, customer work, and decisions. We find the repeated work worth fixing
+              first.
             </p>
           </div>
 
@@ -1520,13 +1519,10 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
     <section className="labor-calculator" id={sectionId} aria-labelledby="labor-calculator-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="labor-calculator-copy" data-reveal>
-          <h2 id="labor-calculator-title">What does the old way cost every year?</h2>
-          <p>
-            This model values only recoverable labor. It does not count faster response, fewer pricing errors,
-            better close rates, or the quiet cost of “we just do it manually” becoming company policy.
-          </p>
+          <h2 id="labor-calculator-title">What does manual work cost?</h2>
+          <p>Estimate the recoverable labor tied up in one repeated workflow.</p>
           <div className="labor-formula">
-            People × weekly hours lost × loaded hourly cost × 50 working weeks
+            People × hours × rate × 50 weeks
           </div>
         </div>
 
@@ -2747,7 +2743,7 @@ function MobileStickyCTA() {
 
   return (
     <a className={`mobile-sticky-cta ${show && !formVisible ? "is-visible" : ""}`} href="#cta">
-      <span>Schedule consultation</span>
+      <span>Start a conversation</span>
       <ArrowRight size={16} aria-hidden="true" />
     </a>
   );
@@ -4615,10 +4611,8 @@ function OneWorkflowRetainers() {
 // as an audit so the intent arrives with the lead. Removes no existing copy.
 const aoaSteps = [
   {
-    num: "01",
     icon: Search,
     title: "Audit",
-    tag: "Watch the workflow happen.",
     featured: true,
     items: [
       "Where does the request come in?",
@@ -4630,10 +4624,8 @@ const aoaSteps = [
     ],
   },
   {
-    num: "02",
     icon: Scissors,
     title: "Optimize",
-    tag: "Cut the fat before adding AI.",
     items: [
       "Intake forms before phone agents",
       "Clean CRM stages before follow-up automation",
@@ -4643,10 +4635,8 @@ const aoaSteps = [
     ],
   },
   {
-    num: "03",
     icon: Workflow,
     title: "Automate",
-    tag: "Only once the workflow is clear.",
     lead: "Then AI can safely carry:",
     items: ["Drafting", "Triage", "Classification", "Reminders", "Summaries", "Routing", "Reporting"],
   },
@@ -4688,17 +4678,13 @@ function AiAuditOffer() {
           {aoaSteps.map((step) => {
             const StepIcon = step.icon;
             return (
-              <li className={`aoa-step ${step.featured ? "is-featured" : ""}`} key={step.num}>
+              <li className={`aoa-step ${step.featured ? "is-featured" : ""}`} key={step.title}>
                 <div className="aoa-step-head">
                   <span className="aoa-step-icon" aria-hidden="true">
                     <StepIcon size={20} strokeWidth={1.8} />
                   </span>
-                  <span className="aoa-step-num" aria-hidden="true">
-                    {step.num}
-                  </span>
                   <div className="aoa-step-titles">
                     <h3>{step.title}</h3>
-                    <p>{step.tag}</p>
                   </div>
                 </div>
                 {step.featured ? <span className="aoa-step-flag">Consultation first</span> : null}

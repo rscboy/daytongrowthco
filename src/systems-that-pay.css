@@ -561,6 +561,54 @@ a:focus-visible, input:focus-visible, button:focus-visible {
   .lp-proof { padding-inline: 18px; }
   .lp-field-pair { grid-template-columns: 1fr; }
   .lp-footer-inner { width: min(100% - 28px, 1240px); }
+
+  .lp-button,
+  .lp-card button,
+  .lp-card input,
+  .lp-privacy a,
+  .lp-footer a {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  .lp-steps,
+  .lp-proof,
+  .lp-final {
+    background: var(--paper);
+  }
+
+  .lp-card,
+  .lp-step-grid li,
+  .lp-proof-links a {
+    border-color: #e8e6df;
+    border-radius: 10px;
+    background: #fffefa;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .lp-button,
+  .lp-button-light {
+    border-color: var(--charcoal);
+    border-radius: 8px;
+    background: var(--charcoal);
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  .lp-card input {
+    background: #ffffff;
+    font-size: 1rem;
+  }
+
+  .lp-card label > span,
+  .lp-card label > small,
+  .lp-privacy {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -579,5 +627,154 @@ a:focus-visible, input:focus-visible, button:focus-visible {
   .lp-button:hover,
   .lp-button:active {
     transform: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .systems-that-pay-page {
+    padding-top: calc(56px + 0.75rem);
+  }
+
+  .lp-hero {
+    gap: 0.85rem;
+    min-height: 0;
+    padding-top: 1.45rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .lp-hero-copy h1,
+  .lp-section-head h2,
+  .lp-proof-copy h2,
+  .lp-final h2 {
+    max-width: 13ch;
+    font-size: clamp(1.9rem, 8.4vw, 2.35rem);
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+  }
+
+  .lp-lede,
+  .lp-section-head p,
+  .lp-proof-copy p,
+  .lp-final-content > p {
+    display: -webkit-box;
+    overflow: hidden;
+    max-width: 21rem;
+    margin-top: 0.52rem;
+    font-size: 0.9rem;
+    line-height: 1.36;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .lp-checklist {
+    gap: 0.36rem;
+    margin-top: 0.68rem;
+    font-size: 0.78rem;
+  }
+
+  .lp-checklist li:nth-child(n + 4),
+  .lp-fineprint,
+  .lp-card label > small,
+  .lp-privacy,
+  .lp-step:nth-child(n + 3),
+  .lp-proof-copy p {
+    display: none;
+  }
+
+  .lp-card {
+    border-radius: 10px;
+    padding: 0.82rem;
+  }
+
+  .lp-card form {
+    gap: 0.45rem;
+  }
+
+  .lp-card-head {
+    padding-bottom: 0.45rem;
+  }
+
+  .lp-card-head strong {
+    font-size: 1rem;
+  }
+
+  .lp-card label {
+    gap: 0.2rem;
+  }
+
+  .lp-card label > span {
+    font-size: 0.74rem;
+  }
+
+  .lp-card input,
+  .lp-card button {
+    min-height: 2.55rem;
+    font-size: 0.9rem;
+  }
+
+  .lp-turnstile {
+    min-height: 0;
+  }
+
+  .lp-steps,
+  .lp-proof,
+  .lp-final {
+    padding-top: 1.45rem;
+    padding-bottom: 1.45rem;
+  }
+
+  .lp-section-head {
+    margin-bottom: 0.8rem;
+  }
+
+  .lp-step-grid {
+    gap: 0.65rem;
+  }
+
+  .lp-step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.68rem;
+    padding: 0.78rem;
+  }
+
+  .lp-step-mark {
+    grid-row: span 3;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 8px;
+  }
+
+  .lp-step-num {
+    display: none;
+  }
+
+  .lp-step h3 {
+    margin-bottom: 0.22rem;
+    font-size: 1rem;
+    line-height: 1.16;
+  }
+
+  .lp-step p {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .lp-proof {
+    gap: 0.8rem;
+  }
+
+  .lp-proof-links a {
+    padding: 0.78rem;
+  }
+
+  .lp-proof-links span {
+    margin-bottom: 0.25rem;
+    font-size: 0.62rem;
+  }
+
+  .lp-proof-links strong {
+    font-size: 1rem;
+    line-height: 1.16;
   }
 }

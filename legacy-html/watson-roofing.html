@@ -944,6 +944,123 @@
       }
     }
 
+    @media (max-width: 720px) {
+      .workspace {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .summary,
+      .activity {
+        display: none;
+      }
+
+      .guide,
+      .card {
+        border-radius: 16px;
+      }
+
+      .stepper {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 6px;
+        gap: 4px;
+      }
+
+      .step {
+        min-height: 38px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .step span {
+        display: none;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .panel h2 {
+        max-width: 13ch;
+        font-size: clamp(24px, 8vw, 30px);
+        line-height: 1.02;
+      }
+
+      .panel p {
+        display: -webkit-box;
+        overflow: hidden;
+        margin-top: 6px;
+        font-size: 13px;
+        line-height: 1.35;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .line-items {
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .line-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 9px;
+        border-radius: 12px;
+      }
+
+      .line-item:nth-child(n + 3),
+      .addon-row,
+      .quick-card:nth-child(n + 3),
+      .date-card:nth-child(n + 3) {
+        display: none;
+      }
+
+      .line-item h3,
+      .addon-row h3 {
+        font-size: 13px;
+      }
+
+      .line-item p,
+      .addon-row p {
+        display: none;
+      }
+
+      .price {
+        font-size: 15px;
+      }
+
+      .button-row {
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .button,
+      .toggle,
+      .button-row .primary {
+        min-height: 40px;
+        border-radius: 12px;
+        font-size: 13px;
+      }
+
+      .quick-actions,
+      .date-row {
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .quick-card,
+      .date-card,
+      .approval-box,
+      .signature {
+        padding: 10px;
+        border-radius: 12px;
+      }
+
+      textarea {
+        min-height: 74px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
