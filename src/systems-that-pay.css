@@ -266,6 +266,82 @@ button, input { font: inherit; }
 .lp-card label { display: grid; gap: 0.28rem; }
 .lp-card label > span { color: #2f2c29; font-size: 0.72rem; font-weight: 620; }
 .lp-card label > small { margin-top: -0.1rem; color: #6e665c; font-size: 0.66rem; }
+.t-clear {
+  --clear-dur: 1000ms;
+  --clear-out-fly: 12px;
+  --clear-in-fly: 12px;
+  --clear-blur: 2px;
+  --glow-delay: 50ms;
+  --glow-peak-at: 0.15;
+  --glow-opacity: 0.42;
+  --glow-spread: 1.5;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 8px;
+}
+.t-clear > input {
+  position: relative;
+  z-index: 1;
+  caret-color: currentColor;
+}
+.t-clear > input::placeholder { color: transparent !important; }
+.t-clear-mirror,
+.t-clear-placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 0 2.45rem 0 0.8rem;
+  overflow: hidden;
+  color: var(--ink);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.t-clear-mirror { opacity: 0; }
+.t-clear.has-value .t-clear-mirror,
+.t-clear.is-clearing .t-clear-mirror { opacity: 1; }
+.t-clear.has-value > input,
+.t-clear.is-clearing > input { -webkit-text-fill-color: transparent; }
+.t-clear.has-value .t-clear-placeholder { opacity: 0; }
+.t-clear-placeholder { color: rgba(110, 102, 92, 0.62); }
+.t-clear-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+.t-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.58rem;
+  height: 1.58rem;
+  border: 1px solid rgba(24, 23, 77, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+  color: rgba(47, 44, 41, 0.62);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.t-clear-btn:hover,
+.t-clear-btn:focus-visible {
+  border-color: rgba(24, 23, 77, 0.28);
+  background: rgba(24, 23, 77, 0.08);
+  color: var(--indigo);
+}
+.t-clear-btn:focus-visible {
+  outline: 2px solid rgba(241, 208, 177, 0.5);
+  outline-offset: 2px;
+}
 .lp-card input {
   width: 100%;
   min-height: 2.5rem;
@@ -276,6 +352,7 @@ button, input { font: inherit; }
   color: var(--ink);
   font-size: 0.86rem;
 }
+.lp-card .t-clear > input { padding-right: 2.45rem; }
 .lp-card input:focus {
   border-color: var(--peach);
   outline: 2px solid rgba(241, 208, 177, 0.36);
@@ -300,6 +377,65 @@ button, input { font: inherit; }
 }
 .lp-card button:hover:not(:disabled) { background: var(--indigo-hover); }
 .lp-card button:disabled { cursor: wait; opacity: 0.55; }
+.lp-card .t-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  width: 1.58rem;
+  min-height: 0;
+  height: 1.58rem;
+  padding: 0;
+  border-color: rgba(24, 23, 77, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+  color: rgba(47, 44, 41, 0.62);
+  transform: translateY(-50%);
+}
+.lp-card .t-clear-btn:hover:not(:disabled),
+.lp-card .t-clear-btn:focus-visible {
+  border-color: rgba(24, 23, 77, 0.28);
+  background: rgba(24, 23, 77, 0.08);
+  color: var(--indigo);
+}
+.t-success-check {
+  --check-opacity-dur: 500ms;
+  --check-rotate-dur: 500ms;
+  --check-rotate-from: 80deg;
+  --check-bob-dur: 500ms;
+  --check-y-amount: 40px;
+  --check-blur-dur: 500ms;
+  --check-blur-from: 10px;
+  --check-path-dur: 500ms;
+  --check-path-delay: 80ms;
+  --check-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-opacity: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-rotate: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-bob: cubic-bezier(0.34, 1.35, 0.64, 1);
+  --check-ease-path: cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+}
+.t-success-check svg { display: block; overflow: visible; }
+.t-success-check svg path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+.t-success-check[data-state="in"] {
+  animation:
+    t-check-fade var(--check-opacity-dur) var(--check-ease-opacity) forwards,
+    t-check-rotate var(--check-rotate-dur) var(--check-ease-rotate) forwards,
+    t-check-blur var(--check-blur-dur) var(--check-ease-out) forwards,
+    t-check-bob var(--check-bob-dur) var(--check-ease-bob) forwards;
+}
+.t-success-check[data-state="in"] svg path {
+  animation: t-check-draw var(--check-path-dur) var(--check-ease-path) var(--check-path-delay, 0ms) forwards;
+}
+@keyframes t-check-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes t-check-rotate { from { transform: rotate(var(--check-rotate-from)); } to { transform: rotate(0deg); } }
+@keyframes t-check-blur { from { filter: blur(var(--check-blur-from)); } to { filter: blur(0); } }
+@keyframes t-check-bob { from { translate: 0 var(--check-y-amount); } to { translate: 0 0; } }
+@keyframes t-check-draw { to { stroke-dashoffset: 0; } }
 .lp-privacy {
   display: flex;
   flex-wrap: wrap;
@@ -592,6 +728,15 @@ a:focus-visible, input:focus-visible, button:focus-visible {
     touch-action: manipulation;
   }
 
+  .lp-card .t-clear-btn {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px;
+    border-color: transparent;
+    background: transparent;
+  }
+
   .lp-steps,
   .lp-proof,
   .lp-final {
@@ -636,6 +781,15 @@ a:focus-visible, input:focus-visible, button:focus-visible {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+  .t-clear-glow { opacity: 0 !important; }
+  .t-success-check {
+    animation: none !important;
+    opacity: 1;
+  }
+  .t-success-check svg path {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
   .lp-button:hover,
   .lp-button:active {
@@ -730,6 +884,12 @@ a:focus-visible, input:focus-visible, button:focus-visible {
   .lp-card button {
     min-height: 2.55rem;
     font-size: 0.9rem;
+  }
+
+  .lp-card .t-clear-btn {
+    min-height: 44px;
+    height: 44px;
+    font-size: inherit;
   }
 
   .lp-turnstile {

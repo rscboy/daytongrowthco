@@ -208,7 +208,7 @@ type HoverRevealCardProps = {
 
 export function HoverRevealCard({ index, icon, name, summary, detail, mobileDetail, href = "#cta", cta = "Start here" }: HoverRevealCardProps) {
   return (
-    <article className="hover-card" tabIndex={0}>
+    <article className="hover-card t-resize" tabIndex={0}>
       <div className="hover-card-glow" aria-hidden="true" />
       <span className="hover-card-index">{String(index).padStart(2, "0")}</span>
       <div className="hover-card-top">

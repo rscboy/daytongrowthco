@@ -49,6 +49,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import { ClearInput } from "./clear-input";
 import { socialLinks } from "./social-links";
 import {
   Accent,
@@ -654,23 +655,23 @@ function PersonalizeInvite() {
             <form className="personalize-form" onSubmit={handleSubmit}>
               <label className="personalize-field">
                 <span>Your name</span>
-                <input
-                  ref={nameInputRef}
+                <ClearInput
+                  inputRef={nameInputRef}
                   type="text"
                   value={name}
                   autoComplete="given-name"
                   placeholder="Marcus"
-                  onChange={(event) => setName(event.target.value)}
+                  onValueChange={setName}
                 />
               </label>
               <label className="personalize-field">
                 <span>Business name</span>
-                <input
+                <ClearInput
                   type="text"
                   value={business}
                   autoComplete="organization"
                   placeholder="Miami Valley HVAC"
-                  onChange={(event) => setBusiness(event.target.value)}
+                  onValueChange={setBusiness}
                 />
               </label>
               <div className="personalize-field">
@@ -852,7 +853,7 @@ function WorkflowSimulation() {
                   type="button"
                   role="tab"
                   aria-selected={selected}
-                  className={selected ? "is-active" : ""}
+                  className={`t-resize ${selected ? "is-active" : ""}`}
                   key={option.id}
                   onClick={() => setActiveId(option.id)}
                 >
@@ -1009,9 +1010,18 @@ function useTurnstileProtection() {
     let widgetId: string | undefined;
     let turnstileApi: Turnstile | undefined;
 
+    const playSuccessCheck = (root: ParentNode | null) => {
+      root?.querySelectorAll<HTMLElement>(".t-success-check").forEach((icon) => {
+        icon.dataset.state = "out";
+        void icon.offsetWidth;
+        icon.dataset.state = "in";
+      });
+    };
+
     const showCompletedState = () => {
       if (!successPanel) return;
       successPanel.hidden = false;
+      playSuccessCheck(successPanel);
       successPanel.focus();
     };
 
@@ -1163,6 +1173,7 @@ function useTurnstileProtection() {
           form.hidden = true;
           if (successDialog?.showModal) {
             successDialog.showModal();
+            playSuccessCheck(successDialog);
             closeSuccessDialog?.focus();
           } else if (successPanel) {
             showCompletedState();
@@ -2547,16 +2558,16 @@ function ProjectForm() {
 
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
-          <input
+          <ClearInput
             id="contactName"
             name="yourName"
             type="text"
             autoComplete="name"
             placeholder="Marcus Reed"
             value={name}
-            onChange={(event) => {
+            onValueChange={(nextValue) => {
               nameEdited.current = true;
-              setName(event.target.value);
+              setName(nextValue);
             }}
             aria-describedby="contactName-error"
             required
@@ -2565,52 +2576,54 @@ function ProjectForm() {
         </label>
         <label className="form-field" htmlFor="businessName">
           <span>Business</span>
-          <input
+          <ClearInput
             id="businessName"
             name="businessName"
             type="text"
             autoComplete="organization"
             placeholder="Your business"
             value={business}
-            onChange={(event) => {
+            onValueChange={(nextValue) => {
               businessEdited.current = true;
-              setBusiness(event.target.value);
+              setBusiness(nextValue);
             }}
           />
         </label>
         <label className="form-field" htmlFor="email">
           <span>Email *</span>
           <div className="favicon-field">
-            <input
+            <ClearInput
               id="email"
               name="emailAddress"
               type="email"
               autoComplete="email"
               placeholder="marcus@company.com"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onValueChange={setEmail}
               aria-describedby="email-error"
               required
+              endAdornment={
+                faviconSrc ? (
+                  <span className={`field-favicon ${faviconReady ? "is-ready" : ""}`} aria-hidden="true">
+                    <img
+                      key={faviconDomain}
+                      ref={(node) => {
+                        // Cached favicons can finish loading before React attaches
+                        // onLoad, so catch the already-complete case here too.
+                        if (node && node.complete && node.naturalWidth > 0) setFaviconReady(true);
+                      }}
+                      src={faviconSrc}
+                      alt=""
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      onLoad={() => setFaviconReady(true)}
+                      onError={() => setFaviconReady(false)}
+                    />
+                  </span>
+                ) : null
+              }
             />
-            {faviconSrc ? (
-              <span className={`field-favicon ${faviconReady ? "is-ready" : ""}`} aria-hidden="true">
-                <img
-                  key={faviconDomain}
-                  ref={(node) => {
-                    // Cached favicons can finish loading before React attaches
-                    // onLoad, so catch the already-complete case here too.
-                    if (node && node.complete && node.naturalWidth > 0) setFaviconReady(true);
-                  }}
-                  src={faviconSrc}
-                  alt=""
-                  width={20}
-                  height={20}
-                  loading="lazy"
-                  onLoad={() => setFaviconReady(true)}
-                  onError={() => setFaviconReady(false)}
-                />
-              </span>
-            ) : null}
           </div>
           <small className="field-error" id="email-error" role="alert" />
         </label>
@@ -2646,7 +2659,7 @@ function ProjectForm() {
         <button id="closeFormSuccess" className="form-success-close" type="button" aria-label="Close confirmation">
           <X size={20} aria-hidden="true" />
         </button>
-        <span className="form-success-icon" aria-hidden="true">
+        <span className="form-success-icon t-success-check" data-state="out" aria-hidden="true">
           <CheckCircle2 size={34} strokeWidth={2.25} />
         </span>
         <h3 id="formSuccessDialogTitle" className="form-success-title">Received</h3>
@@ -2655,7 +2668,7 @@ function ProjectForm() {
         </p>
       </dialog>
       <div id="formSuccess" className="form-success" role="status" tabIndex={-1} hidden>
-        <span className="form-success-icon" aria-hidden="true">
+        <span className="form-success-icon t-success-check" data-state="out" aria-hidden="true">
           <CheckCircle2 size={34} strokeWidth={2.25} />
         </span>
         <h3 className="form-success-title">Received</h3>

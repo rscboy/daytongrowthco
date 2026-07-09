@@ -3,6 +3,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
+import { ClearableNativeInput } from "./clear-input";
 import { Header } from "./site-header";
 import { socialLinks } from "./social-links";
 import "./systems-that-pay.css";
@@ -280,7 +281,7 @@ function FreeRedesignOffer() {
       <div className="lp-card">
         {status === "sent" ? (
           <div className="lp-success" role="status">
-            <span><CheckCircle2 size={30} /></span>
+            <span className="t-success-check" data-state="in" aria-hidden="true"><CheckCircle2 size={30} /></span>
             <h2>Your site is in the redesign queue.</h2>
             <p>We’ll review it and follow up by email within 2 business days with the next step.</p>
           </div>
@@ -291,12 +292,18 @@ function FreeRedesignOffer() {
               <strong>Claim your concept</strong>
             </div>
             <div className="lp-field-pair">
-              <label><span>Your name</span><input name="yourName" autoComplete="name" placeholder="Marcus Reed" required /></label>
-              <label><span>Business name</span><input name="businessName" autoComplete="organization" placeholder="Miami Valley HVAC" required /></label>
+              <label>
+                <span>Your name</span>
+                <ClearableNativeInput name="yourName" autoComplete="name" placeholder="Marcus Reed" required />
+              </label>
+              <label>
+                <span>Business name</span>
+                <ClearableNativeInput name="businessName" autoComplete="organization" placeholder="Miami Valley HVAC" required />
+              </label>
             </div>
             <label>
               <span>Current website</span>
-              <input
+              <ClearableNativeInput
                 name="websiteUrl"
                 type="text"
                 inputMode="url"
@@ -308,13 +315,17 @@ function FreeRedesignOffer() {
                 onBlur={(event) => {
                   if (event.currentTarget.value.trim()) {
                     event.currentTarget.value = normalizeWebsiteUrl(event.currentTarget.value);
+                    event.currentTarget.dispatchEvent(new Event("input", { bubbles: true }));
                   }
                 }}
                 required
               />
               <small>No https:// needed.</small>
             </label>
-            <label><span>Where should we send it?</span><input name="emailAddress" type="email" autoComplete="email" placeholder="marcus@yourbusiness.com" required /></label>
+            <label>
+              <span>Where should we send it?</span>
+              <ClearableNativeInput name="emailAddress" type="email" autoComplete="email" placeholder="marcus@yourbusiness.com" required />
+            </label>
             <div ref={widgetRef} className="lp-turnstile" aria-label="Security verification" />
             {status === "error" ? <p className="lp-error">The request did not send. Try again or email help@daytongrowth.co.</p> : null}
             <button type="submit" disabled={!token || status === "sending"}>
