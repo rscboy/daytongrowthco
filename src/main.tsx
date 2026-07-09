@@ -311,10 +311,10 @@ const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
 const formAction =
   "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
 const socialLinks = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
-  { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
-  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
-  { label: "Google", href: "https://share.google/KMUawpdd5QY9yhbBB" },
+  { label: "LinkedIn", mark: "in", href: "https://www.linkedin.com/company/daytongrowthco/" },
+  { label: "Instagram", mark: "ig", href: "https://www.instagram.com/daytongrowthco/" },
+  { label: "Facebook", mark: "f", href: "https://www.facebook.com/profile.php?id=61582225267724" },
+  { label: "Google", mark: "g", href: "https://share.google/KMUawpdd5QY9yhbBB" },
 ];
 
 const videos = {
@@ -2701,54 +2701,6 @@ function FinalCTA() {
   );
 }
 
-function MobileStickyCTA() {
-  const [show, setShow] = useState(false);
-  const [formVisible, setFormVisible] = useState(false);
-
-  useEffect(() => {
-    const update = () => {
-      setShow(window.scrollY > Math.max(360, window.innerHeight * 0.55));
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Hide the floating CTA whenever the form or the footer is on screen, so it
-    // never sits on top of the footer's links near the bottom of the page.
-    const targets = [
-      document.getElementById("cta"),
-      document.querySelector(".site-footer"),
-    ].filter((el): el is Element => el !== null);
-    if (targets.length === 0) return;
-    const visible = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        setFormVisible(visible.size > 0);
-      },
-      { rootMargin: "0px 0px -20% 0px", threshold: 0.08 },
-    );
-    targets.forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <a className={`mobile-sticky-cta ${show && !formVisible ? "is-visible" : ""}`} href="#cta">
-      <span>Start a conversation</span>
-      <ArrowRight size={16} aria-hidden="true" />
-    </a>
-  );
-}
-
 function SplashScreen() {
   const [skipSplash] = useState(() => {
     try {
@@ -3424,24 +3376,43 @@ function SiteFooter() {
           <p className="footer-location">Serving Dayton &amp; the Miami Valley, Ohio.</p>
           <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
           <div className="social-links" aria-label="Social media">
-            {socialLinks.map((link) => <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">{link.label}</a>)}
+            {socialLinks.map((link) => (
+              <a
+                className="social-widget"
+                href={link.href}
+                key={link.label}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                title={link.label}
+              >
+                <span aria-hidden="true">{link.mark}</span>
+              </a>
+            ))}
           </div>
         </div>
-        <nav className="footer-links" aria-label="Explore">
+        <nav className="footer-links footer-explore-links" aria-label="Explore">
+          <span className="footer-section-label">Explore</span>
           <Link href="/what-we-build/">What We Build</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
           <Link href="/aboutus">About Us</Link>
           <Link href="/#cta">Start a Conversation</Link>
         </nav>
-        <nav className="footer-links" aria-label="Legal and contact">
-          <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
-          <a href="tel:+19373690829">(937) 369-0829</a>
-          <a href="/privacy-policy/">Privacy</a>
-          <a href="/terms-of-service/">Terms</a>
-          <a href="/disclaimer/">Disclaimer</a>
-          <a href="/accessibility/">Accessibility</a>
-        </nav>
+        <div className="footer-contact-stack">
+          <div className="footer-contact-card" aria-label="Contact">
+            <span className="footer-section-label">Contact</span>
+            <a href="mailto:help@daytongrowth.co">help@daytongrowth.co</a>
+            <a href="tel:+19373690829">(937) 369-0829</a>
+          </div>
+          <nav className="footer-legal-links" aria-label="Legal">
+            <span className="footer-section-label">Legal</span>
+            <a href="/privacy-policy/">Privacy</a>
+            <a href="/terms-of-service/">Terms</a>
+            <a href="/disclaimer/">Disclaimer</a>
+            <a href="/accessibility/">Accessibility</a>
+          </nav>
+        </div>
       </div>
       <div className="footer-bottom">
         <span>© {year} DaytonGrowthCo. LLC. All rights reserved.</span>
@@ -4911,7 +4882,6 @@ function Homepage() {
         <HomeFaq />
         <FinalCTA />
       </main>
-      <MobileStickyCTA />
       <SiteFooter />
     </>
   );
@@ -4982,7 +4952,20 @@ function AboutPage() {
         <section className="about-founder" aria-labelledby="about-founder-title">
           <div className="about-founder-inner">
             <div className="about-founder-portrait" aria-hidden="true">
-              <img src="https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg" alt="" />
+              <picture>
+                <source media="(max-width: 700px)" srcSet="/samuel-caruso-320.jpg" width="320" height="480" />
+                <img
+                  src="/samuel-caruso-533.jpg"
+                  srcSet="/samuel-caruso-320.jpg 320w, /samuel-caruso-533.jpg 533w"
+                  sizes="(max-width: 700px) 176px, 352px"
+                  alt=""
+                  width="533"
+                  height="800"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <div className="about-founder-copy">
               <h2 id="about-founder-title">Samuel Caruso</h2>

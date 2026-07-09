@@ -12,7 +12,7 @@
 
 ## About Us
 
-![Samuel Caruso, Founder](https://i.postimg.cc/B6wB2jNM/2025SUCWHeadshots-By-Rhine-Media-202.jpg)
+![Samuel Caruso, Founder](/samuel-caruso-533.jpg)
 
 ## Meet the Founder
 
