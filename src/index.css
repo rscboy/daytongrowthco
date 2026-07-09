@@ -17760,10 +17760,13 @@ dialog[open],
   }
 
   .final-cta .turnstile-field {
-    min-height: 0 !important;
-    max-height: 3.2rem !important;
-    margin-bottom: 0.42rem !important;
-    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    min-height: 86px !important;
+    max-height: none !important;
+    margin: 0.08rem 0 0.48rem !important;
+    padding: 0.5rem 0.25rem 0.35rem !important;
+    overflow: visible !important;
   }
 
   .final-cta .form-submit {
