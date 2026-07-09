@@ -2713,9 +2713,12 @@ function SplashScreen() {
   const [skipSplash] = useState(() => {
     try {
       const bootPending = document.documentElement.classList.contains("dgc-splash-pending");
-      return !bootPending && window.sessionStorage.getItem("dgc:splash-seen") === "1";
+      const splashSeen =
+        window.localStorage.getItem("dgc:splash-seen") === "1" ||
+        window.sessionStorage.getItem("dgc:splash-seen") === "1";
+      return !bootPending && splashSeen;
     } catch {
-      return false;
+      return true;
     }
   });
   const [done, setDone] = useState(skipSplash);
@@ -2736,6 +2739,7 @@ function SplashScreen() {
     }
 
     try {
+      window.localStorage.setItem("dgc:splash-seen", "1");
       window.sessionStorage.setItem("dgc:splash-seen", "1");
     } catch {
       /* Continue showing the splash when storage is unavailable. */
@@ -5099,6 +5103,12 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
       if (bootSplash) {
         bootSplash.hidden = true;
         bootSplash.setAttribute("aria-hidden", "true");
+      }
+      try {
+        window.localStorage.setItem("dgc:splash-seen", "1");
+        window.sessionStorage.setItem("dgc:splash-seen", "1");
+      } catch {
+        /* Ignore unavailable storage; non-home pages still force-hide splash. */
       }
       document.documentElement.classList.add("dgc-splash-seen");
       document.documentElement.classList.remove("dgc-splash-pending");

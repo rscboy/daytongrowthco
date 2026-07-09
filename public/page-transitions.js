@@ -18,13 +18,17 @@
   try {
     const path = window.location.pathname;
     isHome = path === "/" || path === "/index.html";
-    if (!isHome && window.sessionStorage.getItem("dgc:splash-seen") !== "1") {
+    const splashSeen =
+      window.localStorage.getItem("dgc:splash-seen") === "1" ||
+      window.sessionStorage.getItem("dgc:splash-seen") === "1";
+    if (!isHome && !splashSeen) {
+      window.localStorage.setItem("dgc:splash-seen", "1");
       window.sessionStorage.setItem("dgc:splash-seen", "1");
     }
-    hasFirstHomeSplash = isHome && window.sessionStorage.getItem("dgc:splash-seen") !== "1";
+    hasFirstHomeSplash = isHome && !splashSeen;
   } catch {
     /* Storage can be unavailable in restrictive browser modes. */
-    hasFirstHomeSplash = isHome;
+    hasFirstHomeSplash = false;
   }
 
   const style = document.createElement("style");

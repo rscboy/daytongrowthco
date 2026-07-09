@@ -249,9 +249,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               try {
                 var path = window.location.pathname;
                 var isHome = path === "/" || path === "/index.html";
-                if (!isHome || window.sessionStorage.getItem("dgc:splash-seen") === "1") {
+                var splashSeen =
+                  window.localStorage.getItem("dgc:splash-seen") === "1" ||
+                  window.sessionStorage.getItem("dgc:splash-seen") === "1";
+                if (!isHome || splashSeen) {
+                  window.localStorage.setItem("dgc:splash-seen", "1");
+                  window.sessionStorage.setItem("dgc:splash-seen", "1");
                   document.documentElement.classList.add("dgc-splash-seen");
                 } else {
+                  window.localStorage.setItem("dgc:splash-seen", "1");
                   window.sessionStorage.setItem("dgc:splash-seen", "1");
                   document.documentElement.classList.add("dgc-splash-pending");
                 }
@@ -268,6 +274,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               } catch (error) {
                 document.documentElement.classList.add("dgc-splash-seen");
                 document.documentElement.classList.remove("dgc-splash-pending");
+                var failedBootSplash = document.getElementById("boot-splash");
+                if (failedBootSplash) {
+                  failedBootSplash.hidden = true;
+                  failedBootSplash.setAttribute("aria-hidden", "true");
+                }
+                if (document.body) document.body.classList.remove("splash-lock");
               }
             `,
           }}
