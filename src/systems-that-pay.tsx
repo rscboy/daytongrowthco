@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import { Header } from "./site-header";
+import { socialLinks } from "./social-links";
 import "./systems-that-pay.css";
 
 const formAction =
@@ -11,12 +12,6 @@ const formAction =
 
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
 const heroVideoUrl = "https://stream.mux.com/4IMYGcL01xjs7ek5ANO17JC4VQVUTsojZlnw4fXzwSxc.m3u8";
-
-const socialLinks = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/daytongrowthco/" },
-  { label: "Instagram", href: "https://www.instagram.com/daytongrowthco/" },
-  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582225267724" },
-];
 
 const steps = [
   {
@@ -58,9 +53,10 @@ function SiteFooter() {
           </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
           <div className="lp-social" aria-label="Social media">
-            {socialLinks.map((link) => (
-              <a href={link.href} key={link.label} target="_blank" rel="noopener noreferrer">
-                {link.label}
+            {socialLinks.map(({ href, Icon, label }) => (
+              <a href={href} key={label} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
+                <Icon />
+                <span className="sr-only">{label}</span>
               </a>
             ))}
           </div>

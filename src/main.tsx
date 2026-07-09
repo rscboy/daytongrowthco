@@ -49,6 +49,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import { socialLinks } from "./social-links";
 import {
   Accent,
   CircularCTA,
@@ -310,13 +311,6 @@ const marginLeaks = [
 const logoUrl = "https://i.ibb.co/CsT0FbMq/Zoomed-Out-Logo.png";
 const formAction =
   "https://script.google.com/macros/s/AKfycbxEUav9QVm2D2tOX3zIJednJl3t23DCeKNV2OW8MErA2BC2njJJpAkeH25sacvceX82rg/exec";
-const socialLinks = [
-  { label: "LinkedIn", mark: "in", href: "https://www.linkedin.com/company/daytongrowthco/" },
-  { label: "Instagram", mark: "ig", href: "https://www.instagram.com/daytongrowthco/" },
-  { label: "Facebook", mark: "f", href: "https://www.facebook.com/profile.php?id=61582225267724" },
-  { label: "Google", mark: "g", href: "https://share.google/KMUawpdd5QY9yhbBB" },
-];
-
 const videos = {
   hero: {
     src: "https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4",
@@ -3388,17 +3382,18 @@ function SiteFooter() {
           <p className="footer-location">Serving Dayton &amp; the Miami Valley, Ohio.</p>
           <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
           <div className="social-links" aria-label="Social media">
-            {socialLinks.map((link) => (
+            {socialLinks.map(({ href, Icon, label }) => (
               <a
                 className="social-widget"
-                href={link.href}
-                key={link.label}
+                href={href}
+                key={label}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={link.label}
-                title={link.label}
+                aria-label={label}
+                title={label}
               >
-                <span aria-hidden="true">{link.mark}</span>
+                <Icon />
+                <span className="sr-only">{label}</span>
               </a>
             ))}
           </div>
