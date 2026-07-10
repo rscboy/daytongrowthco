@@ -355,11 +355,14 @@ type ProofBandProps = {
   stats: { value: string; label: string }[];
   statement: React.ReactNode;
   attribution?: string;
+  background?: React.ReactNode;
 };
 
-export function ProofBand({ stats, statement, attribution }: ProofBandProps) {
+export function ProofBand({ stats, statement, attribution, background }: ProofBandProps) {
   return (
     <section className="proof-band" aria-labelledby="proof-band-title">
+      {background ? <div className="proof-band-media" aria-hidden="true">{background}</div> : null}
+      {background ? <div className="proof-band-media-mask" aria-hidden="true" /> : null}
       <div className="proof-band-inner">
         <div className="proof-band-grid" data-stagger>
           {stats.map((s) => (

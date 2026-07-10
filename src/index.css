@@ -546,11 +546,11 @@
   }
 
   .button-primary {
-    --btn-glow: rgba(255, 255, 255, 0.5);
+    --btn-glow: rgba(255, 255, 255, 0.25);
   }
 
   .button-secondary {
-    --btn-glow: rgba(241, 208, 177, 0.42);
+    --btn-glow: rgba(241, 208, 177, 0.21);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -3269,6 +3269,111 @@
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.68);
     box-shadow: 0 24px 64px rgba(39, 39, 37, 0.08);
+  }
+
+  /* A single, quiet case-study peel: the old way lifts just enough to reveal
+     the focused system underneath. It is explanatory, not a general-purpose
+     card interaction. */
+  .case-study-peel {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 4;
+    width: 10.5rem;
+    min-height: 5.9rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(24, 23, 77, 0.13);
+    isolation: isolate;
+  }
+
+  .case-study-peel-under,
+  .case-study-peel-cover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0.7rem 0.75rem;
+  }
+
+  .case-study-peel-under {
+    color: #ffffff;
+    background: linear-gradient(145deg, #302e88, #18174d 72%);
+  }
+
+  .case-study-peel-cover {
+    color: #2d2b29;
+    border: 1px solid rgba(24, 23, 77, 0.15);
+    border-radius: inherit;
+    background: #fffdfa;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform-origin: top right;
+    transition:
+      clip-path 220ms var(--ease-emil-out),
+      transform 220ms var(--ease-emil-out),
+      box-shadow 220ms var(--ease-emil-out);
+  }
+
+  .case-study-peel-cover::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-left: 1px solid rgba(24, 23, 77, 0.12);
+    border-bottom: 1px solid rgba(24, 23, 77, 0.12);
+    background: linear-gradient(135deg, #f7f6f1 0%, #e4e2dc 100%);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+    transform-origin: top right;
+    transition: transform 220ms var(--ease-emil-out);
+  }
+
+  .case-study-peel span {
+    margin-bottom: 0.22rem;
+    font-size: 0.58rem;
+    font-weight: 780;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .case-study-peel strong {
+    font-size: 0.9rem;
+    font-weight: 760;
+    letter-spacing: -0.02em;
+  }
+
+  .case-study-peel em {
+    margin-top: 0.12rem;
+    font-size: 0.67rem;
+    font-style: normal;
+    opacity: 0.72;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .case-study-peel:hover .case-study-peel-cover {
+      clip-path: polygon(0 0, 76% 0, 100% 24%, 100% 100%, 0 100%);
+      transform: translate(-1px, 1px);
+      box-shadow: 0 8px 18px rgba(24, 23, 77, 0.12);
+    }
+
+    .case-study-peel:hover .case-study-peel-cover::after {
+      transform: rotate(-12deg) translate(-2px, -1px);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .case-study-peel {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-study-peel-cover,
+    .case-study-peel-cover::after {
+      transition: none;
+    }
   }
 
   .sheet-view,
@@ -8411,6 +8516,31 @@
     padding-right: 4.8rem;
   }
 
+  /* ClearInput renders the visible value in a mirror layer while the native
+     value is visually hidden. Give that layer an explicit dark-form color so
+     it never inherits the page's near-black body text. */
+  .project-form .t-clear {
+    color: #f7f6f2;
+  }
+
+  .project-form .t-clear-mirror {
+    color: #f7f6f2;
+  }
+
+  .project-form .t-clear-placeholder {
+    color: rgba(203, 207, 218, 0.58);
+  }
+
+  .project-form .t-clear > input {
+    caret-color: #f7f6f2;
+  }
+
+  .project-form .t-clear > input:-webkit-autofill {
+    -webkit-text-fill-color: #f7f6f2;
+    caret-color: #f7f6f2;
+    box-shadow: 0 0 0 1000px #111127 inset;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .t-clear-glow {
       opacity: 0 !important;
@@ -8596,7 +8726,7 @@
   }
 
   .footer-logo .nav-wordmark-dayton {
-    color: #182018;
+    color: #f2f4f8;
   }
 
   .footer-logo .nav-wordmark-growth {
@@ -11402,7 +11532,7 @@
   }
 
   .site-footer .nav-wordmark-dayton {
-    color: #182018 !important;
+    color: #f2f4f8 !important;
   }
 
   .site-footer .nav-wordmark-growth {
@@ -11414,10 +11544,54 @@
   }
 }
 
+/* Re-establish the mobile hero as a compact, intentional first-screen
+   composition after the broader mobile layout passes. */
+@media (max-width: 700px) {
+  .hero-section,
+  .hero-content {
+    min-height: min(100svh, 36rem) !important;
+  }
+
+  .hero-content {
+    justify-content: flex-start !important;
+    padding-top: clamp(3.5rem, 8svh, 4.5rem) !important;
+    padding-bottom: 3rem !important;
+  }
+
+  .clay-hero-copy {
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .clay-hero-copy h1 {
+    max-width: 12ch !important;
+    margin: 0 !important;
+    font-size: clamp(2.45rem, 7.7vw, 2.9rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.032em !important;
+  }
+
+  .clay-hero-copy p {
+    max-width: 34rem !important;
+    margin-top: 1.15rem !important;
+    font-size: 1.05rem !important;
+    line-height: 1.48 !important;
+  }
+
+  .hero-actions {
+    gap: 0.7rem !important;
+    margin-top: 1.45rem !important;
+  }
+
+  .hero-scroll-cue {
+    display: none !important;
+  }
+}
+
 /* Final mobile hit-area pass: catches unclassed editorial links, FAQ summaries,
    range sliders, and footer items after page-specific rules have run. */
 @media (max-width: 700px) {
-  main a:not(.button):not(.logo-lockup),
+  main a:not(.button):not(.logo-lockup):not(.hero-scroll-cue),
   .site-footer a,
   details summary,
   .personalize-skip,
@@ -11428,7 +11602,7 @@
     touch-action: manipulation;
   }
 
-  main a:not(.button):not(.logo-lockup),
+  main a:not(.button):not(.logo-lockup):not(.hero-scroll-cue),
   .site-footer a,
   details summary {
     display: inline-flex;
@@ -11851,6 +12025,72 @@
   }
 }
 
+/* ---- Kinetic grid: a quiet systems texture, never a foreground effect. --- */
+.kinetic-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.kinetic-grid canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 1. Workflow simulator — the grid belongs to the system, behind its content. */
+.workflow-sim-shell {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.workflow-sim-grid {
+  opacity: 0.75;
+}
+
+.workflow-sim-shell > :not(.workflow-sim-grid) {
+  position: relative;
+  z-index: 1;
+}
+
+/* 2. Existing before/after example — a small technical field frames the comparison. */
+.transformation-showcase {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.comparison-grid {
+  opacity: 0.46;
+  mask-image: radial-gradient(circle at 50% 45%, #000, transparent 76%);
+}
+
+.transformation-showcase > :not(.comparison-grid) {
+  position: relative;
+  z-index: 1;
+}
+
+/* 3. Contact section — a calmer replacement for the former moving video backdrop. */
+.final-cta {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(71, 68, 196, 0.18), transparent 34rem),
+    radial-gradient(circle at 12% 100%, rgba(221, 233, 252, 0.08), transparent 30rem),
+    #090a18;
+}
+
+.final-cta-grid {
+  opacity: 0.72;
+  mask-image: linear-gradient(110deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-grid {
+    opacity: 0.48;
+  }
+}
+
 /* ===========================================================================
    Visitor personalization invite + inline accents
    =========================================================================== */
@@ -12063,21 +12303,6 @@ body.mobile-nav-lock {
     border-color 220ms ease,
     box-shadow 260ms var(--ease-out-soft),
     transform 150ms ease;
-}
-
-/* All required fields are in — the button shifts to a confident "go" green. */
-.personalize-submit.is-ready,
-.personalize-submit.is-ready:hover {
-  border-color: #1c7a4f;
-  background: linear-gradient(180deg, #2a9466 0%, #1c7a4f 100%);
-  color: #ffffff;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.18) inset,
-    0 10px 26px rgba(20, 90, 58, 0.34);
-}
-
-.personalize-submit.is-ready svg {
-  color: #ffffff;
 }
 
 .personalize-skip {
@@ -13336,6 +13561,7 @@ body.mobile-nav-lock {
 /* ---- ProofBand ----------------------------------------------------------- */
 .proof-band {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   margin: 0 auto;
   max-width: 84rem;
@@ -13344,6 +13570,37 @@ body.mobile-nav-lock {
   background: var(--panel-dark);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f3f3fb;
+}
+.proof-band-media,
+.proof-band-media-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.proof-band-media {
+  z-index: 0;
+}
+.proof-band-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.68;
+  filter: saturate(0.82) contrast(1.08) brightness(0.7);
+}
+.proof-band-media-mask {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(5, 7, 16, 0.86), rgba(5, 7, 16, 0.58) 58%, rgba(5, 7, 16, 0.78)),
+    linear-gradient(180deg, rgba(5, 7, 16, 0.22), rgba(5, 7, 16, 0.5));
+}
+.proof-band-inner {
+  position: relative;
+  z-index: 2;
+}
+@media (prefers-reduced-motion: reduce) {
+  .proof-band-video {
+    display: none;
+  }
 }
 .proof-band-grid {
   display: grid;
@@ -13489,6 +13746,8 @@ body.mobile-nav-lock {
   max-width: 72rem;
   margin: 0 auto;
   padding: 2rem 1.25rem;
+  cursor: default;
+  user-select: none;
 }
 .trust-strip-label {
   font-size: 0.72rem;
@@ -14878,9 +15137,9 @@ body.mobile-nav-lock {
 }
 .audit-offer-head {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1fr);
+  grid-template-columns: minmax(0, 0.82fr) minmax(18rem, 0.96fr) minmax(10rem, 0.36fr);
   gap: clamp(1.2rem, 3vw, 2.25rem);
-  align-items: end;
+  align-items: center;
   margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
 }
 .audit-offer-head h2 {
@@ -14897,6 +15156,26 @@ body.mobile-nav-lock {
   color: var(--text-muted);
   font-size: 0.98rem;
   line-height: 1.62;
+}
+.audit-sphere-frame {
+  position: relative;
+  justify-self: end;
+  width: clamp(9.25rem, 14vw, 12.75rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.18), transparent 57%),
+    radial-gradient(circle at 50% 78%, rgba(221, 233, 252, 0.24), transparent 62%);
+  mask-image: radial-gradient(circle, #000 52%, transparent 72%);
+}
+.particle-sphere,
+.particle-sphere canvas {
+  width: 100%;
+  height: 100%;
+}
+.particle-sphere canvas {
+  display: block;
 }
 .aoa-steps {
   display: grid;
@@ -15077,6 +15356,9 @@ body.mobile-nav-lock {
 @media (max-width: 980px) {
   .audit-offer-head {
     grid-template-columns: 1fr;
+  }
+  .audit-sphere-frame {
+    display: none;
   }
   .aoa-steps {
     grid-template-columns: 1fr;
@@ -16709,6 +16991,12 @@ dialog[open],
     display: none;
   }
 
+  .mobile-nav-panel {
+    inset: calc(3.5rem - 1px) 0 auto;
+    height: calc(100dvh - (3.5rem - 1px));
+    padding-top: 0.55rem;
+  }
+
   #scroll-progress-bar {
     background: var(--brand-accent);
   }
@@ -17352,6 +17640,25 @@ dialog[open],
     color: #8d8b91 !important;
   }
 
+  .final-cta .project-form .t-clear,
+  .final-cta .project-form .t-clear-mirror {
+    color: #1f211f !important;
+  }
+
+  .final-cta .project-form .t-clear-placeholder {
+    color: #8d8b91 !important;
+  }
+
+  .final-cta .project-form .t-clear > input {
+    caret-color: #1f211f !important;
+  }
+
+  .final-cta .project-form .t-clear > input:-webkit-autofill {
+    -webkit-text-fill-color: #1f211f !important;
+    caret-color: #1f211f !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+  }
+
   .final-cta .project-details-field small,
   .final-cta .form-status {
     color: #5f5c56 !important;
@@ -17959,10 +18266,14 @@ dialog[open],
     display: none !important;
   }
 
-  .transformation-showcase,
-  .quote-workflow-demo {
+  .transformation-showcase {
     max-height: 22rem !important;
     overflow: hidden !important;
+  }
+
+  .quote-workflow-demo {
+    max-height: none !important;
+    overflow: visible !important;
   }
 
   .website-migration-offer {
@@ -18686,5 +18997,180 @@ dialog[open],
   .home-faq-q:hover svg,
   .home-faq-item.is-open .home-faq-q:hover svg {
     transform: none !important;
+  }
+}
+
+/* The contact grid stays dark and quiet on small screens too. */
+@media (max-width: 700px) {
+  .final-cta {
+    color: #ffffff !important;
+    background:
+      radial-gradient(circle at 80% 0%, rgba(71, 68, 196, 0.18), transparent 26rem),
+      #090a18 !important;
+  }
+
+  .final-cta h2,
+  .final-cta-copy h2,
+  .final-cta-copy h2 span,
+  .final-cta-copy .final-cta-mobile-copy,
+  .final-cta-copy .final-cta-desktop-copy {
+    color: #ffffff !important;
+  }
+
+  .final-cta p,
+  .final-cta-copy p,
+  .final-cta-copy p span,
+  .final-cta-mobile-copy,
+  .final-cta-desktop-copy {
+    color: #d0d3dc !important;
+  }
+}
+
+/* The audit offer intentionally stays dark on small screens, so its heading
+   and supporting copy must not inherit the mobile paper-section ink. */
+@media (max-width: 700px) {
+  .audit-offer .audit-offer-head h2 {
+    color: #ffffff !important;
+  }
+
+  .audit-offer .audit-offer-head p,
+  .audit-offer .audit-offer-head p span {
+    color: #d0d3dc !important;
+  }
+}
+
+/* Final CTA: preserve a generous feel on compact screens without leaving the
+   headline adrift above the form. */
+@media (max-width: 900px) {
+  .final-cta {
+    padding: 3rem 1.25rem 2.5rem !important;
+  }
+
+  .final-cta > .mx-auto {
+    gap: 1.35rem !important;
+  }
+
+  .final-cta-copy h2 {
+    max-width: 10.5ch !important;
+    margin-inline: auto !important;
+    font-size: clamp(2rem, 6.5vw, 2.4rem) !important;
+    line-height: 1.06 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  .final-cta-copy p {
+    max-width: 26rem !important;
+    margin: 0.8rem auto 0 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.48 !important;
+  }
+
+  .final-cta .form-card {
+    margin-top: 0.1rem;
+  }
+}
+
+/* Final mobile hero contract: full viewport, vertically balanced copy, stable
+   button color, and a readable scroll cue. Desktop remains unchanged. */
+@media (max-width: 700px) {
+  .hero-section,
+  .hero-content {
+    min-height: 100svh !important;
+  }
+
+  .hero-content {
+    justify-content: center !important;
+    padding-top: calc(3.5rem + clamp(1rem, 3svh, 1.75rem)) !important;
+    padding-bottom: clamp(4.5rem, 10svh, 5.75rem) !important;
+  }
+
+  .clay-hero-copy {
+    width: 100%;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .clay-hero-copy h1 {
+    max-width: 12.5ch !important;
+    margin: 0 !important;
+    font-size: clamp(2.5rem, 8.2vw, 3.05rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  .clay-hero-copy p {
+    max-width: 36rem !important;
+    margin-top: clamp(1.15rem, 2.8svh, 1.55rem) !important;
+    font-size: clamp(0.98rem, 2.8vw, 1.08rem) !important;
+    line-height: 1.48 !important;
+  }
+
+  .hero-actions {
+    gap: 0.75rem !important;
+    margin-top: clamp(1.35rem, 3.2svh, 1.8rem) !important;
+  }
+
+  .hero-section .button-primary,
+  .hero-section .button-primary:hover,
+  .hero-section .button-primary:active,
+  .hero-section .button-primary:focus-visible {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    background: var(--brand-accent) !important;
+    box-shadow: none !important;
+  }
+
+  .hero-section .button-primary svg {
+    color: #ffffff !important;
+  }
+
+  .hero-scroll-cue {
+    position: absolute !important;
+    left: 50% !important;
+    bottom: max(0.85rem, env(safe-area-inset-bottom)) !important;
+    z-index: 4 !important;
+    display: grid !important;
+    justify-items: center;
+    gap: 0.16rem;
+    min-width: 44px;
+    min-height: 44px !important;
+    color: rgba(255, 255, 255, 0.84) !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .hero-scroll-cue svg {
+    color: #ffffff !important;
+  }
+
+  .page-cta {
+    padding: 3.25rem 1.25rem calc(3rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .page-cta h2 {
+    max-width: 12ch !important;
+    color: #ffffff !important;
+    font-size: clamp(2rem, 8.5vw, 2.55rem) !important;
+    line-height: 1.04 !important;
+  }
+
+  .page-cta p {
+    display: block !important;
+    overflow: visible !important;
+    max-width: 24rem !important;
+    margin: 0.8rem auto 0 !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    font-size: 0.96rem !important;
+    line-height: 1.45 !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .page-cta .button {
+    width: min(100%, 22rem) !important;
+    margin-top: 1.35rem !important;
+  }
+
+  .page-cta-trust {
+    gap: 0.45rem 1.25rem !important;
+    margin-top: 1.35rem !important;
   }
 }

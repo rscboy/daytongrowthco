@@ -1,0 +1,7 @@
+.agents/
+.codex/
+.github/hooks/
+.github/skills/
+brag-output/
+finance-dashboard/
+*.tsbuildinfo

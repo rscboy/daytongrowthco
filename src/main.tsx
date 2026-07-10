@@ -49,6 +49,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import { KineticGrid } from "@/components/ui/kinetic-grid";
+import { ParticleSphere } from "@/components/ui/particle-sphere";
 import { ClearInput } from "./clear-input";
 import { socialLinks } from "./social-links";
 import {
@@ -582,9 +584,6 @@ function PersonalizeInvite() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Everything we ask for is filled in — surface that on the submit button.
-  const isReady = name.trim() !== "" && business.trim() !== "" && teamSize !== "";
-
   // Esc to close; a minimal focus trap keeps tabbing inside the card.
   const onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -690,12 +689,9 @@ function PersonalizeInvite() {
                   ))}
                 </div>
               </div>
-              <button
-                type="submit"
-                className={`button button-primary large personalize-submit ${isReady ? "is-ready" : ""}`}
-              >
-                {isReady ? "You’re all set, personalize" : "Personalize my visit"}
-                {isReady ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
+              <button type="submit" className="button button-primary large personalize-submit">
+                Personalize my visit
+                <ArrowRight size={16} aria-hidden="true" />
               </button>
               <button type="button" className="personalize-skip" onClick={dismiss}>
                 Maybe later
@@ -843,6 +839,7 @@ function WorkflowSimulation() {
         </div>
 
         <div className="workflow-sim-shell">
+          <KineticGrid className="workflow-sim-grid" />
           <SwipeHint hidden={pickerScrolled} />
           <div className="workflow-sim-picker" ref={pickerRef} role="tablist" aria-label="Choose a workflow to simulate">
             {workflowSimulationOptions.map((option) => {
@@ -1340,7 +1337,7 @@ function SpreadsheetTransformation() {
   const cells = ["Customer", "Job", "Status", "Price", "Miller", "Roof repair", "New", "Pending", "Davis", "Remodel", "Quoted", "$8,450"];
 
   return (
-    <section className="spreadsheet-transform" aria-labelledby="spreadsheet-transform-heading">
+    <section id="case-study" className="spreadsheet-transform" aria-labelledby="spreadsheet-transform-heading">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
         <div className="section-heading compact-heading spreadsheet-copy">
           <h2 id="spreadsheet-transform-heading">
@@ -1350,6 +1347,18 @@ function SpreadsheetTransformation() {
           <p>For small teams running calls, quotes, projects, and customer work through disconnected files.</p>
         </div>
         <div className="transform-stage spreadsheet-reveal" aria-label="Spreadsheet transforming into a project dashboard">
+          <div className="case-study-peel" aria-hidden="true">
+            <div className="case-study-peel-under">
+              <span>After</span>
+              <strong>Quote builder</strong>
+              <em>+ project dashboard</em>
+            </div>
+            <div className="case-study-peel-cover">
+              <span>Before</span>
+              <strong>Spreadsheet</strong>
+              <em>+ text threads</em>
+            </div>
+          </div>
           <div className="sheet-view">
             <div className="transform-window-bar"><FileText size={15} /> jobs.xlsx</div>
             <div className="sheet-grid">
@@ -2089,6 +2098,7 @@ function WebsiteTransformation() {
           <p>We redesign the site, rewrite the pages, and connect the request flow behind it.</p>
         </div>
         <div className="transformation-showcase">
+          <KineticGrid className="comparison-grid" spacing={42} radius={150} strength={2} />
           <div className="comparison-labels" aria-hidden="true">
             <span>Before</span>
             <span>After</span>
@@ -2686,8 +2696,7 @@ function FinalCTA() {
   const business = profile?.business?.trim();
   return (
     <section id="cta" className="final-cta">
-      <BackgroundVideo className="form-background-video" poster={videos.form.poster} stream={videos.form.stream} />
-      <div className="form-video-mask" aria-hidden="true" />
+      <KineticGrid className="final-cta-grid" spacing={52} radius={170} strength={2} />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
           <h2>
@@ -3376,8 +3385,8 @@ function HowItWorksFaq() {
 function PageCTA() {
   return (
     <section className="page-cta" id="cta">
-      <h2>Bring us the process that is still being handled by hand.</h2>
-      <p>We will help determine whether the right answer is a better setup, a focused automation, or a custom tool.</p>
+      <h2>Bring us the work still handled by hand.</h2>
+      <p>We’ll find the smallest useful fix.</p>
       <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
       <ul className="page-cta-trust" aria-label="What to expect">
         <li>Dayton roots, nationwide reach</li>
@@ -4683,6 +4692,9 @@ function AiAuditOffer() {
             </span>
             <span className="mobile-copy-short">Audit first. Then optimize. Then automate what is actually ready.</span>
           </p>
+          <div className="audit-sphere-frame">
+            <ParticleSphere />
+          </div>
         </div>
 
         <ol className="aoa-steps" data-stagger>
@@ -4783,6 +4795,7 @@ function ProofAndVoices() {
   return (
     <div className="proof-wrap">
       <ProofBand
+        background={<BackgroundVideo className="proof-band-video" poster={videos.form.poster} stream={videos.form.stream} />}
         stats={[
           { value: "Up to 70%", label: "Lower than a traditional dev shop quote" },
           { value: "2 to 4 weeks", label: "From first call to a live, working tool" },
