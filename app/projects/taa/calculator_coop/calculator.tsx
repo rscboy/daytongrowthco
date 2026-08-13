@@ -265,7 +265,15 @@ export function TaaCalculator() {
   return <main className="taa-calculator">
     <div className="taa-shell">
       <header className="taa-header">
-        <div><p className="taa-kicker">TAA / private planning tool</p><h1>Lead-generation economics</h1><p className="taa-subtitle">Adjust the campaign assumptions and see the operating picture update immediately.</p></div>
+        <div className="taa-title-block">
+          <div className="taa-brand-lockup" aria-label="The Travel Agents Academy">
+            <span className="taa-brand-mark" aria-hidden="true">TA</span>
+            <strong>THE TRAVEL<br />AGENTS ACADEMY</strong>
+          </div>
+          <p className="taa-kicker">Private growth tool / live model</p>
+          <h1>LEAD-GENERATION <em>ROI</em></h1>
+          <p className="taa-subtitle">Run the numbers behind the bookings: traffic, conversations, clients, and payback.</p>
+        </div>
         <div className="taa-header-actions"><button className="taa-quiet-button" type="button" onClick={() => copyText("link")}><Share2 size={15} />{copied === "link" ? "Link copied" : "Copy scenario link"}</button><button className="taa-quiet-button" type="button" onClick={() => copyText("summary")}><Clipboard size={15} />{copied === "summary" ? "Summary copied" : "Copy summary"}</button></div>
       </header>
 
