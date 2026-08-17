@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowLeft, Check, ChevronRight, Clock3, Heart, Printer, Search, Sparkles, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Printer, Search, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 
 type Recipe = {
@@ -66,16 +66,32 @@ export function BennyRecipeBook() {
   const [tag, setTag] = useState("All");
   const [selectedId, setSelectedId] = useState(recipes[0].id);
   const [saved, setSaved] = useState<string[]>([]);
+  const [showSaved, setShowSaved] = useState(false);
   const [checked, setChecked] = useState<string[]>([]);
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? recipes[0];
+  const ingredientCount = selected.ingredients.flatMap((group) => group.items).length;
   const filtered = useMemo(() => {
     const activeCollection = collections.find((collection) => collection.id === tag) ?? collections[0];
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return recipes
-      .filter((recipe) => activeCollection.matches(recipe) && terms.every((term) => recipeSearchText(recipe).includes(term)))
+      .filter((recipe) => (!showSaved || saved.includes(recipe.id)) && activeCollection.matches(recipe) && terms.every((term) => recipeSearchText(recipe).includes(term)))
       .sort((first, second) => first.title.localeCompare(second.title));
-  }, [query, tag]);
+  }, [query, saved, showSaved, tag]);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
+      if (event.key === "Escape" && mobileRecipeOpen) setMobileRecipeOpen(false);
+      if (event.key === "/" && !isTyping) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileRecipeOpen]);
   const choose = (id: string) => {
     setSelectedId(id);
     setChecked([]);
@@ -83,23 +99,25 @@ export function BennyRecipeBook() {
   };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setChecked((items) => items.includes(item) ? items.filter((entry) => entry !== item) : [...items, item]);
+  const nextRecipe = () => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) + 1) % recipes.length].id);
+  const activeCollection = collections.find((collection) => collection.id === tag);
+  const resultTitle = showSaved ? "Saved recipes" : tag === "All" ? "Browse the box." : activeCollection?.label;
 
   return <main className="benny-book">
-    <div className="benny-ticker" aria-hidden="true"><span>FOR BENNY · MADE AT HOME · EAT WELL · SAVE THE GOOD ONES · </span><span>FOR BENNY · MADE AT HOME · EAT WELL · SAVE THE GOOD ONES · </span></div>
     <header className="benny-header">
       <a className="benny-brand" href="#top" aria-label="Sammy's College Recipes home"><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
       <div className="benny-title"><p>Recipes for</p><h1>Sammy</h1></div>
-      <button className="benny-saved" onClick={() => setTag("All")}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
+      <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
     </header>
 
     <section className="benny-intro" id="top">
-      <p className="benny-eyebrow">The no-fuss collection</p>
+      <p className="benny-eyebrow">Sammy&apos;s college recipe book</p>
       <h2>What should we make<br /><i>tonight?</i></h2>
-      <p>A small collection of keepers: the comforting ones, the fast ones, and the ones worth waiting for.</p>
-      <div className="benny-search"><Search size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search dishes or ingredients" aria-label="Search recipes" />{query && <button onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button>}</div>
+      <p>A small collection of comforting, fast, and worth-the-wait recipes.</p>
+      <div className="benny-search"><Search size={18} /><input ref={searchInputRef} value={query} onChange={(event) => { setQuery(event.target.value); setShowSaved(false); }} placeholder="Search dishes or ingredients" aria-label="Search recipes" />{query ? <button onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button> : <kbd>/</kbd>}</div>
     </section>
 
-    <nav className="benny-filter" aria-label="Recipe categories">{collections.map((collection) => <button key={collection.id} className={tag === collection.id ? "active" : ""} onClick={() => setTag(collection.id)}>{collection.label}</button>)}</nav>
+    <nav className="benny-filter" aria-label="Recipe categories">{collections.map((collection) => <button key={collection.id} className={!showSaved && tag === collection.id ? "active" : ""} onClick={() => { setTag(collection.id); setShowSaved(false); }}>{collection.label}</button>)}</nav>
 
     <section className="benny-feature" aria-label="Selected recipe">
       <div className={`benny-photo ${selected.color}`}><img src={selected.image} alt="" /><div className="benny-sticker">{selected.tags[0]}</div><div className="benny-photo-caption">Recipe no. {String(recipes.findIndex((recipe) => recipe.id === selected.id) + 1).padStart(2, "0")}</div></div>
@@ -111,21 +129,23 @@ export function BennyRecipeBook() {
       </div>
     </section>
 
-    <section className="benny-cards-section"><div className="benny-section-head"><div><p className="benny-eyebrow">The recipe box</p><h2>{tag === "All" ? "Browse the box." : collections.find((collection) => collection.id === tag)?.label}</h2></div><span>{filtered.length} recipes</span></div>
-      <div className="benny-cards">{filtered.map((recipe, index) => <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 2 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><p>{recipe.tags.slice(0, 2).join(" · ")}</p><h3>{recipe.title}<small>{recipe.subtitle}</small></h3></div></button>)}</div>
-      {!filtered.length && <div className="benny-empty"><Sparkles size={20} /> No recipe matches that search yet.</div>}
+    <section className="benny-cards-section" aria-live="polite"><div className="benny-section-head"><div><p className="benny-eyebrow">The recipe box</p><h2>{resultTitle}</h2></div><span>{filtered.length} {filtered.length === 1 ? "recipe" : "recipes"}</span></div>
+      <div className="benny-cards">{filtered.map((recipe, index) => <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)} aria-label={`Open ${recipe.title} ${recipe.subtitle}`}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 3 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><p>{recipe.tags.slice(0, 2).join(" · ")}</p><h3>{recipe.title}<small>{recipe.subtitle}</small></h3><span className="benny-card-action">Open recipe <ChevronRight size={15} /></span></div></button>)}</div>
+      {!filtered.length && <div className="benny-empty"><Sparkles size={20} /><div><strong>No matches yet.</strong><p>Try a dish, ingredient, or choose another collection.</p></div><button onClick={() => { setQuery(""); setTag("All"); setShowSaved(false); }}>Show all recipes</button></div>}
     </section>
 
     <article className="benny-recipe" id="recipe">
       <div className="benny-recipe-heading"><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2><div><button onClick={() => window.print()}><Printer size={16} /> Print</button><button onClick={() => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) - 1 + recipes.length) % recipes.length].id)}><ArrowLeft size={16} /> Previous</button></div></div>
-      <div className="benny-recipe-grid"><section className="benny-ingredients"><div className="benny-panel-title"><span>01</span><h3>Gather this</h3><small>{checked.length} / {selected.ingredients.flatMap((group) => group.items).length} checked</small></div>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
+      <div className="benny-recipe-grid"><section className="benny-ingredients"><div className="benny-panel-title"><span>01</span><h3>Gather this</h3><small>{checked.length} / {ingredientCount} checked</small></div>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
       <section className="benny-method"><div className="benny-panel-title"><span>02</span><h3>Make it happen</h3><small><Clock3 size={13} /> {selected.total}</small></div><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section></div>
     </article>
     {mobileRecipeOpen && <div className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
-      <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div>
+      <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div></div>
       <div className="benny-mobile-sheet-meta"><span>{selected.prep} prep</span><span>{selected.cook} cook</span><span>{selected.yield}</span></div>
+      <div className="benny-progress"><span>Shopping progress</span><b>{checked.length} of {ingredientCount}</b></div>
       <section className="benny-mobile-sheet-section"><h3>Gather this</h3>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `sheet-${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
       <section className="benny-mobile-sheet-section"><h3>Make it happen</h3><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section>
+      <button className="benny-next-recipe" onClick={nextRecipe}>Next recipe <ArrowRight size={17} /></button>
     </div>}
     <footer className="benny-footer"><div className="benny-mark">S<span>★</span></div><p>Made with love, and enough butter.</p><small>Sammy's College Recipes · Keep the good ones close.</small></footer>
   </main>;
