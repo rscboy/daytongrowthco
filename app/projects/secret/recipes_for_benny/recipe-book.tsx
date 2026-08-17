@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { ArrowLeft, Check, ChevronRight, Clock3, Heart, Printer, Search, Sparkles, X } from "lucide-react";
-import { BrandWordmark } from "@/src/brand-wordmark";
 import "./recipes.css";
 
 type Recipe = {
@@ -56,7 +55,7 @@ export function BennyRecipeBook() {
   return <main className="benny-book">
     <div className="benny-ticker" aria-hidden="true"><span>FOR BENNY · MADE AT HOME · EAT WELL · SAVE THE GOOD ONES · </span><span>FOR BENNY · MADE AT HOME · EAT WELL · SAVE THE GOOD ONES · </span></div>
     <header className="benny-header">
-      <a className="benny-brand" href="#top" aria-label="Benny's recipe book home"><BrandWordmark /><span>Private recipe book</span></a>
+      <a className="benny-brand" href="#top" aria-label="Benny's recipe book home"><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
       <div className="benny-title"><p>Recipes for</p><h1>Benny</h1></div>
       <button className="benny-saved" onClick={() => setTag("All")}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
     </header>
