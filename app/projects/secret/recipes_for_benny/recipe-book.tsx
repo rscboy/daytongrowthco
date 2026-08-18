@@ -206,7 +206,7 @@ function CharliePizzaCalculator() {
 export function BennyRecipeBook() {
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("All");
-  const [activeOwner, setActiveOwner] = useState<RecipeProfileId>("all");
+  const [activeOwner, setActiveOwner] = useState<RecipeProfileId>("sammy");
   const [selectedId, setSelectedId] = useState(recipes[0].id);
   const [saved, setSaved] = useState<string[]>([]);
   const [showSaved, setShowSaved] = useState(false);
