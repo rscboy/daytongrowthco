@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: false,
-  skipTrailingSlashRedirect: true,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ibb.co" },
@@ -14,6 +13,7 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      { source: "/hvac/:path*", destination: "/quote/:path*", permanent: true },
       { source: "/demo", destination: "/", permanent: false },
       { source: "/website-integration", destination: "/", permanent: false },
       { source: "/workflow-automation", destination: "/", permanent: false },
@@ -34,6 +34,20 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+        ],
+      },
+      {
+        source: "/projects/taa/calculator_coop",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Cache-Control", value: "private, no-store" },
+        ],
+      },
+      {
+        source: "/projects/taa/calculator_coop/",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Cache-Control", value: "private, no-store" },
         ],
       },
       {

@@ -2,7 +2,7 @@
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let isHome = false;
   let hasFirstHomeSplash = false;
-  const nextAppPaths = new Set(["/", "/what-we-build/", "/examples/", "/how-it-works/", "/systems-that-pay/"]);
+  const nextAppPaths = new Set(["/", "/what-we-build/", "/examples/", "/how-it-works/", "/systems-that-pay/", "/projects/secret/recipes_for_benny/"]);
   const normalizeAppPath = (pathname) => {
     if (pathname === "/" || pathname === "/index.html") return "/";
     return pathname.endsWith("/") ? pathname : `${pathname}/`;

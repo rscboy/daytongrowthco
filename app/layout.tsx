@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { SiteAnalytics } from "@/src/site-analytics";
 import "../src/index.css";
+import "../src/home-flow.css";
 import "../src/systems-that-pay.css";
+import "../src/website-ownership-calculator.css";
+import "../src/air-redesign.css";
 
 const siteUrl = "https://www.daytongrowth.co";
-const faviconUrl = "https://github.com/rscboy/daytongrowthco/blob/main/favicon.png?raw=true";
+const faviconUrl = `${siteUrl}/favicon.png`;
 const googleAnalyticsId = "G-5844NWC2PD";
 const clarityProjectId = "wix3m0k0lr";
+const metaPixelId = "925605686456758";
 const siteSchema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -14,11 +19,12 @@ const siteSchema = {
       "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
       "@id": `${siteUrl}/#organization`,
       name: "DaytonGrowthCo.",
+      foundingDate: "2026",
       url: `${siteUrl}/`,
       logo: faviconUrl,
       image: `${siteUrl}/thumbnail.jpeg`,
       description:
-        "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, customer portals, training systems, sales materials, and custom apps for small and midsized businesses.",
+        "DaytonGrowthCo offers The Better Quote Program™ and The Website Migration Program™, plus practical business tools for small and midsized businesses.",
       email: "help@daytongrowth.co",
       telephone: "+1-937-369-0829",
       founder: {
@@ -71,6 +77,10 @@ const siteSchema = {
         "training libraries",
         "custom business apps",
         "website design",
+        "website migration",
+        "website ownership",
+        "quote shopping service",
+        "The Better Quote Program",
         "local SEO",
         "answer engine optimization",
       ],
@@ -127,10 +137,30 @@ const siteSchema = {
       itemListElement: [
         {
           "@type": "Offer",
+          name: "The Better Quote Program™",
+          description:
+            "Human-led quote shopping for customers with an expensive written service quote. A real person looks for a better qualifying, comparable local option; no qualifying savings means no success fee under the program terms.",
+          url: `${siteUrl}/quote/`,
+        },
+        {
+          "@type": "Offer",
+          name: "The Website Migration Program™",
+          description:
+            "A structured migration from a recurring website platform to a self-owned static site, including review, migration planning, testing, launch, and post-launch review.",
+          url: `${siteUrl}/website/`,
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "1500",
+            description: "Standard Migration starts at $1,500. The one-time migration investment is separate from recurring domain costs.",
+          },
+        },
+        {
+          "@type": "Offer",
           name: "Custom Business Systems",
           description:
             "Phone agents, quote calculators, project dashboards, customer portals, staff dashboards, training libraries, and internal workflows.",
-          url: `${siteUrl}/what-we-build/`,
+          url: `${siteUrl}/products/`,
         },
         {
           "@type": "Offer",
@@ -152,6 +182,19 @@ const siteSchema = {
             "Focused automations and custom tools that reduce repeated entry, missed handoffs, slow quoting, and administrative drag.",
           url: `${siteUrl}/how-it-works/`,
         },
+        {
+          "@type": "Offer",
+          name: "Automated Google Review Texting",
+          description:
+            "A managed review-request system that sends customers a personalized text and direct Google review link after a completed appointment or service.",
+          url: `${siteUrl}/google-review-texting/`,
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "499",
+            description: "$499 setup plus $199 per month for ongoing system management, hosting, monitoring, maintenance, text-message allowance, adjustments, and support.",
+          },
+        },
       ],
     },
   ],
@@ -160,11 +203,11 @@ const siteSchema = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "DaytonGrowthCo. | Business Tools, Apps, Dashboards & Content",
+    default: "DaytonGrowthCo. | Website Migration & Business Tools",
     template: "%s",
   },
   description:
-    "DaytonGrowthCo builds phone agents, quote calculators, dashboards, customer portals, training libraries, sales pages, videos, visuals, and custom apps.",
+    "DaytonGrowthCo offers human-led quote shopping, website migration into self-owned static sites, and practical business tools for small teams.",
   keywords: [
     "custom business tools Dayton Ohio",
     "phone agents for small business",
@@ -180,6 +223,7 @@ export const metadata: Metadata = {
   applicationName: "DaytonGrowthCo.",
   alternates: {
     canonical: "/",
+    languages: { "en-US": "/" },
     types: {
       "text/markdown": "/md/index.md",
     },
@@ -204,9 +248,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "DaytonGrowthCo.",
-    title: "DaytonGrowthCo. | Business Tools, Apps, Dashboards & Content",
+    title: "DaytonGrowthCo. | Website Migration & Business Tools",
     description:
-      "Phone agents, quote calculators, dashboards, training libraries, sales materials, and custom apps built around your business.",
+      "Human-led quote shopping, website migration, and practical business tools built around your business.",
     images: [
       {
         url: "/thumbnail.jpeg",
@@ -219,8 +263,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "DaytonGrowthCo. | Business Tools, Apps, Dashboards & Content",
-    description: "DaytonGrowthCo builds phone agents, quote tools, dashboards, portals, sales materials, and custom apps.",
+    title: "DaytonGrowthCo. | Website Migration & Business Tools",
+    description: "Human-led quote shopping, website migration, and practical business tools for small teams.",
     images: ["/thumbnail.jpeg"],
   },
   other: {
@@ -240,100 +284,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
         <link rel="alternate" type="text/plain" href="/llms.txt" />
         <link rel="alternate" type="text/markdown" href="/md/index.md" />
-        <script
-          id="dgc-boot-splash-state"
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var path = window.location.pathname;
-                var isHome = path === "/" || path === "/index.html";
-                var splashSeen =
-                  window.localStorage.getItem("dgc:splash-seen") === "1" ||
-                  window.sessionStorage.getItem("dgc:splash-seen") === "1";
-                if (!isHome || splashSeen) {
-                  window.localStorage.setItem("dgc:splash-seen", "1");
-                  window.sessionStorage.setItem("dgc:splash-seen", "1");
-                  document.documentElement.classList.add("dgc-splash-seen");
-                } else {
-                  window.localStorage.setItem("dgc:splash-seen", "1");
-                  window.sessionStorage.setItem("dgc:splash-seen", "1");
-                  document.documentElement.classList.add("dgc-splash-pending");
-                }
-                window.setTimeout(function () {
-                  document.documentElement.classList.add("dgc-splash-seen");
-                  document.documentElement.classList.remove("dgc-splash-pending");
-                  if (document.body) document.body.classList.remove("splash-lock");
-                  var bootSplash = document.getElementById("boot-splash");
-                  if (bootSplash) {
-                    bootSplash.hidden = true;
-                    bootSplash.setAttribute("aria-hidden", "true");
-                  }
-                }, 5000);
-              } catch (error) {
-                document.documentElement.classList.add("dgc-splash-seen");
-                document.documentElement.classList.remove("dgc-splash-pending");
-                var failedBootSplash = document.getElementById("boot-splash");
-                if (failedBootSplash) {
-                  failedBootSplash.hidden = true;
-                  failedBootSplash.setAttribute("aria-hidden", "true");
-                }
-                if (document.body) document.body.classList.remove("splash-lock");
-              }
-            `,
-          }}
-        />
-        <style
-          id="boot-splash-style"
-          dangerouslySetInnerHTML={{
-            __html: `
-              html.dgc-splash-pending {
-                background: #05070d;
-              }
-
-              body {
-                margin: 0;
-              }
-
-              #boot-splash {
-                position: fixed;
-                inset: 0;
-                z-index: 10000;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                background:
-                  radial-gradient(circle at 50% 38%, rgba(37, 99, 235, 0.16), transparent 34%),
-                  radial-gradient(circle at 55% 58%, rgba(168, 85, 247, 0.1), transparent 36%),
-                  linear-gradient(180deg, #05070d 0%, #070a12 52%, #050505 100%);
-                pointer-events: none;
-              }
-
-              html.dgc-splash-pending #boot-splash {
-                display: flex;
-              }
-
-              html.dgc-splash-seen {
-                background: #fbfbf9;
-              }
-
-              html.dgc-splash-seen #boot-splash {
-                display: none;
-              }
-
-              #boot-splash[hidden] {
-                display: none !important;
-              }
-
-              @media (prefers-reduced-motion: reduce) {
-                #boot-splash {
-                  display: none !important;
-                }
-              }
-            `,
-          }}
-        />
         <script
           id="dgc-site-schema"
           type="application/ld+json"
@@ -341,8 +294,35 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
-        <div id="boot-splash" aria-hidden="true" />
         {children}
+        <SiteAnalytics />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
+        <Script
+          id="meta-pixel"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${metaPixelId}');
+              fbq('track', 'PageView');
+            `,
+          }}
+        />
         <Script
           id="google-analytics-loader"
           src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
@@ -374,7 +354,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
         <Script src="/legal-overlay.js" strategy="afterInteractive" />
-        <Script src="/page-transitions.js?v=5" strategy="afterInteractive" />
       </body>
     </html>
   );

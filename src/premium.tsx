@@ -199,16 +199,14 @@ type HoverRevealCardProps = {
   index: number;
   icon: React.ReactNode;
   name: string;
-  summary: string;
   detail: string;
-  mobileDetail?: string;
   href?: string;
   cta?: string;
 };
 
-export function HoverRevealCard({ index, icon, name, summary, detail, mobileDetail, href = "#cta", cta = "Start here" }: HoverRevealCardProps) {
+export function HoverRevealCard({ index, icon, name, detail, href = "#cta", cta = "Start here" }: HoverRevealCardProps) {
   return (
-    <article className="hover-card t-resize" tabIndex={0}>
+    <a className="hover-card t-resize" href={href} aria-label={`${name}. ${cta}`}>
       <div className="hover-card-glow" aria-hidden="true" />
       <span className="hover-card-index">{String(index).padStart(2, "0")}</span>
       <div className="hover-card-top">
@@ -216,21 +214,17 @@ export function HoverRevealCard({ index, icon, name, summary, detail, mobileDeta
           {icon}
         </span>
         <h3 className="hover-card-name">{name}</h3>
-        <p className="hover-card-summary">{summary}</p>
       </div>
       <div className="hover-card-reveal">
         <div className="hover-card-reveal-inner">
-          <p className="hover-card-detail">
-            <span className="hover-card-detail-desktop">{detail}</span>
-            <span className="hover-card-detail-mobile">{mobileDetail ?? detail}</span>
-          </p>
-          <a className="hover-card-cta" href={href}>
+          <p className="hover-card-detail">{detail}</p>
+          <span className="hover-card-cta">
             {cta}
             <ArrowRight size={15} aria-hidden="true" />
-          </a>
+          </span>
         </div>
       </div>
-    </article>
+    </a>
   );
 }
 
@@ -265,11 +259,14 @@ export function ProcessStepCard({ step, phase, title, deliverables, result, dash
           ))}
         </ul>
         <p className="process-step-result">
-          <span className="process-step-result-label">Result</span>
           {result}
         </p>
       </div>
-      {dashboard ? <div className="process-step-visual">{dashboard}</div> : null}
+      {dashboard ? (
+        <div className="process-step-visual">
+          {dashboard}
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -281,21 +278,21 @@ export function ProcessStepCard({ step, phase, title, deliverables, result, dash
 type StickyStorySectionProps = {
   id?: string;
   heading: string;
-  intro: React.ReactNode;
+  intro?: React.ReactNode;
   aside?: React.ReactNode;
   children: React.ReactNode;
 };
 
 export function StickyStorySection({ id, heading, intro, aside, children }: StickyStorySectionProps) {
   return (
-    <section className="sticky-story" id={id} aria-labelledby={id ? `${id}-title` : undefined}>
+    <section className="sticky-story" id={id} aria-labelledby={id ? `${id}-title` : undefined} data-scroll-scene="services">
       <div className="sticky-story-inner">
         <div className="sticky-story-rail">
           <div className="sticky-story-rail-inner">
             <h2 id={id ? `${id}-title` : undefined} className="sticky-story-heading" data-scroll-words>
               {heading}
             </h2>
-            <p className="sticky-story-intro">{intro}</p>
+            {intro ? <p className="sticky-story-intro">{intro}</p> : null}
             {aside}
           </div>
         </div>
@@ -434,8 +431,8 @@ export function AccentPath({ className = "" }: { className?: string }) {
           <linearGradient id="accent-path-stroke" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#2a2880" stopOpacity="0" />
             <stop offset="35%" stopColor="#4744c4" stopOpacity="0.9" />
-            <stop offset="70%" stopColor="#f1d0b1" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#f1d0b1" stopOpacity="0" />
+            <stop offset="70%" stopColor="#dde9fc" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#dde9fc" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path className="accent-path-line" d={d} stroke="url(#accent-path-stroke)" strokeWidth="1.5" strokeLinecap="round" />

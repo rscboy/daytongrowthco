@@ -52,15 +52,25 @@ function wantsMarkdown(accept) {
 }
 
 export async function proxy(request) {
+  const hostname = request.headers.get('host')?.split(':')[0].toLowerCase();
+  const pathname = new URL(request.url).pathname;
+
+  // The bookings subdomain is reserved for active funnels. Keep the main
+  // marketing site on the primary domain while sending a bare bookings visit
+  // to the current HVAC funnel entry point.
+  if (hostname === 'bookings.daytongrowth.co' && pathname === '/') {
+    return NextResponse.redirect(new URL('/hvac/', request.url));
+  }
+
   if (!wantsMarkdown(request.headers.get('accept'))) return NextResponse.next();
 
   const url = new URL(request.url);
-  let pathname = url.pathname;
-  if (pathname.length > 1 && pathname.endsWith('/')) {
-    pathname = pathname.slice(0, -1);
+  let normalizedPathname = url.pathname;
+  if (normalizedPathname.length > 1 && normalizedPathname.endsWith('/')) {
+    normalizedPathname = normalizedPathname.slice(0, -1);
   }
 
-  const slug = MD_BY_PATH[pathname];
+  const slug = MD_BY_PATH[normalizedPathname];
   if (!slug) return NextResponse.next();
 
   try {

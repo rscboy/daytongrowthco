@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Header, InteractiveWordmark } from "./site-header";
+import { usePathname, useRouter } from "next/navigation";
+import { getDomain } from "tldts";
+import { Header } from "./site-header";
+import { BrandWordmark } from "./brand-wordmark";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -26,12 +29,12 @@ import {
   MapPin,
   Megaphone,
   MessageSquare,
+  MousePointer2,
   MoveRight,
   PanelTop,
   Phone,
   PhoneCall,
   Radar,
-  Scissors,
   Search,
   Send,
   Sparkles,
@@ -49,23 +52,24 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
+import { DotMatrix } from "@/components/ui/dot-matrix";
 import { KineticGrid } from "@/components/ui/kinetic-grid";
-import { ParticleSphere } from "@/components/ui/particle-sphere";
+import { WaveShader } from "@/components/ui/wave-shader";
 import { ClearInput } from "./clear-input";
 import { socialLinks } from "./social-links";
+import { BetterQuoteSavingsCalculator } from "./better-quote-savings-calculator";
+import { websiteMigrationPricing } from "./website-migration-pricing";
+import { captureAttribution, trackFunnelEvent } from "./funnel-analytics";
 import {
   Accent,
-  CircularCTA,
-  HoverRevealCard,
   MiniDashboard,
   PositioningStatement,
   ProcessStepCard,
   ProofBand,
   ProofCard,
-  StickyStorySection,
-  TrustStrip,
 } from "./premium";
 import "./index.css";
+import "./home-flow.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
 // client-rendered SPA (no SSR), and a no-op if called more than once.
@@ -269,23 +273,23 @@ const businessJourney = [
 const marginLeaks = [
   {
     icon: Gauge,
-    area: "Quoting",
+    area: "Quote & Proposal System",
     cost: "Rebuilding the same estimate from notes, price sheets, and memory.",
-    system: "A guided quote builder that applies your pricing logic and produces a send-ready estimate.",
+    system: "Turn your approved pricing, notes, photos, and scope into a consistent, send-ready quote.",
     return: "Faster response, consistent margins, less estimator time.",
   },
   {
     icon: Phone,
-    area: "Call agents",
+    area: "Phone Response System",
     cost: "Owners and field staff stopping work to answer routine calls or losing after-hours context.",
-    system: "A phone agent that answers, collects the right details, schedules appointments, and sends a clean summary.",
+    system: "Answer routine calls, capture the details that matter, and hand your team a useful next step.",
     return: "Fewer interruptions and more appointments handled without adding a full shift.",
   },
   {
     icon: Workflow,
-    area: "Operating systems",
+    area: "Operations Dashboard System",
     cost: "Copying details between texts, spreadsheets, PDFs, inboxes, and job folders.",
-    system: "One focused workflow for intake, job data, approvals, files, and next actions.",
+    system: "Keep intake, job details, approvals, files, and next actions in one working view.",
     return: "Less double entry, fewer missed details, more visible work.",
   },
   {
@@ -297,16 +301,16 @@ const marginLeaks = [
   },
   {
     icon: Globe2,
-    area: "Website + ads",
+    area: "Website Migration System",
     cost: "Sending paid traffic to an old site that makes the company look smaller or harder to trust.",
-    system: "A fast website and campaign pages aligned to the service, location, and buyer’s decision.",
+    system: "Move out of outdated platforms and plugin upkeep without losing the pages, search foundation, or inquiry flow worth keeping.",
     return: "More value from the traffic you already pay to earn.",
   },
   {
     icon: Search,
-    area: "SEO + AEO",
+    area: "Discovery System",
     cost: "Depending on paid media while search engines and AI answers cannot interpret your expertise.",
-    system: "Technical structure, local pages, useful content, and machine-readable business signals.",
+    system: "Make your services easier for local customers, search engines, and AI answers to understand, then route inquiries into a cleaner intake process.",
     return: "A compounding discovery channel that reduces reliance on rented attention.",
   },
 ];
@@ -317,6 +321,12 @@ const formAction =
 const videos = {
   hero: {
     src: "https://cdn.sceneai.art/Hero%20Section%20Video/060c6237-0a73-45f0-aea2-80291c52641d.mp4",
+  },
+  supportingFilm: {
+    src: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260210_031346_d87182fb-b0af-4273-84d1-c6fd17d6bf0f.mp4",
+  },
+  process: {
+    src: "https://pub-3592c0f33d62473e96882cebf2720dba.r2.dev/15404923_1920_1080_60fps.mp4",
   },
   form: {
     poster: "https://image.mux.com/r6pXRAJb3005XEEbl1hYU1x01RFJDSn7KQApwNGgAHHbU/thumbnail.jpg?time=0",
@@ -376,11 +386,14 @@ type VisitorProfile = {
   name: string;
   business: string;
   teamSize: string;
+  email: string;
+  domain: string;
 };
 
 const PROFILE_STORAGE_KEY = "dgc:visitor-profile";
 const INVITE_DISMISSED_KEY = "dgc:personalize-dismissed";
 const WORKFLOW_CHOICE_KEY = "dgc:workflow-choice";
+const CONTACT_DRAFT_KEY = "dgc:contact-draft";
 
 function readStoredProfile(): VisitorProfile | null {
   if (typeof window === "undefined") return null;
@@ -391,7 +404,13 @@ function readStoredProfile(): VisitorProfile | null {
     const name = typeof parsed.name === "string" ? parsed.name.trim() : "";
     const business = typeof parsed.business === "string" ? parsed.business.trim() : "";
     if (!name && !business) return null;
-    return { name, business, teamSize: typeof parsed.teamSize === "string" ? parsed.teamSize : "" };
+    return {
+      name,
+      business,
+      teamSize: typeof parsed.teamSize === "string" ? parsed.teamSize : "",
+      email: typeof parsed.email === "string" ? parsed.email.trim() : "",
+      domain: typeof parsed.domain === "string" ? parsed.domain.trim() : "",
+    };
   } catch {
     return null;
   }
@@ -454,8 +473,13 @@ function usePersonalization() {
 }
 
 function PersonalizationProvider({ children }: { children: React.ReactNode }) {
-  const [profile, setProfile] = useState<VisitorProfile | null>(() => readStoredProfile());
-  const [workflowChoice, setWorkflowChoice] = useState(() => readStoredWorkflowChoice());
+  const [profile, setProfile] = useState<VisitorProfile | null>(null);
+  const [workflowChoice, setWorkflowChoice] = useState("");
+
+  useEffect(() => {
+    setProfile(readStoredProfile());
+    setWorkflowChoice(readStoredWorkflowChoice());
+  }, []);
 
   const save = useCallback((next: VisitorProfile) => {
     setProfile(next);
@@ -501,20 +525,63 @@ function PersonalizationProvider({ children }: { children: React.ReactNode }) {
 
 const teamSizeOptions = ["Just me", "2-10", "11-50", "50+"];
 
+function PersonalizationBrief({
+  profile,
+  workflowChoice,
+  onEdit,
+}: {
+  profile: VisitorProfile;
+  workflowChoice: string;
+  onEdit: () => void;
+}) {
+  const firstName = firstNameOf(profile.name);
+  const selectedWorkflow = workflowSimulationOptions.find((option) => option.id === workflowChoice);
+  const teamLabel = profile.teamSize ? `${profile.teamSize} people` : "Team size to map";
+
+  return (
+    <div className="personalization-brief" role="region" aria-label="Your personalized working brief">
+      <div className="personalization-brief-inner">
+        <div className="personalization-brief-intro">
+          <span className="personalization-brief-mark" aria-hidden="true"><Sparkles size={15} strokeWidth={1.8} /></span>
+          <div>
+            <strong>{firstName ? `${firstName}, your brief is ready for ${profile.business}.` : `Your brief is ready for ${profile.business}.`}</strong>
+          </div>
+        </div>
+        <ol className="personalization-brief-points" key={`${profile.business}-${workflowChoice}`}>
+          <li><span>Business</span><strong>{profile.business}</strong></li>
+          <li><span>Team</span><strong>{teamLabel}</strong></li>
+          <li className={selectedWorkflow ? "is-ready" : "is-pending"}>
+            <span>Starting point</span>
+            <strong>{selectedWorkflow ? selectedWorkflow.label : "Choose in the workflow map"}</strong>
+          </li>
+        </ol>
+        <button type="button" className="personalization-brief-edit" onClick={onEdit}>
+          Adjust details
+          <ArrowRight size={14} aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function PersonalizeInvite() {
-  const { profile, save } = usePersonalization();
+  const { profile, workflowChoice, save, clear } = usePersonalization();
   const [open, setOpen] = useState(false);
-  const [hidden, setHidden] = useState(() => {
-    if (typeof window === "undefined") return false;
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
     try {
-      return window.sessionStorage.getItem(INVITE_DISMISSED_KEY) === "1";
+      setHidden(window.sessionStorage.getItem(INVITE_DISMISSED_KEY) === "1");
     } catch {
-      return false;
+      setHidden(false);
     }
-  });
+  }, []);
   const [name, setName] = useState("");
-  const [business, setBusiness] = useState("");
+  const [email, setEmail] = useState("");
+  const [businessOverride, setBusinessOverride] = useState("");
+  const [showBusinessOverride, setShowBusinessOverride] = useState(false);
   const [teamSize, setTeamSize] = useState("");
+  const identity = useMemo(() => deriveBusinessIdentity(email), [email]);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -538,15 +605,43 @@ function PersonalizeInvite() {
     };
   }, [profile, hidden, open]);
 
-  // Move focus into the dialog when it opens and lock background scroll.
-  useEffect(() => {
+  // Keep the dialog entirely independent from the document beneath it. Saving
+  // and restoring the exact coordinates prevents autofocus or scrollbar
+  // changes from moving someone to a different section of the page.
+  useLayoutEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const root = document.documentElement;
+    const previousRootOverflow = root.style.overflow;
+    const previousBody = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
+
     document.body.classList.add("personalize-lock");
-    const focusTimer = window.setTimeout(() => nameInputRef.current?.focus(), 80);
+    root.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = `-${scrollX}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    const focusTimer = window.setTimeout(() => nameInputRef.current?.focus({ preventScroll: true }), 80);
+
     return () => {
       window.clearTimeout(focusTimer);
       document.body.classList.remove("personalize-lock");
+      root.style.overflow = previousRootOverflow;
+      document.body.style.position = previousBody.position;
+      document.body.style.top = previousBody.top;
+      document.body.style.left = previousBody.left;
+      document.body.style.width = previousBody.width;
+      document.body.style.overflow = previousBody.overflow;
+      window.requestAnimationFrame(() => window.scrollTo({ left: scrollX, top: scrollY, behavior: "auto" }));
       previouslyFocused?.focus?.();
     };
   }, [open]);
@@ -565,12 +660,14 @@ function PersonalizeInvite() {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const cleanName = name.trim();
-    const cleanBusiness = business.trim();
-    if (!cleanName && !cleanBusiness) {
+    const identity = deriveBusinessIdentity(email);
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanBusiness = businessOverride.trim() || identity?.business || "";
+    if (!cleanName && !cleanEmail) {
       dismiss();
       return;
     }
-    save({ name: cleanName, business: cleanBusiness, teamSize });
+    save({ name: cleanName, business: cleanBusiness, teamSize, email: cleanEmail, domain: identity?.domain ?? "" });
     try {
       window.sessionStorage.setItem(INVITE_DISMISSED_KEY, "1");
       window.localStorage.removeItem(INVITE_DISMISSED_KEY);
@@ -579,9 +676,6 @@ function PersonalizeInvite() {
     }
     setOpen(false);
     setHidden(true);
-    // Return the visitor to the top so they see the page re-introduce itself,
-    // now personalized.
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Esc to close; a minimal focus trap keeps tabbing inside the card.
@@ -607,11 +701,30 @@ function PersonalizeInvite() {
     }
   };
 
-  if (profile || hidden) return null;
+  if (profile) {
+    return (
+      <PersonalizationBrief
+        profile={profile}
+        workflowChoice={workflowChoice}
+        onEdit={() => {
+          setName(profile.name);
+          setEmail(profile.email);
+          setBusinessOverride(profile.business);
+          setTeamSize(profile.teamSize);
+          setShowBusinessOverride(Boolean(profile.business));
+          clear();
+          setHidden(false);
+          setOpen(true);
+        }}
+      />
+    );
+  }
+
+  if (hidden) return null;
 
   return (
     <>
-      <section className="personalize-inline" aria-labelledby="personalizeInlineTitle">
+      <div className="personalize-inline" role="region" aria-labelledby="personalizeInlineTitle">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 id="personalizeInlineTitle">Make this less generic.</h2>
@@ -627,9 +740,10 @@ function PersonalizeInvite() {
             </button>
           </div>
         </div>
-      </section>
-      {open ? (
-        <div
+      </div>
+      {open && typeof document !== "undefined"
+        ? createPortal(
+          <div
           className="personalize-overlay"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) dismiss();
@@ -664,15 +778,44 @@ function PersonalizeInvite() {
                 />
               </label>
               <label className="personalize-field">
-                <span>Business name</span>
+                <span>Business email</span>
                 <ClearInput
-                  type="text"
-                  value={business}
-                  autoComplete="organization"
-                  placeholder="Miami Valley HVAC"
-                  onValueChange={setBusiness}
+                  type="email"
+                  value={email}
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="you@apple.com"
+                  onValueChange={setEmail}
+                  required
+                  showClear={false}
+                  wrapperClassName="email-favicon-input"
+                  endAdornment={
+                    identity ? <BusinessFavicon domain={identity.domain} /> : undefined
+                  }
                 />
               </label>
+              {identity ? (
+                <div className="personalize-derived-business" aria-live="polite">
+                  <span>Personalizing for <strong>{businessOverride.trim() || identity.business}</strong></span>
+                  <button type="button" onClick={() => setShowBusinessOverride((shown) => !shown)}>
+                    {showBusinessOverride ? "Use domain name" : `Not ${identity.business}?`}
+                  </button>
+                </div>
+              ) : email.trim() ? (
+                <p className="personalize-email-note">Use a company email to personalize the page for your business.</p>
+              ) : null}
+              {showBusinessOverride ? (
+                <label className="personalize-field personalize-override-field">
+                  <span>Business name</span>
+                  <ClearInput
+                    type="text"
+                    value={businessOverride}
+                    autoComplete="organization"
+                    placeholder={identity?.business ?? "Your business"}
+                    onValueChange={setBusinessOverride}
+                  />
+                </label>
+              ) : null}
               <div className="personalize-field">
                 <span>Team size</span>
                 <div className="personalize-chips" role="group" aria-label="Team size">
@@ -694,82 +837,78 @@ function PersonalizeInvite() {
                 <ArrowRight size={16} aria-hidden="true" />
               </button>
               <button type="button" className="personalize-skip" onClick={dismiss}>
-                Maybe later
+                Continue without personalizing
               </button>
             </form>
           </div>
-        </div>
-      ) : null}
+          </div>,
+          document.body,
+        )
+        : null}
     </>
   );
 }
 
 const workflowSimulationOptions = [
   {
-    id: "quotes",
-    label: "Building quotes",
-    short: "Price work without rebuilding the same document.",
-    icon: Calculator,
-    before: ["Call notes", "Photos in texts", "Price sheet", "Old PDF", "Manual follow-up"],
-    after: ["Intake record", "Pricing rules", "Draft proposal", "Approval", "Auto follow-up"],
-    build: "Guided quote builder",
-    need: "Two recent quotes, the price sheet, and the rules your team already trusts.",
-    notYet: "A giant estimating platform with 47 tabs. Nobody asked for a new hobby.",
-  },
-  {
     id: "calls",
-    label: "Answering calls",
-    short: "Capture the details before the lead cools off.",
+    label: "24/7 phone answering",
+    short: "Answer routine calls and book the next step.",
     icon: PhoneCall,
     before: ["Missed call", "Voicemail", "Callback", "Loose notes", "Maybe booked"],
-    after: ["AI pickup", "Job questions", "Clean summary", "Route owner", "Book or escalate"],
-    build: "AI phone intake agent",
-    need: "Common questions, service area, booking rules, and what should always go to a human.",
-    notYet: "A robot pretending to be your entire front office. Deeply unnecessary.",
+    after: ["Call answered", "Job details", "Clean summary", "Route owner", "Book or escalate"],
+    build: "24/7 phone answering & booking",
+    href: "/ai-phone-agents/",
+    need: "Common questions, service area, booking rules, and what should always go to a person.",
+    notYet: "A new call center. Keep the people for the calls that need people.",
   },
   {
-    id: "schedule",
-    label: "Scheduling work",
-    short: "Stop coordinating jobs from a text thread.",
-    icon: Calendar,
-    before: ["What time works?", "Three texts", "Crew check", "Calendar edit", "Reminder by memory"],
-    after: ["Job type", "Location", "Availability", "Booked slot", "Reminders sent"],
-    build: "Scheduling flow",
-    need: "Crew availability, job types, service area, and the rules for urgent work.",
-    notYet: "A dispatch center for a business that needs a clean calendar first.",
-  },
-  {
-    id: "updates",
-    label: "Updating customers",
-    short: "Give people a place to check before they ask again.",
-    icon: MessageSquare,
-    before: ["Any update?", "Find job", "Find photo", "Type reply", "Repeat tomorrow"],
-    after: ["Status logged", "Photo attached", "Customer note", "Approval request", "Next step visible"],
-    build: "Customer update portal",
-    need: "Typical statuses, approval moments, photo examples, and who should receive updates.",
-    notYet: "A full customer app they have to download. That is how good ideas go to a quiet place.",
-  },
-  {
-    id: "files",
-    label: "Finding files",
-    short: "Make the company memory searchable.",
-    icon: Search,
-    before: ["Drive folder", "Old email", "Ask the owner", "Wrong version", "Start over"],
-    after: ["Tagged file", "Search question", "Suggested answer", "Source shown", "Next action"],
-    build: "Internal knowledge base",
-    need: "SOPs, folders, sample jobs, and the questions people keep asking twice.",
-    notYet: "A knowledge system nobody maintains. We have all suffered enough.",
+    id: "website",
+    label: "Website migration",
+    short: "Move platforms without losing what already works.",
+    icon: Globe2,
+    before: ["Old platform", "Plugin updates", "Hard-to-edit pages", "Lost context", "Lead flow at risk"],
+    after: ["Useful pages kept", "Brand carried over", "Clear service pages", "Lead path checked", "Easy updates"],
+    build: "Website migration",
+    href: "/website-design/",
+    need: "Your current site, the pages that matter, and a list of what cannot break.",
+    notYet: "A blank replacement site that makes you start from scratch.",
   },
   {
     id: "followup",
-    label: "Following up",
-    short: "Keep the lead warm without remembering every loose end.",
-    icon: Send,
-    before: ["Quote sent", "Mental note", "Busy day", "Lead goes quiet", "No one knows"],
-    after: ["Quote sent", "Follow-up timer", "Owner assigned", "Reply captured", "Next step logged"],
-    build: "Follow-up tracker",
-    need: "Quote stages, follow-up timing, message tone, and when a human should step in.",
-    notYet: "A sales machine that emails people into witness protection.",
+    label: "Missed call & estimate follow-up",
+    short: "Reply before the customer moves on.",
+    icon: MessageSquare,
+    before: ["Missed call", "Web lead", "Quote sent", "Busy day", "No next step"],
+    after: ["Reply sent", "Lead captured", "Follow-up timed", "Owner alerted", "Reply recorded"],
+    build: "Missed call text-back & estimate follow-up",
+    href: "/missed-call-follow-up/",
+    need: "Your follow-up timing, message tone, and when a person should take over.",
+    notYet: "More messages than your customers want to receive.",
+  },
+  {
+    id: "estimates",
+    label: "Estimate & proposal tools",
+    short: "Turn your pricing and job details into an approval.",
+    icon: Calculator,
+    before: ["Job photos", "Price sheet", "Notes", "Old proposal", "Manual follow-up"],
+    after: ["Job details", "Pricing rules", "Draft proposal", "Online approval", "Deposit or next step"],
+    build: "Estimate & proposal tool",
+    href: "/quote-tools/",
+    need: "A few real estimates, labor rates, materials, and the rules your team already trusts.",
+    notYet: "A giant estimating platform with more tabs than your team needs.",
+  },
+  {
+    id: "search",
+    label: "Google & AI search",
+    short: "Make it easier for homeowners to understand you.",
+    icon: Search,
+    before: ["Old service pages", "Thin Google listing", "Scattered proof", "Unclear service area", "Hard to verify"],
+    after: ["Clear services", "Updated listing", "Useful proof", "Local signals", "Easy to understand"],
+    build: "Google & AI search foundation",
+    href: "/local-search/",
+    need: "Your services, service areas, Google listing, and proof customers already trust.",
+    notYet: "A pile of search jargon that does not help a homeowner choose you.",
   },
 ];
 
@@ -802,44 +941,35 @@ function SwipeHint({ hidden }: { hidden: boolean }) {
 
 function WorkflowSimulation() {
   const { profile, workflowChoice, chooseWorkflow } = usePersonalization();
-  const firstName = firstNameOf(profile?.name ?? "");
   const business = profile?.business?.trim() || "your business";
-  const teamSize = profile?.teamSize || "your team";
-  const defaultId = workflowChoice || "quotes";
+  const defaultId = workflowChoice || "calls";
   const [activeId, setActiveId] = useState(defaultId);
   const active = workflowSimulationOptions.find((option) => option.id === activeId) ?? workflowSimulationOptions[0];
   const ActiveIcon = active.icon;
-  const briefLine = `${business}: ${active.build} for ${active.label.toLowerCase()}`;
+  const briefLine = `${business}: ${active.build}`;
   const { ref: pickerRef, scrolled: pickerScrolled } = useSwipeHint<HTMLDivElement>();
 
-  useEffect(() => {
-    chooseWorkflow(activeId);
-  }, [activeId, chooseWorkflow]);
-
   return (
-    <section className="workflow-sim" id="workflow-sim" aria-labelledby="workflow-sim-title" data-reveal>
+    <section className={`workflow-sim${profile ? " is-personalized" : ""}`} id="workflow-sim" aria-labelledby="workflow-sim-title" data-reveal data-scroll-scene="workflow">
       <div className="workflow-sim-inner">
         <div className="workflow-sim-head">
           <div>
             <h2 id="workflow-sim-title" data-scroll-words>
-              Pick the workflow that is annoying this week.
+              See one product in action.
             </h2>
-            <p>
-              <span className="mobile-copy-desktop">
-                {firstName ? `${firstName}, ` : ""}choose the part of {business} currently held together by memory,
-                inbox searches, and one very tired person. We sketch the first sane version from there.
-              </span>
-              <span className="mobile-copy-short">Choose one repeated workflow. We’ll sketch the cleaner version.</span>
-            </p>
           </div>
-          <a className="workflow-sim-link" href="#cta">
-            Send this brief
+          <a className="workflow-sim-link" href={active.href}>
+            Explore this product
             <ArrowRight size={15} aria-hidden="true" />
           </a>
         </div>
 
         <div className="workflow-sim-shell">
-          <KineticGrid className="workflow-sim-grid" />
+          <KineticGrid className="workflow-sim-grid" radius={220} strength={3} />
+          <span className="grid-interaction-hint" aria-hidden="true">
+            <MousePointer2 size={13} strokeWidth={1.8} />
+            Move cursor over grid
+          </span>
           <SwipeHint hidden={pickerScrolled} />
           <div className="workflow-sim-picker" ref={pickerRef} role="tablist" aria-label="Choose a workflow to simulate">
             {workflowSimulationOptions.map((option) => {
@@ -852,7 +982,10 @@ function WorkflowSimulation() {
                   aria-selected={selected}
                   className={`t-resize ${selected ? "is-active" : ""}`}
                   key={option.id}
-                  onClick={() => setActiveId(option.id)}
+                  onClick={() => {
+                    setActiveId(option.id);
+                    chooseWorkflow(option.id);
+                  }}
                 >
                   <Icon size={18} aria-hidden="true" />
                   <span>
@@ -867,26 +1000,18 @@ function WorkflowSimulation() {
           <div className="workflow-sim-board" key={active.id} role="tabpanel" aria-live="polite">
             <div className="workflow-sim-brief">
               <span className="workflow-sim-doc">
-                <span className="workflow-sim-doc-desktop">DGC / draft brief</span>
-                <span className="workflow-sim-doc-mobile">Selected workflow</span>
+                <span className="workflow-sim-doc-mobile">Selected product</span>
               </span>
               <h3>
                 <span className="workflow-sim-title-desktop">{briefLine}</span>
                 <span className="workflow-sim-title-mobile">{active.build}</span>
               </h3>
-              <p>
-                <span className="workflow-sim-copy-desktop">
-                  First pass for a {teamSize} setup. Useful enough to discuss. Not a prophecy, which is probably healthy.
-                </span>
-                <span className="workflow-sim-copy-mobile">
-                  A cleaner first version your team can review.
-                </span>
-              </p>
+              <p>A focused setup your team can review.</p>
             </div>
 
             <div className="workflow-lanes">
               <div className="workflow-lane workflow-lane-before">
-                <span>Current way</span>
+                <span>Current setup</span>
                 <ol>
                   {active.before.map((step) => (
                     <li key={step}>{step}</li>
@@ -894,7 +1019,7 @@ function WorkflowSimulation() {
                 </ol>
               </div>
               <div className="workflow-lane workflow-lane-after">
-                <span>Cleaner version</span>
+                <span>When the product is in place</span>
                 <ol>
                   {active.after.map((step) => (
                     <li key={step}>{step}</li>
@@ -908,18 +1033,18 @@ function WorkflowSimulation() {
                 <ActiveIcon size={22} strokeWidth={1.8} />
               </span>
               <div>
-                <span>Suggested first build</span>
+                <span>Recommended product</span>
                 <strong>{active.build}</strong>
               </div>
             </div>
 
             <div className="workflow-sim-notes">
               <div>
-                <span>Bring us</span>
+                <span>What we need</span>
                 <p>{active.need}</p>
               </div>
               <div>
-                <span>Not yet</span>
+                <span>What you do not need</span>
                 <p>{active.notYet}</p>
               </div>
             </div>
@@ -942,6 +1067,53 @@ function RouteFocus() {
   return null;
 }
 
+function RouteTransition() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    // Do not stack a page-entry animation over the existing section reveals.
+    // The brief exit state is cleared once the new route is ready.
+    document.documentElement.classList.remove("is-page-leaving");
+  }, [pathname]);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    let isNavigating = false;
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (isNavigating || event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>("a[href]");
+      if (!link || link.target === "_blank" || link.hasAttribute("download") || link.dataset.noPageTransition !== undefined) return;
+
+      const destination = new URL(link.href, window.location.href);
+      if (destination.origin !== window.location.origin || destination.protocol !== window.location.protocol) return;
+      const legalDocumentPaths = new Set(["/terms-of-service", "/terms-of-service/", "/privacy-policy", "/privacy-policy/", "/accessibility", "/accessibility/"]);
+      // The legal overlay owns these links and preserves the reader's current
+      // position. Do not turn them into a route transition first.
+      if (legalDocumentPaths.has(destination.pathname)) return;
+      if (destination.pathname === window.location.pathname) return;
+
+      event.preventDefault();
+      isNavigating = true;
+      document.documentElement.classList.add("is-page-leaving");
+      window.setTimeout(() => {
+        router.push(`${destination.pathname}${destination.search}${destination.hash}`);
+      }, 110);
+    };
+
+    document.addEventListener("click", handleDocumentClick, true);
+    return () => document.removeEventListener("click", handleDocumentClick, true);
+  }, [reduceMotion, router]);
+
+  return null;
+}
+
 function useTurnstileProtection() {
   useEffect(() => {
     const form = document.getElementById("auditForm") as HTMLFormElement | null;
@@ -955,6 +1127,13 @@ function useTurnstileProtection() {
     const successDialog = document.getElementById("formSuccessDialog") as HTMLDialogElement | null;
     const successPanel = document.getElementById("formSuccess");
     const closeSuccessDialog = document.getElementById("closeFormSuccess");
+    let formStarted = false;
+    const onFormFocus = () => {
+      if (formStarted) return;
+      formStarted = true;
+      trackFunnelEvent("marketing-site", "marketing_contact_started");
+    };
+    form.addEventListener("focusin", onFormFocus);
 
     const setSubmitting = (isSubmitting: boolean) => {
       if (!submitButton) return;
@@ -967,7 +1146,7 @@ function useTurnstileProtection() {
           ? "Sending…"
           : submitButton.dataset.state === "sent"
             ? "Received"
-            : "Send the workflow";
+            : "Send my request";
       }
     };
 
@@ -1057,7 +1236,7 @@ function useTurnstileProtection() {
     // control aria-invalid. Errors clear as soon as the field becomes valid.
     type FieldControl = HTMLInputElement | HTMLTextAreaElement;
     const fieldConfig: Array<{ id: string; errorId: string; empty: string; invalid?: string }> = [
-      { id: "contactName", errorId: "contactName-error", empty: "Enter your name so we know who to reply to." },
+      { id: "contactName", errorId: "contactName-error", empty: "Tell us your name so we know who to reply to." },
       {
         id: "email",
         errorId: "email-error",
@@ -1153,10 +1332,35 @@ function useTurnstileProtection() {
       // framed response, so the UI can resolve on the request settling instead.
       const payload = new FormData(form);
       payload.set("cf-turnstile-response", token);
+      const crmPayload = {
+        funnel: "marketing-site",
+        name: String(payload.get("yourName") || ""),
+        email: String(payload.get("emailAddress") || ""),
+        business: String(payload.get("businessName") || ""),
+        goal: String(payload.get("notes") || ""),
+        serviceTier: String(payload.get("serviceTier") || ""),
+        attribution: captureAttribution("marketing"),
+      };
 
-      fetch(form.action, { method: "POST", mode: "no-cors", body: payload })
+      fetch("/api/funnel-lead", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(crmPayload),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("CRM handoff failed");
+          return fetch(form.action, { method: "POST", mode: "no-cors", body: payload });
+        })
         .then(() => {
+          trackFunnelEvent("marketing-site", "marketing_contact_submitted", {
+            service_tier: crmPayload.serviceTier,
+          });
           form.reset();
+          try {
+            window.sessionStorage.removeItem(CONTACT_DRAFT_KEY);
+          } catch {
+            /* The successful submission still stands if storage is unavailable. */
+          }
           clearAllFieldErrors();
           if (submitButton) submitButton.dataset.state = "sent";
           if (submitLabel) submitLabel.textContent = "Received";
@@ -1196,6 +1400,7 @@ function useTurnstileProtection() {
     return () => {
       cancelled = true;
       form.removeEventListener("submit", onSubmit);
+      form.removeEventListener("focusin", onFormFocus);
       clearFieldListeners.forEach((remove) => remove());
       successDialog?.removeEventListener("close", onDialogClose);
       closeSuccessDialog?.removeEventListener("click", dismissSuccessDialog);
@@ -1210,29 +1415,81 @@ function BackgroundVideo({
   poster,
   stream,
   playbackRate,
+  preload = "auto",
 }: {
   className: string;
   src?: string;
   poster?: string;
   stream?: string;
   playbackRate?: number;
+  preload?: "auto" | "metadata" | "none";
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !playbackRate) return;
+    if (!video) return;
+    if (reduceMotion) {
+      video.pause();
+      return;
+    }
+
     const applyRate = () => {
-      try {
-        video.playbackRate = playbackRate;
-      } catch {
-        /* ignore */
+      if (playbackRate) {
+        try {
+          video.playbackRate = playbackRate;
+        } catch {
+          /* ignore */
+        }
       }
     };
+
+    // Browsers may pause an offscreen, muted video to conserve resources.
+    // Autoplay does not necessarily restart it when that video re-enters the
+    // viewport, so explicitly resume it after a return from the CTA.
+    let inView = true;
+    let retryTimer: number | undefined;
+    const resume = () => {
+      if (document.hidden || !inView || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+      video.muted = true;
+      video.playsInline = true;
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          window.clearTimeout(retryTimer);
+          retryTimer = window.setTimeout(resume, 250);
+        });
+      }
+    };
+    const onVisibilityChange = () => {
+      if (!document.hidden) resume();
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) resume();
+      },
+      { rootMargin: "160px 0px" },
+    );
+
     applyRate(); // metadata may already be loaded
+    observer.observe(video);
     video.addEventListener("loadedmetadata", applyRate);
-    return () => video.removeEventListener("loadedmetadata", applyRate);
-  }, [playbackRate]);
+    video.addEventListener("canplay", resume);
+    video.addEventListener("stalled", resume);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    resume();
+
+    return () => {
+      window.clearTimeout(retryTimer);
+      observer.disconnect();
+      video.removeEventListener("loadedmetadata", applyRate);
+      video.removeEventListener("canplay", resume);
+      video.removeEventListener("stalled", resume);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [playbackRate, reduceMotion]);
 
   return (
     <video
@@ -1241,11 +1498,11 @@ function BackgroundVideo({
       src={src}
       poster={poster}
       data-mux-stream={stream}
-      autoPlay
+      autoPlay={!reduceMotion}
       muted
       loop
       playsInline
-      preload={src ? "auto" : "none"}
+      preload={src ? preload : "none"}
       aria-hidden="true"
     />
   );
@@ -1344,7 +1601,7 @@ function SpreadsheetTransformation() {
             The spreadsheet
             <span>becomes the tool.</span>
           </h2>
-          <p>For small teams running calls, quotes, projects, and customer work through disconnected files.</p>
+          <p>For teams still running quotes, projects, and customer work across disconnected files.</p>
         </div>
         <div className="transform-stage spreadsheet-reveal" aria-label="Spreadsheet transforming into a project dashboard">
           <div className="case-study-peel" aria-hidden="true">
@@ -1404,7 +1661,7 @@ function CountUp({
 }) {
   const reduceMotion = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState(value);
+  const [display, setDisplay] = useState(0);
   const started = useRef(false);
 
   useEffect(() => {
@@ -1415,26 +1672,35 @@ function CountUp({
       return;
     }
     setDisplay(0);
+    let frame = 0;
+    const startCount = () => {
+      if (started.current) return;
+      started.current = true;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - start) / duration);
+        // A crisp ease-out makes the value arrive quickly, then settle.
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setDisplay(Math.round(value * eased));
+        if (progress < 1) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting || started.current) return;
-          started.current = true;
-          const start = performance.now();
-          const tick = (now: number) => {
-            const progress = Math.min(1, (now - start) / duration);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setDisplay(Math.round(value * eased));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
+          if (!entry.isIntersecting) return;
+          startCount();
           observer.disconnect();
         });
       },
-      { threshold: 0.5 },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, [value, duration, reduceMotion]);
 
   return (
@@ -1449,6 +1715,7 @@ function CountUp({
 function EconomicCase() {
   const { profile } = usePersonalization();
   const business = profile?.business?.trim();
+  const peopleAffected = teamSizeToCount(profile?.teamSize ?? "") ?? 3;
   // Short doc code from the business initials, e.g. "Watson Roofing" -> "WR".
   const sheetCode =
     business
@@ -1470,8 +1737,7 @@ function EconomicCase() {
               <span>copy, paste, repeat.</span>
             </h2>
             <p>
-              Give skilled time back to judgment, customer work, and decisions. We find the repeated work worth fixing
-              first.
+              Put skilled time back into customer work. Start with the repeat work that costs you most.
             </p>
           </div>
 
@@ -1484,9 +1750,10 @@ function EconomicCase() {
               <div className="homepage-sheet-title">
                 <h3>Example: manual quoting</h3>
                 <p>{business ? `For ${business} · conservative estimate` : "Conservative operating estimate"}</p>
+                {profile?.teamSize ? <span className="homepage-sheet-profile">Starting model: {profile.teamSize} team</span> : null}
               </div>
               <dl className="homepage-sheet-inputs">
-                <div><dt>3 people</dt><dd>affected</dd></div>
+                <div><dt>{peopleAffected} {peopleAffected === 1 ? "person" : "people"}</dt><dd>affected</dd></div>
                 <div><dt>5 hrs / week</dt><dd>rework + entry</dd></div>
                 <div><dt>$38 / hour</dt><dd>loaded labor</dd></div>
               </dl>
@@ -1526,6 +1793,13 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
   const [hours, setHours] = useState(5);
   const [rate, setRate] = useState(24);
   const [recovery, setRecovery] = useState(50);
+
+  // A saved team band should meaningfully seed the estimate without taking
+  // away the visitor's ability to tune any of the inputs afterward.
+  useEffect(() => {
+    const teamCount = teamSizeToCount(profile?.teamSize ?? "");
+    if (teamCount) setPeople(teamCount);
+  }, [profile?.teamSize]);
 
   const results = useMemo(() => {
     const annualDrag = people * hours * rate * 50;
@@ -1587,7 +1861,7 @@ function LaborCostCalculator({ sectionId }: { sectionId?: string } = {}) {
           </p>
           <div className="labor-lead-bridge">
             <p>
-              Seeing a number worth fixing? Send us the process behind this estimate and we will look for the smallest useful build.
+              Seeing a number worth fixing? Send us the process. We’ll find the smallest useful build.
             </p>
             <a className="button button-primary" href="#cta">
               Send this estimate
@@ -1637,7 +1911,7 @@ function AiVisibility() {
 
   return (
     <section className="section-shell ai-section" id="recommendation">
-      <BackgroundVideo className="ai-section-video" poster={videos.form.poster} stream={videos.form.stream} />
+      <DotMatrix className="ai-section-dot-matrix" cellSize={26} frequency={0.72} speed={0.23} />
       <div className="ai-section-video-mask" aria-hidden="true" />
       <div className="ai-section-inner mx-auto max-w-6xl px-5 sm:px-8">
         <div className="section-heading ai-section-heading" data-reveal>
@@ -1646,8 +1920,7 @@ function AiVisibility() {
             <span>ask AI.</span>
           </h2>
           <p>
-            Customers ask ChatGPT and Google AI for a recommendation. If your business is invisible there, that is
-            inconvenient. Technically bad, even.
+            Customers increasingly ask ChatGPT and Google AI who to hire. We help your business show up.
           </p>
         </div>
 
@@ -1766,10 +2039,194 @@ function AiVisibility() {
   );
 }
 
-// The hero's desire driver: a typical dev-shop quote counts up, gets struck
-// through, and collapses to the cost we deliver at. Numbers are intentionally
-// soft (an illustrative "$15,000+" anchor, "up to 70% less") so nothing here
-// claims a figure we can't defend. Reduced motion shows the finished state.
+// A compact ROI model for the two established programs. The migration tab
+// compares platform rent with a self-owned site; Better Quote applies the
+// published success-fee schedule to user-controlled assumptions.
+
+type HeroRoiProduct = "website-migration" | "better-quote";
+
+const heroRoiProducts = {
+  "website-migration": {
+    tab: "Website migration",
+    windowTitle: "website-migration · ROI",
+    title: "Move your site without keeping the platform bill.",
+    description: "Compare the cost of continuing to rent your website with moving it into a self-owned setup.",
+  },
+  "better-quote": {
+    tab: "Better Quote Program",
+    windowTitle: "better-quote · ROI",
+    title: "Have an expensive quote? Let us shop it.",
+    description: "Model the potential return after The Better Quote Program™ success fee is applied.",
+  },
+} as const;
+
+function formatCompactCurrency(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function betterQuoteProgramFee(savings: number) {
+  if (savings < 199) return 0;
+  if (savings < 495) return 99;
+  if (savings <= 2500) return savings * 0.2;
+  return 500 + (savings - 2500) * 0.1;
+}
+
+function HeroRoiCalculator() {
+  const [activeProduct, setActiveProduct] = useState<HeroRoiProduct>("website-migration");
+  const [inputs, setInputs] = useState(() => ({
+    "website-migration": {
+      platformMonthly: 99,
+      migrationCost: websiteMigrationPricing.standardMigration,
+      years: 5,
+    },
+    "better-quote": {
+      quoteValue: 12000,
+      savingsRate: 15,
+    },
+  }));
+  const product = heroRoiProducts[activeProduct];
+  const migrationInputs = inputs["website-migration"];
+  const quoteInputs = inputs["better-quote"];
+  const ownedDomainCost = migrationInputs.years * 15;
+  const migrationOutlay = migrationInputs.migrationCost + ownedDomainCost;
+  const platformCostAvoided = migrationInputs.platformMonthly * 12 * migrationInputs.years;
+  const migrationNetSavings = platformCostAvoided - migrationOutlay;
+  const migrationRoi = Math.round((migrationNetSavings / migrationOutlay) * 100);
+  const monthlyPlatformSavings = migrationInputs.platformMonthly - 15 / 12;
+  const migrationBreakEvenMonths = monthlyPlatformSavings > 0
+    ? Math.ceil(migrationInputs.migrationCost / monthlyPlatformSavings)
+    : 0;
+  const qualifyingSavings = Math.round(quoteInputs.quoteValue * (quoteInputs.savingsRate / 100));
+  const quoteProgramFee = Math.round(betterQuoteProgramFee(qualifyingSavings));
+  const quoteNetSavings = qualifyingSavings - quoteProgramFee;
+  const quoteRoi = quoteProgramFee > 0 ? Math.round((quoteNetSavings / quoteProgramFee) * 100) : null;
+  const results = activeProduct === "website-migration"
+    ? [
+        { label: "Estimated break-even", value: `${migrationBreakEvenMonths} mo` },
+        { label: `${migrationInputs.years}-year net savings`, value: formatCompactCurrency(migrationNetSavings) },
+        { label: `${migrationInputs.years}-year ROI`, value: `${migrationRoi > 0 ? "+" : ""}${migrationRoi}%`, primary: true },
+      ]
+    : [
+        { label: "Qualifying savings", value: formatCompactCurrency(qualifyingSavings) },
+        { label: "Program fee", value: formatCompactCurrency(quoteProgramFee) },
+        { label: "ROI on the fee", value: quoteRoi === null ? "No fee" : `+${quoteRoi}%`, primary: true },
+      ];
+
+  const updateMigrationValue = (key: "platformMonthly" | "migrationCost" | "years", value: number) => {
+    setInputs((current) => ({
+      ...current,
+      "website-migration": { ...current["website-migration"], [key]: value },
+    }));
+  };
+
+  const updateQuoteValue = (key: "quoteValue" | "savingsRate", value: number) => {
+    setInputs((current) => ({
+      ...current,
+      "better-quote": { ...current["better-quote"], [key]: value },
+    }));
+  };
+
+  const selectProductFromKeyboard = (event: React.KeyboardEvent<HTMLButtonElement>, key: HeroRoiProduct) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const nextKey: HeroRoiProduct = event.key === "Home"
+      ? "website-migration"
+      : event.key === "End"
+        ? "better-quote"
+        : event.key === "ArrowRight"
+          ? (key === "website-migration" ? "better-quote" : "website-migration")
+          : (key === "better-quote" ? "website-migration" : "better-quote");
+    setActiveProduct(nextKey);
+    requestAnimationFrame(() => document.getElementById(`hero-roi-tab-${nextKey}`)?.focus());
+  };
+
+  return (
+    <div className="hero-roi-card">
+      <div className="hero-roi-windowbar">
+        <span className="hero-roi-window-dots" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <strong>{product.windowTitle}</strong>
+        <span className="hero-roi-live"><i aria-hidden="true" /> Live estimate</span>
+      </div>
+
+      <div className="hero-roi-tabs" role="tablist" aria-label="Choose a program to estimate">
+        {(Object.keys(heroRoiProducts) as HeroRoiProduct[]).map((key) => (
+          <button
+            type="button"
+            role="tab"
+            id={`hero-roi-tab-${key}`}
+            aria-controls="hero-roi-panel"
+            aria-selected={activeProduct === key}
+            tabIndex={activeProduct === key ? 0 : -1}
+            className={activeProduct === key ? "is-active" : ""}
+            onClick={() => setActiveProduct(key)}
+            onKeyDown={(event) => selectProductFromKeyboard(event, key)}
+            key={key}
+          >
+            {heroRoiProducts[key].tab}
+          </button>
+        ))}
+      </div>
+
+      <div
+        className="hero-roi-panel"
+        id="hero-roi-panel"
+        role="tabpanel"
+        aria-labelledby={`hero-roi-tab-${activeProduct}`}
+      >
+        <header className="hero-roi-copy">
+          <h2>{product.title}</h2>
+          <p>{product.description}</p>
+        </header>
+
+        {activeProduct === "website-migration" ? (
+          <div className="hero-roi-controls">
+            <label className="hero-roi-control">
+              <span><b>Current website platform / month</b><output>{formatCompactCurrency(migrationInputs.platformMonthly)}</output></span>
+              <input type="range" min="25" max="500" step="5" value={migrationInputs.platformMonthly} onInput={(event) => updateMigrationValue("platformMonthly", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Migration investment</b><output>{formatCompactCurrency(migrationInputs.migrationCost)}</output></span>
+              <input type="range" min="1500" max="3000" step="500" value={migrationInputs.migrationCost} onInput={(event) => updateMigrationValue("migrationCost", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Years to compare</b><output>{migrationInputs.years} years</output></span>
+              <input type="range" min="1" max="7" step="1" value={migrationInputs.years} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
+            </label>
+          </div>
+        ) : (
+          <div className="hero-roi-controls hero-roi-controls-compact">
+            <label className="hero-roi-control">
+              <span><b>Current written quote</b><output>{formatCompactCurrency(quoteInputs.quoteValue)}</output></span>
+              <input type="range" min="1000" max="50000" step="500" value={quoteInputs.quoteValue} onInput={(event) => updateQuoteValue("quoteValue", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Qualifying savings found</b><output>{quoteInputs.savingsRate}%</output></span>
+              <input type="range" min="2" max="40" step="1" value={quoteInputs.savingsRate} onInput={(event) => updateQuoteValue("savingsRate", Number(event.currentTarget.value))} />
+            </label>
+          </div>
+        )}
+
+        <div className="hero-roi-results" aria-live="polite" aria-atomic="true">
+          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><strong>{result.value}</strong></div>)}
+        </div>
+
+        <p className="hero-roi-note">
+          {activeProduct === "website-migration"
+            ? "Illustrative estimate assumes about $15/year for a domain. Scope and pricing are confirmed in writing."
+            : "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function Hero() {
   const reduceMotion = useReducedMotion();
@@ -1777,16 +2234,9 @@ function Hero() {
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
 
-  // The staggered entrance is JS-gated so the hero never depends on an
-  // animation to be visible: without JS (or for a headless/SEO render) the
-  // content ships at full opacity. Once mounted with motion allowed, we add
-  // `is-animating`, which switches on the opacity-0 start state and the
-  // stagger. The splash screen covers the brief class-add, so there's no flash.
-  const [entranceReady, setEntranceReady] = useState(false);
-  useEffect(() => {
-    setEntranceReady(true);
-  }, []);
-  const entranceClass = entranceReady && !reduceMotion ? " is-animating" : "";
+  // Keep the hero in its finished state through hydration. Adding a
+  // visibility-changing class after the first paint made the complete hero
+  // briefly disappear, then replay its entrance.
 
   // Subtle cursor parallax on the hero film. Pointer-only (skips touch),
   // disabled under reduced motion. The media is scaled slightly so the
@@ -1828,26 +2278,23 @@ function Hero() {
         <div className="hero-product-video-mask" />
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
-        <div className={`clay-hero-copy hero-entrance${entranceClass}`}>
+        <div className="clay-hero-copy hero-entrance">
           <h1 className="hero-title">
-            <span className="hero-line">We build</span>{" "}
+            <span className="hero-line">We <em>build</em></span>{" "}
             <span className="hero-line hero-audience-line">
               <AnimatedHeroPhrase phrases={heroPhrases} />
             </span>
           </h1>
           <p>
-            {business
-              ? `We fix one repeated workflow slowing down ${business}.`
-              : "We fix one repeated workflow slowing down your business."}{" "}
-            Faster, custom, and often <em className="ink-accent">up to 70% less</em> than traditional custom dev.
+            DaytonGrowthCo helps local service businesses set up and manage practical AI and software tools.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
               Start your build
               <ArrowRight size={16} aria-hidden="true" />
             </a>
-            <a className="button button-secondary large" href="#old-stack">
-              See what we replace
+            <a className="button button-secondary large" href="#services">
+              See the core products
             </a>
           </div>
           {business ? (
@@ -1859,32 +2306,12 @@ function Hero() {
             </p>
           ) : null}
         </div>
-        <a className="hero-scroll-cue" href="#old-stack" aria-label="Scroll to the next section">
+        <a className="hero-scroll-cue" href="#services" aria-label="Scroll to the products section">
           <span>Scroll</span>
           <ChevronDown size={18} aria-hidden="true" />
         </a>
-        <aside className={`hero-proof hero-entrance${entranceClass}`} aria-label="What a typical build looks like">
-          <ProofCard
-            tone="glass"
-            title="A quoting tool that runs on your real price sheet."
-            description="Calls, photos, and texts come in. A clean, sendable quote comes out, priced the way you already price."
-            visual={
-              <MiniDashboard
-                title="quote-builder · live"
-                rows={[
-                  { label: "New request", value: "Roof · 24 sq", tone: "muted" },
-                  { label: "Priced from", value: "Your sheet", tone: "accent" },
-                ]}
-                progress={[{ label: "Draft quote", value: 100 }]}
-                checks={["Sent in under a minute"]}
-              />
-            }
-            stats={[
-              { label: "Cost vs. a dev shop", value: "Up to 70% less", tone: "accent" },
-              { label: "Time to live", value: "2 to 4 weeks" },
-              { label: "Shaped to your workflow", value: "Exactly" },
-            ]}
-          />
+        <aside className="hero-proof hero-entrance" aria-label="Interactive program return estimator">
+          <HeroRoiCalculator />
         </aside>
       </div>
     </section>
@@ -2095,10 +2522,14 @@ function WebsiteTransformation() {
             Before.
             <span>After.</span>
           </h2>
-          <p>We redesign the site, rewrite the pages, and connect the request flow behind it.</p>
+          <p>Keep what makes the business yours. Replace the outdated platform, unclear pages, and maintenance burden around it.</p>
         </div>
         <div className="transformation-showcase">
-          <KineticGrid className="comparison-grid" spacing={42} radius={150} strength={2} />
+          <KineticGrid className="comparison-grid" spacing={42} radius={210} strength={2.6} />
+          <span className="grid-interaction-hint" aria-hidden="true">
+            <MousePointer2 size={13} strokeWidth={1.8} />
+            Move cursor over grid
+          </span>
           <div className="comparison-labels" aria-hidden="true">
             <span>Before</span>
             <span>After</span>
@@ -2136,24 +2567,51 @@ function WebsiteTransformation() {
         </div>
       </div>
       <div className="website-migration-offer mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="website-migration-card">
-          <div>
-            <h3>Websites start at $1,500.</h3>
-            <p>
-              Move from WordPress, Wix, or Squarespace to a fast vibecoded website your team can update by prompting.
-              Page builders are fine until the workaround becomes the job.
-            </p>
+        <section className="migration-feature-grid" aria-labelledby="migration-feature-title">
+          <article className="migration-feature-stack">
+            <span className="migration-feature-eyebrow"><PanelTop size={15} aria-hidden="true" /> Current setup</span>
+            <h3 id="migration-feature-title">Move the site forward without giving up control.</h3>
+            <div className="migration-platforms" aria-label="Common website platforms">
+              <span>WordPress</span><span>Wix</span><span>Squarespace</span>
+            </div>
+          </article>
+
+          <article className="migration-feature-handoff">
+            <span className="migration-feature-eyebrow"><Sparkles size={15} aria-hidden="true" /> One-off migration</span>
+            <h3>A site your team can keep current without another dashboard.</h3>
+            <p>Keep the services, search foundation, and lead flow that already work. Build a faster site your team can update in plain English, with support available when you want it.</p>
+            <div className="migration-prompt-preview" aria-label="Example plain-English website update">
+              <span>Update the spring service page</span>
+              <strong>Published</strong>
+            </div>
+            <a className="link-arrow" href="#cta">Plan my migration <ArrowRight size={15} aria-hidden="true" /></a>
+          </article>
+
+          <article className="migration-feature-path">
+            <span className="migration-feature-eyebrow"><Workflow size={15} aria-hidden="true" /> The Website Migration System</span>
+            <ol>
+              <li><span>01</span>Audit the pages, search foundations, and inquiry flow worth keeping.</li>
+              <li><span>02</span>Turn the useful foundation into a clear migration blueprint.</li>
+              <li><span>03</span>Build and test the new site before launch day.</li>
+              <li><span>04</span>Launch without changing the business behind the domain.</li>
+              <li><span>05</span>Show the team how to request simple updates in plain English.</li>
+              <li><span>06</span>Keep improving the pages that matter as the business changes.</li>
+            </ol>
+          </article>
+
+          <div className="migration-feature-benefits">
+            <article>
+              <Globe2 size={18} aria-hidden="true" />
+              <strong>Keep the useful foundation</strong>
+              <span>Services, search structure, and lead flow stay in scope.</span>
+            </article>
+            <article>
+              <MessageSquare size={18} aria-hidden="true" />
+              <strong>Make changes in plain English</strong>
+              <span>Less plugin work. Fewer one-line change requests.</span>
+            </article>
           </div>
-          <ul aria-label="Website migration benefits">
-            <li>Clean migration from your current site</li>
-            <li>Modern codebase built around your services</li>
-            <li>Prompt-based edits for copy, sections, and page updates</li>
-          </ul>
-          <a className="button button-primary" href="#cta">
-            Migrate my website
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </div>
+        </section>
       </div>
     </section>
   );
@@ -2167,11 +2625,8 @@ function FeatureGrid() {
     <section className="section-shell platform-section" aria-labelledby="margin-leak-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="margin-leak-heading">
-          <h2 id="margin-leak-title">Modernize the work around the work.</h2>
-          <p>
-            Not another lead form. The operating layer behind how your company quotes, answers, organizes, markets,
-            and grows, built for less than traditional custom software because AI compresses the build.
-          </p>
+          <h2 id="margin-leak-title">Replace the friction that runs the business for you.</h2>
+          <p>Start with the handoff, repeat task, or outdated system costing the most time. Then build the smallest system that gives your team control back.</p>
         </div>
         <div className="margin-leak-table">
           <div className="margin-leak-head" aria-hidden="true">
@@ -2202,38 +2657,44 @@ function FeatureGrid() {
           aria-controls="all-capabilities"
           onClick={() => setShowAllFeatures((current) => !current)}
         >
-          {showAllFeatures ? "Hide capabilities" : "View all capabilities"}
+          {showAllFeatures ? "Hide systems" : "Explore the systems we build"}
           <ChevronDown size={16} aria-hidden="true" />
         </button>
-        <div id="all-capabilities" className={`feature-all ${showAllFeatures ? "is-open" : ""}`}>
-          <div className="feature-grid desktop-feature-grid">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <article className="feature-cell" key={feature.title}>
-                  <span className="feature-icon" aria-hidden="true">
-                    <Icon size={18} strokeWidth={1.8} />
-                  </span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.text}</p>
-                </article>
-              );
-            })}
-          </div>
-          <div className="feature-accordion">
-            {features.map((feature, index) => {
-              const isOpen = openFeature === index;
-              return (
-                <article className={isOpen ? "is-open" : ""} key={feature.title}>
-                  <button type="button" onClick={() => setOpenFeature(isOpen ? -1 : index)} aria-expanded={isOpen}>
-                    <span className="feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                    <strong>{feature.title}</strong>
-                    <ChevronDown size={17} aria-hidden="true" />
-                  </button>
-                  {isOpen ? <p>{feature.text}</p> : null}
-                </article>
-              );
-            })}
+        <div
+          id="all-capabilities"
+          className={`feature-all ${showAllFeatures ? "is-open" : ""}`}
+          aria-hidden={!showAllFeatures}
+        >
+          <div className="feature-all-inner">
+            <div className="feature-grid desktop-feature-grid">
+              {features.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <article className="feature-cell" key={feature.title}>
+                    <span className="feature-icon" aria-hidden="true">
+                      <Icon size={18} strokeWidth={1.8} />
+                    </span>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.text}</p>
+                  </article>
+                );
+              })}
+            </div>
+            <div className="feature-accordion">
+              {features.map((feature, index) => {
+                const isOpen = openFeature === index;
+                return (
+                  <article className={isOpen ? "is-open" : ""} key={feature.title}>
+                    <button type="button" onClick={() => setOpenFeature(isOpen ? -1 : index)} aria-expanded={isOpen}>
+                      <span className="feature-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                      <strong>{feature.title}</strong>
+                      <ChevronDown size={17} aria-hidden="true" />
+                    </button>
+                    {isOpen ? <p>{feature.text}</p> : null}
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -2246,10 +2707,33 @@ function OutcomeSection() {
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
-          <h2>Choose a need. Build the right system.</h2>
-          <p>Watch a focused tool take shape around what the business actually needs.</p>
+          <h2>Choose a bottleneck. See the first build.</h2>
+          <p>Pick a common problem to see what a focused system could do.</p>
         </div>
         <ToolScenarioDemo />
+      </div>
+    </section>
+  );
+}
+
+function PhoneAgentOffer() {
+  return (
+    <section className="phone-agent-offer" aria-labelledby="phone-agent-offer-title">
+      <WaveShader className="phone-agent-wave" />
+      <div className="phone-agent-offer-inner mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="phone-agent-offer-copy">
+          <span>Phone Response System</span>
+          <h2 id="phone-agent-offer-title">Answer the call before it becomes a missed job.</h2>
+          <p>
+            The system handles the routine first response, captures the details your team needs, and sends the right work to a person when judgment matters.
+          </p>
+          <a className="button button-primary" href="/#cta">Map my call flow <ArrowRight size={15} aria-hidden="true" /></a>
+        </div>
+          <ol className="phone-agent-offer-steps" aria-label="Phone Response System workflow">
+          <li><span>01</span><strong>Answer</strong><p>Handle the first question in your voice.</p></li>
+          <li><span>02</span><strong>Capture</strong><p>Collect the service, urgency, and contact details.</p></li>
+          <li><span>03</span><strong>Hand off</strong><p>Send the team a useful next step, not a voicemail.</p></li>
+        </ol>
       </div>
     </section>
   );
@@ -2501,83 +2985,150 @@ const CONSUMER_EMAIL_DOMAINS = new Set([
 function extractEmailDomain(value: string): string | null {
   const at = value.lastIndexOf("@");
   if (at < 0) return null;
-  const domain = extractDomain(value.slice(at + 1));
+  const hostname = extractDomain(value.slice(at + 1));
+  const domain = hostname ? getDomain(hostname, { allowPrivateDomains: true }) ?? hostname : null;
   if (!domain || CONSUMER_EMAIL_DOMAINS.has(domain)) return null;
   return domain;
 }
 
+type BusinessIdentity = {
+  domain: string;
+  business: string;
+};
+
+function formatBusinessName(domain: string) {
+  const label = domain.split(".")[0] ?? "";
+  const acronyms = new Map([
+    ["ai", "AI"],
+    ["hvac", "HVAC"],
+    ["usa", "USA"],
+    ["llc", "LLC"],
+  ]);
+  return label
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((part) => acronyms.get(part.toLowerCase()) ?? `${part.charAt(0).toUpperCase()}${part.slice(1).toLowerCase()}`)
+    .join(" ");
+}
+
+function deriveBusinessIdentity(email: string): BusinessIdentity | null {
+  const domain = extractEmailDomain(email);
+  if (!domain) return null;
+  const business = formatBusinessName(domain);
+  return business ? { domain, business } : null;
+}
+
+function BusinessFavicon({ domain, className = "" }: Pick<BusinessIdentity, "domain"> & { className?: string }) {
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const faviconSources = [
+    `https://${domain}/favicon.ico`,
+    `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`,
+    `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(`https://${domain}`)}&sz=128`,
+  ];
+  const failed = sourceIndex >= faviconSources.length;
+
+  useEffect(() => {
+    setSourceIndex(0);
+  }, [domain]);
+
+  if (failed) return null;
+
+  return (
+    <span className={`business-favicon ${className}`.trim()} aria-hidden="true">
+      <img
+        key={`${domain}-${sourceIndex}`}
+        src={faviconSources[sourceIndex]}
+        alt=""
+        width={22}
+        height={22}
+        onError={() => setSourceIndex((index) => index + 1)}
+      />
+    </span>
+  );
+}
+
 function ProjectForm() {
   const { profile, workflowChoice } = usePersonalization();
-  const selectedWorkflow =
-    workflowSimulationOptions.find((option) => option.id === workflowChoice) ?? workflowSimulationOptions[0];
+  const selectedWorkflow = workflowSimulationOptions.find((option) => option.id === workflowChoice);
+  const selectedOffer = coreProductOffers.find((offer) => offer.id === workflowChoice);
 
   // Seed the visible fields from the saved profile, but never overwrite what the
   // visitor types: once a field has been edited by hand it stops syncing.
   const [name, setName] = useState(profile?.name ?? "");
   const [business, setBusiness] = useState(profile?.business ?? "");
-  const [email, setEmail] = useState("");
-  const [faviconReady, setFaviconReady] = useState(false);
-  const [serviceTier, setServiceTier] = useState("Discuss the process");
+  const [email, setEmail] = useState(profile?.email ?? "");
+  const [details, setDetails] = useState("");
   const nameEdited = useRef(false);
   const businessEdited = useRef(false);
-  const detailsRef = useRef<HTMLTextAreaElement>(null);
+  const emailEdited = useRef(false);
+  const draftHydrated = useRef(false);
+  const hasSavedDetails = useRef(false);
 
-  // The consultation CTA sends visitors here. Tag the submission so the owner sees
-  // the intent, and seed the details field if the visitor has not typed anything.
   useEffect(() => {
-    const onAuditRequest = () => {
-      setServiceTier("Schedule a consultation");
-      const field = detailsRef.current;
-      if (field && !field.value.trim()) {
-        field.value = business.trim()
-          ? `We would like to schedule a consultation for ${business.trim()}. Here is roughly how we run things today: `
-          : "We would like to schedule a consultation. Here is roughly how we run things today: ";
+    try {
+      const raw = window.sessionStorage.getItem(CONTACT_DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw) as Partial<{ name: string; business: string; email: string; details: string }>;
+        if (typeof draft.name === "string") setName(draft.name);
+        if (typeof draft.business === "string") setBusiness(draft.business);
+        if (typeof draft.email === "string") setEmail(draft.email);
+        if (typeof draft.details === "string") {
+          hasSavedDetails.current = Boolean(draft.details.trim());
+          setDetails(draft.details);
+        }
       }
-    };
-    window.addEventListener("dgc:audit-request", onAuditRequest);
-    return () => window.removeEventListener("dgc:audit-request", onAuditRequest);
-  }, [business]);
+    } catch {
+      /* The form remains usable without draft storage. */
+    }
+    draftHydrated.current = true;
+  }, []);
 
-  // Derive the business favicon from the email domain. Reset the loaded state
-  // whenever the domain changes so the logo only animates in once it has loaded.
-  const faviconDomain = useMemo(() => extractEmailDomain(email), [email]);
   useEffect(() => {
-    setFaviconReady(false);
-  }, [faviconDomain]);
-  const faviconSrc = faviconDomain
-    ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(faviconDomain)}&sz=64`
-    : null;
+    if (!draftHydrated.current) return;
+    try {
+      window.sessionStorage.setItem(CONTACT_DRAFT_KEY, JSON.stringify({ name, business, email, details }));
+    } catch {
+      /* The form remains usable without draft storage. */
+    }
+  }, [business, details, email, name]);
+
+  useEffect(() => {
+    if (!draftHydrated.current || hasSavedDetails.current || !selectedOffer || details.trim()) return;
+    setDetails(`I am interested in the ${selectedOffer.freeTitle}. Here is what is happening now: `);
+  }, [details, selectedOffer]);
+
+  // Derive a compact business favicon from a company email domain.
+  const faviconDomain = useMemo(() => extractEmailDomain(email), [email]);
 
   useEffect(() => {
     if (profile?.name && !nameEdited.current) setName(profile.name);
     if (profile?.business && !businessEdited.current) setBusiness(profile.business);
+    if (profile?.email && !emailEdited.current) setEmail(profile.email);
   }, [profile]);
 
-  const detailsPlaceholder = business.trim()
-    ? `At ${business.trim()}, ${selectedWorkflow.label.toLowerCase()} is the workflow we want to fix. Right now we do X, Y, and Z by hand.`
-    : `${selectedWorkflow.label} is the workflow we want to fix. Right now we do X, Y, and Z by hand.`;
+  const detailsPlaceholder = "Missed calls, estimates, follow-up, website updates, or software costs.";
 
   return (
     <div className="form-card">
       <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
-        <input type="hidden" name="serviceTier" value={serviceTier} readOnly />
+        <input type="hidden" name="serviceTier" value={selectedOffer ? selectedOffer.freeTitle : "Discuss the process"} readOnly />
         <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
-        <input type="hidden" name="selectedWorkflow" value={selectedWorkflow.label} readOnly />
-        <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow.build} readOnly />
+        <input type="hidden" name="selectedWorkflow" value={selectedWorkflow?.label ?? "Not selected"} readOnly />
+        <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow?.build ?? "Discuss the right first product"} readOnly />
 
         <label className="form-field" htmlFor="contactName">
           <span>Name *</span>
-          <ClearInput
+          <input
             id="contactName"
             name="yourName"
             type="text"
             autoComplete="name"
             placeholder="Marcus Reed"
             value={name}
-            onValueChange={(nextValue) => {
+            onChange={(event) => {
               nameEdited.current = true;
-              setName(nextValue);
+              setName(event.target.value);
             }}
             aria-describedby="contactName-error"
             required
@@ -2586,78 +3137,63 @@ function ProjectForm() {
         </label>
         <label className="form-field" htmlFor="businessName">
           <span>Business</span>
-          <ClearInput
+          <input
             id="businessName"
             name="businessName"
             type="text"
             autoComplete="organization"
             placeholder="Your business"
             value={business}
-            onValueChange={(nextValue) => {
+            onChange={(event) => {
               businessEdited.current = true;
-              setBusiness(nextValue);
+              setBusiness(event.target.value);
             }}
           />
         </label>
-        <label className="form-field" htmlFor="email">
+        <label className="form-field email-form-field" htmlFor="email">
           <span>Email *</span>
           <div className="favicon-field">
-            <ClearInput
+            <input
               id="email"
               name="emailAddress"
               type="email"
               autoComplete="email"
               placeholder="marcus@company.com"
               value={email}
-              onValueChange={setEmail}
+              onChange={(event) => {
+                emailEdited.current = true;
+                setEmail(event.target.value);
+              }}
               aria-describedby="email-error"
               required
-              endAdornment={
-                faviconSrc ? (
-                  <span className={`field-favicon ${faviconReady ? "is-ready" : ""}`} aria-hidden="true">
-                    <img
-                      key={faviconDomain}
-                      ref={(node) => {
-                        // Cached favicons can finish loading before React attaches
-                        // onLoad, so catch the already-complete case here too.
-                        if (node && node.complete && node.naturalWidth > 0) setFaviconReady(true);
-                      }}
-                      src={faviconSrc}
-                      alt=""
-                      width={20}
-                      height={20}
-                      loading="lazy"
-                      onLoad={() => setFaviconReady(true)}
-                      onError={() => setFaviconReady(false)}
-                    />
-                  </span>
-                ) : null
-              }
             />
+            {faviconDomain ? <BusinessFavicon domain={faviconDomain} className="field-favicon" /> : null}
           </div>
           <small className="field-error" id="email-error" role="alert" />
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
-          <span>What should we build? *</span>
-          <small id="details-hint">One or two sentences is enough. Tell us the repeated workflow, where it starts, and where it gets stuck.</small>
+          <span>What is taking too long? *</span>
           <textarea
-            ref={detailsRef}
             id="details"
             name="notes"
             rows={4}
             placeholder={detailsPlaceholder}
-            aria-describedby="details-hint details-error"
+            value={details}
+            onChange={(event) => setDetails(event.target.value)}
+            aria-describedby="details-error"
             required
           />
           <small className="field-error" id="details-error" role="alert" />
         </label>
-
         <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
 
         <button type="submit" className="button button-primary large form-submit">
-          <span className="form-submit-label">Send the workflow</span>
+          <span className="form-submit-label">Send my request</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
+        <p className="cta-trust form-cta-trust">
+          Reply within one business day · No obligation · <a href="/privacy-policy/">Privacy policy</a>
+        </p>
         <div id="auditStatus" aria-live="assertive" className="form-status" />
       </form>
       <dialog
@@ -2674,7 +3210,7 @@ function ProjectForm() {
         </span>
         <h3 id="formSuccessDialogTitle" className="form-success-title">Received</h3>
         <p id="formSuccessDialogMessage" className="form-success-message">
-          Thanks, we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+          We’ll reply within one business day with the next step for your selected product. Need to move sooner? <a href="/book-call">Book a call.</a>
         </p>
       </dialog>
       <div id="formSuccess" className="form-success" role="status" tabIndex={-1} hidden>
@@ -2683,7 +3219,7 @@ function ProjectForm() {
         </span>
         <h3 className="form-success-title">Received</h3>
         <p className="form-success-message">
-          Thanks, we’ve got your details. We’ll review your process and reply with next steps within 24 hours.
+          We’ll reply within one business day with the next step for your selected product. Need to move sooner? <a href="/book-call">Book a call.</a>
         </p>
       </div>
     </div>
@@ -2696,6 +3232,8 @@ function FinalCTA() {
   const business = profile?.business?.trim();
   return (
     <section id="cta" className="final-cta">
+      <BackgroundVideo className="form-background-video" poster={videos.form.poster} stream={videos.form.stream} preload="none" />
+      <div className="form-video-mask" aria-hidden="true" />
       <KineticGrid className="final-cta-grid" spacing={52} radius={170} strength={2} />
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="final-cta-copy text-center lg:text-left">
@@ -2722,84 +3260,6 @@ function FinalCTA() {
         <ProjectForm />
       </div>
     </section>
-  );
-}
-
-function SplashScreen() {
-  const [skipSplash] = useState(() => {
-    try {
-      const bootPending = document.documentElement.classList.contains("dgc-splash-pending");
-      const splashSeen =
-        window.localStorage.getItem("dgc:splash-seen") === "1" ||
-        window.sessionStorage.getItem("dgc:splash-seen") === "1";
-      return !bootPending && splashSeen;
-    } catch {
-      return true;
-    }
-  });
-  const [done, setDone] = useState(skipSplash);
-  const [visible, setVisible] = useState(!skipSplash);
-
-  useEffect(() => {
-    const bootSplash = document.getElementById("boot-splash");
-    if (bootSplash) {
-      bootSplash.hidden = true;
-      bootSplash.setAttribute("aria-hidden", "true");
-    }
-    if (skipSplash) {
-      document.documentElement.classList.add("dgc-splash-seen");
-      document.documentElement.classList.remove("dgc-splash-pending");
-      document.body.classList.remove("splash-lock");
-      setVisible(false);
-      return;
-    }
-
-    try {
-      window.localStorage.setItem("dgc:splash-seen", "1");
-      window.sessionStorage.setItem("dgc:splash-seen", "1");
-    } catch {
-      /* Continue showing the splash when storage is unavailable. */
-    }
-    document.body.classList.add("splash-lock");
-    // This effect runs after the React splash is committed to the DOM, so
-    // hiding the inline boot overlay now hands off without removing a layout node.
-    const timer = window.setTimeout(() => {
-      setDone(true);
-      document.documentElement.classList.add("dgc-splash-seen");
-      document.documentElement.classList.remove("dgc-splash-pending");
-      document.body.classList.remove("splash-lock");
-    }, 2550);
-    const removeTimer = window.setTimeout(() => {
-      setVisible(false);
-    }, 3050);
-    const hardStopTimer = window.setTimeout(() => {
-      setDone(true);
-      setVisible(false);
-      document.documentElement.classList.add("dgc-splash-seen");
-      document.documentElement.classList.remove("dgc-splash-pending");
-      document.body.classList.remove("splash-lock");
-    }, 4200);
-    return () => {
-      window.clearTimeout(timer);
-      window.clearTimeout(removeTimer);
-      window.clearTimeout(hardStopTimer);
-      document.body.classList.remove("splash-lock");
-    };
-  }, [skipSplash]);
-
-  if (!visible) return null;
-
-  return (
-    <div className={`splash-screen ${done ? "is-done" : ""}`} aria-hidden="true">
-      <div className="splash-inner">
-        <div className="splash-mark">
-          <img src={logoUrl} alt="" className="splash-logo" />
-        </div>
-        <div className="splash-wordmark">
-          <span className="sp-ini sp-dayton">D</span><span className="sp-rest sp-dayton">ayton</span><span className="sp-ini sp-growth">G</span><span className="sp-rest sp-growth">rowth</span><span className="sp-ini sp-co">C</span><span className="sp-rest sp-co">o.</span>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -2894,6 +3354,89 @@ function useMotionSystem() {
       window.clearTimeout(failOpen);
     };
   }, []);
+}
+
+// A one-shot choreography layer for explanatory sections. It only changes
+// classes as sections cross the viewport; CSS owns the visual transitions so
+// the motion remains smooth even while the page is busy.
+function useScrollChoreography() {
+  const pathname = usePathname();
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scenes = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll-scene]"));
+    if (!scenes.length) return;
+
+    const itemSelector: Record<string, string> = {
+      services: ".hover-card",
+      process: ".process-step",
+      workflow: ".workflow-sim-board > *",
+      system: ".system-map-node",
+      ledger: ".old-stack-row",
+      audit: ".aoa-step",
+    };
+    const cleanups: Array<() => void> = [];
+
+    scenes.forEach((scene) => {
+      const key = scene.dataset.scrollScene ?? "";
+      const items = Array.from(scene.querySelectorAll<HTMLElement>(itemSelector[key] ?? ":scope > *"));
+      items.forEach((item, index) => item.style.setProperty("--scene-index", String(index)));
+
+      if (reduceMotion || !("IntersectionObserver" in window)) {
+        scene.classList.add("is-scroll-scene-ready");
+        scene.classList.add("is-scene-active");
+        items.forEach((item, index) => item.classList.toggle("is-current", index === 0));
+        return;
+      }
+
+      // Two animation frames guarantee the browser paints the quiet starting
+      // state before an intersection can activate the scene. Without that
+      // separation, a fast observer callback can skip the transition entirely.
+      let observeFrame = 0;
+      const readyFrame = window.requestAnimationFrame(() => {
+        scene.classList.add("is-scroll-scene-ready");
+        observeFrame = window.requestAnimationFrame(() => {
+          const sceneObserver = new IntersectionObserver(
+            (entries) => {
+              if (!entries.some((entry) => entry.isIntersecting)) return;
+              scene.classList.add("is-scene-active");
+              sceneObserver.disconnect();
+            },
+            { threshold: 0.18, rootMargin: "0px 0px -20% 0px" },
+          );
+          sceneObserver.observe(scene);
+          cleanups.push(() => sceneObserver.disconnect());
+
+          // Once a scene is active, the item nearest the reading line receives
+          // a small persistent emphasis. This works for the service story,
+          // process, system map, replacement rows, and mini-audit steps.
+          if (key === "workflow") return;
+          const itemObserver = new IntersectionObserver(
+            (entries) => {
+              const active = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top))[0];
+              if (!active) return;
+              const activeIndex = items.indexOf(active.target as HTMLElement);
+              if (activeIndex < 0) return;
+              items.forEach((item, index) => {
+                item.classList.toggle("is-current", index === activeIndex);
+                item.classList.toggle("is-past", index < activeIndex);
+              });
+            },
+            { threshold: 0.42, rootMargin: "-16% 0px -34% 0px" },
+          );
+          items.forEach((item) => itemObserver.observe(item));
+          cleanups.push(() => itemObserver.disconnect());
+        });
+      });
+      cleanups.push(() => {
+        window.cancelAnimationFrame(readyFrame);
+        window.cancelAnimationFrame(observeFrame);
+      });
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, [pathname]);
 }
 
 function useMuxVideos() {
@@ -3033,45 +3576,6 @@ function useScrollProgressFallback() {
   }, []);
 }
 
-const pageCopy = {
-  whatWeBuild: {
-    kicker: "What we build",
-    title: "From online presence to the systems behind the work.",
-    text: "We help small and midsized businesses nationwide improve how customers find them, how requests are handled, and how the team delivers the work, without paying traditional custom-development prices.",
-  },
-  examples: {
-    kicker: "Examples",
-    title: "Choose a need. See the system take shape.",
-    text: "These working demonstrations show how a specific business problem can become a focused, usable tool, and why a smaller AI-assisted build can often solve the expensive part first.",
-  },
-  howItWorks: {
-    kicker: "How it works",
-    title: "Start with the constraint. Not the trend.",
-    text: "We map the work, measure what the current process costs, and choose the smallest useful fix before recommending a custom build.",
-  },
-  about: {
-    kicker: "About",
-    title: "Practical invention, rooted in Dayton.",
-    text: "DaytonGrowthCo builds custom tools around the way small and midsized businesses actually work, starting with the process before the software.",
-  },
-};
-
-function PageHero({ title, text }: { title: string; text: string; kicker?: string }) {
-  return (
-    <section className="page-hero" id="top">
-      <div className="page-hero-field" aria-hidden="true" />
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <h1>{title}</h1>
-        <p>{text}</p>
-        <a className="button button-primary large" href="#cta">
-          Start a conversation
-          <ArrowRight size={15} aria-hidden="true" />
-        </a>
-      </div>
-    </section>
-  );
-}
-
 function AdvancedSystemPreview({ sectionId = "outcomes" }: { sectionId?: string }) {
   const stages = [
     {
@@ -3101,10 +3605,7 @@ function AdvancedSystemPreview({ sectionId = "outcomes" }: { sectionId?: string 
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="homepage-preview-copy">
           <h2 id={`${sectionId}-title`}>A focused tool for the work between the work.</h2>
-          <p>
-            Calls, pricing rules, customer details, and project updates often live in separate places. We connect the
-            parts that create repeated entry, slow handoffs, or missed context.
-          </p>
+          <p>Connect customer details, pricing, and project updates without entering the same information twice.</p>
         </div>
         <div className="advanced-preview-console">
           <div className="advanced-preview-tag" aria-hidden="true">
@@ -3146,28 +3647,28 @@ function AdvancedSystemPreview({ sectionId = "outcomes" }: { sectionId?: string 
 
 const serviceDetails = [
   {
-    title: "Build your presence",
-    problem: "The business is difficult to understand or does not look as capable online as it is in person.",
-    builds: "Modern websites, service pages, sales pages, and ongoing website care.",
-    outcome: "A credible foundation that explains the offer and gives customers a clear next step.",
+    title: "Website Migration System",
+    problem: "Your WordPress, Wix, Squarespace, or agency site is hard to keep current.",
+    builds: "Move the useful foundation into a modern system your team can manage without another dashboard.",
+    outcome: "A faster site you control, with support available when you want it.",
   },
   {
-    title: "Get discovered",
-    problem: "The right customers are searching, but the business is hard to find or hard for AI systems to interpret.",
-    builds: "SEO, AEO, local search improvements, useful content, and focused campaigns.",
-    outcome: "More qualified discovery without relying entirely on paid attention.",
+    title: "Discovery System",
+    problem: "The right customers are searching, but they cannot find or understand your business.",
+    builds: "Improve local visibility, clear service information, and the path from search to inquiry.",
+    outcome: "More qualified discovery without depending only on paid ads.",
   },
   {
-    title: "Capture and schedule",
-    problem: "Calls go unanswered, intake is inconsistent, or details are lost before the work is booked.",
-    builds: "Phone agents, request forms, scheduling flows, and practical follow-up systems.",
-    outcome: "Faster response and cleaner information before a team member takes over.",
+    title: "Phone Response System",
+    problem: "Calls go unanswered or details get lost before the work is booked.",
+    builds: "Capture the right information and give the team a clear next step.",
+    outcome: "Faster replies and cleaner handoffs.",
   },
   {
-    title: "Run the work",
-    problem: "Quotes, files, customer updates, and project details are spread across too many tools.",
-    builds: "Quote builders, dashboards, customer portals, training systems, and custom apps.",
-    outcome: "Less repeated entry, clearer handoffs, and more capacity for customer work.",
+    title: "Operations Dashboard System",
+    problem: "Quotes, files, and project details are spread across too many tools.",
+    builds: "Create one working flow that reduces re-entry and missed handoffs.",
+    outcome: "Less re-entry, clearer handoffs, and more customer time.",
   },
 ];
 
@@ -3176,11 +3677,7 @@ function ServiceArchitecture() {
     <section className="service-architecture" aria-labelledby="service-architecture-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="service-architecture-title">Pick the constraint. Then pick the build.</h2>
-          <p>
-            This page should help a buyer recognize their own bottleneck quickly, so the options are grouped by the
-            business problem they solve instead of by technical category.
-          </p>
+          <h2 id="service-architecture-title">One operating model. Focused systems for the work that creates friction.</h2>
         </div>
         <div className="service-detail-grid" data-stagger>
           {serviceDetails.map((item, index) => (
@@ -3204,13 +3701,13 @@ function ServiceArchitecture() {
 function QuoteWorkflowExample() {
   return (
     <section className="quote-workflow-example" aria-labelledby="quote-workflow-title">
+      <div className="section-film-media" aria-hidden="true">
+        <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
+      </div>
+      <div className="section-film-mask" aria-hidden="true" />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
         <div className="homepage-preview-copy">
           <h2 id="quote-workflow-title">Turn pricing rules into a send-ready quote.</h2>
-          <p>
-            A focused quote builder can bring customer details, approved pricing, and scope options into one clear
-            workflow. The team spends less time rebuilding documents and more time reviewing the work itself.
-          </p>
           <a href="/#cta">
             Discuss your quoting process
             <ArrowRight size={15} aria-hidden="true" />
@@ -3226,18 +3723,21 @@ function QuoteWorkflowExample() {
 
 function BuildPrinciples() {
   const principles = [
-    ["Fix the expensive bottleneck first.", "We start where the current process costs the most in time, errors, or lost work. That keeps the first build tied to a business case."],
-    ["Use existing software when it fits.", "If a tool you already trust can do the job, the right move is to set it up well, not rebuild it. That keeps the budget focused on the parts only your business needs custom."],
-    ["Build custom only where your process creates an advantage.", "Custom tools are reserved for the steps where the way you work is genuinely different."],
-    ["Measure time removed, errors avoided, and capacity recovered.", "Success is a process that is faster and cleaner, not a longer list of features."],
+    ["Fix the expensive bottleneck first.", "Start where time, errors, or lost work cost the most."],
+    ["Use existing software when it fits.", "Set up the tools that already work. Build only what is unique."],
+    ["Build custom where it creates an advantage.", "Reserve custom work for the parts of your process that are genuinely different."],
+    ["Measure what improves.", "Success is less time and fewer errors—not more features."],
   ];
 
   return (
     <section className="build-principles" aria-labelledby="build-principles-title">
+      <div className="build-principles-media" aria-hidden="true">
+        <BackgroundVideo className="build-principles-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
+      </div>
+      <div className="build-principles-film-mask" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="build-principles-title">The rules that keep the scope honest.</h2>
-          <p>The right answer may be existing software, a focused automation, or a custom tool. These rules keep the build useful, affordable, and specific to the work.</p>
+          <h2 id="build-principles-title">Find the bottleneck. Replace it. Improve it.</h2>
         </div>
         <ol className="build-principles-list">
           {principles.map(([title, text], index) => (
@@ -3271,11 +3771,13 @@ function DiscoveryDiagnosis() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
           <h2 id="discovery-title">How we evaluate a process before building anything.</h2>
-          <p>Diagnosis comes before tooling. We look at the real work first, then decide what, if anything, to build.</p>
         </div>
         <ol>
           {steps.map((step, index) => (
-            <li key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></li>
+            <li key={step} tabIndex={0}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{step}</strong>
+            </li>
           ))}
         </ol>
       </div>
@@ -3285,19 +3787,16 @@ function DiscoveryDiagnosis() {
 
 function EngagementNotes() {
   const inputs = [
-    ["A real process", "Bring the workflow that currently causes delay, repeated entry, or inconsistent handoffs."],
-    ["The people doing the work", "We learn from the team members who know where the process bends and breaks."],
-    ["Useful examples", "Existing forms, spreadsheets, quotes, and screenshots help us understand the work quickly."],
+    ["A real process", "Show us where work gets delayed, repeated, or handed off."],
+    ["The people doing the work", "Include the people who know the work best."],
+    ["Useful examples", "Forms, spreadsheets, quotes, or screenshots let us see the work quickly."],
   ];
 
   const helpful = [
-    "Current spreadsheets or forms",
-    "Pricing sheets",
-    "Sample calls, notes, or requests",
-    "A list of the software you use today",
-    "A short description of the current workflow",
-    "The output you actually want",
-    "Team members who can help test it",
+    "A current form or spreadsheet",
+    "A pricing sheet",
+    "A few real requests or notes",
+    "The output you want",
   ];
 
   return (
@@ -3305,7 +3804,6 @@ function EngagementNotes() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
           <h2 id="engagement-notes-title">What we need from your team.</h2>
-          <p>You do not need a technical specification. We need a clear view of the work and access to the people who understand it.</p>
         </div>
         <div className="engagement-notes-grid" data-stagger>
           {inputs.map(([title, text], index) => (
@@ -3333,14 +3831,12 @@ function HowItWorksFaq() {
   const [open, setOpen] = useState(0);
   const faqs = [
     ["Do we need custom software?", "Often no. Many problems are solved by setting up or connecting tools you already have. Custom is for the steps where your process is genuinely different."],
-    ["How can custom work be this affordable?", "We build with AI, which removes most of the hours a traditional dev shop would bill for. You get the same custom result for up to 70% less."],
-    ["Can you configure existing software?", "Yes. Configuring and connecting trusted tools is frequently the fastest, lowest-risk fix and is where we look first."],
+    ["How can custom work be this affordable?", "AI-assisted development reduces build hours. The work still starts with your process and ends with a tool your team can use."],
     ["Can we start with one small process?", "Yes. A focused first build is usually the best way to prove value and learn what should come next."],
     ["Do we need to replace our current tools?", "No. We aim to remove the friction around your tools, not force a migration you did not ask for."],
     ["How involved does our team need to be?", "Light but real involvement. Short feedback loops with the people who do the work keep the tool grounded and make adoption easier."],
     ["What happens after launch?", "We test with real work, fix what the first weeks reveal, and improve the tool as the process settles in."],
-    ["Can the system grow later?", "Yes. We build the first useful piece in a way that leaves room for the next system when you are ready."],
-    ["How do you decide whether a project is worth building?", "We estimate what the current process costs and compare it to the build. If the economics do not work, we tell you."],
+    ["How do you decide whether a project is worth building?", "We compare the cost of the current process with the likely value of fixing it. If the economics do not work, we tell you."],
   ];
 
   return (
@@ -3348,7 +3844,6 @@ function HowItWorksFaq() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
           <h2 id="how-faq-title">Questions we hear before a build.</h2>
-          <p>Straight answers about scope, tools, and what an engagement actually requires.</p>
         </div>
         <div className="engagement-faq">
           {faqs.map(([q, a], index) => {
@@ -3383,9 +3878,13 @@ function HowItWorksFaq() {
 }
 
 function PageCTA() {
+  const { profile } = usePersonalization();
+  const business = profile?.business?.trim();
   return (
     <section className="page-cta" id="cta">
-      <h2>Bring us the work still handled by hand.</h2>
+      <BackgroundVideo className="page-cta-video" src={videos.supportingFilm.src} playbackRate={0.58} preload="metadata" />
+      <div className="page-cta-film-mask" aria-hidden="true" />
+      <h2>{business ? `Bring us the work ${business} still handles by hand.` : "Bring us the work still handled by hand."}</h2>
       <p>We’ll find the smallest useful fix.</p>
       <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
       <ul className="page-cta-trust" aria-label="What to expect">
@@ -3397,12 +3896,567 @@ function PageCTA() {
   );
 }
 
+type ServicePageConfig = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  productId?: string;
+  productName?: string;
+  bestFor?: string;
+  whyItWorks?: string;
+  freeStart?: {
+    title: string;
+    description: string;
+    input: string;
+    cta: string;
+  };
+  outcomes: string[];
+  examples: string[];
+  related: Array<{ href: string; label: string; description: string }>;
+};
+
+const servicePages: Record<string, ServicePageConfig> = {
+  "/ai-phone-agents": {
+    eyebrow: "24/7 Phone Answering & Booking",
+    productId: "calls",
+    productName: "24/7 Phone Answering & Booking",
+    title: "Give every caller a useful next step.",
+    description:
+      "We answer routine calls, collect the job details your team needs, book the next step, and send urgent calls to a person.",
+    bestFor: "Service businesses that miss calls while driving, working, or helping another customer.",
+    whyItWorks: "A fast, useful answer keeps the customer moving before they call the next company.",
+    freeStart: {
+      title: "Free 7-Day Missed-Call Trial",
+      description: "We handle missed calls for seven days so you can see the replies, captured job details, and handoffs on real calls.",
+      input: "Your phone setup, trade, service area, and typical missed-call volume.",
+      cta: "Start the 7-day trial",
+    },
+    outcomes: ["Capture the request while the caller is still engaged", "Answer routine questions from approved business information", "Send a clean summary to the right person", "Escalate exceptions instead of pretending every call is the same"],
+    examples: ["New-lead intake and appointment requests", "After-hours call coverage", "Service-area, availability, and job-question routing"],
+    related: [
+      { href: "/quote-tools/", label: "Estimate & Proposal Tools", description: "Turn the details from a call into a consistent, send-ready estimate." },
+      { href: "/dashboards-portals/", label: "Dashboards & Portals", description: "Give your team one place to see requests, jobs, and next steps." },
+      { href: "/how-it-works/", label: "How It Works", description: "See how we map a workflow before deciding what to build." },
+    ],
+  },
+  "/quote-tools": {
+    eyebrow: "Estimate & Proposal Tools",
+    productId: "estimates",
+    productName: "Estimate & Proposal Tools",
+    title: "Send clear quotes without rebuilding the same estimate.",
+    description:
+      "We turn your pricing rules, scope options, and customer details into a simple tool that creates a consistent, send-ready estimate.",
+    bestFor: "Teams that price the same common jobs by hand or rebuild proposals from old files.",
+    whyItWorks: "The tool uses the rates and rules your team already trusts, so speed does not come at the cost of accuracy.",
+    freeStart: {
+      title: "Free Quote Tool for One Common Job",
+      description: "Send one price sheet and we will turn one recurring job into a working quote tool your team can try.",
+      input: "Your trade, one common job type, price sheet, and pricing method.",
+      cta: "Build one free quote tool",
+    },
+    outcomes: ["Apply your real pricing rules consistently", "Reduce slow back-and-forth before a quote goes out", "Keep scope, totals, and follow-up details together", "Make the next step obvious for your customer and team"],
+    examples: ["Service estimates with labor and materials rules", "Proposal builders for recurring sales workflows", "Simple calculators that qualify a request before a call"],
+    related: [
+      { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Capture a caller's details before the quote process begins." },
+      { href: "/dashboards-portals/", label: "Dashboards & Portals", description: "Track quotes, jobs, and follow-up after the estimate is sent." },
+      { href: "/products/", label: "Products", description: "Explore the full set of practical systems we build for small teams." },
+    ],
+  },
+  "/dashboards-portals": {
+    eyebrow: "Dashboards and portals",
+    title: "Put the right work, information, and next step in one place.",
+    description:
+      "We build focused dashboards and portals that replace scattered spreadsheets, status messages, and repeated handoffs. The goal is a usable view of the work—not another system people avoid.",
+    outcomes: ["See requests, jobs, and owners without chasing updates", "Give customers or staff a simple, appropriate view", "Replace repeated spreadsheet cleanup with one dependable workflow", "Keep decisions tied to the information that supports them"],
+    examples: ["Project and job-status dashboards", "Customer portals for updates and documents", "Internal staff dashboards and training libraries"],
+    related: [
+      { href: "/quote-tools/", label: "Estimate & Proposal Tools", description: "Move a completed estimate into the workflow your team already follows." },
+      { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Route call details to a dashboard instead of losing them in messages." },
+      { href: "/website-design/", label: "Website Redesign", description: "Connect a clear public website to the operational systems behind it." },
+    ],
+  },
+  "/website-design": {
+    eyebrow: "Website Redesign Services in Dayton, OH",
+    productId: "website",
+    productName: "Website Redesign",
+    title: "Website redesign services for Dayton businesses that need a clearer path to the next customer.",
+    description:
+      "As a Dayton web design and website redesign partner, we rebuild business websites around the questions customers ask before they call: what you do, who you help, why they should trust you, and what happens next.",
+    bestFor: "Dayton business owners whose current website is dated, slow, unclear, or not turning enough visitors into calls and quote requests.",
+    whyItWorks: "A redesign starts with the offer, service pages, proof, and next step—not a decorative template. Useful content and lead paths are protected as the site becomes easier to understand and use.",
+    freeStart: {
+      title: "Free Homepage Rebuild Preview",
+      description: "See how your homepage could make the service, proof, and next step clearer before deciding on a full redesign.",
+      input: "Your website URL, business, main service, and the action you want more visitors to take.",
+      cta: "Request a homepage preview",
+    },
+    outcomes: ["Explain your offer before visitors decide to leave", "Give every core service a dedicated, findable page", "Make calls, quote requests, and booking paths easier to act on", "Keep the useful content, domain, and analytics that already support the business"],
+    examples: ["Website redesigns for Dayton service and field-service businesses", "Focused service pages with clear calls and quote paths", "Website rebuilds that preserve useful content and lead flow"],
+    related: [
+      { href: "/products/", label: "Products", description: "See how websites fit alongside tools, automation, and operational systems." },
+      { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Make sure a new inquiry has a useful next step when it calls." },
+      { href: "/how-it-works/", label: "How It Works", description: "Start with the constraint that is costing your team time or opportunities." },
+    ],
+  },
+  "/missed-call-follow-up": {
+    eyebrow: "Automated Follow-Up & Scheduling",
+    productId: "followup",
+    productName: "Automated Follow-Up & Scheduling",
+    title: "Follow up and schedule the next job while your team is busy.",
+    description:
+      "We build practical follow-up and scheduling systems for mechanics, contractors, and other trades, so missed calls, web leads, and sent estimates get a useful next step before the opportunity goes cold.",
+    bestFor: "Mechanics, contractors, and trade teams with open estimates, missed calls, or booking requests sitting without a clear next step.",
+    whyItWorks: "Helpful follow-up and booking options arrive at the right time, while a person stays in control of the schedule, exceptions, and replies.",
+    freeStart: {
+      title: "Free Follow-Up Setup for 25 Open Estimates",
+      description: "We prepare the timing, messages, and next steps for 25 real open estimates. You approve everything before it goes out.",
+      input: "Your trade, average estimate, open-estimate count, and current software.",
+      cta: "Set up 25 open estimates",
+    },
+    outcomes: ["Reply to missed calls while the customer is still engaged", "Offer a clear way to request or schedule the next step", "Follow up on sent estimates without chasing a spreadsheet", "Bring a person in when the conversation needs one"],
+    examples: ["Missed-call text-back for mechanics and trade businesses", "Estimate follow-up with approved timing and messages", "Lead capture, scheduling links, and owner alerts for new requests"],
+    related: [
+      { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Answer and route routine calls before a text-back is needed." },
+      { href: "/quote-tools/", label: "Estimate & Proposal Tools", description: "Turn a qualified request into a clear, send-ready estimate." },
+      { href: "/dashboards-portals/", label: "Dashboards & Portals", description: "Keep follow-up work visible to the people who own it." },
+    ],
+  },
+  "/local-search": {
+    eyebrow: "Get Found on Google and AI Search",
+    productId: "search",
+    productName: "Get Found on Google and AI Search",
+    title: "Make it easy for local customers to understand and choose you.",
+    description:
+      "We improve the service information, proof, and local signals people use when they search, so your business is clearer on Google and in AI-powered results.",
+    bestFor: "Local businesses whose services, service area, or proof are incomplete or inconsistent online.",
+    whyItWorks: "Clear, matching information gives customers and search systems fewer reasons to doubt what you do or where you work.",
+    freeStart: {
+      title: "Free Google Business Profile Cleanup",
+      description: "We improve five important parts of your profile: services, categories, description, proof, and customer-visible business information.",
+      input: "Your Google profile link, website, main service, and service area.",
+      cta: "Request the free cleanup",
+    },
+    outcomes: ["Explain each core service in plain customer language", "Make service areas and contact paths easy to verify", "Connect real proof to the services people are considering", "Keep your website and local listing information aligned"],
+    examples: ["Service pages that answer local customer questions", "Google Business Profile and website alignment", "Local proof, reviews, and service-area information that stays current"],
+    related: [
+      { href: "/website-design/", label: "Website Redesign", description: "Give local searchers clear pages and a dependable next step." },
+      { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Make sure an inquiry can get a useful answer after it finds you." },
+      { href: "/products/", label: "Products", description: "See how local discovery fits into a practical business system." },
+    ],
+  },
+};
+
+function CompactProductVisual({ service }: { service: ServicePageConfig }) {
+  const visualByProduct: Record<string, { label: string; title: string; rows: string[]; icon: React.ReactNode }> = {
+    calls: { label: "CALL INTAKE", title: "Every call gets a next step", rows: ["Caller details captured", "Appointment request routed", "Urgent call sent to a person"], icon: <PhoneCall size={22} aria-hidden="true" /> },
+    estimates: { label: "QUOTE BUILDER", title: "A quote your team can send", rows: ["Scope selected", "Pricing rules applied", "Proposal ready to review"], icon: <Calculator size={22} aria-hidden="true" /> },
+    website: { label: "REDESIGN PLAN", title: "A clearer website path", rows: ["Core services made easy to find", "Calls and forms checked", "Useful pages and tracking protected"], icon: <Globe2 size={22} aria-hidden="true" /> },
+    followup: { label: "FOLLOW-UP QUEUE", title: "The next step stays visible", rows: ["Missed call flagged", "Estimate follow-up scheduled", "Owner alerted when needed"], icon: <MessageSquare size={22} aria-hidden="true" /> },
+    reviews: { label: "REVIEW REQUEST", title: "The ask goes out on time", rows: ["Completed service received", "Personalized text scheduled", "Direct Google link included"], icon: <MessageSquare size={22} aria-hidden="true" /> },
+    search: { label: "LOCAL PRESENCE", title: "Your services are easy to verify", rows: ["Services explained clearly", "Service area aligned", "Proof connected to the offer"], icon: <Search size={22} aria-hidden="true" /> },
+    dashboards: { label: "WORK QUEUE", title: "The work in one place", rows: ["Requests grouped by owner", "Status visible at a glance", "Next action never buried"], icon: <LayoutDashboard size={22} aria-hidden="true" /> },
+  };
+  const visual = visualByProduct[service.productId ?? ""] ?? visualByProduct.dashboards;
+  return (
+    <div className="compact-product-visual" aria-label={`${visual.title} preview`}>
+      <div className="compact-product-visual-top"><span className="compact-product-visual-icon">{visual.icon}</span><span>{visual.label}</span><i aria-hidden="true" /></div>
+      <h2>{visual.title}</h2>
+      <ul>{visual.rows.map((row) => <li key={row}><CheckCircle2 size={16} aria-hidden="true" />{row}</li>)}</ul>
+      <div className="compact-product-visual-footer"><span>DaytonGrowthCo.</span><span>READY TO USE</span></div>
+    </div>
+  );
+}
+
+function ServicePage({ service }: { service: ServicePageConfig }) {
+  const { chooseWorkflow } = usePersonalization();
+  const chooseProduct = () => {
+    if (!service.productId) return;
+    chooseWorkflow(service.productId);
+    trackFunnelEvent("marketing-site", "marketing_product_selected", {
+      product_id: service.productId,
+      placement: "product-detail",
+    });
+  };
+  return (
+    <>
+      <PageChrome />
+      <main id="main-content" tabIndex={-1} className="service-page compact-service-page">
+        <section className="compact-service-hero">
+          <div className="compact-service-hero-inner">
+            <div>
+              <h1>{service.title}</h1>
+              <p>{service.description}</p>
+              <a className="button button-primary" href="/#cta" onClick={chooseProduct}>Talk through this workflow <ArrowRight size={16} aria-hidden="true" /></a>
+              {service.productId === "website" ? <Link className="ownership-roi-link" href="/website-ownership-calculator/">Calculate the cost of renting your website <ArrowRight size={15} aria-hidden="true" /></Link> : null}
+            </div>
+            <CompactProductVisual service={service} />
+          </div>
+        </section>
+        <section className="compact-service-outcomes" aria-labelledby="compact-outcomes-title">
+          <div className="compact-service-section-inner"><div><h2 id="compact-outcomes-title">What we build</h2>{service.whyItWorks ? <p>{service.whyItWorks}</p> : null}</div><ul>{service.outcomes.slice(0, 3).map((outcome) => <li key={outcome}><CheckCircle2 size={17} aria-hidden="true" />{outcome}</li>)}</ul></div>
+        </section>
+        <section className="compact-service-related" aria-labelledby="compact-related-title">
+          <div className="compact-service-section-inner"><h2 id="compact-related-title">Related work</h2><div className="compact-related-grid">{service.related.slice(0, 3).map((item) => <Link href={item.href} key={item.href}><strong>{item.label}</strong><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div>
+        </section>
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+const publicPricingOffers = [
+  {
+    id: "website",
+    name: "Website Migration Program™",
+    label: "One-time website ownership",
+    price: `$${websiteMigrationPricing.standardMigration.toLocaleString()} starting investment`,
+    detail: "Standard Migration",
+    description: "Move an existing site into a self-owned setup while protecting the useful pages, forms, redirects, tracking, and lead paths.",
+    includes: ["Standard Migration: $1,500", "Full Rebuild: $2,000", "Integrations: $500 each", "Typical ongoing domain renewal: about $15/year"],
+    cta: "See website migration",
+    href: "/website/",
+  },
+  {
+    id: "reviews",
+    name: "Automated Google Review Texting",
+    label: "Managed review requests",
+    price: "$499 setup + $199/month",
+    detail: "Setup + ongoing management",
+    description: "A managed system that sends customers a personalized review request and a direct Google link after a completed appointment or service.",
+    includes: ["Workflow and Google review-link setup", "Personalized message configuration and testing", "Hosting, monitoring, and basic maintenance", "Monthly text allowance, minor adjustments, and support"],
+    cta: "Set up review texting",
+    href: "/google-review-texting/",
+  },
+  {
+    id: "quote",
+    name: "The Better Quote Program™",
+    label: "Success-fee quote shopping",
+    price: "No upfront search fee",
+    detail: "You save first. We get paid second.",
+    description: "Have an expensive written service quote? We look for a qualifying, comparable local option. If there are no qualifying savings, the fee is $0.",
+    includes: ["Under $199 in qualifying savings: $0", "$199–$494.99 saved: $99", "$495–$2,500 saved: 20%", "Above $2,500: $500 + 10% of savings above $2,500"],
+    cta: "Upload your quote",
+    href: "/quote/start/",
+  },
+];
+
+const pricingComparisonRows = [
+  { label: "Starting price", values: ["From $1,500", "$499 setup + $199/month", "No upfront search fee"] },
+  { label: "Ongoing cost", values: ["Typical domain renewal: about $15/year", "$199/month", "Fee only when qualifying savings are found"] },
+  { label: "What it covers", values: ["A migration or full rebuild into a self-owned site", "Automated review-request texts and ongoing system care", "A search for a qualifying, comparable local service quote"] },
+  { label: "Best when", values: ["You want to own and control your website", "You want a steady review-request process after completed work", "You have a written quote and want another local option"] },
+] as const;
+
+function PricingPage() {
+  const [selectedOfferId, setSelectedOfferId] = useState("website");
+  const selectedOffer = publicPricingOffers.find((offer) => offer.id === selectedOfferId) ?? publicPricingOffers[0];
+  const reduceMotion = useReducedMotion();
+  const pricingNotes = [
+    {
+      title: "What is publicly priced?",
+      copy: "The cards above are the current public-priced offers. Work not listed with a price is custom-quoted based on your existing tools, workflow, and scope.",
+    },
+    {
+      title: "When do I receive a scope?",
+      copy: "For custom work, we confirm the work to be done and the price in writing before the build begins.",
+    },
+    {
+      title: "What about third-party costs?",
+      copy: "Domains, message volume beyond the included allowance, and optional third-party integrations can carry separate costs. Those are explained before approval.",
+    },
+  ];
+  return (
+    <>
+      <PageChrome />
+      <main id="main-content" className="site-pricing-page" tabIndex={-1}>
+        <section className="site-pricing-services" id="priced-services" aria-labelledby="site-pricing-services-title">
+          <div className="site-pricing-shell">
+            <header className="site-pricing-section-head" data-reveal>
+              <div><p>Pricing</p><h1 id="site-pricing-services-title">Clear pricing for the services with a defined starting point.</h1></div>
+              <div className="site-pricing-intro-copy">
+                <p>Every listed price is shown before work begins. Custom tools, phone agents, quote systems, dashboards, and other workflow builds are scoped after we understand the work.</p>
+                <div className="site-pricing-assurances" aria-label="Pricing commitments">
+                  <span><i aria-hidden="true" /> Written before work begins</span>
+                  <span><i aria-hidden="true" /> No hidden platform tier</span>
+                </div>
+              </div>
+            </header>
+            <div className="site-pricing-selector" role="group" aria-label="Select a service to compare" data-stagger>
+              {publicPricingOffers.map((offer, index) => <button className={`site-pricing-selector-card${selectedOffer.id === offer.id ? " is-active" : ""}`} type="button" key={offer.id} aria-pressed={selectedOffer.id === offer.id} onClick={() => setSelectedOfferId(offer.id)}>
+                <span className="site-pricing-card-top"><span className="site-pricing-card-label">{offer.label}</span><span className="site-pricing-card-index">0{index + 1}</span></span>
+                <strong>{offer.name}</strong>
+                <span className="site-pricing-selector-price">{offer.price}</span>
+                <small>{offer.detail}</small>
+                <span className="site-pricing-card-action">Compare this service <ArrowRight size={14} aria-hidden="true" /></span>
+              </button>)}
+            </div>
+            <div className="site-pricing-compare" data-reveal>
+              <div className="site-pricing-selection-panel">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    className="site-pricing-selection-content"
+                    key={selectedOffer.id}
+                    initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <div className="site-pricing-selection-copy">
+                      <p className="site-pricing-card-label">Selected service</p>
+                      <h2>{selectedOffer.name}</h2>
+                      <p>{selectedOffer.description}</p>
+                    </div>
+                    <div className="site-pricing-includes">
+                      <p>What the price covers</p>
+                      <ul>{selectedOffer.includes.map((item) => <li key={item}><CheckCircle2 size={15} aria-hidden="true" />{item}</li>)}</ul>
+                    </div>
+                    <a className="button button-primary" href={selectedOffer.href}>{selectedOffer.cta} <ArrowRight size={15} aria-hidden="true" /></a>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              <div className="site-pricing-compare-head">
+                <div><p className="site-pricing-card-label">At a glance</p><h2>Compare scope, timing, and cost.</h2></div>
+                <p>The selected offer stays highlighted as you compare.</p>
+              </div>
+              <div className="site-pricing-compare-scroll">
+                <table className="site-pricing-compare-table">
+                  <thead><tr><th scope="col">Compare services</th>{publicPricingOffers.map((offer) => <th scope="col" data-active={selectedOffer.id === offer.id || undefined} key={offer.id}>{offer.name}</th>)}</tr></thead>
+                  <tbody>{pricingComparisonRows.map((row) => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td data-active={selectedOffer.id === publicPricingOffers[index].id || undefined} key={publicPricingOffers[index].id}>{value}</td>)}</tr>)}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="site-pricing-custom" aria-labelledby="site-pricing-custom-title">
+          <div className="site-pricing-shell" data-reveal>
+            <div className="site-pricing-custom-head"><div><p>Custom-scoped work</p><h2 id="site-pricing-custom-title">Need something built around your actual workflow?</h2><p>Phone answering, follow-up and scheduling, estimate tools, dashboards, portals, websites, and other systems are quoted after we map the work and identify the smallest useful solution.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div>
+            <ol className="site-pricing-custom-steps" data-stagger>
+              <li><span>01</span><strong>Map the work</strong><p>Show us the repeated workflow and the tools already involved.</p></li>
+              <li><span>02</span><strong>Confirm the scope</strong><p>We define the smallest useful solution and put the price in writing.</p></li>
+              <li><span>03</span><strong>Build with a clear start</strong><p>Work begins after the scope, cost, and next step are understood.</p></li>
+            </ol>
+          </div>
+        </section>
+
+        <section className="site-pricing-notes" aria-labelledby="site-pricing-notes-title">
+          <div className="site-pricing-shell" data-reveal>
+            <div className="site-pricing-notes-heading"><p>Before you approve</p><h2 id="site-pricing-notes-title">A few useful details.</h2></div>
+            <div className="site-pricing-note-list">
+              {pricingNotes.map((note, index) => <details key={note.title} open={index === 0}>
+                <summary><span>0{index + 1}</span><h3>{note.title}</h3><ChevronDown size={18} aria-hidden="true" /></summary>
+                <div><p>{note.copy}</p></div>
+              </details>)}
+            </div>
+          </div>
+        </section>
+        <PageCTA />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+const reviewTextingBenefits = [
+  "Generate Google reviews more consistently with a clear, repeatable request process.",
+  "Keep employees from having to remember who to ask and when to ask.",
+  "Make it easier for happy customers to share their experience with a direct Google link.",
+  "Build a stronger online reputation over time through steady, honest customer feedback.",
+  "Give prospective customers more current proof when they research your business on Google.",
+  "Keep the review-request process running automatically after setup.",
+];
+
+const reviewTextingSteps = [
+  ["01", "Connect your workflow", "We connect the system to your existing appointment, customer, invoicing, or completed-service workflow."],
+  ["02", "Automatically send the text", "After an appointment or service is completed, the system sends a personalized review request."],
+  ["03", "Send customers directly to Google", "Each text includes a direct link to your Google review page, so it is easy to share their experience."],
+  ["04", "Let the system keep running", "Once installed, requests keep going out without employees needing to manually send messages or remember to ask."],
+] as const;
+
+function ReviewTextingPage() {
+  const { chooseWorkflow } = usePersonalization();
+  const chooseReviewSystem = () => {
+    chooseWorkflow("reviews");
+    trackFunnelEvent("marketing-site", "marketing_product_selected", { product_id: "reviews", placement: "review-texting-page" });
+  };
+  const cta = <a className="button button-primary" href="/#cta" onClick={chooseReviewSystem}>Get Your Review System Set Up <ArrowRight size={16} aria-hidden="true" /></a>;
+  return (
+    <>
+      <PageChrome />
+      <main id="main-content" tabIndex={-1} className="review-texting-page compact-service-page">
+        <section className="review-texting-overview"><div className="compact-service-section-inner"><div><p className="review-texting-eyebrow">Automated Google Review Texting</p><h1>Turn more customers into Google reviews—automatically.</h1><p>DaytonGrowthCo sets up a professional text-message follow-up system that asks customers for an honest Google review after an appointment or completed service.</p></div>{cta}</div></section>
+
+        <section className="review-texting-intro" aria-labelledby="review-texting-intro-title"><div className="compact-service-section-inner"><div><h2 id="review-texting-intro-title">A review request that does not depend on memory.</h2></div><div><p>Your customers already have an opinion about your business. The problem is consistently asking them to share it.</p><p>Automated Google Review Texting runs in the background after completed appointments and services. <strong>You handle the customer. The system handles the follow-up.</strong></p></div></div></section>
+
+        <section className="review-texting-steps" aria-labelledby="review-texting-steps-title"><div className="review-texting-shell"><header><p>How it works</p><h2 id="review-texting-steps-title">A clear path from completed work to an honest review.</h2></header><ol>{reviewTextingSteps.map(([number, title, description]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{description}</p></div></li>)}</ol></div></section>
+
+        <section className="compact-service-outcomes review-texting-benefits" aria-labelledby="review-texting-benefits-title"><div className="compact-service-section-inner"><div><h2 id="review-texting-benefits-title">Built to make the process easier.</h2><p>Simple automation, clear customer communication, and a process your team does not have to chase.</p></div><ul>{reviewTextingBenefits.map((benefit) => <li key={benefit}><CheckCircle2 size={17} aria-hidden="true" />{benefit}</li>)}</ul></div></section>
+
+        <section className="review-texting-fit" aria-labelledby="review-texting-fit-title"><div className="review-texting-shell"><div><p>Who it is for</p><h2 id="review-texting-fit-title">A practical fit for local service businesses.</h2></div><p>It works well for auto repair shops, barbershops, hair salons, contractors, HVAC companies, plumbers, electricians, cleaning companies, med spas, home-service businesses, and other appointment-based or service-based teams. The setup is shaped around the workflow you already use.</p></div></section>
+
+        <section className="review-texting-pricing" aria-labelledby="review-texting-pricing-title"><div className="review-texting-shell"><div className="review-texting-pricing-heading"><p>Simple, transparent pricing</p><h2 id="review-texting-pricing-title"><strong>$499</strong> setup <span>+</span> <strong>$199/month</strong></h2><p>Stop relying on employees to remember to ask for reviews. Let DaytonGrowthCo handle it automatically.</p>{cta}</div><div className="review-texting-price-grid"><article><h3>Setup includes</h3><ul>{["Initial system setup", "Automation configuration", "Workflow integration", "Google review-link setup", "Personalized message configuration", "Testing and launch"].map((item) => <li key={item}><Check size={15} aria-hidden="true" />{item}</li>)}</ul></article><article><h3>Monthly service includes</h3><ul>{["Ongoing system management", "Automation hosting", "System monitoring", "Basic maintenance", "A reasonable monthly text-message allowance", "Minor workflow or message adjustments", "Support"].map((item) => <li key={item}><Check size={15} aria-hidden="true" />{item}</li>)}</ul></article></div></div></section>
+
+        <section className="review-texting-final"><div><h2>Set up the review process once. Let it keep working.</h2><p>We will connect the workflow, configure the message and Google link, test it, and keep the system running.</p>{cta}</div></section>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
+const ownershipPresets = [
+  { label: "WordPress", value: 300 },
+  { label: "Wix", value: 228 },
+  { label: "Squarespace", value: 300 },
+];
+
+function currency(value: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Math.max(0, value));
+}
+
+function ownershipBreakEven(years: number) {
+  if (!Number.isFinite(years) || years <= 0) return "Not available";
+  const wholeYears = Math.floor(years);
+  const months = Math.round((years - wholeYears) * 12);
+  if (wholeYears === 0) return `${Math.max(1, months)} month${months === 1 ? "" : "s"}`;
+  if (months === 12) return `${wholeYears + 1} year${wholeYears + 1 === 1 ? "" : "s"}`;
+  return `${wholeYears} year${wholeYears === 1 ? "" : "s"}${months ? `, ${months} month${months === 1 ? "" : "s"}` : ""}`;
+}
+
+function WebsiteOwnershipCalculatorPage() {
+  const [platformInput, setPlatformInput] = useState("300");
+  const [domainInput, setDomainInput] = useState("15");
+  const [investmentInput, setInvestmentInput] = useState(String(websiteMigrationPricing.standardMigration));
+  const [selectedPreset, setSelectedPreset] = useState("WordPress");
+  const [selectedInvestment, setSelectedInvestment] = useState("standard");
+  const [years, setYears] = useState(10);
+
+  const parseAmount = (value: string) => Math.max(0, Number.parseFloat(value.replace(/[^0-9.]/g, "")) || 0);
+  const platformCost = parseAmount(platformInput);
+  const domainCost = parseAmount(domainInput);
+  const investment = parseAmount(investmentInput);
+  const annualSavings = platformCost - domainCost;
+  const hasSavings = annualSavings > 0;
+  const breakEven = hasSavings ? investment / annualSavings : null;
+  const oldCost = (year: number) => platformCost * year;
+  const ownedCost = (year: number) => investment + domainCost * year;
+  const netPocketed = (year: number) => oldCost(year) - ownedCost(year);
+  const totalPocketed = netPocketed(years);
+  const tableYears = Array.from(new Set([1, 2, 3, 5, 7, 10, years].filter((year) => year <= years))).sort((a, b) => a - b);
+
+  const chartData = Array.from({ length: years + 1 }, (_, year) => ({ year, old: oldCost(year), owned: ownedCost(year) }));
+  const chartMax = Math.max(1, ...chartData.flatMap((point) => [point.old, point.owned]));
+  const chartX = (year: number) => 52 + (year / years) * 548;
+  const chartY = (amount: number) => 25 + (1 - amount / chartMax) * 192;
+  const oldPoints = chartData.map((point) => `${chartX(point.year)},${chartY(point.old)}`).join(" ");
+  const ownedPoints = chartData.map((point) => `${chartX(point.year)},${chartY(point.owned)}`).join(" ");
+  const visibleBreakEven = hasSavings && breakEven !== null && breakEven >= 0 && breakEven <= years ? breakEven : null;
+
+  const setPreset = (label: string, value: number) => {
+    setSelectedPreset(label);
+    setPlatformInput(String(value));
+  };
+  const setInvestment = (type: "standard" | "rebuild", value: number) => {
+    setSelectedInvestment(type);
+    setInvestmentInput(String(value));
+  };
+
+  return (
+    <>
+      <PageChrome />
+      <main id="main-content" className="ownership-calculator-page" tabIndex={-1}>
+        <section className="ownership-calculator-intro">
+          <div className="ownership-calculator-shell">
+            <div className="ownership-calculator-intro">
+              <h1>Stop renting your website.</h1>
+              <p>See the difference between a one-time move and a recurring website bill: after launch, you typically renew only your domain instead of paying a CMS and hosting subscription every year.</p>
+            </div>
+            <div className="ownership-pricing-strip" aria-label="Website migration starting points">
+              <span><strong>Standard Migration</strong> {currency(websiteMigrationPricing.standardMigration)}</span>
+              <span><strong>Full Rebuild</strong> {currency(websiteMigrationPricing.fullRebuild)}</span>
+              <span><strong>Integrations</strong> {currency(websiteMigrationPricing.integration)} each</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="ownership-calculator-section" aria-labelledby="ownership-calculator-title">
+          <div className="ownership-calculator-shell ownership-calculator-layout">
+            <form className="ownership-controls" onSubmit={(event) => event.preventDefault()}>
+              <div className="ownership-controls-heading">
+                <h2 id="ownership-calculator-title">Your numbers</h2>
+                <p>Use these as a starting estimate. You can change every number.</p>
+              </div>
+              <fieldset className="ownership-fieldset">
+                <legend>Current platform cost per year</legend>
+                <div className="ownership-presets" aria-label="Platform cost estimates">
+                  {ownershipPresets.map((preset) => <button key={preset.label} type="button" aria-pressed={selectedPreset === preset.label} className={selectedPreset === preset.label ? "is-selected" : ""} onClick={() => setPreset(preset.label, preset.value)}>{preset.label}<small>{currency(preset.value)}/yr</small></button>)}
+                </div>
+                <label htmlFor="ownership-platform-cost">Average — edit if you know your actual cost</label>
+                <div className="ownership-money-input"><span aria-hidden="true">$</span><input id="ownership-platform-cost" inputMode="decimal" value={platformInput} onChange={(event) => { setPlatformInput(event.target.value); setSelectedPreset(""); }} aria-describedby="platform-cost-note" /></div>
+                <p id="platform-cost-note">Estimates include a typical plan, hosting, and domain. Plans and add-ons vary.</p>
+              </fieldset>
+
+              <div className="ownership-field">
+                <label htmlFor="ownership-domain-cost">Domain cost per year</label>
+                <div className="ownership-money-input"><span aria-hidden="true">$</span><input id="ownership-domain-cost" inputMode="decimal" value={domainInput} onChange={(event) => setDomainInput(event.target.value)} /></div>
+                <p>Static hosting has no recurring charge from us. This is the typical ongoing domain cost once you own your site; optional third-party services are separate.</p>
+              </div>
+
+              <fieldset className="ownership-fieldset ownership-investment-options">
+                <legend>One-time migration investment</legend>
+                <div className="ownership-investment-toggle">
+                  <button type="button" aria-pressed={selectedInvestment === "standard"} className={selectedInvestment === "standard" ? "is-selected" : ""} onClick={() => setInvestment("standard", websiteMigrationPricing.standardMigration)}><strong>Standard Migration</strong><span>{currency(websiteMigrationPricing.standardMigration)}</span></button>
+                  <button type="button" aria-pressed={selectedInvestment === "rebuild"} className={selectedInvestment === "rebuild" ? "is-selected" : ""} onClick={() => setInvestment("rebuild", websiteMigrationPricing.fullRebuild)}><strong>Full Rebuild</strong><span>{currency(websiteMigrationPricing.fullRebuild)}</span></button>
+                </div>
+                <label htmlFor="ownership-investment">Or enter your quoted investment</label>
+                <div className="ownership-money-input"><span aria-hidden="true">$</span><input id="ownership-investment" inputMode="decimal" value={investmentInput} onChange={(event) => { setInvestmentInput(event.target.value); setSelectedInvestment(""); }} /></div>
+              </fieldset>
+
+              <div className="ownership-field ownership-years-control">
+                <div><label htmlFor="ownership-years">Projection window</label><output htmlFor="ownership-years">{years} years</output></div>
+                <input id="ownership-years" type="range" min="1" max="15" step="1" value={years} onChange={(event) => setYears(Number(event.target.value))} />
+                <div className="ownership-range-labels" aria-hidden="true"><span>1 year</span><span>15 years</span></div>
+              </div>
+            </form>
+
+            <div className="ownership-results" aria-live="polite">
+              <div className="ownership-stats" aria-label="Ownership savings summary">
+                <article><span>Annual savings</span><strong>{hasSavings ? currency(annualSavings) : "—"}</strong><small>{hasSavings ? "every year you own it" : "check your numbers"}</small></article>
+                <article><span>Break-even point</span><strong>{hasSavings && breakEven !== null ? ownershipBreakEven(breakEven) : "—"}</strong><small>{hasSavings ? "then the savings stay with you" : "not available"}</small></article>
+                <article><span>Total pocketed after {years} years</span><strong className={totalPocketed >= 0 ? "is-positive" : "is-negative"}>{hasSavings ? currency(Math.abs(totalPocketed)) : "—"}</strong><small>{hasSavings ? (totalPocketed >= 0 ? "money back in your pocket" : "still paying down the switch") : "no ongoing savings yet"}</small></article>
+              </div>
+              {hasSavings ? <>
+                <div className="ownership-chart-card">
+                  <div className="ownership-chart-head"><div><h2>What ownership looks like over time</h2><p>One line keeps charging rent. The other becomes yours.</p></div><div className="ownership-legend" aria-label="Chart legend"><span><i className="ownership-old-key" />Continue renting</span><span><i className="ownership-new-key" />Own your site</span></div></div>
+                  <svg className="ownership-chart" viewBox="0 0 640 260" role="img" aria-label={`Cumulative cost comparison over ${years} years. Continuing to rent costs ${currency(oldCost(years))}; owning your site costs ${currency(ownedCost(years))}.`}>
+                    {[0, 0.25, 0.5, 0.75, 1].map((ratio) => <line key={ratio} x1="52" x2="600" y1={25 + ratio * 192} y2={25 + ratio * 192} className="ownership-gridline" />)}
+                    <text x="3" y="31">{currency(chartMax)}</text><text x="23" y="220">$0</text>
+                    <polyline points={oldPoints} className="ownership-line ownership-line-old" /><polyline points={ownedPoints} className="ownership-line ownership-line-new" />
+                    {visibleBreakEven !== null ? <g className="ownership-break-even"><line x1={chartX(visibleBreakEven)} x2={chartX(visibleBreakEven)} y1="20" y2="220" /><circle cx={chartX(visibleBreakEven)} cy={chartY(oldCost(visibleBreakEven))} r="5" /><text x={Math.min(530, chartX(visibleBreakEven) + 9)} y={Math.max(17, chartY(oldCost(visibleBreakEven)) - 10)}>Break-even</text></g> : null}
+                    <text x="52" y="246">Now</text><text x="579" y="246">Year {years}</text>
+                  </svg>
+                </div>
+                <div className="ownership-table-wrap">
+                  <table><caption>Cost comparison by year</caption><thead><tr><th scope="col">Year</th><th scope="col">Continue renting</th><th scope="col">Own your site</th><th scope="col">Your position</th></tr></thead><tbody>{tableYears.map((year) => { const net = netPocketed(year); return <tr key={year}><th scope="row">{year}</th><td>{currency(oldCost(year))}</td><td>{currency(ownedCost(year))}</td><td className={net >= 0 ? "is-positive" : "is-negative"}>{net >= 0 ? `${currency(net)} back in your pocket` : `${currency(Math.abs(net))} still paying down`}</td></tr>; })}</tbody></table>
+                </div>
+                <p className="ownership-closing">After year {years}, every dollar you were paying in platform fees stays with you instead.</p>
+              </> : <div className="ownership-empty-state" role="status"><h2>No ongoing savings to project yet.</h2><p>At this rate there’s no ongoing savings to project — check your numbers. Your current platform cost needs to be higher than the yearly domain cost.</p></div>}
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+
 function PageChrome() {
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <div id="scroll-progress-bar" aria-hidden="true" />
       <Header />
+      <RouteTransition />
       <RouteFocus />
     </>
   );
@@ -3418,31 +4472,37 @@ function SiteFooter() {
         <div className="footer-brand">
           <Link href="/" className="footer-logo" aria-label="DaytonGrowthCo home">
             <img src={logoUrl} alt="" width="32" height="32" />
-            <InteractiveWordmark />
+            <BrandWordmark onDark />
           </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
           <p className="footer-location">Serving Dayton &amp; the Miami Valley, Ohio.</p>
-          <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
-          <div className="social-links" aria-label="Social media">
-            {socialLinks.map(({ href, Icon, label }) => (
-              <a
-                className="social-widget"
-                href={href}
-                key={label}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                title={label}
-              >
-                <Icon />
-                <span className="sr-only">{label}</span>
-              </a>
-            ))}
+          <div className="footer-utilities">
+            <a className="client-portal-link" href="https://billing.stripe.com/p/login/28E6oG91M4fq77o4oAaMU00" target="_blank" rel="noopener noreferrer">Client Portal</a>
+            <div className="social-links" aria-label="Social media">
+              {socialLinks.map(({ href, Icon, label }) => (
+                <a
+                  className="social-widget"
+                  href={href}
+                  key={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  title={label}
+                >
+                  <Icon />
+                  <span className="sr-only">{label}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
         <nav className="footer-links footer-explore-links" aria-label="Explore">
           <span className="footer-section-label">Explore</span>
-          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/products/">Products</Link>
+          <Link href="/ai-phone-agents/">AI Phone Agents</Link>
+          <Link href="/quote-tools/">Quote Tools</Link>
+          <Link href="/dashboards-portals/">Dashboards &amp; Portals</Link>
+          <Link href="/website-design/">Business Websites</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
           <Link href="/aboutus">About Us</Link>
@@ -3627,7 +4687,7 @@ function AiWorkflowReveal() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading">
           <h2 id="aiflow-title">AI handles the first draft. A person signs off.</h2>
-          <p>Where AI is useful is the busywork before a decision, not the decision itself.</p>
+          <p>AI prepares the work. Your team makes the decision.</p>
         </div>
         <ol className="aiflow-track">
           {aiWorkflowStages.map(({ Icon, label, body }, index) => (
@@ -3797,7 +4857,7 @@ function InputConstellation() {
     const initScene = (THREE: typeof ThreeNS) => {
     const palette = {
       indigo: 0x18174d,
-      peach: 0xf1d0b1,
+      ice: 0xdde9fc,
       paleBlue: 0xdde9fc,
       charcoal: 0x1f211f,
       border: 0xededeb,
@@ -3939,7 +4999,7 @@ function InputConstellation() {
       });
       Object.entries(stageMeshes).forEach(([sid, mesh]) => {
         const on = activeStage?.id === sid || activeInput?.stage === sid;
-        (mesh.material as ThreeNS.MeshBasicMaterial).color.setHex(on ? palette.peach : palette.indigo);
+        (mesh.material as ThreeNS.MeshBasicMaterial).color.setHex(on ? palette.ice : palette.indigo);
       });
     };
 
@@ -4141,153 +5201,240 @@ function InputConstellation() {
 /* Premium homepage sections (built on src/premium.tsx components).            */
 /* -------------------------------------------------------------------------- */
 
-const premiumServices = [
+const coreProductOffers = [
   {
+    id: "calls",
+    category: "Calls",
     icon: <PhoneCall size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Phone agents",
-    summary: "Calls answered and qualified, day or night.",
-    detail:
-      "An AI agent picks up, answers common questions, captures the job details, and texts you a clean summary. No more missed calls turning into lost work.",
-    mobileDetail: "Answers calls, captures job details, and sends a clean summary.",
+    name: "24/7 Phone Answering & Booking",
+    problem: "Missed calls become missed jobs when no one can answer.",
+    how: "We answer routine questions, collect job details, book the next step, and route urgent calls to a person.",
+    why: "Customers get help while they are still ready to hire.",
+    freeTitle: "Free 7-Day Missed-Call Trial",
+    freeDetail: "We handle missed calls for seven days so you can see real replies, captured details, and handoffs.",
+    whatWeDo: ["Learn your services and call rules", "Set up approved answers and booking", "Send summaries and urgent handoffs"],
+    bestFor: "Busy service teams that cannot always reach the phone.",
+    href: "/ai-phone-agents/",
+    cta: "See the 7-day trial",
   },
   {
-    icon: <Calculator size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Quote tools",
-    summary: "Sendable quotes priced from your real sheet.",
-    detail:
-      "Your rates, materials, and markups become rules. Your team builds an accurate quote in a minute instead of an evening, and it goes out while the lead is still warm.",
-    mobileDetail: "Your rates become a fast quote your team can send confidently.",
-  },
-  {
-    icon: <LayoutDashboard size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Dashboards & portals",
-    summary: "One place for every job and customer.",
-    detail:
-      "Stop digging through texts, spreadsheets, and inboxes. A custom dashboard or customer portal keeps jobs, files, and status in one view your whole team trusts.",
-    mobileDetail: "Jobs, files, customers, and status in one trusted view.",
-  },
-  {
+    id: "website",
+    category: "Websites",
     icon: <Globe2 size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Websites",
-    summary: "Fast, modern, and built to convert.",
-    detail:
-      "A site that loads instantly, shows up in search and AI answers, and turns visitors into booked calls, wired straight into the tools that run your business.",
-    mobileDetail: "A faster site that turns visitors into calls and leads.",
+    name: "Website Migration",
+    problem: "An old website can be hard to update and unclear to customers.",
+    how: "We move the site while protecting the useful content, brand, domain, and lead paths already working.",
+    why: "You get a clearer site without starting from zero or risking the parts that earn trust.",
+    freeTitle: "Free Homepage Rebuild Preview",
+    freeDetail: "See a working version of your new homepage before deciding whether to move the full site.",
+    whatWeDo: ["Review the current site and platform", "Rebuild the homepage direction", "Plan a careful full-site move"],
+    bestFor: "WordPress, Wix, or Squarespace sites that feel stuck.",
+    href: "/website-design/",
+    cta: "See the homepage preview",
   },
   {
-    icon: <Workflow size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Automations",
-    summary: "The manual handoffs, gone.",
-    detail:
-      "Intake, follow-up, scheduling, and reminders run themselves. We connect the steps your team does by hand so nothing slips and no one re-types the same thing twice.",
-    mobileDetail: "Follow-ups, scheduling, reminders, and handoffs run cleaner.",
+    id: "followup",
+    category: "Follow-up",
+    icon: <MessageSquare size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Automated Follow-Up & Scheduling",
+    problem: "Mechanics, contractors, and other trade businesses lose jobs when calls, estimates, and booking requests sit too long.",
+    how: "We set up approved texts and emails, booking links, timing, owner alerts, and a clear handoff when a person should reply.",
+    why: "Customers get a useful next step quickly while your team stays in control of the schedule.",
+    freeTitle: "Free Follow-Up Setup for 25 Open Estimates",
+    freeDetail: "We prepare the messages and timing for 25 real estimates. You approve everything before it goes out.",
+    whatWeDo: ["Review calls, leads, and open estimates", "Write and time the follow-up", "Connect booking, alerts, and handoffs"],
+    bestFor: "Mechanics, contractors, and trade teams with missed calls, web leads, or open estimates.",
+    href: "/missed-call-follow-up/",
+    cta: "See the 25-estimate setup",
   },
   {
-    icon: <AppWindow size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Custom apps",
-    summary: "Software shaped to how you already work.",
-    detail:
-      "When off-the-shelf almost fits but never quite does, we build the exact tool around your process, for a fraction of what a traditional dev shop would charge.",
-    mobileDetail: "The exact tool your process needs, without dev-shop bloat.",
+    id: "estimates",
+    category: "Estimates",
+    icon: <Calculator size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Estimate & Proposal Tools",
+    problem: "Rebuilding the same quote wastes time and makes pricing inconsistent.",
+    how: "We turn your labor, materials, options, and rules into a simple tool that produces a send-ready estimate.",
+    why: "Your team moves faster while still using the pricing rules it trusts.",
+    freeTitle: "Free Quote Tool for One Common Job",
+    freeDetail: "Send one price sheet and we will build a working quote tool for one recurring job.",
+    whatWeDo: ["Load your real pricing rules", "Build the quote screen", "Test the output with your team"],
+    bestFor: "Businesses that price common jobs by hand.",
+    href: "/quote-tools/",
+    cta: "See the free quote tool",
+  },
+  {
+    id: "search",
+    category: "Local search",
+    icon: <Search size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Get Found on Google and AI Search",
+    problem: "Customers move on when your services and service area are hard to verify.",
+    how: "We align your Google profile, website, services, local proof, and customer-visible business information.",
+    why: "Clear, matching information helps both people and search systems understand when you are a fit.",
+    freeTitle: "Free Google Business Profile Cleanup",
+    freeDetail: "We improve five important parts of your profile so customers can understand and trust what they see.",
+    whatWeDo: ["Correct services and categories", "Clarify the business description", "Align proof and visible information"],
+    bestFor: "Local businesses with incomplete or inconsistent listings.",
+    href: "/local-search/",
+    cta: "See the profile cleanup",
+  },
+  {
+    id: "reviews",
+    category: "Reputation",
+    icon: <MessageSquare size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "Automated Google Review Texting",
+    problem: "Happy customers leave without being asked for a Google review, so the request depends on someone remembering later.",
+    how: "We connect the completed-service workflow, write the approved message, and send each customer a direct Google review link at the right time.",
+    why: "The review request happens consistently while your team stays focused on the customer in front of them.",
+    freeTitle: "Automated Google Review Texting",
+    freeDetail: "A complete review-request system with setup, testing, and ongoing management.",
+    whatWeDo: ["Connect the completion workflow", "Set up your Google review link and message", "Test, launch, and monitor the automation"],
+    bestFor: "Local service and appointment-based businesses that want a dependable review-request process.",
+    href: "/google-review-texting/",
+    cta: "Get your review system set up",
   },
 ];
 
-function ServicesSticky() {
+const supportingServices = [
+  {
+    icon: <AppWindow size={22} strokeWidth={1.7} aria-hidden="true" />,
+    title: "Software & AI Review",
+    description: "We review the tools you already pay for and identify a simpler setup when one can do the same job.",
+    points: ["Software costs worth cutting", "Tools worth keeping or connecting", "Practical AI tools worth setting up"],
+  },
+  {
+    icon: <Wrench size={22} strokeWidth={1.7} aria-hidden="true" />,
+    title: "Your Tech, Handled",
+    description: "When software is broken or confusing, we work with the vendor and help your team get back to work.",
+    points: ["One practical point of contact", "Vendor support and issue follow-up", "Help choosing the next right tool"],
+  },
+  {
+    icon: <Megaphone size={22} strokeWidth={1.7} aria-hidden="true" />,
+    title: "Social Media & Content Scheduling",
+    description: "We turn approved ideas, offers, photos, and updates into a practical content calendar, then automate publishing so your business stays visible without posting by hand.",
+    points: ["Content planned around the business", "Posts prepared for approval", "Publishing scheduled across channels"],
+  },
+];
+
+function CoreProductOffers() {
+  const { chooseWorkflow } = usePersonalization();
+
   return (
-    <StickyStorySection
-      id="services"
-      heading="One team for the whole system."
-      intro={
-        <>
-          <span className="mobile-copy-desktop">
-            Most shops sell you a single piece. We build the connected layer that quotes, answers, organizes, and follows up, so the parts actually talk to each other.
-          </span>
-          <span className="mobile-copy-short">One connected system for quotes, calls, follow-up, and customer work.</span>
-        </>
-      }
-      aside={
-        <div className="sticky-story-aside">
-          <CircularCTA href="#cta" label="Schedule consultation" sub="Free consultation" />
+    <section className="core-products" id="services" aria-labelledby="core-products-title">
+      <div className="core-products-inner">
+        <header className="core-products-head core-products-compact-head">
+          <h2 id="core-products-title" data-scroll-words>Additional tools and services</h2>
+          <p>Useful support for the work around your business.</p>
+        </header>
+        <div className="core-products-list core-products-compact-list" data-stagger>
+          {coreProductOffers.map((product, index) => (
+            <Link
+              className="core-product-card"
+              href={product.href}
+              key={product.id}
+              onClick={() => {
+                chooseWorkflow(product.id);
+                trackFunnelEvent("marketing-site", "marketing_product_selected", {
+                  product_id: product.id,
+                  placement: "homepage-card",
+                });
+              }}
+            >
+              <article className="core-product-compact-row">
+                <span className="core-product-number">{String(index + 1).padStart(2, "0")}</span>
+                <span className="core-product-icon" aria-hidden="true">{product.icon}</span>
+                <div className="core-product-compact-copy"><h3>{product.name}</h3><p>{product.problem}</p></div>
+                <span className="core-product-compact-link">View <ArrowRight size={15} aria-hidden="true" /></span>
+              </article>
+            </Link>
+          ))}
         </div>
-      }
-    >
-      {premiumServices.map((service, index) => (
-        <HoverRevealCard key={service.name} index={index + 1} {...service} />
-      ))}
-    </StickyStorySection>
+      </div>
+    </section>
+  );
+}
+
+function SupportingServices() {
+  return (
+    <section className="supporting-services" aria-labelledby="supporting-services-title" data-reveal>
+      <div className="supporting-services-inner">
+        <div className="supporting-services-head">
+          <div>
+            <p className="supporting-services-kicker">Beyond the core products</p>
+            <h2 id="supporting-services-title" data-scroll-words>Help around the products you already use.</h2>
+          </div>
+        <p>These are supporting services, not another set of products to sort through.</p>
+        </div>
+
+        <div className="supporting-services-grid" data-stagger>
+          {supportingServices.map((service) => (
+            <article className="supporting-service-card" key={service.title}>
+              <span className="supporting-service-icon" aria-hidden="true">{service.icon}</span>
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <ul>
+                {service.points.map((point) => (
+                  <li key={point}><Check size={15} aria-hidden="true" />{point}</li>
+                ))}
+              </ul>
+              <a href="#cta" className="supporting-service-link">Ask for practical help <ArrowRight size={15} aria-hidden="true" /></a>
+            </article>
+          ))}
+        </div>
+
+        <p className="supporting-services-close">Not sure where the problem fits? Tell us what keeps getting in the way.</p>
+      </div>
+    </section>
   );
 }
 
 const premiumProcess = [
   {
     step: 1,
-    phase: "Week 01",
-    title: "We map the manual work.",
-    deliverables: ["How the work flows today", "The handoffs costing time"],
-    result: "You know what we will build and why.",
-    dashboard: (
-      <MiniDashboard
-        title="discovery · mapped"
-        rows={[
-          { label: "Inputs", value: "Calls + photos", tone: "muted" },
-          { label: "Done by hand", value: "Quoting", tone: "accent" },
-        ]}
-        checks={["Scope agreed", "Spec written"]}
-      />
-    ),
+    phase: "Choose",
+    title: "Start with one clear problem.",
+    deliverables: ["Choose the matching product", "Share one real input from your business"],
+    result: "Everyone agrees on the first useful result.",
   },
   {
     step: 2,
-    phase: "Weeks 02 to 03",
-    title: "We build the smallest tool that pays.",
-    deliverables: ["A working build on real data", "Your pricing and rules loaded in"],
-    result: "A useful tool before a bigger budget.",
-    dashboard: (
-      <MiniDashboard
-        title="build · in progress"
-        progress={[
-          { label: "Core tool", value: 80 },
-          { label: "Your data", value: 100 },
-        ]}
-        rows={[{ label: "Built to fit", value: "Your workflow", tone: "accent" }]}
-      />
-    ),
+    phase: "Prove",
+    title: "See a working result first.",
+    deliverables: ["We set up the free starting result", "Your team reviews it with real work"],
+    result: "You can judge the value before a larger decision.",
   },
   {
     step: 3,
-    phase: "Week 04+",
-    title: "We ship it and hand it over.",
-    deliverables: ["A live tool your team uses", "Training and tuning as it changes"],
-    result: "Hours come back every week.",
-    dashboard: (
-      <MiniDashboard
-        title="live · this week"
-        rows={[
-          { label: "Status", value: "In production", tone: "success" },
-          { label: "Time saved", value: "Hours / wk", tone: "accent" },
-        ]}
-        checks={["Team trained", "Handed over"]}
-      />
-    ),
+    phase: "Continue",
+    title: "Build out only what proves useful.",
+    deliverables: ["Approve the paid implementation", "Test, train, and keep it current"],
+    result: "The product grows from a result you already understand.",
   },
 ];
 
 function ProcessSteps() {
   return (
-    <section className="process-section" id="process" aria-labelledby="process-title">
-      <div className="process-section-inner">
-        <div className="process-section-head">
-          <h2 id="process-title" data-scroll-words>
-            How a build actually goes.
-          </h2>
-          <p>No long decks. No surprise invoices. Just a visible path from manual work to a useful tool.</p>
+    <section className="process-section" id="process" aria-labelledby="process-title" data-scroll-scene="process">
+        <div className="process-section-media" aria-hidden="true">
+          <BackgroundVideo className="process-section-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
         </div>
-        <div className="process-section-track">
-          {premiumProcess.map((step) => (
-            <ProcessStepCard key={step.step} {...step} />
-          ))}
+        <div className="process-section-film-mask" aria-hidden="true" />
+        <div className="process-section-inner">
+          <div className="process-section-head">
+            <div>
+              <h2 id="process-title" data-scroll-words>
+                A simple path from problem to working product.
+              </h2>
+            </div>
+          </div>
+          <div className="process-section-track">
+            {premiumProcess.map((step) => (
+              <ProcessStepCard
+                key={step.step}
+                {...step}
+              />
+            ))}
+          </div>
         </div>
-      </div>
     </section>
   );
 }
@@ -4301,13 +5448,12 @@ const systemMapNodes = [
 
 function SystemMap() {
   return (
-    <section className="system-map" aria-labelledby="system-map-title">
+    <section className="system-map" aria-labelledby="system-map-title" data-scroll-scene="system">
       <div className="system-map-inner">
         <div className="system-map-head">
           <h2 id="system-map-title" data-scroll-words>
             One connected path, end to end.
           </h2>
-          <p>The same flow behind every build: nothing dropped between the call and the booked job.</p>
         </div>
         <ol className="system-map-flow" data-stagger>
           {systemMapNodes.map((node, i) => (
@@ -4333,69 +5479,46 @@ function SystemMap() {
 const oldStackRows = [
   {
     icon: <Globe2 size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Wix, Squarespace, WordPress, old agency themes",
-    build: "Hosted custom site with fewer moving parts",
-    result: "Lower maintenance cost, more custom pages, easier edits. Less plugin archaeology.",
-  },
-  {
-    icon: <Table size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Excel, Google Sheets, Airtable quote trackers",
-    build: "Guided quote builder using your real pricing",
-    result: "Lower admin time, custom pricing logic, easier for the team to quote the same way.",
-  },
-  {
-    icon: <Database size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "HubSpot, Salesforce, Zoho, Jobber, ServiceTitan",
-    build: "Lead and job tracker with the stages you actually use",
-    result: "Lower seat bloat, custom pipeline stages, easier updates. Minor detail for a CRM.",
-  },
-  {
-    icon: <Send size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Jotform, Typeform, Google Forms, Gravity Forms",
-    build: "Intake flow with summaries, routing, and next steps",
-    result: "Lower manual follow-up, custom intake logic, easier handoff after the form.",
-  },
-  {
-    icon: <Calendar size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Calendly, Acuity, dispatch boards, scheduling texts",
-    build: "Scheduling flow tied to job type, location, and team availability",
-    result: "Lower coordination time, custom routing, easier booking without the text thread marathon.",
+    current: "WordPress updates, Wix edits, Squarespace workarounds",
+    build: "Website migration",
+    result: "Keep the content, brand, and lead flow worth keeping, then move to a site that is easier to manage.",
   },
   {
     icon: <PhoneCall size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Voicemail, answering services, missed-call workflows",
-    build: "AI phone agent for routine calls and job details",
-    result: "Lower missed-lead cost, custom call handling, easier capture while everyone is busy.",
-  },
-  {
-    icon: <FileText size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Word docs, PDF templates, copied proposals",
-    build: "Send-ready proposal tool with your rules built in",
-    result: "Lower quoting time, custom scope rules, easier proposals. Less renaming and hoping.",
+    current: "Voicemail, after-hours calls, missed-call workflows",
+    build: "24/7 phone answering & booking",
+    result: "Answer routine calls, capture the right details, and send emergencies to a person.",
   },
   {
     icon: <MessageSquare size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Gmail, Outlook, shared inboxes, forwarded threads",
-    build: "Simple internal tool with owner, status, notes, and files",
-    result: "Lower search time, custom status views, easier ownership. The next action has a home.",
+    current: "Missed calls, web leads, sent estimates, loose reminders",
+    build: "Missed call text-back & estimate follow-up",
+    result: "Reply fast and keep the next step visible before a customer moves on.",
   },
   {
-    icon: <StickyNote size={19} strokeWidth={1.7} aria-hidden="true" />,
-    current: "Google Drive, Dropbox, SOP docs, ask-the-owner processes",
-    build: "Searchable knowledge base or internal assistant",
-    result: "Lower training drag, custom answers, easier access. The process survives Tuesdays.",
+    icon: <Calculator size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Price sheets, job photos, Word docs, copied proposals",
+    build: "Estimate & proposal tools",
+    result: "Use real rates and job details to make proposals customers can approve online.",
+  },
+  {
+    icon: <Search size={19} strokeWidth={1.7} aria-hidden="true" />,
+    current: "Old service pages, thin listings, scattered reviews and proof",
+    build: "Get found on Google and AI search",
+    result: "Make the business easier for homeowners and search tools to understand.",
   },
 ];
 
 const upgradeRules = [
-  ["Replace it", "When the old tool is slow, brittle, expensive, or doing work it was never meant to do."],
-  ["Connect it", "When the tool is fine but the handoff around it is where time disappears."],
-  ["Leave it alone", "When the current system works. We are allowed to be normal about software."],
+  ["Keep it", "When the current software is doing its job and only needs a better handoff around it."],
+  ["Connect it", "When the tool is fine but calls, leads, estimates, or updates keep falling between systems."],
+  ["Replace it", "When it is slow, expensive, or making simple work harder than it needs to be."],
 ];
 
 function OldStackUpgrade() {
-  const featuredRows = oldStackRows.slice(0, 4);
-  const additionalRows = oldStackRows.slice(4);
+  const featuredRowIndexes = oldStackRows.map((_, index) => index);
+  const featuredRows = featuredRowIndexes.map((index) => oldStackRows[index]);
+  const additionalRows = oldStackRows.filter((_, index) => !featuredRowIndexes.includes(index));
 
   const renderOldStackRow = (row: (typeof oldStackRows)[number]) => (
     <div className="old-stack-row" role="row" key={row.current}>
@@ -4406,59 +5529,41 @@ function OldStackUpgrade() {
         <strong>{row.current}</strong>
       </div>
       <p role="cell">{row.build}</p>
-      <p role="cell">{row.result}</p>
     </div>
   );
 
   return (
-    <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title" data-reveal>
+    <section className="old-stack" id="old-stack" aria-labelledby="old-stack-title" data-reveal data-scroll-scene="ledger">
       <div className="old-stack-inner">
         <div className="old-stack-head">
           <div>
             <h2 id="old-stack-title" data-scroll-words>
-              Replace the old stack, one workflow at a time.
+              Match the problem to the right product.
             </h2>
-            <p>
-              <span className="mobile-copy-desktop">
-                If the system only works because one employee knows the secret ritual, it is not a system. We help you
-                move the parts that are ready, without turning the whole company upside down.
-              </span>
-              <span className="mobile-copy-short">Move the outdated parts first. Leave what still works alone.</span>
-            </p>
+            <a className="old-stack-cta" href="#cta">
+              Talk through your setup
+              <ArrowRight size={16} aria-hidden="true" />
+            </a>
           </div>
-          <a className="old-stack-cta" href="#cta">
-            Show us the old system
-            <ArrowRight size={16} aria-hidden="true" />
-          </a>
         </div>
 
         <div className="old-stack-layout" data-stagger>
           <div className="old-stack-ledger" role="table" aria-label="Old business software and modern replacements">
             <div className="old-stack-ledger-head" role="row">
-              <span role="columnheader">Current setup</span>
-              <span role="columnheader">Modern build</span>
-              <span role="columnheader">Why switch</span>
+              <span role="columnheader">What is happening now</span>
+              <span role="columnheader">The product that helps</span>
             </div>
             {featuredRows.map(renderOldStackRow)}
-            <details className="old-stack-more">
-              <summary>See more old tools</summary>
+            {additionalRows.length > 0 ? <details className="old-stack-more">
+              <summary>View all tools</summary>
               <div className="old-stack-more-rows">
                 {additionalRows.map(renderOldStackRow)}
               </div>
-            </details>
+            </details> : null}
           </div>
 
           <aside className="old-stack-decision" aria-label="How DaytonGrowthCo decides what to build">
-            <h3>We do not always build from scratch.</h3>
-            <p>
-              Sometimes the answer is an existing tool. Sometimes it is a custom tool. Sometimes it is deleting three tools
-              and using one properly. A thrilling plot twist, but useful.
-            </p>
-            <ul className="old-stack-reasons" aria-label="Main reasons to modernize">
-              <li>Lower cost</li>
-              <li>More custom</li>
-              <li>Easier to use</li>
-            </ul>
+            <h3>Keep what works. Fix what does not.</h3>
             <dl>
               {upgradeRules.map(([term, definition]) => (
                 <div key={term}>
@@ -4468,11 +5573,12 @@ function OldStackUpgrade() {
               ))}
             </dl>
             <a className="link-arrow" href="#cta">
-              Tell us what feels old
+              Get a recommendation
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           </aside>
         </div>
+
       </div>
     </section>
   );
@@ -4480,52 +5586,44 @@ function OldStackUpgrade() {
 
 const retainerExamples = [
   {
-    icon: Calendar,
-    title: "Veterinary clinic reminders",
-    short: "Fewer missed visits and overdue vaccines.",
-    problem: "Missed appointments and overdue vaccines.",
-    build: ["Reminder workflow", "Reschedule follow-up", "Overdue patient list", "Staff-approved messages"],
-    monthly: "Keep reminder timing, message rules, and overdue lists current.",
+    icon: PhoneCall,
+    title: "24/7 phone answering & booking",
+    short: "Keep call rules and booking details current.",
+    problem: "The right response changes with service areas, hours, emergencies, and the people who should receive a call.",
+    build: ["Call rules", "Booking details", "Emergency routing", "Team summaries"],
+    monthly: "Update call handling as your services, schedule, or team changes.",
   },
   {
-    icon: FileText,
-    title: "Tax prep document chase",
-    short: "Stop chasing half-sent client documents.",
-    problem: "Clients send half the documents. The team becomes a polite reminder machine.",
-    build: ["Missing doc checklist", "Reminder drafts", "Status board", "Escalation list"],
-    monthly: "Tune checklists, review reminder language, and keep tax-season chaos slightly less theatrical.",
+    icon: Globe2,
+    title: "Website migration",
+    short: "Keep pages, services, and lead paths accurate.",
+    problem: "The site should keep up when a service changes, a new proof point matters, or a page needs attention.",
+    build: ["Page updates", "Service information", "Lead paths", "Search checks"],
+    monthly: "Make practical website updates without reopening a platform project every time.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Missed call & estimate follow-up",
+    short: "Tune timing, messages, and ownership.",
+    problem: "Follow-up only works when it sounds like your business and knows when a person should step in.",
+    build: ["Reply timing", "Message templates", "Owner alerts", "Lead stages"],
+    monthly: "Adjust the follow-up around real replies, seasonality, and how your team works.",
   },
   {
     icon: Calculator,
-    title: "Home-cleaning quote intake",
-    short: "Quotes that arrive ready to price.",
-    problem: "Leads ask for quotes with missing details.",
-    build: ["Intake questions", "Quote prep summary", "Follow-up workflow", "Ready-to-price record"],
-    monthly: "Improve questions, adjust quote logic, and watch where leads drop off.",
+    title: "Estimate & proposal tools",
+    short: "Keep rates, options, and approval steps current.",
+    problem: "Pricing changes, materials change, and proposals need to reflect the way your team sells the work.",
+    build: ["Labor rates", "Materials", "Service options", "Approval flows"],
+    monthly: "Update the real numbers and the proposal flow without rebuilding the tool.",
   },
   {
-    icon: UserCheck,
-    title: "Recruiting resume triage",
-    short: "Sort candidates without the busywork.",
-    problem: "Recruiters lose time sorting unqualified candidates.",
-    build: ["Resume classifier", "Candidate summary", "Missing-info request", "Interview reminder"],
-    monthly: "Update screening rules, monitor edge cases, and keep good candidates from vanishing.",
-  },
-  {
-    icon: Camera,
-    title: "Podcast clip approval",
-    short: "Clips, titles, and approvals in one place.",
-    problem: "Clips, titles, approvals, and publishing steps get scattered.",
-    build: ["Clip review workflow", "Title draft assistant", "Publishing QA checklist", "Approval tracker"],
-    monthly: "Refresh title patterns, clean up the workflow, and stop the 'where is that clip?' tradition.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Contractor quote follow-up",
-    short: "Follow-ups that never rely on memory.",
-    problem: "Quotes go out, then follow-up depends on memory and a heroic inbox.",
-    build: ["Quote status board", "Follow-up drafts", "Owner assignment", "Next-step reminders"],
-    monthly: "Adjust timing, update templates, and keep the pipeline visible.",
+    icon: Search,
+    title: "Google & AI search",
+    short: "Keep services, proof, and local information clear.",
+    problem: "Search information gets stale when service pages, reviews, photos, and your Google listing do not match the business today.",
+    build: ["Service pages", "Google listing", "Local proof", "Helpful updates"],
+    monthly: "Keep the information homeowners and search tools need accurate and useful.",
   },
 ];
 
@@ -4535,25 +5633,25 @@ function OneWorkflowRetainers() {
   const ActiveIcon = active.icon;
   const { ref: pickerRef, scrolled: pickerScrolled } = useSwipeHint<HTMLDivElement>();
 
+  const moveSelection = (direction: -1 | 1) => {
+    setActiveIndex((current) => (current + direction + retainerExamples.length) % retainerExamples.length);
+  };
+
   return (
     <section className="retainer-section" id="ai-retainers" aria-labelledby="retainer-title" data-reveal>
       <div className="retainer-inner">
         <div className="retainer-head">
           <h2 id="retainer-title" data-scroll-words>
-            One repetitive problem = one AI retainer.
+            The products stay useful after setup.
           </h2>
-          <p>
-            <span className="mobile-copy-desktop">
-              Pick one task your team repeats every week. We build a single system that handles it, then keep it
-              running as the work changes. The setup fee gets it live. The monthly retainer keeps it useful.
-            </span>
-            <span className="mobile-copy-short">Pick one repeated task. We build it, tune it, and keep it useful.</span>
-          </p>
+          <aside className="retainer-rule">
+            <h3>We set it up, connect it, and help keep it working.</h3>
+          </aside>
         </div>
 
         <div className="retainer-layout" data-stagger>
           <SwipeHint hidden={pickerScrolled} />
-          <div className="retainer-picker" ref={pickerRef} role="tablist" aria-label="Repeated workflow examples">
+          <div className="retainer-picker" ref={pickerRef} role="tablist" aria-label="Products DaytonGrowthCo manages">
             {retainerExamples.map((example, index) => {
               const Icon = example.icon;
               const selected = index === activeIndex;
@@ -4562,9 +5660,22 @@ function OneWorkflowRetainers() {
                   type="button"
                   role="tab"
                   aria-selected={selected}
+                  aria-controls="retainer-workflow-panel"
                   className={selected ? "is-active" : ""}
                   key={example.title}
                   onClick={() => setActiveIndex(index)}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onFocus={() => setActiveIndex(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                      event.preventDefault();
+                      moveSelection(1);
+                    }
+                    if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      moveSelection(-1);
+                    }
+                  }}
                 >
                   <Icon size={18} aria-hidden="true" />
                   <span>
@@ -4576,13 +5687,13 @@ function OneWorkflowRetainers() {
             })}
           </div>
 
-          <article className="retainer-card" key={active.title} role="tabpanel" aria-live="polite">
+          <article id="retainer-workflow-panel" className="retainer-card" key={active.title} role="tabpanel" aria-live="polite">
             <div className="retainer-card-top">
               <span className="retainer-card-icon" aria-hidden="true">
                 <ActiveIcon size={24} strokeWidth={1.8} />
               </span>
               <div>
-                <span>Repeated problem</span>
+                <span>Product</span>
                 <h3>{active.title}</h3>
               </div>
             </div>
@@ -4591,7 +5702,7 @@ function OneWorkflowRetainers() {
 
             <div className="retainer-build">
               <div>
-                <span>Setup fee gets live</span>
+                <span>What it handles</span>
                 <ul>
                   {active.build.map((item) => (
                     <li key={item}>
@@ -4602,99 +5713,54 @@ function OneWorkflowRetainers() {
                 </ul>
               </div>
               <div>
-                <span>Monthly retainer keeps it useful</span>
+                <span>What we manage after launch</span>
                 <p>{active.monthly}</p>
               </div>
             </div>
           </article>
 
-          <aside className="retainer-rule">
-            <h3>Boring repeated work is where the money is.</h3>
-            <p>
-              The best first AI project is usually not glamorous. It is the task someone repeats every week while quietly
-              questioning modern life. Sorry to the chatbot with a name.
-            </p>
-            <a className="link-arrow" href="#cta">
-              Show us the repeated task
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          </aside>
         </div>
       </div>
     </section>
   );
 }
 
-// Audit, Optimize, Automate. The order is the offer: a broken process plus AI is
-// just a faster mess, so we audit and optimize before we automate. The paid $999
-// audit is step one. Its CTA reuses the existing #cta form, tagging the request
-// as an audit so the intent arrives with the lead. Removes no existing copy.
 const aoaSteps = [
   {
-    icon: Search,
-    title: "Audit",
+    icon: ClipboardList,
+    title: "Bring one real input",
     featured: true,
     items: [
-      "Where does the request come in?",
-      "Who touches it?",
-      "What gets copied and pasted?",
-      "Where does it wait?",
-      "What information is missing?",
-      "What breaks when the usual person is out?",
+      "A week of missed calls",
+      "One homepage or profile",
+      "Open estimates or one price sheet",
     ],
   },
   {
-    icon: Scissors,
-    title: "Optimize",
+    icon: Wrench,
+    title: "We set up the result",
     items: [
-      "Intake forms before phone agents",
-      "Clean CRM stages before follow-up automation",
-      "A clear refund policy before support drafts",
-      "Quote rules before quote automation",
-      "An owner or reviewer before outbound messages",
+      "Built around your real information",
+      "Small enough to review clearly",
+      "Useful before a larger commitment",
     ],
   },
   {
-    icon: Workflow,
-    title: "Automate",
-    lead: "Then AI can safely carry:",
-    items: ["Drafting", "Triage", "Classification", "Reminders", "Summaries", "Routing", "Reporting"],
+    icon: CheckCircle2,
+    title: "Decide after you see it",
+    items: ["Keep the useful result", "Choose whether to continue", "Receive a proposal only when it makes sense"],
   },
 ];
-
-const auditDeliverables = [
-  "A map of where the work actually goes today",
-  "The 3 to 7 highest-value places AI fits",
-  "What each fix is worth, in hours or dollars",
-  "A ranked build order, with no obligation to continue",
-];
-
-function requestAudit() {
-  try {
-    window.dispatchEvent(new CustomEvent("dgc:audit-request"));
-  } catch {
-    /* The #cta anchor still scrolls to the form even if tagging is unavailable. */
-  }
-}
 
 function AiAuditOffer() {
   return (
-    <section className="audit-offer" id="ai-audit" aria-labelledby="audit-offer-title" data-reveal>
+    <section className="audit-offer working-start" id="working-start" aria-labelledby="audit-offer-title" data-reveal>
       <div className="audit-offer-inner">
         <div className="audit-offer-head">
           <h2 id="audit-offer-title" data-scroll-words>
-            A broken process plus AI is just a faster mess.
+            Start with something real.
           </h2>
-          <p>
-            <span className="mobile-copy-desktop">
-              So we go in order: audit, then optimize, then automate. Most teams skip the first two, automate the mess, and
-              decide AI does not work. You can never skip a step. Step one is a consultation.
-            </span>
-            <span className="mobile-copy-short">Audit first. Then optimize. Then automate what is actually ready.</span>
-          </p>
-          <div className="audit-sphere-frame">
-            <ParticleSphere />
-          </div>
+          <p>No audit, PDF, or strategy session. We set up one useful piece of real work before you decide what comes next.</p>
         </div>
 
         <ol className="aoa-steps" data-stagger>
@@ -4710,8 +5776,7 @@ function AiAuditOffer() {
                     <h3>{step.title}</h3>
                   </div>
                 </div>
-                {step.featured ? <span className="aoa-step-flag">Consultation first</span> : null}
-                {step.lead ? <p className="aoa-step-lead">{step.lead}</p> : null}
+                {step.featured ? <span className="aoa-step-flag">Your starting point</span> : null}
                 <ul>
                   {step.items.map((item) => (
                     <li key={item}>{item}</li>
@@ -4724,24 +5789,11 @@ function AiAuditOffer() {
 
         <aside className="audit-cta-band">
           <div className="audit-cta-intro">
-            <span>Start with step one</span>
-            <strong>Schedule a consultation</strong>
-            <small>No retainer required.</small>
-            <p className="audit-standalone">
-              If nothing is worth building, we tell you that. The audit stands on its own.
-            </p>
+            <strong>Choose the product that matches the problem you recognize.</strong>
           </div>
           <div className="audit-cta-body">
-            <ul className="audit-gets">
-              {auditDeliverables.map((item) => (
-                <li key={item}>
-                  <Check size={14} aria-hidden="true" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <a className="button button-primary large" href="#cta" onClick={requestAudit}>
-              Schedule a consultation
+            <a className="button button-primary large" href="#services">
+              Compare the core products
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           </div>
@@ -4764,27 +5816,27 @@ function MissionStatement() {
 const orbitClients = [
   {
     name: "Waibel Energy Solutions",
-    work: "Energy systems and field-service visibility",
+    work: "Built field-service visibility around the work already in motion.",
     logo: "https://gowaibel.com/wp-content/uploads/2024/02/waibel-logo.jpeg",
     orbit: "22deg",
     initials: "WE",
   },
   {
     name: "Khan Construction",
-    work: "Construction workflows and lead capture",
+    work: "Improved construction workflows and lead capture.",
     orbit: "118deg",
     initials: "KC",
   },
   {
     name: "FlightFix",
-    work: "Travel-support experience and digital presence",
+    work: "Improved the travel-support experience and digital presence.",
     logo: "https://i.postimg.cc/RVjSKdGB/Flight-Fix-Logo.jpg",
     orbit: "212deg",
     initials: "FF",
   },
   {
     name: "Shmu's Automotive",
-    work: "Automotive service proof and local demand",
+    work: "Made local service proof and demand easier to act on.",
     logo: "https://i.ibb.co/B5fmCZDS/Screenshot-2026-04-23-at-10-51-12-PM.png",
     orbit: "306deg",
     initials: "SA",
@@ -4797,13 +5849,13 @@ function ProofAndVoices() {
       <ProofBand
         background={<BackgroundVideo className="proof-band-video" poster={videos.form.poster} stream={videos.form.stream} />}
         stats={[
-          { value: "Up to 70%", label: "Lower than a traditional dev shop quote" },
-          { value: "2 to 4 weeks", label: "From first call to a live, working tool" },
-          { value: "100%", label: "Built around your existing workflow" },
+          { value: "5", label: "Focused products for the work that matters" },
+          { value: "2 to 4 weeks", label: "For many focused setups to go live" },
+          { value: "One person", label: "To help with the technology around the work" },
         ]}
         statement={
           <>
-            “The goal is never a bigger software bill. It is the smallest build that quietly saves real hours, every week, for years.”
+            “The goal is never more software. It is the right product, set up properly, with someone practical to call when it needs attention.”
           </>
         }
         attribution="DaytonGrowthCo."
@@ -4817,15 +5869,13 @@ function ProofAndVoices() {
 
 function BuiltForStrip() {
   const proofClients = orbitClients.slice(0, 4);
-  const { ref: clientsRef, scrolled: clientsScrolled } = useSwipeHint<HTMLUListElement>();
   return (
-    <section className="above-fold-proof" aria-labelledby="above-fold-proof-title">
+    <div className="above-fold-proof" role="region" aria-labelledby="above-fold-proof-title">
       <div className="above-fold-proof-inner">
         <div className="above-fold-proof-copy">
-          <h2 id="above-fold-proof-title">Sites, systems, and workflow support for companies already doing the work.</h2>
+          <h2 id="above-fold-proof-title">A few companies we’ve worked with.</h2>
         </div>
-        <SwipeHint hidden={clientsScrolled} />
-        <ul ref={clientsRef} className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
+        <ul className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
           {proofClients.map((client) => (
             <li key={client.name}>
               <span className="above-fold-proof-logo" aria-hidden="true">
@@ -4838,31 +5888,138 @@ function BuiltForStrip() {
             </li>
           ))}
         </ul>
-        <TrustStrip
-          label="Built for"
-          marks={["Contractors", "Service companies", "Professional offices", "Owner-operated teams", "Local trades"]}
-        />
+      </div>
+    </div>
+  );
+}
+
+function PostHeroBridge() {
+  return (
+    <section className="post-hero-bridge" aria-label="Client proof">
+      <BuiltForStrip />
+    </section>
+  );
+}
+
+function FlagshipOverview() {
+  return (
+    <section className="flagship-overview" id="programs" aria-labelledby="flagship-overview-title">
+      <div className="air-section-media" aria-hidden="true">
+        <BackgroundVideo className="air-section-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
+      </div>
+      <div className="air-section-mask" aria-hidden="true" />
+      <div className="flagship-shell">
+        <header className="flagship-intro">
+          <h2 id="flagship-overview-title">Two flagship programs.</h2>
+          <p>Focused help for service quotes and website moves.</p>
+        </header>
+        <div className="flagship-overview-grid">
+          <article className="flagship-card quote-card">
+            <span className="flagship-icon" aria-hidden="true"><PhoneCall size={23} /></span>
+            <h3>The Better Quote Program™</h3>
+            <p>Already have an expensive quote? Send it to us. Real people contact local providers and look for a better comparable option. If we don’t save you money, you don’t pay.</p>
+            <a className="button button-primary" href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a>
+          </article>
+          <article className="flagship-card migration-card">
+            <span className="flagship-icon" aria-hidden="true"><Globe2 size={23} /></span>
+            <h3>The Website Migration Program™</h3>
+            <p>Move your existing website into a cleaner, more modern setup without the usual migration headaches. We plan, migrate, test, and launch the new site properly.</p>
+            <Link className="button button-primary" href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link>
+          </article>
+        </div>
       </div>
     </section>
   );
 }
 
+function ProgramSteps({ items }: { items: Array<{ title: string; text: string }> }) {
+  return <ol className="program-steps">{items.map((item, index) => <li key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{item.title}</strong><p>{item.text}</p></div></li>)}</ol>;
+}
+
+function BetterQuoteProgram() {
+  const steps = [
+    { title: "Send your quote", text: "Upload the estimate you already have." },
+    { title: "We make the calls", text: "A real person checks comparable local options." },
+    { title: "Get a clear answer", text: "Usually within about 48 business hours." },
+    { title: "Pay only if you save", text: "No qualifying savings? No fee." },
+  ];
+  return <section className="program-section better-quote-program" id="better-quote" aria-labelledby="better-quote-title">
+    <div className="flagship-shell program-layout">
+      <div className="program-copy">
+        <h2 id="better-quote-title">Already have a quote? Let us shop it.</h2>
+        <p>Send us your estimate. A real person reviews it, makes the calls, and looks for a better comparable option.</p>
+        <p className="program-promise">If we don’t save you money, you don’t pay.</p>
+        <a className="button button-primary large" href="/quote/start/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a>
+        <p className="program-trust"><UserCheck size={17} aria-hidden="true" /> Human-led from start to finish.</p>
+      </div>
+      <div className="program-detail">
+        <ProgramSteps items={steps} />
+        <p className="program-note">Better comparable quotes—not a promise of the lowest price anywhere.</p>
+      </div>
+    </div>
+  </section>;
+}
+
+function WebsiteMigrationProgram() {
+  const steps = [
+    { title: "Website Review", text: "Pages, content, forms, and integrations." },
+    { title: "Migration Plan", text: "What moves, improves, or gets cleaned up." },
+    { title: "Build and Migration", text: "The necessary pieces, rebuilt in the new environment." },
+    { title: "Testing", text: "Links, forms, mobile, analytics, and integrations." },
+    { title: "Launch", text: "A careful move with a final functionality check." },
+    { title: "Post-Launch Review", text: "We address issues found after launch." },
+  ];
+  return <section className="program-section website-program" id="website-migration" aria-labelledby="website-program-title">
+    <div className="flagship-shell program-layout program-layout-reverse">
+      <div className="program-copy">
+        <h2 id="website-program-title">Move your website without the headache.</h2>
+        <p>We move your existing website carefully—protecting pages, forms, analytics, links, and integrations.</p>
+        <p>Review, plan, build, test, launch.</p>
+        <p className="program-fee"><strong>Clear pricing before work begins.</strong> Your written scope shows the migration fee and exactly what is included.</p>
+        <Link className="button button-primary large" href="/website/">Start My Website Migration <ArrowRight size={16} aria-hidden="true" /></Link>
+        <Link className="ownership-roi-link" href="/website-ownership-calculator/">Calculate your website ownership ROI <ArrowRight size={15} aria-hidden="true" /></Link>
+      </div>
+      <div className="program-detail"><ProgramSteps items={steps} /></div>
+    </div>
+  </section>;
+}
+
+function ProgramMatch() {
+  return <section className="program-match" aria-labelledby="program-match-title"><div className="flagship-shell"><header><h2 id="program-match-title">Which program do you need?</h2></header><div className="program-match-grid"><article><p>I’m trying to lower an expensive service quote.</p><strong>Use The Better Quote Program™</strong><a href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a></article><article><p>I need to move, rebuild, or modernize an existing website.</p><strong>Use The Website Migration Program™</strong><Link href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link></article></div></div></section>;
+}
+
 const homeFaqs = [
   {
-    q: "What does DaytonGrowthCo build?",
-    a: "Phone agents, quote tools, dashboards, customer portals, training systems, websites, sales materials, and custom business apps, all shaped around the way your business already works.",
+    q: "Is The Better Quote Program™ automated or AI-driven?",
+    a: "No. Real people review your request and contact providers.",
   },
   {
-    q: "How do you keep custom software affordable?",
-    a: "We use AI-assisted development to cut the hours a traditional dev shop would bill for. Same custom result, fewer billable ceremonies. Everyone survives.",
+    q: "What if you cannot find a lower quote?",
+    a: "If we do not find a qualifying lower, comparable quote, you pay nothing.",
   },
   {
-    q: "Who is this for?",
-    a: "Small and midsized businesses, contractors, service companies, professional offices, and owner-operated teams that still rely on manual quoting, intake, scheduling, follow-up, or scattered spreadsheets.",
+    q: "How long does The Better Quote Program™ take?",
+    a: "Usually within about 48 business hours after we receive the required information.",
   },
   {
-    q: "How fast can a tool go live?",
-    a: "Most first builds are live in two to four weeks. We start with the smallest tool that saves real time. No giant platform cosplay.",
+    q: "Do you always find the absolute cheapest provider?",
+    a: "No. We look for a better comparable quote from legitimate local providers.",
+  },
+  {
+    q: "Can you migrate an existing website instead of rebuilding everything from scratch?",
+    a: "Often, yes. The plan depends on your current platform and site.",
+  },
+  {
+    q: "Will my website go offline during the migration?",
+    a: "We plan the move carefully and test the new site before launch.",
+  },
+  {
+    q: "What happens to forms, analytics, pages, and integrations?",
+    a: "They are reviewed during planning and included in the launch checklist.",
+  },
+  {
+    q: "Can you improve the site during the migration?",
+    a: "Yes. The migration can include cleanup and modernization where useful.",
   },
 ];
 
@@ -4875,22 +6032,6 @@ function HomeFaq() {
           <h2 id="home-faq-title" data-scroll-words>
             Questions, answered plainly.
           </h2>
-          <div className="home-faq-note">
-            <span className="home-faq-note-avatar" aria-hidden="true">
-              DG
-            </span>
-            <p>
-              <span className="mobile-copy-desktop">
-                Not sure if this fits your business? Tell us what eats your time and we will tell you straight whether a tool is
-                worth building. No pressure either way.
-              </span>
-              <span className="mobile-copy-short">Tell us what eats your time. We’ll tell you if it is worth building.</span>
-            </p>
-            <a className="link-arrow" href="#cta">
-              Ask us directly
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          </div>
         </div>
         <ul className="home-faq-list">
           {homeFaqs.map((item, index) => {
@@ -4927,19 +6068,17 @@ function HomeFaq() {
 function Homepage() {
   return (
     <>
-      <SplashScreen />
       <PageChrome />
-      <main id="main-content" tabIndex={-1}>
+      <main id="main-content" className="homepage" tabIndex={-1}>
         <Hero />
-        <BuiltForStrip />
-        <PersonalizeInvite />
-        <WorkflowSimulation />
-        <OldStackUpgrade />
-        <OneWorkflowRetainers />
-        <AiAuditOffer />
-        <ServicesSticky />
-        <ProcessSteps />
-        <ProofAndVoices />
+        <PostHeroBridge />
+        <FlagshipOverview />
+        <BetterQuoteProgram />
+        <BetterQuoteSavingsCalculator />
+        <WebsiteMigrationProgram />
+        <ProgramMatch />
+        <CoreProductOffers />
+        <SupportingServices />
         <HomeFaq />
         <FinalCTA />
       </main>
@@ -4948,18 +6087,16 @@ function Homepage() {
   );
 }
 
-function WhatWeBuildPage() {
+function ProductsPage() {
+  const operatingProducts = coreProductOffers.filter((product) => product.id !== "website");
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <PageHero {...pageCopy.whatWeBuild} />
-        <ServiceArchitecture />
-        <WhoItsFor />
-        <FeatureGrid />
-        <ProcessMap />
-        <QuoteBuilderDemo />
-        <AiWorkflowReveal />
+      <main id="main-content" className="dedicated-page products-page" tabIndex={-1}>
+        <header className="page-hub-intro"><h1>Products</h1></header>
+        <section className="products-flagships" aria-labelledby="products-flagships-title"><div className="products-shell"><header><h2 id="products-flagships-title">Our flagship programs</h2><p>Two structured offers with a clear outcome and a clear next step.</p></header><div className="products-flagship-grid"><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article></div></div></section>
+        <section className="products-operating" aria-labelledby="products-operating-title"><div className="products-shell"><header><h2 id="products-operating-title">Operating products</h2><p>Focused tools for the work your team repeats every week.</p></header><div className="products-operating-grid">{operatingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
+        <section className="products-cta"><div className="products-shell"><div><h2>Not sure where to start?</h2><p>Tell us what is taking too long. We’ll point you to the right product.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
         <PageCTA />
       </main>
       <SiteFooter />
@@ -4972,8 +6109,9 @@ function ExamplesPage() {
     <>
       <PageChrome />
       <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <PageHero {...pageCopy.examples} />
+        <header className="page-hub-intro"><h1>Examples</h1></header>
         <WebsiteTransformation />
+        <PhoneAgentOffer />
         <OutcomeSection />
         <SpreadsheetTransformation />
         <QuoteWorkflowExample />
@@ -4990,7 +6128,7 @@ function HowItWorksPage() {
     <>
       <PageChrome />
       <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <PageHero {...pageCopy.howItWorks} />
+        <header className="page-hub-intro"><h1>How It Works</h1></header>
         <BuildPrinciples />
         <DiscoveryDiagnosis />
         <EconomicCase />
@@ -5008,9 +6146,13 @@ function AboutPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <PageHero {...pageCopy.about} />
+      <main id="main-content" className="dedicated-page about-page" tabIndex={-1}>
+        <header className="page-hub-intro"><h1>About DaytonGrowthCo.</h1></header>
         <section className="about-founder" aria-labelledby="about-founder-title">
+          <div className="section-film-media" aria-hidden="true">
+            <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
+          </div>
+          <div className="section-film-mask" aria-hidden="true" />
           <div className="about-founder-inner">
             <div className="about-founder-portrait" aria-hidden="true">
               <picture>
@@ -5031,19 +6173,15 @@ function AboutPage() {
             <div className="about-founder-copy">
               <h2 id="about-founder-title">Samuel Caruso</h2>
               <p>
-                Born and raised in Dayton, Ohio, Samuel has always loved building things, whether that meant physical
-                projects, systems, or growth strategies.
+                Founded in 2026 by Dayton native Samuel Caruso, DaytonGrowthCo. helps contractors, trades, and small
+                businesses make the repeated work easier to run.
               </p>
-              <p>
-                He earned his undergraduate degree in History from the University of Michigan and later completed a
-                Master’s in Entrepreneurship and Emerging Technology, blending strategic thinking with modern digital tools.
-              </p>
-              <blockquote>
-                Most small businesses do not need more software. They need the right tool built around the work.
+              <blockquote className="about-reading-quote">
+                The point is not more software. It is a better way to run the work already in front of you.
               </blockquote>
               <p>
-                Samuel founded DaytonGrowthCo. to build phone agents, quote tools, dashboards, portals, sales materials,
-                and custom apps for small businesses. The work starts with the process, then becomes a tool the team can use.
+                We start with the workflow, use existing tools when they fit, and build only what is missing. Dayton is
+                our home; the work is available nationwide.
               </p>
             </div>
           </div>
@@ -5053,8 +6191,7 @@ function AboutPage() {
             <div className="dedicated-heading">
               <h2 id="about-mission-title">Why DaytonGrowthCo.</h2>
               <p>
-                The name honors our roots without limiting our reach. Dayton represents practical invention, steady
-                experimentation, and the courage to build what comes next.
+                Small businesses deserve capable technology without enterprise budgets, enterprise complexity, or another system that controls the owner. DaytonGrowthCo builds focused systems around the work already happening, so teams spend less time managing software and more time using their judgment.
               </p>
             </div>
             <ol className="build-principles-list">
@@ -5080,6 +6217,112 @@ function AboutPage() {
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+const assistantFaqs = [
+  ["Do I need custom software?", "Often, no. We first look for a practical setup or connection using tools you already have. Custom work is for the part of the process that truly needs it."],
+  ["What can I try for free?", "Each product has a real working start: a seven-day missed-call trial, homepage rebuild preview, follow-up for 25 open estimates, quote tool for one common job, or Google Business Profile cleanup."],
+  ["What are the core products?", "24/7 phone answering and booking, website migration, automated follow-up and scheduling, estimate and proposal tools, Google and AI search help, and automated Google review texting."],
+  ["How much does a project cost?", "It depends on the product and your setup. You see a small working result first, then receive a proposal only if a larger implementation makes sense."],
+  ["Can you move our existing website?", "Yes. Website Migration keeps the useful content, brand, domain, and lead paths while moving you to a clearer, easier-to-manage site."],
+  ["Can you help with missed calls?", "Yes. Phone Answering handles routine calls and booking. Missed Call Follow-Up sends timely texts and keeps open estimates moving."],
+  ["How quickly can we start?", "Choose the product that matches your problem and send the requested business information. We reply within one business day with the next step."],
+  ["Do you work outside Dayton?", "Absolutely. Dayton is where the company is rooted; the work is available to small businesses and service teams nationwide."],
+];
+
+function QuickAnswers() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [lastQuestion, setLastQuestion] = useState<string | null>(null);
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [thinking, setThinking] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const timeoutRef = useRef<number | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const matches = assistantFaqs.filter(([question]) => question.toLowerCase().includes(query.trim().toLowerCase()));
+
+  useEffect(() => () => { if (timeoutRef.current) window.clearTimeout(timeoutRef.current); }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    closeButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [close, open]);
+
+  const ask = (question: string, nextAnswer: string) => {
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    setLastQuestion(question);
+    setShowSuggestions(false);
+    setThinking(true);
+    setAnswer(null);
+    timeoutRef.current = window.setTimeout(() => {
+      setThinking(false);
+      setAnswer(nextAnswer);
+    }, 420);
+  };
+
+  return (
+    <aside className={`quick-answers ${open ? "is-open" : ""}`} aria-label="Quick answers">
+      {open ? (
+        <div id="quickAnswersPanel" className="quick-answers-panel" role="dialog" aria-modal="false" aria-label="Answers to common questions">
+          <div className="quick-answers-head">
+            <div><BrandWordmark /><span>Ask about a practical first step.</span></div>
+            <button ref={closeButtonRef} type="button" onClick={close} aria-label="Close quick answers"><X size={17} aria-hidden="true" /></button>
+          </div>
+          <div className="quick-answers-thread" aria-live="polite">
+            <div className="quick-answers-message quick-answers-message--bot">
+              <span className="quick-answers-avatar" aria-hidden="true">D</span>
+              <p>What are you trying to make easier?</p>
+            </div>
+            {lastQuestion ? (
+              <div className="quick-answers-message quick-answers-message--user"><p>{lastQuestion}</p></div>
+            ) : null}
+            {thinking ? <div className="quick-answers-message quick-answers-message--bot"><p className="quick-answers-thinking">Thinking<span>…</span></p></div> : null}
+            {answer && !thinking ? <div className="quick-answers-message quick-answers-message--bot"><p className="quick-answers-response">{answer}</p></div> : null}
+          </div>
+          {showSuggestions ? (
+            <div className="quick-answers-suggestions">
+              <span>Suggested questions</span>
+              <div className="quick-answers-list" aria-label="Suggested questions">
+                {(matches.length ? matches : assistantFaqs).map(([question, response]) => (
+                  <button type="button" key={question} onClick={() => ask(question, response)}>{question}<ArrowRight size={14} /></button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <button type="button" className="quick-answers-suggestions-toggle" onClick={() => setShowSuggestions(true)} aria-expanded="false">
+              Show suggested questions <ChevronDown size={14} aria-hidden="true" />
+            </button>
+          )}
+          <form className="quick-answers-search" onSubmit={(event) => {
+            event.preventDefault();
+            const next = matches[0] ?? assistantFaqs[0];
+            if (query.trim()) ask(query.trim(), next[1]);
+          }}>
+            <label className="sr-only" htmlFor="quick-answers-input">Ask a question</label>
+            <Search size={15} aria-hidden="true" />
+            <input id="quick-answers-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Type a question" />
+            <button type="submit" aria-label="Send question" disabled={!query.trim()}><Send size={14} /></button>
+          </form>
+          <a href="/#cta" className="quick-answers-cta">Ask about your workflow <ArrowRight size={14} /></a>
+        </div>
+      ) : null}
+      <button ref={triggerRef} type="button" className="quick-answers-trigger" onClick={() => setOpen((value) => !value)} aria-controls="quickAnswersPanel" aria-expanded={open} aria-label="Open quick answers">
+        <MessageSquare size={19} aria-hidden="true" />
+        <span>Questions?</span>
+      </button>
+    </aside>
   );
 }
 
@@ -5118,7 +6361,6 @@ function WhoItsFor() {
             This is built for you
             <span>if one of these is your week.</span>
           </h2>
-          <p>No pressure to match all four. One is usually enough to feel the difference.</p>
         </div>
         <div className="who-its-for-grid" data-stagger>
           {cards.map(({ icon: Icon, title, body }) => (
@@ -5138,6 +6380,7 @@ function WhoItsFor() {
 
 export default function App({ initialPath = "/" }: { initialPath?: string }) {
   useMotionSystem();
+  useScrollChoreography();
   useButtonGlow();
   useMuxVideos();
   useTurnstileProtection();
@@ -5164,23 +6407,37 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
 
     const titles: Record<string, string> = {
       "/": "DaytonGrowthCo. | Practical Business Tools and Digital Systems",
-      "/what-we-build": "What We Build | DaytonGrowthCo.",
+      "/products": "Products | DaytonGrowthCo.",
       "/examples": "Examples | DaytonGrowthCo.",
       "/how-it-works": "How It Works | DaytonGrowthCo.",
       "/aboutus": "About DaytonGrowthCo. | Tools and Digital Systems",
+      "/ai-phone-agents": "24/7 Phone Answering & Booking | DaytonGrowthCo.",
+      "/quote-tools": "Estimate & Proposal Tools | DaytonGrowthCo.",
+      "/dashboards-portals": "Business Dashboards and Customer Portals | DaytonGrowthCo.",
+      "/website-design": "Website Redesign Services in Dayton, OH | DaytonGrowthCo.",
+      "/website-ownership-calculator": "Website Ownership ROI Calculator | DaytonGrowthCo.",
+      "/missed-call-follow-up": "Automated Follow-Up and Scheduling for Trades | DaytonGrowthCo.",
+      "/google-review-texting": "Automated Google Review Texting | DaytonGrowthCo.",
+      "/local-search": "Get Found on Google and AI Search | DaytonGrowthCo.",
+      "/quote/pricing": "Pricing | DaytonGrowthCo.",
     };
     document.title = titles[path] || titles["/"];
   }, [path]);
 
   let page: React.ReactNode = <Homepage />;
-  if (path === "/what-we-build") page = <WhatWeBuildPage />;
+  if (path === "/products" || path === "/what-we-build") page = <ProductsPage />;
   if (path === "/examples") page = <ExamplesPage />;
   if (path === "/how-it-works") page = <HowItWorksPage />;
   if (path === "/aboutus") page = <AboutPage />;
+  if (path === "/website-ownership-calculator") page = <WebsiteOwnershipCalculatorPage />;
+  if (path === "/quote/pricing") page = <PricingPage />;
+  if (path === "/google-review-texting") page = <ReviewTextingPage />;
+  if (path in servicePages) page = <ServicePage service={servicePages[path]} />;
 
   return (
     <PersonalizationProvider>
       {page}
+      <QuickAnswers />
       <Analytics />
       <SpeedInsights />
     </PersonalizationProvider>

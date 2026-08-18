@@ -5,7 +5,9 @@ import Link from "next/link";
 import { ArrowRight, Check, CheckCircle2, PenTool, Send, ShieldCheck, ThumbsUp } from "lucide-react";
 import { ClearableNativeInput } from "./clear-input";
 import { Header } from "./site-header";
+import { BrandWordmark } from "./brand-wordmark";
 import { socialLinks } from "./social-links";
+import { captureAttribution } from "./funnel-analytics";
 import "./systems-that-pay.css";
 
 const formAction =
@@ -32,16 +34,6 @@ const steps = [
   },
 ];
 
-function Wordmark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`lp-wordmark ${className}`.trim()}>
-      <span className="wm-dayton">Dayton</span>
-      <span className="wm-growth">Growth</span>
-      <b>Co.</b>
-    </span>
-  );
-}
-
 function SiteFooter() {
   const year = new Date().getFullYear();
   return (
@@ -50,7 +42,7 @@ function SiteFooter() {
         <div className="lp-footer-brand">
           <Link className="lp-footer-logo" href="/" aria-label="DaytonGrowthCo home">
             <img src={logoUrl} alt="" width={32} height={32} />
-            <Wordmark />
+            <BrandWordmark onDark />
           </Link>
           <p>DaytonGrowthCo builds practical business tools around the way small teams already work.</p>
           <div className="lp-social" aria-label="Social media">
@@ -64,7 +56,7 @@ function SiteFooter() {
         </div>
         <nav className="lp-footer-col" aria-label="Explore">
           <span className="lp-footer-label">Explore</span>
-          <Link href="/what-we-build/">What We Build</Link>
+          <Link href="/products/">Products</Link>
           <Link href="/examples/">Examples</Link>
           <Link href="/how-it-works/">How It Works</Link>
           <a href="/aboutus">About Us</a>
@@ -248,7 +240,27 @@ function FreeRedesignOffer() {
 
     setStatus("sending");
     try {
-      await fetch(formAction, { method: "POST", mode: "no-cors", body: payload });
+      // Keep the existing email notification and create the CRM record from
+      // the same submission. The CRM relay is same-origin so its response is
+      // observable, unlike the intentionally opaque Google Apps Script call.
+      const [crmResponse] = await Promise.all([
+        fetch("/api/funnel-lead", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            funnel: "marketing-site",
+            name: String(input.get("yourName") || "").trim(),
+            email: customerEmail.trim(),
+            business: business.trim(),
+            website,
+            serviceTier: "Free website redesign campaign",
+            goal: "Free website redesign",
+            attribution: captureAttribution("free_redesign"),
+          }),
+        }),
+        fetch(formAction, { method: "POST", mode: "no-cors", body: payload }),
+      ]);
+      if (!crmResponse.ok) throw new Error("CRM handoff failed");
       form.reset();
       setStatus("sent");
     } catch {
@@ -262,7 +274,7 @@ function FreeRedesignOffer() {
     <section className="lp-hero" id="free-redesign" aria-labelledby="redesign-title">
       <HeroBackgroundVideo />
       <div className="lp-hero-copy">
-        <h1 id="redesign-title">We’ll redesign your website. Free.</h1>
+        <h1 id="redesign-title">We’ll redesign your website. On us.</h1>
         <p className="lp-lede">
           Send us your current site and we’ll create a custom homepage direction that makes the business clearer,
           more credible, and easier to contact. No obligation.
@@ -368,7 +380,7 @@ export default function SystemsThatPayApp() {
 
         <section className="lp-proof" aria-labelledby="proof-title">
           <div className="lp-proof-copy">
-            <h2 id="proof-title">The work should feel specific to the business.</h2>
+            <h2 id="proof-title">The work should be specific to the business.</h2>
             <p>
               We combine clear messaging, interface design, and customer-facing communication. See a recent
               trade-business project or the broader portfolio on our main site.

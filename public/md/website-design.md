@@ -2,9 +2,9 @@
 
 > Modern website design in Dayton, Ohio. Fast, mobile-friendly websites built to convert visitors into customers.
 
-## Website Design for Dayton Businesses
+## Website Migration System for Dayton Businesses
 
-We design modern, fast-loading websites with clear messaging and conversion paths. Because we build with AI, a custom, professional site starts at $1,500.
+Keep the parts of your website that help customers find and trust you. Replace the slow platform, unclear pages, and maintenance burden around them with a modern site built for your business.
 
 ## What Makes a Website Convert
 
@@ -21,21 +21,21 @@ Our websites are built to support visibility, credibility, and lead generation w
 
 Service businesses, contractors, local practices, and teams that need a high-end digital presence without unnecessary complexity.
 
-## Modern websites, built with AI. From $1,500.
+## Build it once. Keep control of it.
 
-Once it is built, you choose how you want to run it.
+Choose the level of support that fits your team. The website should serve the business, not create another dependency.
 
-1\. We manage it for you
+1\. Managed support
 
-A one-time build plus a monthly service fee. We build it and handle everything ongoing, so you never have to touch it.
+We build the site and handle ongoing improvements when you want a team to own the work with you.
 
 2\. Build it once, own it
 
-A one-time payment. We build it out, you cover your own server and domain, and you update it yourself with AI whenever you want. It is genuinely that easy.
+We build and launch the site. You keep control of the domain, hosting, and future changes, with plain-English updates your team can request or make without a CMS dashboard.
 
-3\. Unlimited updates
+3\. Ongoing improvement
 
-A one-time build plus a higher monthly fee. We build it and make unlimited changes whenever you need them.
+Keep us involved for unlimited planned updates as the business changes, without rebuilding the site each time.
 
 ---
 

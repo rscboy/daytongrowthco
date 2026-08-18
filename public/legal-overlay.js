@@ -11,6 +11,7 @@
   let dialog;
   let frame;
   let title;
+  let savedScrollX = 0;
   let savedScrollY = 0;
 
   function ensureDialog() {
@@ -126,14 +127,17 @@
 
   function openDialog(url, label) {
     ensureDialog();
+    savedScrollX = window.scrollX;
     savedScrollY = window.scrollY;
+    document.documentElement.style.overflow = "hidden";
     document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.left = `-${savedScrollX}px`;
     document.body.classList.add("legal-document-open");
     title.textContent = label || "Document";
     frame.title = label || "Document";
     frame.src = url;
     dialog.showModal();
-    dialog.querySelector(".legal-document-close").focus();
+    dialog.querySelector(".legal-document-close").focus({ preventScroll: true });
   }
 
   function closeDialog() {
@@ -142,7 +146,11 @@
     frame.src = "about:blank";
     document.body.classList.remove("legal-document-open");
     document.body.style.top = "";
-    window.scrollTo({ top: savedScrollY, behavior: "auto" });
+    document.body.style.left = "";
+    document.documentElement.style.overflow = "";
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ left: savedScrollX, top: savedScrollY, behavior: "auto" });
+    });
   }
 
   document.addEventListener("click", (event) => {
