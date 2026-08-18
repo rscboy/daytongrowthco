@@ -19,12 +19,13 @@ const siteSchema = {
       "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
       "@id": `${siteUrl}/#organization`,
       name: "DaytonGrowthCo.",
+      alternateName: "DaytonGrowthCo AI Automation",
       foundingDate: "2026",
       url: `${siteUrl}/`,
       logo: faviconUrl,
       image: `${siteUrl}/thumbnail.jpeg`,
       description:
-        "DaytonGrowthCo offers The Better Quote Program™ and The Website Migration Program™, plus practical business tools for small and midsized businesses.",
+        "DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company building custom AI agents, workflow automations, system integrations, websites, and practical business tools for small and midsized businesses.",
       email: "help@daytongrowth.co",
       telephone: "+1-937-369-0829",
       founder: {
@@ -66,6 +67,16 @@ const siteSchema = {
         { "@type": "Country", name: "United States" },
       ],
       knowsAbout: [
+        "AI automation for small businesses",
+        "custom AI agents",
+        "workflow automation",
+        "business process automation",
+        "operations automation",
+        "system integrations",
+        "CRM automation",
+        "lead qualification automation",
+        "appointment scheduling automation",
+        "document processing and data entry automation",
         "custom business tools for small businesses",
         "AI-assisted software development",
         "phone agents for small businesses",
@@ -109,9 +120,9 @@ const siteSchema = {
     {
       "@type": "Service",
       "@id": `${siteUrl}/#primary-service`,
-      name: "Custom Business Tools and Digital Systems",
+      name: "AI Automation and Custom Software for Small Businesses",
       serviceType:
-        "AI-assisted custom business tools, phone agents, quote tools, dashboards, customer portals, websites, SEO, and automations",
+        "AI automation, custom AI agents, workflow automation, system integrations, operations automation, custom software, phone agents, quote tools, dashboards, customer portals, and websites",
       provider: {
         "@id": `${siteUrl}/#organization`,
       },
@@ -125,7 +136,7 @@ const siteSchema = {
           "Small and midsized businesses, contractors, service businesses, professional offices, and owner-operated teams",
       },
       description:
-        "DaytonGrowthCo maps a business process, configures existing tools when they fit, and builds custom tools when the workflow needs something specific.",
+        "DaytonGrowthCo maps business processes, connects existing systems, and builds custom AI agents, workflow automations, and focused software around the way small teams already work.",
       hasOfferCatalog: {
         "@id": `${siteUrl}/#offer-catalog`,
       },
@@ -135,6 +146,13 @@ const siteSchema = {
       "@id": `${siteUrl}/#offer-catalog`,
       name: "DaytonGrowthCo Business Tools and Digital Systems",
       itemListElement: [
+        {
+          "@type": "Offer",
+          name: "AI Automation and Custom Software",
+          description:
+            "Custom AI agents, workflow automation, system integrations, CRM updates, appointment scheduling, follow-up, document handling, and repeated data-entry automation for small and midsized businesses.",
+          url: `${siteUrl}/ai-automation`,
+        },
         {
           "@type": "Offer",
           name: "The Better Quote Program™",
@@ -203,12 +221,22 @@ const siteSchema = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "DaytonGrowthCo. | Website Migration & Business Tools",
+    default: "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
     template: "%s",
   },
   description:
-    "DaytonGrowthCo offers human-led quote shopping, website migration into self-owned static sites, and practical business tools for small teams.",
+    "DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company building custom AI agents, workflow automation, system integrations, and practical business tools.",
   keywords: [
+    "AI automation company Dayton Ohio",
+    "AI automation agency Dayton Ohio",
+    "custom AI agents Dayton Ohio",
+    "workflow automation Dayton Ohio",
+    "business process automation Dayton Ohio",
+    "operations automation",
+    "system integrations for small business",
+    "CRM automation",
+    "appointment scheduling automation",
+    "custom software Dayton Ohio",
     "custom business tools Dayton Ohio",
     "phone agents for small business",
     "quote calculator",
@@ -248,29 +276,29 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "DaytonGrowthCo.",
-    title: "DaytonGrowthCo. | Website Migration & Business Tools",
+    title: "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
     description:
-      "Human-led quote shopping, website migration, and practical business tools built around your business.",
+      "Custom AI agents, workflow automation, system integrations, and practical custom software built around your business.",
     images: [
       {
         url: "/thumbnail.jpeg",
         width: 1200,
         height: 630,
-        alt: "DaytonGrowthCo. builds digital tools and custom apps for small businesses.",
+        alt: "DaytonGrowthCo. builds AI automation and custom software for small businesses in Dayton, Ohio.",
       },
     ],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DaytonGrowthCo. | Website Migration & Business Tools",
-    description: "Human-led quote shopping, website migration, and practical business tools for small teams.",
+    title: "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
+    description: "Custom AI agents, workflow automation, system integrations, and practical custom software for small businesses.",
     images: ["/thumbnail.jpeg"],
   },
   other: {
     "theme-color": "#0A0E1A",
-    classification: "Custom business tools, phone agents, dashboards, portals, quote tools, digital content",
-    subject: "Digital tools and custom business systems for small businesses",
+    classification: "AI automation, custom AI agents, workflow automation, system integrations, operations automation, and custom software",
+    subject: "AI automation and custom software for small and midsized businesses",
     coverage: "Dayton, Ohio",
     "geo.region": "US-OH",
     "geo.placename": "Dayton, Ohio",

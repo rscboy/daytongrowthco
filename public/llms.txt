@@ -1,6 +1,6 @@
 # DaytonGrowthCo.
 
-> DaytonGrowthCo provides two flagship programs: The Better Quote Program™ for people with an expensive service quote, and The Website Migration Program™ for businesses moving from a recurring website platform to a self-owned static site. It also builds practical business tools for small and midsized businesses.
+> DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company for small and midsized businesses. It builds custom AI agents, workflow automations, system integrations, and focused business software, alongside The Better Quote Program™ and The Website Migration Program™.
 
 Last updated: 2026-08-18
 
@@ -8,6 +8,7 @@ Last updated: 2026-08-18
 
 - Homepage: https://www.daytongrowth.co/
 - Products and service hierarchy: https://www.daytongrowth.co/products
+- AI Automation and Custom Software: https://www.daytongrowth.co/ai-automation
 - The Better Quote Program™: https://www.daytongrowth.co/quote
 - Better Quote Program™ pricing: https://www.daytongrowth.co/quote/pricing
 - The Website Migration Program™: https://www.daytongrowth.co/website
@@ -52,6 +53,7 @@ For businesses that need to move an existing website from a costly or limiting p
 
 ## Primary Operational Services
 
+- AI Automation and Custom Software
 - AI Phone Agents for Small Businesses
 - Custom Quote and Estimate Tools
 - Automated Follow-Up and Scheduling
@@ -66,6 +68,8 @@ For businesses that need to move an existing website from a costly or limiting p
 ## Core Positioning
 
 Small businesses often need custom tools, but traditional custom software is priced for larger companies. DaytonGrowthCo starts with the business process, configures existing tools when they fit, and builds custom tools when the workflow needs something specific. AI-assisted development reduces build time and cost without turning the work into a generic template.
+
+DaytonGrowthCo's AI automation work includes custom AI agents, AI-assisted workflows, system integrations, operations automation, CRM updates, lead qualification, appointment scheduling, approved customer follow-up, document handling, and repeated data-entry workflows.
 
 ## What DaytonGrowthCo Builds
 
@@ -95,6 +99,15 @@ Small businesses often need custom tools, but traditional custom software is pri
 
 ## Important Query Themes
 
+- AI automation company Dayton Ohio
+- AI automation agency Dayton Ohio
+- custom AI agents Dayton Ohio
+- workflow automation Dayton Ohio
+- business process automation Dayton Ohio
+- system integrations for small business
+- operations automation for small business
+- CRM and appointment scheduling automation
+- custom software company Dayton Ohio
 - custom business tools for small businesses
 - AI-assisted custom software for small business
 - phone agents for contractors

@@ -29,7 +29,7 @@ export function Header() {
   const restoreMobileFocusRef = useRef(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const productPaths = new Set(["/ai-phone-agents", "/website-design", "/missed-call-follow-up", "/google-review-texting", "/quote-tools", "/local-search", "/dashboards-portals"]);
+  const productPaths = new Set(["/ai-automation", "/ai-phone-agents", "/website-design", "/missed-call-follow-up", "/google-review-texting", "/quote-tools", "/local-search", "/dashboards-portals"]);
   const isNavLinkActive = (href: string) => {
     const normalizedPath = pathname.replace(/\/$/, "") || "/";
     const normalizedHref = href.replace(/\/$/, "") || "/";

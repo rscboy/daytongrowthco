@@ -7,14 +7,14 @@ const homePageSchema = {
       "@type": "WebPage",
       "@id": "https://www.daytongrowth.co/#webpage",
       url: "https://www.daytongrowth.co/",
-      name: "DaytonGrowthCo. | Website Migration and Business Tools",
+      name: "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
       description:
-        "DaytonGrowthCo offers The Better Quote Program™, The Website Migration Program™, and practical business tools for small and midsized businesses.",
+        "DaytonGrowthCo builds custom AI agents, workflow automations, system integrations, and practical custom software for small and midsized businesses in Dayton, Ohio and nationwide.",
       isPartOf: { "@id": "https://www.daytongrowth.co/#website" },
       about: { "@id": "https://www.daytongrowth.co/#organization" },
       mainEntity: { "@id": "https://www.daytongrowth.co/#primary-service" },
       inLanguage: "en-US",
-      dateModified: "2026-08-12",
+      dateModified: "2026-08-18",
     },
     {
       "@type": "FAQPage",
@@ -26,7 +26,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo offers The Better Quote Program™ for expensive service quotes, The Website Migration Program™ for moving to a self-owned site, and practical business tools such as phone agents, automated follow-up and scheduling, quote tools, dashboards, social media scheduling, portals, and custom apps.",
+              "DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company. It builds custom AI agents, workflow automation, system integrations, phone agents, automated follow-up and scheduling, quote tools, dashboards, portals, and custom apps, alongside The Better Quote Program™ and The Website Migration Program™.",
           },
         },
         {

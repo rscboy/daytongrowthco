@@ -39,6 +39,26 @@ const requiredMarkers = [
     ],
   },
   {
+    file: "app/ai-automation/page.tsx",
+    markers: [
+      "AI Automation Company in Dayton, Ohio",
+      'const url = "https://www.daytongrowth.co/ai-automation"',
+      "custom AI agents, workflow automation, system integrations",
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/layout.tsx",
+    markers: [
+      "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
+      "AI automation company Dayton Ohio",
+      "custom AI agents",
+      "workflow automation",
+      "system integrations",
+      "business process automation",
+    ],
+  },
+  {
     file: "app/quote/page.tsx",
     markers: [
       "Quote Shopping Service | The Better Quote Program™",
@@ -79,6 +99,7 @@ const requiredMarkers = [
     file: "public/sitemap.xml",
     markers: [
       "https://www.daytongrowth.co/ai-phone-agents</loc>",
+      "https://www.daytongrowth.co/ai-automation</loc>",
       "https://www.daytongrowth.co/quote</loc>",
       "https://www.daytongrowth.co/website</loc>",
       "https://www.daytongrowth.co/missed-call-follow-up</loc>",

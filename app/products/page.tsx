@@ -4,11 +4,11 @@ import HomeApp from "../../src/main";
 const url = "https://www.daytongrowth.co/products";
 
 export const metadata: Metadata = {
-  title: "Products | Quote Shopping, Website Migration & Tools",
-  description: "Explore The Better Quote Program™, The Website Migration Program™, and focused products for calls, follow-up, reviews, estimates, dashboards, and local visibility.",
+  title: "AI Automation, Custom Software & Business Tools",
+  description: "Explore DaytonGrowthCo's AI automation, custom software, AI phone agents, workflow automation, quote tools, Website Migration, Better Quote, and supporting services.",
   alternates: { canonical: url, types: { "text/markdown": "/md/products.md" } },
   robots: { index: true, follow: true },
-  openGraph: { title: "Products | DaytonGrowthCo.", description: "Two flagship programs and focused products for calls, follow-up, reviews, estimates, dashboards, and local visibility.", url, images: ["/thumbnail.jpeg"] },
+  openGraph: { title: "AI Automation, Custom Software & Business Tools", description: "AI automation, custom software, two flagship programs, and focused products for calls, follow-up, estimates, and operations.", url, images: ["/thumbnail.jpeg"] },
   twitter: { card: "summary_large_image", title: "Products | DaytonGrowthCo.", description: "Two flagship programs and focused business products.", images: ["/thumbnail.jpeg"] },
 };
 
@@ -31,14 +31,15 @@ const productsSchema = {
       "@id": `${url}#products`,
       name: "DaytonGrowthCo products",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "The Better Quote Program™", url: "https://www.daytongrowth.co/quote" },
-        { "@type": "ListItem", position: 2, name: "The Website Migration Program™", url: "https://www.daytongrowth.co/website" },
-        { "@type": "ListItem", position: 3, name: "AI Phone Agents for Small Businesses", url: "https://www.daytongrowth.co/ai-phone-agents" },
-        { "@type": "ListItem", position: 4, name: "Custom Quote and Estimate Tools", url: "https://www.daytongrowth.co/quote-tools" },
-        { "@type": "ListItem", position: 5, name: "Automated Follow-Up and Scheduling", url: "https://www.daytongrowth.co/missed-call-follow-up" },
-        { "@type": "ListItem", position: 6, name: "Local SEO and AI Search Visibility", url: "https://www.daytongrowth.co/local-search" },
-        { "@type": "ListItem", position: 7, name: "Dashboards & Portals", url: "https://www.daytongrowth.co/dashboards-portals" },
-        { "@type": "ListItem", position: 8, name: "Automated Google Review Texting", url: "https://www.daytongrowth.co/google-review-texting" },
+        { "@type": "ListItem", position: 1, name: "AI Automation and Custom Software", url: "https://www.daytongrowth.co/ai-automation" },
+        { "@type": "ListItem", position: 2, name: "The Better Quote Program™", url: "https://www.daytongrowth.co/quote" },
+        { "@type": "ListItem", position: 3, name: "The Website Migration Program™", url: "https://www.daytongrowth.co/website" },
+        { "@type": "ListItem", position: 4, name: "AI Phone Agents for Small Businesses", url: "https://www.daytongrowth.co/ai-phone-agents" },
+        { "@type": "ListItem", position: 5, name: "Custom Quote and Estimate Tools", url: "https://www.daytongrowth.co/quote-tools" },
+        { "@type": "ListItem", position: 6, name: "Automated Follow-Up and Scheduling", url: "https://www.daytongrowth.co/missed-call-follow-up" },
+        { "@type": "ListItem", position: 7, name: "Local SEO and AI Search Visibility", url: "https://www.daytongrowth.co/local-search" },
+        { "@type": "ListItem", position: 8, name: "Dashboards & Portals", url: "https://www.daytongrowth.co/dashboards-portals" },
+        { "@type": "ListItem", position: 9, name: "Automated Google Review Texting", url: "https://www.daytongrowth.co/google-review-texting" },
       ],
     },
     {

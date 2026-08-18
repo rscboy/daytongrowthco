@@ -2286,7 +2286,7 @@ function Hero() {
             </span>
           </h1>
           <p>
-            DaytonGrowthCo helps local service businesses set up and manage practical AI and software tools.
+            DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company building practical systems for small businesses.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
@@ -3916,6 +3916,29 @@ type ServicePageConfig = {
 };
 
 const servicePages: Record<string, ServicePageConfig> = {
+  "/ai-automation": {
+    eyebrow: "AI Automation Company in Dayton, Ohio",
+    productId: "automation",
+    productName: "AI Automation & Custom Software",
+    title: "Put repetitive business work on a dependable system.",
+    description:
+      "We build custom AI agents, workflow automations, system integrations, and focused software around the way your team already works.",
+    bestFor: "Small and midsized businesses with repeated lead, scheduling, follow-up, customer-service, document, or data-entry work.",
+    whyItWorks: "The automation starts with your business process and approved rules, then connects the tools your team already uses before custom software is added where it is genuinely needed.",
+    freeStart: {
+      title: "Free Workflow Fit Review",
+      description: "Show us one repeated process. We will map the inputs, decisions, systems, and smallest useful automation.",
+      input: "The task, who handles it now, the tools involved, and where the work gets stuck.",
+      cta: "Review one workflow",
+    },
+    outcomes: ["Qualify and route new leads consistently", "Update CRM records and move information between systems", "Schedule appointments and send approved follow-up", "Extract, organize, and route routine document or form data"],
+    examples: ["Custom AI agents for customer questions and lead intake", "Workflow automation across email, CRM, calendars, and internal tools", "Operations automation and focused custom software for repeated business processes"],
+    related: [
+      { href: "/ai-phone-agents", label: "AI Phone Agents", description: "Answer routine calls, collect job details, and book the next step." },
+      { href: "/quote-tools", label: "Custom Quote & Estimate Tools", description: "Apply your real pricing rules and produce send-ready proposals." },
+      { href: "/missed-call-follow-up", label: "Follow-Up & Scheduling", description: "Keep missed calls, open estimates, and booking requests moving." },
+    ],
+  },
   "/ai-phone-agents": {
     eyebrow: "24/7 Phone Answering & Booking",
     productId: "calls",
@@ -4048,6 +4071,7 @@ const servicePages: Record<string, ServicePageConfig> = {
 
 function CompactProductVisual({ service }: { service: ServicePageConfig }) {
   const visualByProduct: Record<string, { label: string; title: string; rows: string[]; icon: React.ReactNode }> = {
+    automation: { label: "AI AUTOMATION", title: "One workflow, connected end to end", rows: ["Business rules mapped", "Systems and data connected", "Next action handled automatically"], icon: <Workflow size={22} aria-hidden="true" /> },
     calls: { label: "CALL INTAKE", title: "Every call gets a next step", rows: ["Caller details captured", "Appointment request routed", "Urgent call sent to a person"], icon: <PhoneCall size={22} aria-hidden="true" /> },
     estimates: { label: "QUOTE BUILDER", title: "A quote your team can send", rows: ["Scope selected", "Pricing rules applied", "Proposal ready to review"], icon: <Calculator size={22} aria-hidden="true" /> },
     website: { label: "REDESIGN PLAN", title: "A clearer website path", rows: ["Core services made easy to find", "Calls and forms checked", "Useful pages and tracking protected"], icon: <Globe2 size={22} aria-hidden="true" /> },
@@ -4499,6 +4523,7 @@ function SiteFooter() {
         <nav className="footer-links footer-explore-links" aria-label="Explore">
           <span className="footer-section-label">Explore</span>
           <Link href="/products">Products</Link>
+          <Link href="/ai-automation">AI Automation &amp; Custom Software</Link>
           <Link href="/quote">The Better Quote Program™</Link>
           <Link href="/website">Website Migration Program™</Link>
           <Link href="/ai-phone-agents">AI Phone Agents</Link>
@@ -5203,6 +5228,21 @@ function InputConstellation() {
 /* -------------------------------------------------------------------------- */
 
 const coreProductOffers = [
+  {
+    id: "automation",
+    category: "AI automation",
+    icon: <Workflow size={22} strokeWidth={1.7} aria-hidden="true" />,
+    name: "AI Automation & Custom Software",
+    problem: "Repeated work and disconnected systems slow the team down and create avoidable mistakes.",
+    how: "We map the process, connect the tools that already fit, and build custom AI agents or software for the steps that need them.",
+    why: "The system follows your business logic instead of forcing your team into a generic template.",
+    freeTitle: "Free Workflow Fit Review",
+    freeDetail: "Bring one repeated process. We will map the smallest useful AI automation or system improvement.",
+    whatWeDo: ["Map the workflow and business rules", "Connect existing systems and data", "Build, test, and document the automation"],
+    bestFor: "Small and midsized businesses with repeated lead, scheduling, support, document, or data-entry work.",
+    href: "/ai-automation",
+    cta: "Explore AI automation",
+  },
   {
     id: "calls",
     category: "Calls",
@@ -5991,6 +6031,10 @@ function ProgramMatch() {
 
 const homeFaqs = [
   {
+    q: "Is DaytonGrowthCo an AI automation company in Dayton, Ohio?",
+    a: "Yes. DaytonGrowthCo is based in Dayton and builds custom AI agents, workflow automation, system integrations, and focused software for small and midsized businesses in the Miami Valley and across the United States.",
+  },
+  {
     q: "Is The Better Quote Program™ automated or AI-driven?",
     a: "No. Real people review your request and contact providers.",
   },
@@ -6089,7 +6133,7 @@ function Homepage() {
 }
 
 function ProductsPage() {
-  const priorityProductIds = new Set(["calls", "estimates", "followup"]);
+  const priorityProductIds = new Set(["automation", "calls", "estimates", "followup"]);
   const priorityProducts = coreProductOffers.filter((product) => priorityProductIds.has(product.id));
   const supportingProducts = coreProductOffers.filter((product) => product.id !== "website" && !priorityProductIds.has(product.id));
   return (
@@ -6410,19 +6454,20 @@ export default function App({ initialPath = "/" }: { initialPath?: string }) {
     }
 
     const titles: Record<string, string> = {
-      "/": "DaytonGrowthCo. | Practical Business Tools and Digital Systems",
-      "/products": "Products | DaytonGrowthCo.",
+      "/": "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
+      "/products": "AI Automation, Custom Software & Business Tools",
       "/examples": "Examples | DaytonGrowthCo.",
       "/how-it-works": "How It Works | DaytonGrowthCo.",
       "/aboutus": "About DaytonGrowthCo. | Tools and Digital Systems",
-      "/ai-phone-agents": "24/7 Phone Answering & Booking | DaytonGrowthCo.",
-      "/quote-tools": "Estimate & Proposal Tools | DaytonGrowthCo.",
+      "/ai-automation": "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
+      "/ai-phone-agents": "AI Phone Agents for Small Businesses | DaytonGrowthCo.",
+      "/quote-tools": "Custom Quote & Estimate Tools | DaytonGrowthCo.",
       "/dashboards-portals": "Business Dashboards and Customer Portals | DaytonGrowthCo.",
       "/website-design": "Website Redesign Services in Dayton, OH | DaytonGrowthCo.",
       "/website-ownership-calculator": "Website Ownership ROI Calculator | DaytonGrowthCo.",
       "/missed-call-follow-up": "Automated Follow-Up and Scheduling for Trades | DaytonGrowthCo.",
       "/google-review-texting": "Automated Google Review Texting | DaytonGrowthCo.",
-      "/local-search": "Get Found on Google and AI Search | DaytonGrowthCo.",
+      "/local-search": "Local SEO & AI Search for Dayton Businesses | DaytonGrowthCo.",
       "/quote/pricing": "Pricing | DaytonGrowthCo.",
     };
     document.title = titles[path] || titles["/"];
