@@ -101,6 +101,66 @@ function scaleIngredient(item: string, multiplier: number) {
   return `${scaledQuantity}${detail}`;
 }
 
+function CharliePizzaCalculator() {
+  const [size, setSize] = useState(14);
+  const [count, setCount] = useState(4);
+  const [crust, setCrust] = useState("Airy (Recommended)");
+  const [sauce, setSauce] = useState("Medium");
+  const [cheese, setCheese] = useState("Medium");
+  const [tomatoes, setTomatoes] = useState(20);
+  const [startingProtein, setStartingProtein] = useState(12.7);
+  const [glutenProtein, setGlutenProtein] = useState(75);
+  const [goalProtein, setGoalProtein] = useState(14.2);
+
+  const results = useMemo(() => {
+    const hydration = { Traditional: .61, "Airy (Recommended)": .65, "Ultra Airy": .69 }[crust] ?? .65;
+    const sauceRatio = { Low: .585, Medium: .685, High: .785, Danger: .905 }[sauce] ?? .685;
+    const cheeseRatio = { Low: .585, Medium: .685, High: .785, "Take It Cheesy": .905 }[cheese] ?? .685;
+    const bakerTotal = 1 + hydration + .03 + .005 + .015;
+    const totalDough = Math.PI * Math.pow((Math.max(8, size) - .75) / 2, 2) * .09 * 28.35 * Math.max(1, count);
+    const totalFlour = totalDough / bakerTotal;
+    const doughBall = totalDough / Math.max(1, count);
+    const vitalGluten = Math.max(0, (goalProtein - startingProtein) / Math.max(.1, glutenProtein - startingProtein) * 100);
+    return {
+      doughBall,
+      totalDough,
+      highGluten: totalFlour * .909,
+      secondaryFlour: totalFlour * .091,
+      water: totalFlour * hydration,
+      salt: totalFlour * .03,
+      yeast: totalFlour * .005,
+      sugar: totalFlour * .015,
+      sauce: doughBall * sauceRatio / bakerTotal,
+      mozzarella: doughBall * cheeseRatio / bakerTotal,
+      pecorino: doughBall * .04 / bakerTotal,
+      sauceWater: tomatoes / 4,
+      sauceSalt: tomatoes * 3 / 28,
+      sauceSugar: tomatoes * 12 / 28,
+      sauceOregano: tomatoes * 2 / 28,
+      vitalGluten,
+    };
+  }, [cheese, count, crust, goalProtein, glutenProtein, sauce, size, startingProtein, tomatoes]);
+  const grams = (value: number) => `${value.toFixed(1)} g`;
+
+  return <section className="benny-pizza-lab" aria-labelledby="pizza-calculator-title">
+    <div className="benny-pizza-lab-head"><div><p>Built into the recipe</p><h3 id="pizza-calculator-title">Charlie&apos;s Pizza Calculator</h3></div><a href="https://charlieandersoncooking.com/nyc-pizza-calculator" target="_blank" rel="noreferrer">Original calculator by Charlie Anderson <ArrowRight size={14} /></a></div>
+    <p className="benny-pizza-lab-intro">Choose your pie and the dough, sauce, and cheese amounts update instantly.</p>
+    <div className="benny-pizza-controls">
+      <label><span>Pizza size</span><div><input type="number" min="8" max="24" step="1" value={size} onChange={(event) => setSize(Math.min(24, Math.max(8, Number(event.target.value) || 8)))} /><small>inches</small></div></label>
+      <label><span>Number of pizzas</span><input type="number" min="1" max="20" step="1" value={count} onChange={(event) => setCount(Math.min(20, Math.max(1, Number(event.target.value) || 1)))} /></label>
+      <label><span>Crust</span><select value={crust} onChange={(event) => setCrust(event.target.value)}><option>Traditional</option><option>Airy (Recommended)</option><option>Ultra Airy</option></select></label>
+      <label><span>Sauce</span><select value={sauce} onChange={(event) => setSauce(event.target.value)}><option>Low</option><option>Medium</option><option>High</option><option>Danger</option></select></label>
+      <label><span>Cheese</span><select value={cheese} onChange={(event) => setCheese(event.target.value)}><option>Low</option><option>Medium</option><option>High</option><option>Take It Cheesy</option></select></label>
+    </div>
+    <div className="benny-pizza-summary"><div><span>Each dough ball</span><strong>{Math.round(results.doughBall)} g</strong></div><div><span>Total dough</span><strong>{Math.round(results.totalDough)} g</strong></div><div><span>Plan</span><strong>{count} × {size}&quot;</strong></div></div>
+    <div className="benny-pizza-output">
+      <div><h4>Dough recipe</h4><dl><div><dt>High-gluten flour</dt><dd>{grams(results.highGluten)} <small>· {(results.highGluten / 125).toFixed(2)} cups</small></dd></div><div><dt>Spelt or rye flour</dt><dd>{grams(results.secondaryFlour)} <small>· {(results.secondaryFlour / 125 * 16).toFixed(1)} tbsp</small></dd></div><div><dt>Water</dt><dd>{grams(results.water)} <small>· {(results.water / 29.57).toFixed(1)} fl oz</small></dd></div><div><dt>Salt</dt><dd>{grams(results.salt)} <small>· {(results.salt / 2.8).toFixed(1)} tsp*</small></dd></div><div><dt>Instant yeast</dt><dd>{grams(results.yeast)} <small>· {(results.yeast * .3333).toFixed(2)} tsp</small></dd></div><div><dt>Sugar</dt><dd>{grams(results.sugar)} <small>· {(results.sugar / 4).toFixed(2)} tsp</small></dd></div></dl></div>
+      <div><h4>Toppings per pizza</h4><dl><div><dt>Sauce</dt><dd>{grams(results.sauce)} <small>· {(results.sauce / 29.57).toFixed(1)} fl oz</small></dd></div><div><dt>Mozzarella</dt><dd>{grams(results.mozzarella)} <small>· {(results.mozzarella / 113).toFixed(2)} cups</small></dd></div><div><dt>Pecorino</dt><dd>{grams(results.pecorino)} <small>· {(results.pecorino / 5.3).toFixed(1)} tbsp</small></dd></div></dl><p className="benny-pizza-salt-note">*Salt volume varies by crystal size. Weighing it is best.</p></div>
+    </div>
+    <details className="benny-pizza-advanced"><summary>Master sauce &amp; flour conversion <Plus size={15} /></summary><div className="benny-pizza-advanced-grid"><div><label><span>Tomatoes</span><div><input type="number" min="1" step="1" value={tomatoes} onChange={(event) => setTomatoes(Math.max(1, Number(event.target.value) || 1))} /><small>oz</small></div></label><dl><div><dt>Water, if using Red Pack</dt><dd>{results.sauceWater.toFixed(1)} oz</dd></div><div><dt>Salt</dt><dd>{results.sauceSalt.toFixed(1)} g</dd></div><div><dt>Sugar</dt><dd>{results.sauceSugar.toFixed(1)} g</dd></div><div><dt>Oregano</dt><dd>{results.sauceOregano.toFixed(1)} tsp</dd></div></dl></div><div><div className="benny-protein-inputs"><label><span>Starting flour</span><div><input type="number" min="1" max="30" step=".1" value={startingProtein} onChange={(event) => setStartingProtein(Number(event.target.value) || 0)} /><small>%</small></div></label><label><span>Vital gluten</span><div><input type="number" min="1" max="100" step=".1" value={glutenProtein} onChange={(event) => setGlutenProtein(Number(event.target.value) || 0)} /><small>%</small></div></label><label><span>Goal protein</span><div><input type="number" min="1" max="30" step=".1" value={goalProtein} onChange={(event) => setGoalProtein(Number(event.target.value) || 0)} /><small>%</small></div></label></div><div className="benny-vital-result"><span>Vital wheat gluten needed</span><strong>{results.vitalGluten.toFixed(1)}%</strong><small>of your starting flour weight</small></div></div></div></details>
+  </section>;
+}
+
 export function BennyRecipeBook() {
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("All");
@@ -190,6 +250,7 @@ export function BennyRecipeBook() {
       <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div></div>
       <div className="benny-mobile-sheet-meta"><span>{selected.prep} prep</span><span>{selected.cook} cook</span><span>{activePortions} portions</span></div>
       <div className="benny-portions" aria-label="Adjust recipe portions"><div><strong>Adjust portions</strong><small>Ingredients update instantly</small></div><div className="benny-portion-stepper"><button onClick={() => updatePortions(activePortions - 1)} disabled={activePortions <= 1} aria-label="Decrease portions"><Minus size={15} /></button><output aria-live="polite">{activePortions}</output><button onClick={() => updatePortions(activePortions + 1)} aria-label="Increase portions"><Plus size={15} /></button></div></div>
+      {selected.id === "ny-style-pizza" && <CharliePizzaCalculator />}
       <div className="benny-progress"><span>Shopping progress</span><b>{checked.length} of {ingredientCount}</b></div>
       <section className="benny-mobile-sheet-section"><h3>Gather this</h3>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `sheet-${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{scaleIngredient(item, portionMultiplier)}</label>; })}</div>)}</section>
       <section className="benny-mobile-sheet-section"><h3>Make it happen</h3><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section>
