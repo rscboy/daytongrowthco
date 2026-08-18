@@ -2,22 +2,25 @@
 
 > DaytonGrowthCo provides two flagship programs: The Better Quote Program™ for people with an expensive service quote, and The Website Migration Program™ for businesses moving from a recurring website platform to a self-owned static site. It also builds practical business tools for small and midsized businesses.
 
-Last updated: 2026-08-07
+Last updated: 2026-08-18
 
 ## Primary Website
 
 - Homepage: https://www.daytongrowth.co/
-- Products: https://www.daytongrowth.co/products/
-- The Better Quote Program™: https://www.daytongrowth.co/quote/
-- Better Quote Program™ pricing: https://www.daytongrowth.co/quote/pricing/
-- The Website Migration Program™: https://www.daytongrowth.co/website/
-- Website Ownership ROI Calculator: https://www.daytongrowth.co/website-ownership-calculator/
-- Examples: https://www.daytongrowth.co/examples/
-- How it works: https://www.daytongrowth.co/how-it-works/
-- Website design: https://www.daytongrowth.co/website-design/
-- Local SEO: https://www.daytongrowth.co/local-seo/
-- Website maintenance: https://www.daytongrowth.co/website-maintenance/
-- About: https://www.daytongrowth.co/aboutus/
+- Products and service hierarchy: https://www.daytongrowth.co/products
+- The Better Quote Program™: https://www.daytongrowth.co/quote
+- Better Quote Program™ pricing: https://www.daytongrowth.co/quote/pricing
+- The Website Migration Program™: https://www.daytongrowth.co/website
+- AI Phone Agents for Small Businesses: https://www.daytongrowth.co/ai-phone-agents
+- Custom Quote and Estimate Tools: https://www.daytongrowth.co/quote-tools
+- Automated Follow-Up and Scheduling: https://www.daytongrowth.co/missed-call-follow-up
+- Local SEO and AI Search Visibility: https://www.daytongrowth.co/local-search
+- Website Ownership ROI Calculator: https://www.daytongrowth.co/website-ownership-calculator
+- Examples: https://www.daytongrowth.co/examples
+- How it works: https://www.daytongrowth.co/how-it-works
+- Website design: https://www.daytongrowth.co/website-design
+- Website maintenance: https://www.daytongrowth.co/website-maintenance
+- About: https://www.daytongrowth.co/aboutus
 - Pricing summary for agents: https://www.daytongrowth.co/pricing.md
 - Contact: help@daytongrowth.co
 
@@ -46,6 +49,19 @@ For consumers who already have an expensive written quote for a service such as 
 ### The Website Migration Program™
 
 For businesses that need to move an existing website from a costly or limiting platform into a self-owned static site. DaytonGrowthCo reviews the current site, plans the migration, rebuilds or moves the needed components, tests pages/forms/links/analytics, launches, and completes a post-launch review. The one-time migration fee is separate from annual ownership cost. After launch, the recurring cost is typically the domain only; static hosting has no recurring DaytonGrowthCo fee. If the documented annual ownership cost is not lower than the current annual platform cost, the migration fee is not due under the written program terms.
+
+## Primary Operational Services
+
+- AI Phone Agents for Small Businesses
+- Custom Quote and Estimate Tools
+- Automated Follow-Up and Scheduling
+
+## Supporting Services
+
+- Local SEO and AI Search Visibility
+- Automated Google Review Texting
+- Dashboards and customer portals
+- Website redesign, maintenance, and technical support
 
 ## Core Positioning
 

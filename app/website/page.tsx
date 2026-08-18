@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { ConversionLandingPage } from "@/src/conversion-funnel";
 
-const url = "https://www.daytongrowth.co/website/";
+const url = "https://www.daytongrowth.co/website";
 
 export const metadata: Metadata = {
-  title: "The Website Migration Program™ | DaytonGrowthCo.",
+  title: "Website Migration Service | Website Migration Program™",
   description:
     "Move your website without losing the pages, leads, or tracking that make it work. Get a practical migration plan before launch.",
   alternates: { canonical: url, types: { "text/markdown": "/md/website-migration.md" } },
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     url,
     siteName: "DaytonGrowthCo.",
-    title: "The Website Migration Program™ | DaytonGrowthCo.",
+    title: "Website Migration Service | The Website Migration Program™",
     description:
       "Move your website without losing the pages, leads, or tracking that make it work.",
     images: [
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Website Migration Program™ | DaytonGrowthCo.",
+    title: "Website Migration Service | The Website Migration Program™",
     description:
       "Move your website without losing the pages, leads, or tracking that make it work.",
     images: [
@@ -51,8 +52,8 @@ export default function Page() {
         areaServed: { "@type": "Country", name: "United States" },
         offers: { "@type": "Offer", url, name: "Standard Website Migration", price: "1500", priceCurrency: "USD", description: "One-time Standard Migration investment. Recurring ownership cost is documented separately from the migration fee." },
       },
-      { "@type": "WebPage", "@id": `${url}#webpage`, url, name: "The Website Migration Program™", description: "Move an existing business website into a self-owned static site.", isPartOf: { "@id": "https://www.daytongrowth.co/#website" }, inLanguage: "en-US", dateModified: "2026-08-07" },
-      { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: "https://www.daytongrowth.co/" }, { "@type": "ListItem", position: 2, name: "The Website Migration Program™", item: url }] },
+      { "@type": "WebPage", "@id": `${url}#webpage`, url, name: "The Website Migration Program™", description: "Move an existing business website into a self-owned static site.", isPartOf: { "@id": "https://www.daytongrowth.co/#website" }, mainEntity: { "@id": `${url}#service` }, inLanguage: "en-US", dateModified: "2026-08-18" },
+      { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: "https://www.daytongrowth.co/" }, { "@type": "ListItem", position: 2, name: "Products", item: "https://www.daytongrowth.co/products" }, { "@type": "ListItem", position: 3, name: "The Website Migration Program™", item: url }] },
     ],
   };
   return <><script id="dgc-website-migration-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /><ConversionLandingPage /></>;

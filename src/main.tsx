@@ -3959,7 +3959,7 @@ const servicePages: Record<string, ServicePageConfig> = {
     related: [
       { href: "/ai-phone-agents/", label: "24/7 Phone Answering & Booking", description: "Capture a caller's details before the quote process begins." },
       { href: "/dashboards-portals/", label: "Dashboards & Portals", description: "Track quotes, jobs, and follow-up after the estimate is sent." },
-      { href: "/products/", label: "Products", description: "Explore the full set of practical systems we build for small teams." },
+      { href: "/quote", label: "The Better Quote Program™", description: "Already have a written service quote? See our separate human-led quote-shopping program." },
     ],
   },
   "/dashboards-portals": {
@@ -4498,13 +4498,14 @@ function SiteFooter() {
         </div>
         <nav className="footer-links footer-explore-links" aria-label="Explore">
           <span className="footer-section-label">Explore</span>
-          <Link href="/products/">Products</Link>
-          <Link href="/ai-phone-agents/">AI Phone Agents</Link>
-          <Link href="/quote-tools/">Quote Tools</Link>
-          <Link href="/dashboards-portals/">Dashboards &amp; Portals</Link>
-          <Link href="/website-design/">Business Websites</Link>
-          <Link href="/examples/">Examples</Link>
-          <Link href="/how-it-works/">How It Works</Link>
+          <Link href="/products">Products</Link>
+          <Link href="/quote">The Better Quote Program™</Link>
+          <Link href="/website">Website Migration Program™</Link>
+          <Link href="/ai-phone-agents">AI Phone Agents</Link>
+          <Link href="/quote-tools">Custom Quote &amp; Estimate Tools</Link>
+          <Link href="/missed-call-follow-up">Follow-Up &amp; Scheduling</Link>
+          <Link href="/local-search">Google &amp; AI Search</Link>
+          <Link href="/how-it-works">How It Works</Link>
           <Link href="/aboutus">About Us</Link>
           <Link href="/#cta">Start a Conversation</Link>
         </nav>
@@ -6088,14 +6089,17 @@ function Homepage() {
 }
 
 function ProductsPage() {
-  const operatingProducts = coreProductOffers.filter((product) => product.id !== "website");
+  const priorityProductIds = new Set(["calls", "estimates", "followup"]);
+  const priorityProducts = coreProductOffers.filter((product) => priorityProductIds.has(product.id));
+  const supportingProducts = coreProductOffers.filter((product) => product.id !== "website" && !priorityProductIds.has(product.id));
   return (
     <>
       <PageChrome />
       <main id="main-content" className="dedicated-page products-page" tabIndex={-1}>
         <header className="page-hub-intro"><h1>Products</h1></header>
         <section className="products-flagships" aria-labelledby="products-flagships-title"><div className="products-shell"><header><h2 id="products-flagships-title">Our flagship programs</h2><p>Two structured offers with a clear outcome and a clear next step.</p></header><div className="products-flagship-grid"><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article></div></div></section>
-        <section className="products-operating" aria-labelledby="products-operating-title"><div className="products-shell"><header><h2 id="products-operating-title">Operating products</h2><p>Focused tools for the work your team repeats every week.</p></header><div className="products-operating-grid">{operatingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
+        <section className="products-operating" aria-labelledby="products-operating-title"><div className="products-shell"><header><h2 id="products-operating-title">Priority services</h2><p>Core systems for calls, estimates, and follow-up.</p></header><div className="products-operating-grid">{priorityProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
+        <section className="products-operating" aria-labelledby="products-supporting-title"><div className="products-shell"><header><h2 id="products-supporting-title">Supporting services</h2><p>Focused services that strengthen visibility, reputation, and day-to-day operations.</p></header><div className="products-operating-grid">{supportingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
         <section className="products-cta"><div className="products-shell"><div><h2>Not sure where to start?</h2><p>Tell us what is taking too long. We’ll point you to the right product.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
         <PageCTA />
       </main>

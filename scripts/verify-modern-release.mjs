@@ -30,6 +30,62 @@ const requiredMarkers = [
     markers: ["trailingSlash: false"],
     forbidden: ["skipTrailingSlashRedirect: true"],
   },
+  {
+    file: "app/ai-phone-agents/page.tsx",
+    markers: [
+      "AI Phone Agents for Small Businesses",
+      'const url = "https://www.daytongrowth.co/ai-phone-agents"',
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/quote/page.tsx",
+    markers: [
+      "Quote Shopping Service | The Better Quote Program™",
+      'const url = "https://www.daytongrowth.co/quote"',
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/website/page.tsx",
+    markers: [
+      "Website Migration Service | Website Migration Program™",
+      'const url = "https://www.daytongrowth.co/website"',
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/local-search/page.tsx",
+    markers: [
+      "Local SEO & AI Search for Dayton Businesses",
+      'const url = "https://www.daytongrowth.co/local-search"',
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/missed-call-follow-up/page.tsx",
+    markers: [
+      "Automated Follow-Up and Scheduling for Trades",
+      'const url = "https://www.daytongrowth.co/missed-call-follow-up"',
+      'mainEntity: { "@id": `${url}#service` }',
+    ],
+  },
+  {
+    file: "app/local-seo/route.ts",
+    markers: ['NextResponse.redirect("https://www.daytongrowth.co/local-search", 308)'],
+    forbidden: ["legacyHtmlResponse"],
+  },
+  {
+    file: "public/sitemap.xml",
+    markers: [
+      "https://www.daytongrowth.co/ai-phone-agents</loc>",
+      "https://www.daytongrowth.co/quote</loc>",
+      "https://www.daytongrowth.co/website</loc>",
+      "https://www.daytongrowth.co/missed-call-follow-up</loc>",
+      "https://www.daytongrowth.co/local-search</loc>",
+    ],
+    forbidden: ["https://www.daytongrowth.co/local-seo"],
+  },
 ];
 
 const failures = [];
@@ -59,4 +115,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("[release-guard] Modern design, pricing route, and calculator markers verified.");
+console.log("[release-guard] Modern design, pricing route, calculator, and primary SEO architecture markers verified.");

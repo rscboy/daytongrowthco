@@ -140,14 +140,14 @@ const siteSchema = {
           name: "The Better Quote Program™",
           description:
             "Human-led quote shopping for customers with an expensive written service quote. A real person looks for a better qualifying, comparable local option; no qualifying savings means no success fee under the program terms.",
-          url: `${siteUrl}/quote/`,
+          url: `${siteUrl}/quote`,
         },
         {
           "@type": "Offer",
           name: "The Website Migration Program™",
           description:
             "A structured migration from a recurring website platform to a self-owned static site, including review, migration planning, testing, launch, and post-launch review.",
-          url: `${siteUrl}/website/`,
+          url: `${siteUrl}/website`,
           priceSpecification: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",
@@ -160,14 +160,14 @@ const siteSchema = {
           name: "Custom Business Systems",
           description:
             "Phone agents, quote calculators, project dashboards, customer portals, staff dashboards, training libraries, and internal workflows.",
-          url: `${siteUrl}/products/`,
+          url: `${siteUrl}/products`,
         },
         {
           "@type": "Offer",
           name: "Website and SEO Setup",
           description:
             "Modern websites, service pages, sales pages, technical SEO, local SEO, and answer-engine-ready content for small businesses.",
-          url: `${siteUrl}/website-design/`,
+          url: `${siteUrl}/website-design`,
           priceSpecification: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",
@@ -180,14 +180,14 @@ const siteSchema = {
           name: "AI-Assisted Workflow Automation",
           description:
             "Focused automations and custom tools that reduce repeated entry, missed handoffs, slow quoting, and administrative drag.",
-          url: `${siteUrl}/how-it-works/`,
+          url: `${siteUrl}/how-it-works`,
         },
         {
           "@type": "Offer",
           name: "Automated Google Review Texting",
           description:
             "A managed review-request system that sends customers a personalized text and direct Google review link after a completed appointment or service.",
-          url: `${siteUrl}/google-review-texting/`,
+          url: `${siteUrl}/google-review-texting`,
           priceSpecification: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",

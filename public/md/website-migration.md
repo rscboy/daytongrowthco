@@ -8,5 +8,5 @@ The Website Migration Program™ reviews the current website, migration scope, p
 
 The one-time migration investment is separate from the annual cost of website ownership. After launch, static hosting has no recurring DaytonGrowthCo fee; the recurring cost is typically the domain only. The annual-cost comparison is made against the customer’s current domain, CMS, hosting, and platform charges. If the documented annual ownership cost is not lower, the migration fee is not due under the written program terms.
 
-- Program: https://www.daytongrowth.co/website/
-- Ownership ROI Calculator: https://www.daytongrowth.co/website-ownership-calculator/
+- Program: https://www.daytongrowth.co/website
+- Ownership ROI Calculator: https://www.daytongrowth.co/website-ownership-calculator

@@ -13,6 +13,6 @@ The Better Quote Program™ is a human-led quote-shopping and consumer-advocacy 
 
 ## Pricing
 
-There is no upfront search fee. The success fee is tied to verified qualifying savings and is explained before the search begins. See the current schedule: https://www.daytongrowth.co/quote/pricing/
+There is no upfront search fee. The success fee is tied to verified qualifying savings and is explained before the search begins. See the current schedule: https://www.daytongrowth.co/quote/pricing
 
-Start: https://www.daytongrowth.co/quote/
+Start: https://www.daytongrowth.co/quote
