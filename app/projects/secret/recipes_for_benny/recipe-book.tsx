@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Minus, Plus, Printer, Search, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 
 type Recipe = {
@@ -207,9 +207,11 @@ export function BennyRecipeBook() {
   const [showSaved, setShowSaved] = useState(false);
   const [checked, setChecked] = useState<string[]>([]);
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
   const recipeSheetRef = useRef<HTMLDivElement>(null);
+  const shareTimerRef = useRef<number | null>(null);
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? recipes[0];
   const ingredientCount = selected.ingredients.flatMap((group) => group.items).length;
   const basePortions = recipePortions(selected);
@@ -230,10 +232,29 @@ export function BennyRecipeBook() {
       });
   }, [activeOwner, query, saved, showSaved, tag]);
   useEffect(() => {
+    const syncRecipeFromUrl = () => {
+      const recipeId = new URL(window.location.href).searchParams.get("recipe");
+      if (!recipeId) {
+        setMobileRecipeOpen(false);
+        return;
+      }
+      if (!recipes.some((recipe) => recipe.id === recipeId)) return;
+      setSelectedId(recipeId);
+      setChecked([]);
+      setMobileRecipeOpen(true);
+    };
+    syncRecipeFromUrl();
+    window.addEventListener("popstate", syncRecipeFromUrl);
+    return () => window.removeEventListener("popstate", syncRecipeFromUrl);
+  }, []);
+  useEffect(() => () => {
+    if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
+  }, []);
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const isTyping = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
-      if (event.key === "Escape" && mobileRecipeOpen) setMobileRecipeOpen(false);
+      if (event.key === "Escape" && mobileRecipeOpen) closeRecipe();
       if (event.key === "/" && !isTyping) {
         event.preventDefault();
         searchInputRef.current?.focus();
@@ -246,17 +267,67 @@ export function BennyRecipeBook() {
     if (!mobileRecipeOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const frame = window.requestAnimationFrame(() => recipeSheetRef.current?.scrollTo({ top: 0, behavior: "auto" }));
+    const resetScroll = () => {
+      if (!recipeSheetRef.current) return;
+      recipeSheetRef.current.scrollTop = 0;
+      recipeSheetRef.current.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+    resetScroll();
+    const frame = window.requestAnimationFrame(resetScroll);
+    const settle = window.setTimeout(resetScroll, 80);
     return () => {
       window.cancelAnimationFrame(frame);
+      window.clearTimeout(settle);
       document.body.style.overflow = previousOverflow;
     };
   }, [mobileRecipeOpen, selectedId]);
+  const recipeUrl = (id: string) => {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set("recipe", id);
+    return url;
+  };
+  const closeRecipe = () => {
+    setMobileRecipeOpen(false);
+    setShareStatus("");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("recipe");
+    window.history.replaceState({}, "", url);
+  };
   const choose = (id: string) => {
     recipeSheetRef.current?.scrollTo({ top: 0, behavior: "auto" });
     setSelectedId(id);
     setChecked([]);
+    setShareStatus("");
     setMobileRecipeOpen(true);
+    window.history.replaceState({ recipe: id }, "", recipeUrl(id));
+  };
+  const shareRecipe = async () => {
+    const url = recipeUrl(selected.id).toString();
+    const title = `${selected.title} ${selected.subtitle} · Sammy's Recipe Book`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text: `Make ${selected.title} ${selected.subtitle}.`, url });
+        setShareStatus("Recipe shared");
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShareStatus("Recipe link copied");
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      const input = document.createElement("textarea");
+      input.value = url;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+      setShareStatus("Recipe link copied");
+    }
+    if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
+    shareTimerRef.current = window.setTimeout(() => setShareStatus(""), 2200);
   };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setChecked((items) => items.includes(item) ? items.filter((entry) => entry !== item) : [...items, item]);
@@ -312,8 +383,9 @@ export function BennyRecipeBook() {
       <div className="benny-recipe-grid"><section className="benny-ingredients"><div className="benny-panel-title"><span>01</span><h3>Gather this</h3><small>{checked.length} / {ingredientCount} checked</small></div>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
       <section className="benny-method"><div className="benny-panel-title"><span>02</span><h3>Make it happen</h3><small><Clock3 size={13} /> {selected.total}</small></div><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>{selectedProfile.name}&apos;s note</strong><p>{selected.note}</p></div></aside></section></div>
     </article>
-    {mobileRecipeOpen && <div ref={recipeSheetRef} className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
-      <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div></div>
+    {mobileRecipeOpen && <div key={selected.id} ref={recipeSheetRef} className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
+      <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button onClick={shareRecipe} aria-label={`Share ${selected.title}`}><Share2 size={18} /></button><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={closeRecipe} aria-label="Close recipe"><X size={22} /></button></div></div>
+      {shareStatus && <div className="benny-share-toast" role="status" aria-live="polite"><Check size={15} /> {shareStatus}</div>}
       <div className="benny-mobile-sheet-meta"><span>{selected.prep} prep</span><span>{selected.cook} cook</span><span>{activePortions} portions</span></div>
       <div className="benny-portions" aria-label="Adjust recipe portions"><div><strong>Adjust portions</strong><small>Ingredients update instantly</small></div><div className="benny-portion-stepper"><button onClick={() => updatePortions(activePortions - 1)} disabled={activePortions <= 1} aria-label="Decrease portions"><Minus size={15} /></button><output aria-live="polite">{activePortions}</output><button onClick={() => updatePortions(activePortions + 1)} aria-label="Increase portions"><Plus size={15} /></button></div></div>
       {selected.id === "ny-style-pizza" && <CharliePizzaCalculator />}
@@ -321,7 +393,7 @@ export function BennyRecipeBook() {
       <section className="benny-mobile-sheet-section"><h3>Gather this</h3>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `sheet-${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{scaleIngredient(item, portionMultiplier)}</label>; })}</div>)}</section>
       <section className="benny-mobile-sheet-section"><h3>Make it happen</h3><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>{selectedProfile.name}&apos;s note</strong><p>{selected.note}</p></div></aside></section>
       <button className="benny-next-recipe" onClick={nextRecipe}>Next recipe <ArrowRight size={17} /></button>
-      <button className="benny-sheet-return" onClick={() => setMobileRecipeOpen(false)}><ArrowLeft size={17} /> Back to recipes</button>
+      <button className="benny-sheet-return" onClick={closeRecipe}><ArrowLeft size={17} /> Back to recipes</button>
     </div>}
     <footer className="benny-footer"><div className="benny-mark">S<span>★</span></div><p>Made with love, and enough butter.</p><small>Sammy&apos;s Recipes · Keep the good ones close.</small></footer>
   </main>;
