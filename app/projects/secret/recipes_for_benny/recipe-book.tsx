@@ -69,7 +69,7 @@ const recipeProfiles: RecipeProfile[] = [
   { id: "sammy", label: "Sammy's Recipes", name: "Sammy", initials: "S", image: "/recipe-book/sammy-cooks-chili.png", imagePosition: "center" },
   { id: "sam-g", label: "Sam G's Recipes", name: "Sam G", initials: "SG", image: "/recipe-book/sam-g-profile.jpg", imagePosition: "center 38%" },
   { id: "autumn", label: "Autumn's Recipes", name: "Autumn", initials: "Au", image: "/recipe-book/autumn-profile.jpg", imagePosition: "center 38%" },
-  { id: "addison", label: "Addison's Recipes", name: "Addison", initials: "Ad", image: "/recipe-book/addison-profile.jpg", imagePosition: "center 38%" },
+  { id: "addison", label: "Addison's Recipes", name: "Addison", initials: "Ad", image: "/recipe-book/addison-profile.jpg", imagePosition: "center 18%" },
 ];
 
 const samGRecipeIds = new Set([
