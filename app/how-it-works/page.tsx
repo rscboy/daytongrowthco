@@ -27,19 +27,6 @@ const howItWorksSchema = {
       inLanguage: "en-US",
     },
     {
-      "@type": "HowTo",
-      "@id": "https://www.daytongrowth.co/how-it-works/#diagnosis-process",
-      name: "How DaytonGrowthCo evaluates a business process before building",
-      description:
-        "A diagnosis process for deciding whether a business needs existing software setup, a focused automation, or a custom tool.",
-      step: [
-        { "@type": "HowToStep", position: 1, name: "Identify the bottleneck", text: "Find the process that costs the most time, errors, lost work, or administrative drag." },
-        { "@type": "HowToStep", position: 2, name: "Map the workflow", text: "Document what comes in, what the team does today, and what output the business needs." },
-        { "@type": "HowToStep", position: 3, name: "Estimate the cost", text: "Compare wasted labor and missed capacity against the cost of setup, automation, or a custom build." },
-        { "@type": "HowToStep", position: 4, name: "Recommend the smallest useful fix", text: "Use existing tools when they fit and build custom only where the process creates an advantage." },
-      ],
-    },
-    {
       "@type": "FAQPage",
       "@id": "https://www.daytongrowth.co/how-it-works/#faq",
       mainEntity: [

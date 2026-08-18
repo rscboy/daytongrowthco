@@ -1,0 +1,5 @@
+.calcom-booking-shell{width:100%;max-width:none;margin:0 0 42px;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}
+
+/* The migration embed deliberately reaches the viewport edges so its dark Cal.com surface has no white gutters. */
+.migration-calcom-shell{width:100vw;margin:0 calc(50% - 50vw) 42px;background:#101125}
+@media(max-width:760px){.migration-calcom-shell{margin-top:0;margin-bottom:28px}}

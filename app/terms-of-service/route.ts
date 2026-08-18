@@ -1,5 +1,5 @@
-import { legacyHtmlResponse } from "../_legacy/html";
+import { NextResponse } from "next/server";
 
-export function GET() {
-  return legacyHtmlResponse("terms-of-service/index.html");
+export function GET(request: Request) {
+  return NextResponse.redirect(new URL("/terms/", request.url), 308);
 }

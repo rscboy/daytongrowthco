@@ -1,5 +1,4 @@
 @import "@fontsource-variable/hanken-grotesk";
-@import "@fontsource-variable/fraunces";
 
 :root {
   --ink: #171821;
@@ -7,14 +6,14 @@
   --indigo-hover: #262587;
   --charcoal: #1f211f;
   --paper: #f7f6f1;
-  --peach: #f1d0b1;
+  --ice-blue: #dde9fc;
   --blueprint: #dde9fc;
   --co-blue: #5796c8;
   --line: rgba(24, 23, 77, 0.12);
   --muted: #5f5e65;
   --footer-bg: #05070c;
-  --serif: "Fraunces Variable", "Fraunces", Georgia, serif;
-  --sans: "Hanken Grotesk Variable", system-ui, sans-serif;
+  --serif: var(--font-serif);
+  --sans: var(--font-sans);
   --shell: min(1180px, calc(100% - 40px));
 }
 
@@ -28,7 +27,7 @@ body:has(.systems-that-pay-page) {
   -webkit-font-smoothing: antialiased;
 }
 .systems-that-pay-page {
-  padding-top: calc(64px + 2.25rem);
+  padding-top: var(--site-header-stack-height, 6.25rem);
 }
 a { color: inherit; }
 button, input { font: inherit; }
@@ -140,12 +139,12 @@ button, input { font: inherit; }
 }
 .lp-button:active { --lp-button-lift: 0; --lp-button-scale: 0.97; }
 .lp-button-light {
-  border-color: rgba(255, 232, 210, 0.88);
+  border-color: rgba(221, 233, 252, 0.88);
   color: #1f211f;
-  background: linear-gradient(180deg, #f7dec7 0%, #efcfaf 100%);
+  background: linear-gradient(180deg, #eef4fe 0%, #d7e5fa 100%);
 }
 @media (hover: hover) and (pointer: fine) {
-  .lp-button-light:hover { background: linear-gradient(180deg, #ffe3cb 0%, #f3d2b1 100%); }
+  .lp-button-light:hover { background: linear-gradient(180deg, #f4f7ff 0%, #dce9fc 100%); }
 }
 
 /* ---------- Hero ---------- */
@@ -159,7 +158,7 @@ button, input { font: inherit; }
   width: 100%;
   min-height: min(760px, calc(100vh - 64px));
   margin: 0;
-  padding: clamp(2rem, 4.8vw, 4rem) max(20px, calc((100vw - 1180px) / 2)) clamp(3rem, 6.5vw, 5rem);
+  padding: clamp(2.75rem, 5.6vw, 5rem) max(20px, calc((100vw - 1180px) / 2)) clamp(3rem, 6.5vw, 5rem);
   overflow: hidden;
   color: #fff;
   background: #05070c;
@@ -190,6 +189,12 @@ button, input { font: inherit; }
   position: relative;
   z-index: 1;
 }
+
+/* Keep the editorial copy column optically centered against the form without
+   changing the form's clear top alignment. */
+.lp-hero-copy {
+  padding-top: clamp(1rem, 2vw, 1.7rem);
+}
 .lp-hero-copy h1 {
   max-width: 14ch;
   margin: 0;
@@ -218,7 +223,7 @@ button, input { font: inherit; }
   color: rgba(255, 255, 255, 0.9);
 }
 .lp-checklist li { display: flex; gap: 0.6rem; align-items: center; }
-.lp-checklist li svg { flex: 0 0 auto; color: var(--peach); }
+.lp-checklist li svg { flex: 0 0 auto; color: var(--ice-blue); }
 .lp-fineprint {
   max-width: 34rem;
   margin: clamp(1rem, 2vw, 1.3rem) 0 0;
@@ -339,7 +344,7 @@ button, input { font: inherit; }
   color: var(--indigo);
 }
 .t-clear-btn:focus-visible {
-  outline: 2px solid rgba(241, 208, 177, 0.5);
+  outline: 2px solid rgba(221, 233, 252, 0.5);
   outline-offset: 2px;
 }
 .lp-card input {
@@ -354,8 +359,8 @@ button, input { font: inherit; }
 }
 .lp-card .t-clear > input { padding-right: 2.45rem; }
 .lp-card input:focus {
-  border-color: var(--peach);
-  outline: 2px solid rgba(241, 208, 177, 0.36);
+  border-color: var(--ice-blue);
+  outline: 2px solid rgba(221, 233, 252, 0.36);
 }
 .lp-turnstile { min-height: 65px; }
 .lp-turnstile:empty { min-height: 0; }
@@ -682,7 +687,7 @@ button, input { font: inherit; }
 .lp-footer-col { display: flex; flex-direction: column; gap: 0.64rem; align-items: flex-start; }
 .lp-footer-label {
   margin-bottom: 0.28rem;
-  color: var(--peach);
+  color: var(--ice-blue);
   font-size: 0.82rem;
   font-weight: 650;
 }
@@ -706,6 +711,7 @@ a:focus-visible, input:focus-visible, button:focus-visible {
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .lp-hero { grid-template-columns: 1fr; min-height: auto; }
+  .lp-hero-copy { padding-top: 0.7rem; }
   .lp-step-grid { grid-template-columns: 1fr; }
   .lp-proof { grid-template-columns: 1fr; }
 }
@@ -806,15 +812,17 @@ a:focus-visible, input:focus-visible, button:focus-visible {
 
 @media (max-width: 620px) {
   .systems-that-pay-page {
-    padding-top: calc(56px + 0.75rem);
+    padding-top: var(--site-header-stack-height, 5.95rem);
   }
 
   .lp-hero {
     gap: 0.85rem;
     min-height: 0;
-    padding-top: 1.45rem;
+    padding-top: 2rem;
     padding-bottom: 1.25rem;
   }
+
+  .lp-hero-copy { padding-top: 0.45rem; }
 
   .lp-hero-copy h1,
   .lp-section-head h2,
@@ -956,5 +964,556 @@ a:focus-visible, input:focus-visible, button:focus-visible {
   .lp-proof-links strong {
     font-size: 1rem;
     line-height: 1.16;
+  }
+}
+
+/* The shared offer banner keeps its desktop content centered, matching the
+   original campaign treatment, while mobile remains edge-to-edge and compact. */
+@media (min-width: 701px) {
+  .site-header > .site-offer-banner {
+    justify-content: center;
+  }
+
+  .site-header > .site-offer-banner .site-offer-action {
+    margin-left: 1.4rem;
+  }
+}
+
+.t-clear.has-value:not(.is-clearing) .t-clear-mirror { opacity: 0 !important; }
+.t-clear.has-value:not(.is-clearing) > input { -webkit-text-fill-color: currentColor !important; }
+
+/* Wordmark swap: both labels occupy the same fixed footprint, so hovering
+   never changes the hit target or restarts the motion. */
+.interactive-wordmark {
+  position: relative;
+  display: grid !important;
+  width: 9.5em !important;
+  min-width: 9.5em !important;
+}
+
+.wordmark-full,
+.wordmark-short {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  width: max-content;
+  transition: opacity 180ms var(--ease-emil-out), transform 180ms var(--ease-emil-out);
+}
+
+.wordmark-short {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logo-lockup:hover .wordmark-full,
+  .footer-logo:hover .wordmark-full {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+
+  .logo-lockup:hover .wordmark-short,
+  .footer-logo:hover .wordmark-short {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark-full,
+  .wordmark-short { transition: none; }
+}
+
+/* About quote: static editorial emphasis. */
+.about-founder-copy .about-reading-quote {
+  margin: clamp(1.4rem, 3vw, 2rem) 0;
+  border-left: 3px solid #5796c8;
+  padding: 0.2rem 0 0.2rem 1rem;
+  color: #8a8780;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 520;
+  letter-spacing: -0.03em;
+  line-height: 1.16;
+}
+
+@media (max-width: 700px) {
+  .about-founder-copy .about-reading-quote {
+    display: block !important;
+    margin: 1rem 0 !important;
+    border-left-width: 2px;
+    padding: 0.12rem 0 0.12rem 0.75rem;
+    font-size: clamp(1.12rem, 5.6vw, 1.42rem) !important;
+    line-height: 1.22 !important;
+  }
+}
+
+/* Reuse the proof-band video for the audit offer. One existing stream keeps
+   the page light, while the layered mask protects the audit copy and cards. */
+.audit-offer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #090a18 !important;
+}
+
+.audit-offer-video,
+.audit-offer-video-mask {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.audit-offer-video {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0.28;
+  filter: saturate(0.7) contrast(1.05) brightness(0.48);
+}
+
+.audit-offer-video-mask {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(62, 70, 153, 0.22), transparent 34rem),
+    linear-gradient(90deg, rgba(5, 7, 16, 0.84), rgba(5, 7, 16, 0.66) 60%, rgba(5, 7, 16, 0.8));
+}
+
+.audit-offer-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.audit-offer .audit-offer-head h2 {
+  color: #ffffff !important;
+}
+
+.audit-offer .aoa-step {
+  background: rgba(255, 253, 250, 0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-offer-video { display: none; }
+}
+
+/* A single, clear migration offer: contemporary but practical rather than a new
+   visual language. The companion phone-agent offer uses the same indigo system. */
+.website-migration-kicker {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: #18174d;
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.phone-agent-offer {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3.25rem, 6vw, 5.25rem) 0;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(101, 151, 216, 0.2), transparent 23rem),
+    radial-gradient(circle at 17% 95%, rgba(57, 44, 131, 0.22), transparent 29rem),
+    linear-gradient(135deg, #0d0e1d 0%, #18174d 58%, #111229 100%);
+}
+
+.phone-agent-offer::before {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image: radial-gradient(circle, #cfe2ff 1px, transparent 1.3px);
+  background-size: 28px 28px;
+  content: "";
+  pointer-events: none;
+}
+
+.phone-agent-offer-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(2rem, 6vw, 5.25rem);
+  align-items: center;
+}
+
+.phone-agent-offer-copy > span {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #cfe2ff;
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.phone-agent-offer h2 {
+  max-width: 14ch;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.8vw, 3.35rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.phone-agent-offer-copy > p {
+  max-width: 38rem;
+  margin: 1.15rem 0 1.45rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
+  line-height: 1.55;
+}
+
+.phone-agent-offer .button {
+  min-height: 3.25rem;
+  border-color: rgba(207, 226, 255, 0.38);
+  background: #ffffff;
+  color: #18174d;
+}
+
+.phone-agent-offer .button:hover {
+  border-color: #ffffff;
+  background: #e9f2ff;
+  color: #18174d;
+}
+
+.phone-agent-offer-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phone-agent-offer-steps li {
+  min-height: 13.75rem;
+  padding: 1.35rem;
+  border: 1px solid rgba(207, 226, 255, 0.28);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.phone-agent-offer-steps span,
+.phone-agent-offer-steps strong,
+.phone-agent-offer-steps p {
+  display: block;
+}
+
+.phone-agent-offer-steps span {
+  color: #cfe2ff;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.phone-agent-offer-steps strong {
+  margin-top: 2.5rem;
+  color: #ffffff;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.phone-agent-offer-steps p {
+  margin: 0.55rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .phone-agent-offer {
+    padding: 3.25rem 0;
+  }
+
+  .phone-agent-offer-inner {
+    grid-template-columns: 1fr;
+    gap: 1.9rem;
+  }
+
+  .phone-agent-offer h2 {
+    max-width: 12ch;
+    font-size: clamp(2rem, 9vw, 2.65rem);
+  }
+
+  .phone-agent-offer-copy > p {
+    margin-bottom: 1.25rem;
+  }
+
+  .phone-agent-offer-steps {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .phone-agent-offer-steps li {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    column-gap: 0.4rem;
+    min-height: 0;
+    padding: 1rem 1.1rem;
+  }
+
+  .phone-agent-offer-steps strong {
+    margin-top: 0;
+  }
+
+  .phone-agent-offer-steps p {
+    grid-column: 2;
+    margin-top: 0.32rem;
+  }
+}
+
+/* The wordmark has a fixed hit-area and is controlled by one pointer state.
+   This deliberately avoids a :hover feedback loop when its visible label gets
+   shorter, which caused the previous logo treatment to flicker. */
+.interactive-wordmark {
+  display: grid !important;
+  width: 9.5em !important;
+  min-width: 9.5em !important;
+  contain: layout paint;
+}
+
+.wordmark-full,
+.wordmark-short {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  width: max-content;
+  will-change: opacity, transform;
+  transition:
+    opacity 280ms var(--ease-emil-out),
+    transform 340ms var(--ease-emil-out) !important;
+}
+
+.wordmark-full {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wordmark-short {
+  opacity: 0;
+  transform: translateY(0.24em) scale(0.98);
+  pointer-events: none;
+}
+
+/* Disable the legacy parent-hover selector. The React state on the fixed
+   footprint is the single source of truth for the swap. */
+@media (hover: hover) and (pointer: fine) {
+  .logo-lockup:hover .wordmark-full,
+  .footer-logo:hover .wordmark-full {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  .logo-lockup:hover .wordmark-short,
+  .footer-logo:hover .wordmark-short {
+    opacity: 0 !important;
+    transform: translateY(0.24em) scale(0.98) !important;
+  }
+
+  .interactive-wordmark.is-condensed .wordmark-full {
+    opacity: 0 !important;
+    transform: translateY(-0.24em) scale(1.01) !important;
+  }
+
+  .interactive-wordmark.is-condensed .wordmark-short {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark-full,
+  .wordmark-short {
+    transition: none !important;
+  }
+}
+
+/* The final CTA stays intentionally quiet: one solid ink surface, no visual
+   gradient competing with the invitation to bring us the work. */
+.page-cta,
+.about-mission-native + .page-cta {
+  background: #111229 !important;
+  background-image: none !important;
+}
+
+/* Lightweight route continuity: the current page softens briefly before the
+   next page settles in. It avoids overlays, loaders, and layout animation. */
+#main-content {
+  transition: opacity 110ms var(--ease-emil-out), transform 110ms var(--ease-emil-out);
+}
+
+html.is-page-leaving #main-content {
+  opacity: 0.7;
+  transform: translateY(5px);
+}
+
+/* Email fields show one quiet domain favicon—never a clear control, generic
+   letter avatar, or browser contact widget competing with the email itself. */
+.email-favicon-input > input,
+.email-favicon-input .t-clear-mirror,
+.email-favicon-input .t-clear-placeholder {
+  padding-right: 3.4rem !important;
+}
+
+.email-favicon-input .t-clear-btn {
+  display: none !important;
+}
+
+.business-favicon {
+  position: absolute !important;
+  top: 50%;
+  right: 0.72rem !important;
+  z-index: 5;
+  display: grid !important;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(24, 23, 77, 0.14);
+  border-radius: 0.48rem;
+  background: #f7f8fb;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.business-favicon img {
+  display: block;
+  width: 1.08rem;
+  height: 1.08rem;
+  border-radius: 0.25rem;
+  object-fit: contain;
+}
+
+/* The footer logo sits on a light pill on small screens, so it must not inherit
+   the footer's usual light-on-dark wordmark color. */
+.site-footer .footer-logo .nav-wordmark-dayton {
+  color: #f5f7fb !important;
+}
+
+.site-footer .footer-logo .nav-wordmark-growth {
+  color: #67645f !important;
+}
+
+/* Compact the mobile contact form into one purposeful viewport: the short
+   identity fields share a row, while the workflow and verification stay full
+   width and easy to use. */
+@media (max-width: 700px) {
+  .final-cta {
+    padding: 1.45rem 0 calc(1.35rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .final-cta > .mx-auto {
+    gap: 0.72rem !important;
+  }
+
+  .final-cta-copy h2 {
+    max-width: 12ch !important;
+    font-size: clamp(1.72rem, 7.1vw, 2rem) !important;
+    line-height: 1.01 !important;
+  }
+
+  .final-cta-copy p {
+    max-width: 20rem !important;
+    margin-top: 0.38rem !important;
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .final-cta .form-card {
+    padding: 0.68rem !important;
+    border-radius: 0.9rem !important;
+  }
+
+  .final-cta .project-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.42rem 0.5rem !important;
+  }
+
+  .final-cta .email-form-field,
+  .final-cta .project-details-field,
+  .final-cta .turnstile-field,
+  .final-cta .form-submit,
+  .final-cta .form-status {
+    grid-column: 1 / -1;
+  }
+
+  .final-cta .form-field {
+    gap: 0.16rem !important;
+  }
+
+  .final-cta .form-field span {
+    font-size: 0.62rem !important;
+  }
+
+  .final-cta .form-field input,
+  .final-cta .form-field select {
+    min-height: 2.65rem !important;
+    padding: 0.42rem 0.62rem !important;
+  }
+
+  .final-cta .form-field textarea {
+    min-height: 4.45rem !important;
+    padding: 0.48rem 0.62rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .final-cta .project-details-field small {
+    margin: 0 !important;
+    font-size: 0.65rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .final-cta .turnstile-field {
+    min-height: 65px !important;
+    margin: 0 !important;
+    padding: 0.1rem 0 !important;
+  }
+
+  .final-cta .form-submit {
+    min-height: 2.65rem !important;
+  }
+
+  /* Keep the one-off website offer legible on mobile. The earlier global
+     compaction pass hid its supporting proof, leaving only a generic CTA. */
+  .website-migration-card p {
+    display: block !important;
+    margin-top: 0.5rem !important;
+    font-size: 0.82rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .website-migration-card ul {
+    display: grid !important;
+    gap: 0.38rem !important;
+    margin-top: 0.75rem !important;
+  }
+
+  .website-migration-card li {
+    font-size: 0.76rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .website-migration-card li:nth-child(n + 3) {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main-content {
+    transition: none;
+  }
+
+  html.is-page-leaving #main-content {
+    opacity: 1;
+    transform: none;
   }
 }

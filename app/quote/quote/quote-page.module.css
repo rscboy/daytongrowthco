@@ -1,0 +1,114 @@
+.page {
+  min-height: 100dvh;
+  padding: clamp(3.5rem, 7vw, 7rem) 1.25rem 5rem;
+  background: #f4f5f9;
+  color: #20201f;
+}
+
+.inner {
+  width: min(100%, 60rem);
+  margin: 0 auto;
+}
+
+.inner h1 {
+  max-width: 18ch;
+  margin: 0;
+  color: #20201f;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+.intro {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: #5b5a56;
+  font-size: 1.08rem;
+  line-height: 1.5;
+}
+
+.page :global(.better-quote-upload) {
+  display: grid;
+  grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin-top: clamp(2.25rem, 5vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgba(24, 23, 77, .14);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(24, 23, 77, .08);
+}
+
+.page :global(.better-quote-upload-copy h2) {
+  margin: 0 0 .65rem;
+  color: #20201f;
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 720;
+  letter-spacing: -.035em;
+  line-height: 1.08;
+}
+
+.page :global(.better-quote-upload-copy p) {
+  max-width: 29rem;
+  margin: 0;
+  color: #5b5a56;
+  font-size: .96rem;
+  line-height: 1.52;
+}
+
+.page :global(.better-quote-form) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .85rem;
+}
+
+.page :global(.better-quote-form label) {
+  display: grid;
+  gap: .38rem;
+  color: #31312f;
+  font-size: .82rem;
+  font-weight: 720;
+}
+
+.page :global(.better-quote-form input),
+.page :global(.better-quote-form textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.7rem;
+  padding: .7rem .76rem;
+  color: #232321;
+  border: 1px solid rgba(24, 23, 77, .18);
+  border-radius: 8px;
+  background: #fffdfa;
+  font: inherit;
+  font-size: .95rem;
+  font-weight: 500;
+}
+
+.page :global(.better-quote-form input:focus),
+.page :global(.better-quote-form textarea:focus) {
+  outline: 3px solid rgba(72, 65, 166, .18);
+  border-color: #49429b;
+}
+
+.page :global(.better-quote-form textarea) { min-height: 5.8rem; resize: vertical; }
+.page :global(.quote-file-field),
+.page :global(.quote-notes),
+.page :global(.better-quote-form > button),
+.page :global(.better-quote-status) { grid-column: 1 / -1; }
+.page :global(.quote-file-field input) { padding: .55rem; background: #f7f8fb; }
+.page :global(.quote-file-help) { display: flex; gap: .38rem; align-items: center; color: #64615b; font-size: .75rem; font-weight: 560; }
+.page :global(.quote-notes > span) { color: #77736d; font-weight: 500; }
+.page :global(.better-quote-form > button) { justify-self: start; }
+.page :global(.better-quote-status) { display: flex; gap: .45rem; align-items: center; margin: 0; font-size: .9rem; line-height: 1.4; }
+.page :global(.better-quote-status.is-sent) { color: #176a45; }
+.page :global(.better-quote-status.is-error) { color: #a63131; }
+
+@media (max-width: 780px) {
+  .page { padding: 2.75rem 1rem 3.5rem; }
+  .page :global(.better-quote-upload) { grid-template-columns: 1fr; padding: 1.1rem; }
+  .page :global(.better-quote-form) { grid-template-columns: 1fr; }
+  .page :global(.better-quote-form > button) { width: 100%; justify-content: center; }
+}

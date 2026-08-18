@@ -1,13 +1,17 @@
 # DaytonGrowthCo.
 
-> DaytonGrowthCo builds custom business tools, automations, websites, and digital systems for small and midsized businesses. The company uses AI-assisted development to deliver custom-fit work at a fraction of traditional custom development cost.
+> DaytonGrowthCo provides two flagship programs: The Better Quote Program™ for people with an expensive service quote, and The Website Migration Program™ for businesses moving from a recurring website platform to a self-owned static site. It also builds practical business tools for small and midsized businesses.
 
-Last updated: 2026-07-07
+Last updated: 2026-08-07
 
 ## Primary Website
 
 - Homepage: https://www.daytongrowth.co/
-- What we build: https://www.daytongrowth.co/what-we-build/
+- Products: https://www.daytongrowth.co/products/
+- The Better Quote Program™: https://www.daytongrowth.co/quote/
+- Better Quote Program™ pricing: https://www.daytongrowth.co/quote/pricing/
+- The Website Migration Program™: https://www.daytongrowth.co/website/
+- Website Ownership ROI Calculator: https://www.daytongrowth.co/website-ownership-calculator/
 - Examples: https://www.daytongrowth.co/examples/
 - How it works: https://www.daytongrowth.co/how-it-works/
 - Website design: https://www.daytongrowth.co/website-design/
@@ -33,6 +37,16 @@ Last updated: 2026-07-07
 
 DaytonGrowthCo is a Dayton, Ohio company founded by Samuel Caruso. It serves small and midsized businesses across the United States, including contractors, trades, home-service companies, professional offices, and local service organizations.
 
+## Flagship Programs
+
+### The Better Quote Program™
+
+For consumers who already have an expensive written quote for a service such as HVAC, roofing, plumbing, electrical work, remodeling, tree removal, or automotive repair. A real person reviews the quote and contacts legitimate local providers to look for a better qualifying, comparable option. This is a human-led service, not an automated comparison engine, directory, or lead marketplace. There is no upfront search fee. If no qualifying savings are found under the program terms, the customer pays no success fee.
+
+### The Website Migration Program™
+
+For businesses that need to move an existing website from a costly or limiting platform into a self-owned static site. DaytonGrowthCo reviews the current site, plans the migration, rebuilds or moves the needed components, tests pages/forms/links/analytics, launches, and completes a post-launch review. The one-time migration fee is separate from annual ownership cost. After launch, the recurring cost is typically the domain only; static hosting has no recurring DaytonGrowthCo fee. If the documented annual ownership cost is not lower than the current annual platform cost, the migration fee is not due under the written program terms.
+
 ## Core Positioning
 
 Small businesses often need custom tools, but traditional custom software is priced for larger companies. DaytonGrowthCo starts with the business process, configures existing tools when they fit, and builds custom tools when the workflow needs something specific. AI-assisted development reduces build time and cost without turning the work into a generic template.
@@ -56,7 +70,8 @@ Small businesses often need custom tools, but traditional custom software is pri
 
 ## Buying and Pricing Notes
 
-- Websites start at $1,500.
+- The Website Migration Program™ starts at $1,500 for a Standard Migration; a Full Rebuild is $2,000; integrations are $500 each when needed.
+- The Better Quote Program™ has no upfront search fee. Its success fee is disclosed in advance and is due only when qualifying savings are found under the program terms.
 - Custom tools and automations are custom quoted.
 - AI-assisted development can reduce the hours a traditional custom development shop would bill for.
 - DaytonGrowthCo looks first for the smallest useful fix: existing software setup, focused automation, or custom build.
@@ -89,4 +104,4 @@ Small businesses often need custom tools, but traditional custom software is pri
 - Robots file: https://www.daytongrowth.co/robots.txt
 - Markdown alternates: https://www.daytongrowth.co/md/index.md and related files under /md/
 - Pricing file: https://www.daytongrowth.co/pricing.md
-- Main pages include Organization, WebSite, Service, OfferCatalog, FAQPage, HowTo, CollectionPage, ItemList, and BreadcrumbList structured data where appropriate.
+- Main pages include Organization, WebSite, Service, OfferCatalog, FAQPage, CollectionPage, ItemList, and BreadcrumbList structured data where appropriate. FAQ structured data is retained for AI/entity clarity, not as a promise of a Google FAQ rich result.

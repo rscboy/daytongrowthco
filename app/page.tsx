@@ -7,14 +7,14 @@ const homePageSchema = {
       "@type": "WebPage",
       "@id": "https://www.daytongrowth.co/#webpage",
       url: "https://www.daytongrowth.co/",
-      name: "DaytonGrowthCo. | Practical Business Tools and Digital Systems",
+      name: "DaytonGrowthCo. | Website Migration and Business Tools",
       description:
-        "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, portals, and custom apps for small and midsized businesses.",
+        "DaytonGrowthCo offers The Better Quote Program™, The Website Migration Program™, and practical business tools for small and midsized businesses.",
       isPartOf: { "@id": "https://www.daytongrowth.co/#website" },
       about: { "@id": "https://www.daytongrowth.co/#organization" },
       mainEntity: { "@id": "https://www.daytongrowth.co/#primary-service" },
       inLanguage: "en-US",
-      dateModified: "2026-06-24",
+      dateModified: "2026-08-12",
     },
     {
       "@type": "FAQPage",
@@ -26,7 +26,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, training systems, websites, sales materials, and custom business apps around the way small and midsized businesses actually work.",
+              "DaytonGrowthCo offers The Better Quote Program™ for expensive service quotes, The Website Migration Program™ for moving to a self-owned site, and practical business tools such as phone agents, automated follow-up and scheduling, quote tools, dashboards, social media scheduling, portals, and custom apps.",
           },
         },
         {
@@ -44,7 +44,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo works with small and midsized businesses, contractors, service companies, professional offices, and owner-operated teams that rely on manual quoting, intake, scheduling, follow-up, spreadsheets, or scattered customer information.",
+              "DaytonGrowthCo works with small and midsized businesses, including mechanics, contractors, other trades, service companies, professional offices, and owner-operated teams that rely on manual quoting, intake, scheduling, follow-up, social posting, spreadsheets, or scattered customer information.",
           },
         },
       ],

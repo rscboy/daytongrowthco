@@ -1,0 +1,3 @@
+.quote-field-stack{display:grid;gap:15px}
+.quote-wizard-embedded{margin:0 auto;max-width:590px}
+.quote-final-step{max-width:850px;margin:0 auto}.quote-final-step h2{margin:0;text-align:center;font:560 clamp(2rem,4vw,3.1rem)/1.05 var(--font-display,Georgia,serif);letter-spacing:-.04em}.quote-final-lede{margin:12px auto 24px;color:var(--quote-muted,#686863);text-align:center}.quote-final-step .better-quote-upload{margin:0 auto}

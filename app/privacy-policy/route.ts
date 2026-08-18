@@ -1,5 +1,5 @@
-import { legacyHtmlResponse } from "../_legacy/html";
+import { NextResponse } from "next/server";
 
-export function GET() {
-  return legacyHtmlResponse("privacy-policy/index.html");
+export function GET(request: Request) {
+  return NextResponse.redirect(new URL("/privacy/", request.url), 308);
 }

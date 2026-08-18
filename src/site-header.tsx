@@ -1,41 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { BrandWordmark } from "./brand-wordmark";
 
 type PrimaryNavLink = { href: string; label: string; mobileLabel?: string };
+const MOBILE_NAV_SCROLL_KEY = "dgc:mobile-nav-scroll-top";
 
 export const primaryNavLinks: PrimaryNavLink[] = [
-  { href: "/what-we-build/", label: "What We Build" },
+  { href: "/products/", label: "Products" },
+  { href: "/quote/pricing", label: "Pricing" },
   { href: "/examples/", label: "Examples" },
-  // Shorter label on the mobile menu only; desktop keeps the fuller phrasing.
   { href: "/how-it-works/", label: "How It Works", mobileLabel: "Process" },
   { href: "/aboutus", label: "About" },
 ];
 
 export function InteractiveWordmark() {
-  return (
-    <span className="nav-wordmark interactive-wordmark" aria-hidden="true">
-      <span className="nav-wordmark-dayton">
-        <span className="wordmark-initial">D</span><span className="wordmark-rest">ayton</span>
-      </span>
-      <span className="nav-wordmark-growth">
-        <span className="wordmark-initial">G</span><span className="wordmark-rest">rowth</span>
-      </span>
-      <b>
-        <span className="wordmark-initial">C</span><span className="wordmark-rest">o.</span>
-      </b>
-    </span>
-  );
+  return <BrandWordmark interactive onDark />;
 }
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const restoreMobileFocusRef = useRef(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const productPaths = new Set(["/ai-phone-agents", "/website-design", "/missed-call-follow-up", "/google-review-texting", "/quote-tools", "/local-search", "/dashboards-portals"]);
+  const isNavLinkActive = (href: string) => {
+    const normalizedPath = pathname.replace(/\/$/, "") || "/";
+    const normalizedHref = href.replace(/\/$/, "") || "/";
+    return normalizedPath === normalizedHref || (normalizedHref === "/products" && productPaths.has(normalizedPath));
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -48,31 +47,78 @@ export function Header() {
 
   useEffect(() => {
     setMobileOpen(false);
+    // Next can preserve the prior document position during client-side route
+    // changes. Mobile primary navigation always represents a new page visit,
+    // so it should begin at that page's top.
+    if (window.sessionStorage.getItem(MOBILE_NAV_SCROLL_KEY) !== "1") return;
+    window.sessionStorage.removeItem(MOBILE_NAV_SCROLL_KEY);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.getElementById("main-content")?.focus({ preventScroll: true });
+      });
+    });
   }, [pathname]);
+
+  const handleMobileNavigation = () => {
+    restoreMobileFocusRef.current = false;
+    setMobileOpen(false);
+    window.sessionStorage.setItem(MOBILE_NAV_SCROLL_KEY, "1");
+    // Also reset immediately for the active-page case, where there is no
+    // pathname change to trigger the effect above.
+    window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+  };
 
   useEffect(() => {
     if (!mobileOpen) return;
+    const panel = mobilePanelRef.current;
+    const mobileToggle = mobileToggleRef.current;
+    const pageRegions = Array.from(document.querySelectorAll<HTMLElement>("main, body > footer"));
+    pageRegions.forEach((region) => { region.inert = true; });
+
+    const focusableSelector = "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+    const focusable = () => Array.from(panel?.querySelectorAll<HTMLElement>(focusableSelector) ?? []);
+    window.requestAnimationFrame(() => focusable()[0]?.focus());
+
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMobileOpen(false);
+      if (event.key === "Escape") {
+        restoreMobileFocusRef.current = true;
+        setMobileOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.body.classList.add("mobile-nav-lock");
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.classList.remove("mobile-nav-lock");
       window.removeEventListener("keydown", onKeyDown);
+      pageRegions.forEach((region) => { region.inert = false; });
+      if (restoreMobileFocusRef.current) mobileToggle?.focus();
     };
   }, [mobileOpen]);
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
-      <Link className="site-offer-banner" href="/systems-that-pay/">
+      <Link className="site-offer-banner" href="/systems-that-pay/" aria-label="Free homepage redesign available. Claim the offer.">
         <span className="site-offer-copy">
           <strong>Free homepage redesign available.</strong>
           <span>Custom concept · No obligation</span>
         </span>
         <span className="site-offer-action">
           Claim free redesign
-          <ArrowRight size={14} aria-hidden="true" />
+          <ArrowRight size={15} aria-hidden="true" />
         </span>
       </Link>
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary">
@@ -87,13 +133,18 @@ export function Header() {
         )}
         <div className="header-nav" aria-label="Sections">
           {primaryNavLinks.map((link) => {
-            const active = pathname === link.href || pathname === link.href.replace(/\/$/, "");
+            const active = isNavLinkActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
+                scroll
                 aria-current={active ? "page" : undefined}
                 className={active ? "is-active" : undefined}
+                onClick={() => {
+                  window.sessionStorage.setItem(MOBILE_NAV_SCROLL_KEY, "1");
+                  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                }}
               >
                 {link.label}
               </Link>
@@ -113,40 +164,58 @@ export function Header() {
             </Link>
           )}
           <button
+            ref={mobileToggleRef}
             type="button"
             className="mobile-menu-toggle"
             aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobilePrimaryNav"
-            onClick={() => setMobileOpen((open) => !open)}
+            onClick={() => {
+              restoreMobileFocusRef.current = mobileOpen;
+              setMobileOpen((open) => !open);
+            }}
           >
-            {mobileOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+            <span className="mobile-menu-glyph" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </nav>
-      <div id="mobilePrimaryNav" className="mobile-nav-panel" hidden={!mobileOpen}>
+      <div
+        ref={mobilePanelRef}
+        id="mobilePrimaryNav"
+        className="mobile-nav-panel"
+        data-open={mobileOpen ? "true" : "false"}
+        aria-hidden={!mobileOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
         <nav aria-label="Mobile primary">
           {primaryNavLinks.map((link) => {
-            const active = pathname === link.href || pathname === link.href.replace(/\/$/, "");
+            const active = isNavLinkActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
+                scroll
                 aria-current={active ? "page" : undefined}
                 className={active ? "is-active" : undefined}
-                onClick={() => setMobileOpen(false)}
+                onClick={handleMobileNavigation}
               >
                 {link.mobileLabel ?? link.label}
               </Link>
             );
           })}
           {isHome ? (
-            <a className="button button-primary" href="#cta" onClick={() => setMobileOpen(false)}>
+            <a className="button button-primary" href="#cta" onClick={() => { restoreMobileFocusRef.current = false; setMobileOpen(false); }}>
               Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
-            <Link className="button button-primary" href="/#cta" onClick={() => setMobileOpen(false)}>
+            <Link className="button button-primary" href="/#cta" onClick={() => { restoreMobileFocusRef.current = false; setMobileOpen(false); window.sessionStorage.removeItem(MOBILE_NAV_SCROLL_KEY); }}>
               Start a conversation
               <ArrowRight size={15} aria-hidden="true" />
             </Link>
