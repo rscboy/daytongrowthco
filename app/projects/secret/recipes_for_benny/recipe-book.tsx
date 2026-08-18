@@ -410,7 +410,7 @@ export function BennyRecipeBook() {
       {!filtered.length && <div className="benny-empty"><Sparkles size={20} /><div><strong>No matches yet.</strong><p>Try a dish, ingredient, or choose another collection.</p></div><button onClick={() => { setQuery(""); setTag("All"); setShowSaved(false); }}>Show all recipes</button></div>}
     </section>
 
-    <aside className="benny-kitchen-moment"><img src={activeOwner === "sammy" ? "/recipe-book/sammy-and-tabby-bake.png" : activeProfile.image} alt={`${activeProfile.label} cover image`} loading="lazy" /></aside>
+    <aside className="benny-kitchen-moment"><img src="/recipe-book/sammy-and-tabby-bake.png" alt="Sammy cooking with his tabby cat" loading="lazy" /></aside>
 
     <article className="benny-recipe" id="recipe">
       <div className="benny-recipe-heading"><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2><div><button onClick={() => window.print()}><Printer size={16} /> Print</button><button onClick={() => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) - 1 + recipes.length) % recipes.length].id)}><ArrowLeft size={16} /> Previous</button></div></div>
