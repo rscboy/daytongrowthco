@@ -28,6 +28,9 @@ const legacyFiles = [
 type LegacyFile = (typeof legacyFiles)[number];
 
 const legacyMinimalistPolish = `
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..900&display=swap" rel="stylesheet" />
 <style id="dgc-legacy-minimalist-polish">
   :root {
     --dgc-paper: #fbfbfa;
@@ -37,13 +40,14 @@ const legacyMinimalistPolish = `
     --dgc-muted: #6f6d68;
     --dgc-line: #e8e6df;
     --dgc-accent: #18174d;
+    --dgc-font: "Hanken Grotesk", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
   html { background: var(--dgc-paper) !important; }
   body {
     color: var(--dgc-ink) !important;
     background: var(--dgc-paper) !important;
-    font-family: "Hanken Grotesk Variable", "Geist Sans", "Helvetica Neue", Arial, sans-serif !important;
+    font-family: var(--dgc-font) !important;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -97,6 +101,20 @@ const legacyMinimalistPolish = `
   .font-semibold,
   .font-bold {
     color: var(--dgc-ink) !important;
+    font-family: var(--dgc-font) !important;
+    font-weight: 650 !important;
+  }
+
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--dgc-font) !important;
   }
 
   h1 {
@@ -104,12 +122,14 @@ const legacyMinimalistPolish = `
     font-size: clamp(2.05rem, 8vw, 3.45rem) !important;
     letter-spacing: -0.035em !important;
     line-height: 1.02 !important;
+    text-wrap: balance;
   }
 
   h2 {
     font-size: clamp(1.55rem, 5.8vw, 2.25rem) !important;
     letter-spacing: -0.02em !important;
     line-height: 1.12 !important;
+    text-wrap: balance;
   }
 
   p,
@@ -123,6 +143,25 @@ const legacyMinimalistPolish = `
   .text-slate-700 {
     color: var(--dgc-muted) !important;
     line-height: 1.62 !important;
+    text-wrap: pretty;
+  }
+
+  h1 em,
+  h2 em,
+  h3 em,
+  h4 em {
+    font-style: normal !important;
+    font-weight: inherit !important;
+  }
+
+  [class*="uppercase"],
+  [class*="tracking-"] {
+    letter-spacing: 0.04em !important;
+    text-transform: none !important;
+  }
+
+  :is([class*="price"], [class*="total"], [class*="amount"], [class*="metric"], time, output) {
+    font-variant-numeric: tabular-nums;
   }
 
   a {
@@ -236,6 +275,12 @@ const legacyMinimalistPolish = `
     li,
     address,
     dd {
+      font-size: 1rem !important;
+    }
+
+    input,
+    select,
+    textarea {
       font-size: 1rem !important;
     }
 

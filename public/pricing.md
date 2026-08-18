@@ -1,15 +1,29 @@
 # Pricing — DaytonGrowthCo.
 
-Last updated: 2026-06-24
+Last updated: 2026-08-13
 
 DaytonGrowthCo builds websites, automations, and custom business tools for small and midsized businesses. Pricing depends on scope, but the goal is always the smallest useful build that saves real time or creates a clear business advantage.
 
-## Website Builds
+## Website Migration Program™
 
-- Starting price: $1,500
-- Best for: small businesses that need a modern, credible website with clear calls to action and a clean technical foundation
-- Includes: custom website direction, mobile-friendly layout, launch support, conversion-focused messaging, and basic technical setup
-- Ongoing options: managed updates, one-time build you maintain, or unlimited-update support
+- Standard Migration: $1,500
+- Full Rebuild: $2,000
+- Integrations: $500 each
+- Typical ongoing domain renewal: about $15/year
+
+## Automated Google Review Texting
+
+- Setup: $499
+- Ongoing management: $199/month
+- Includes: workflow integration, Google review-link setup, personalized message configuration, testing, launch, automation hosting, monitoring, basic maintenance, a reasonable monthly text allowance, minor adjustments, and support.
+
+## The Better Quote Program™
+
+- No upfront search fee
+- Qualifying savings below $199: $0 fee
+- $199–$494.99 in qualifying savings: $99 fee
+- $495–$2,500 in qualifying savings: 20% fee
+- Above $2,500 in qualifying savings: $500 for the first $2,500 plus 10% of savings above $2,500
 
 ## Custom Business Tools and Automations
 

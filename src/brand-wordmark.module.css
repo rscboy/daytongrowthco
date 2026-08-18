@@ -1,0 +1,95 @@
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--brand-near-black, #05070c);
+  font-family: var(--font-sans, "Hanken Grotesk Variable", "Hanken Grotesk", sans-serif);
+  font-size: 1em;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dayton {
+  color: var(--brand-indigo, #18174d);
+}
+
+.growth {
+  color: var(--brand-near-black, #05070c);
+}
+
+.co {
+  color: var(--brand-blue, #5796c8);
+}
+
+.interactive {
+  position: relative;
+}
+
+.full,
+.short {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.short {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .interactive {
+    display: grid;
+    width: 8.5em;
+    min-width: 8.5em;
+  }
+
+  .full,
+  .short {
+    grid-area: 1 / 1;
+    transition: opacity 360ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .short {
+    display: inline-flex;
+    opacity: 0;
+    transform: translateY(0.18em) scale(0.98);
+  }
+
+  .isCondensed .full {
+    opacity: 0;
+    transform: translateY(-0.18em) scale(1.01);
+  }
+
+  .isCondensed .short {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .full,
+  .short {
+    transition: none;
+  }
+}
+
+/* Dark surfaces get high-contrast ink, never a light capsule behind the logo. */
+.onDark {
+  color: #ffffff;
+}
+
+.onDark .dayton {
+  color: #ffffff;
+}
+
+.onDark .growth {
+  color: #e5e9f1;
+}
+
+.onDark .co {
+  color: #9cc7e7;
+}
+
+.onDarkGrowthOnly .growth {
+  color: #e5e9f1;
+}

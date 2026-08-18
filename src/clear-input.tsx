@@ -7,6 +7,7 @@ type ClearInputBaseProps = {
   wrapperClassName?: string;
   endAdornment?: React.ReactNode;
   clearLabel?: string;
+  showClear?: boolean;
   inputRef?: React.Ref<HTMLInputElement>;
 };
 
@@ -143,6 +144,7 @@ function ClearChrome({
   value,
   placeholder,
   clearLabel = "Clear field",
+  showClear = true,
   wrapperClassName,
   endAdornment,
   input,
@@ -214,7 +216,7 @@ function ClearChrome({
       </div>
       <div className="t-clear-glow" aria-hidden="true" ref={glowRef} />
       {endAdornment}
-      {hasValue || isClearing ? (
+      {showClear && (hasValue || isClearing) ? (
         <button type="button" className="t-clear-btn" aria-label={clearLabel} onClick={clear}>
           <X size={14} aria-hidden="true" />
         </button>
@@ -223,7 +225,7 @@ function ClearChrome({
   );
 }
 
-export function ClearInput({ value, onValueChange, wrapperClassName, endAdornment, clearLabel, ...props }: ControlledClearInputProps) {
+export function ClearInput({ value, onValueChange, wrapperClassName, endAdornment, clearLabel, showClear, ...props }: ControlledClearInputProps) {
   const { inputRef, ...inputProps } = props;
   return (
     <ClearChrome
@@ -232,6 +234,7 @@ export function ClearInput({ value, onValueChange, wrapperClassName, endAdornmen
       wrapperClassName={wrapperClassName}
       endAdornment={endAdornment}
       clearLabel={clearLabel}
+      showClear={showClear}
       onClear={() => onValueChange("")}
       input={
         <input
@@ -245,7 +248,7 @@ export function ClearInput({ value, onValueChange, wrapperClassName, endAdornmen
   );
 }
 
-export function ClearableNativeInput({ wrapperClassName, endAdornment, clearLabel, onInput, onChange, ...props }: NativeClearInputProps) {
+export function ClearableNativeInput({ wrapperClassName, endAdornment, clearLabel, showClear, onInput, onChange, ...props }: NativeClearInputProps) {
   const { inputRef: forwardedInputRef, ...inputProps } = props;
   const [value, setValue] = useState(String(inputProps.defaultValue ?? inputProps.value ?? ""));
 
@@ -272,6 +275,7 @@ export function ClearableNativeInput({ wrapperClassName, endAdornment, clearLabe
       wrapperClassName={wrapperClassName}
       endAdornment={endAdornment}
       clearLabel={clearLabel}
+      showClear={showClear}
       onClear={clearNative}
       input={
         <input

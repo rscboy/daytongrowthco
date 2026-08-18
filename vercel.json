@@ -1,7 +1,7 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "trailingSlash": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",

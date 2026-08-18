@@ -7,14 +7,14 @@ const homePageSchema = {
       "@type": "WebPage",
       "@id": "https://www.daytongrowth.co/#webpage",
       url: "https://www.daytongrowth.co/",
-      name: "DaytonGrowthCo. | Practical Business Tools and Digital Systems",
+      name: "AI Automation Company in Dayton, Ohio | DaytonGrowthCo.",
       description:
-        "DaytonGrowthCo builds custom business tools, automations, websites, phone agents, quote tools, dashboards, portals, and custom apps for small and midsized businesses.",
+        "DaytonGrowthCo builds custom AI agents, workflow automations, system integrations, and practical custom software for small and midsized businesses in Dayton, Ohio and nationwide.",
       isPartOf: { "@id": "https://www.daytongrowth.co/#website" },
       about: { "@id": "https://www.daytongrowth.co/#organization" },
       mainEntity: { "@id": "https://www.daytongrowth.co/#primary-service" },
       inLanguage: "en-US",
-      dateModified: "2026-06-24",
+      dateModified: "2026-08-18",
     },
     {
       "@type": "FAQPage",
@@ -26,7 +26,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo builds phone agents, quote tools, dashboards, customer portals, training systems, websites, sales materials, and custom business apps around the way small and midsized businesses actually work.",
+              "DaytonGrowthCo is a Dayton, Ohio AI automation and custom software company. It builds custom AI agents, workflow automation, system integrations, phone agents, automated follow-up and scheduling, quote tools, dashboards, portals, and custom apps, alongside The Better Quote Program™ and The Website Migration Program™.",
           },
         },
         {
@@ -44,7 +44,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo works with small and midsized businesses, contractors, service companies, professional offices, and owner-operated teams that rely on manual quoting, intake, scheduling, follow-up, spreadsheets, or scattered customer information.",
+              "DaytonGrowthCo works with small and midsized businesses, including mechanics, contractors, other trades, service companies, professional offices, and owner-operated teams that rely on manual quoting, intake, scheduling, follow-up, social posting, spreadsheets, or scattered customer information.",
           },
         },
       ],

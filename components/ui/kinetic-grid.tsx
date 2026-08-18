@@ -9,6 +9,8 @@ type KineticGridProps = {
   strength?: number;
   dotColor?: string;
   lineColor?: string;
+  dotOpacity?: number;
+  lineOpacity?: number;
 };
 
 type Dot = { homeX: number; homeY: number; x: number; y: number; vx: number; vy: number };
@@ -24,6 +26,8 @@ export function KineticGrid({
   strength = 2,
   dotColor = "#dde9fc",
   lineColor = "#18174d",
+  dotOpacity = 0.18,
+  lineOpacity = 0.055,
 }: KineticGridProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -76,7 +80,7 @@ export function KineticGrid({
         const down = dots[index + 1];
         context.strokeStyle = lineColor;
         context.lineWidth = 0.45 + proximity * 0.55;
-        context.globalAlpha = 0.035 + proximity * 0.13;
+        context.globalAlpha = lineOpacity + proximity * 0.17;
         if (right) {
           context.beginPath();
           context.moveTo(dot.x, dot.y);
@@ -90,7 +94,7 @@ export function KineticGrid({
           context.stroke();
         }
         context.fillStyle = dotColor;
-        context.globalAlpha = 0.13 + proximity * 0.25;
+        context.globalAlpha = dotOpacity + proximity * 0.3;
         context.beginPath();
         context.arc(dot.x, dot.y, 0.75 + proximity * 0.55, 0, Math.PI * 2);
         context.fill();
@@ -136,6 +140,7 @@ export function KineticGrid({
     const onPointerMove = (event: PointerEvent) => {
       const rect = host.getBoundingClientRect();
       mouse = { x: event.clientX - rect.left, y: event.clientY - rect.top, active: true };
+      interactionTarget.dataset.gridInteracted = "true";
       startAnimation();
     };
     const onPointerLeave = () => {
@@ -162,8 +167,9 @@ export function KineticGrid({
       observer.disconnect();
       interactionTarget.removeEventListener("pointermove", onPointerMove);
       interactionTarget.removeEventListener("pointerleave", onPointerLeave);
+      delete interactionTarget.dataset.gridInteracted;
     };
-  }, [dotColor, lineColor, radius, spacing, strength]);
+  }, [dotColor, dotOpacity, lineColor, lineOpacity, radius, spacing, strength]);
 
   return (
     <div className={`kinetic-grid ${className}`.trim()} ref={hostRef} aria-hidden="true">
