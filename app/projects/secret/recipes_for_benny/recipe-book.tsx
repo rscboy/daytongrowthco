@@ -171,6 +171,7 @@ export function BennyRecipeBook() {
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const recipeSheetRef = useRef<HTMLDivElement>(null);
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? recipes[0];
   const ingredientCount = selected.ingredients.flatMap((group) => group.items).length;
   const basePortions = recipePortions(selected);
@@ -196,7 +197,18 @@ export function BennyRecipeBook() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [mobileRecipeOpen]);
+  useEffect(() => {
+    if (!mobileRecipeOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const frame = window.requestAnimationFrame(() => recipeSheetRef.current?.scrollTo({ top: 0, behavior: "auto" }));
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileRecipeOpen, selectedId]);
   const choose = (id: string) => {
+    recipeSheetRef.current?.scrollTo({ top: 0, behavior: "auto" });
     setSelectedId(id);
     setChecked([]);
     setMobileRecipeOpen(true);
@@ -246,7 +258,7 @@ export function BennyRecipeBook() {
       <div className="benny-recipe-grid"><section className="benny-ingredients"><div className="benny-panel-title"><span>01</span><h3>Gather this</h3><small>{checked.length} / {ingredientCount} checked</small></div>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
       <section className="benny-method"><div className="benny-panel-title"><span>02</span><h3>Make it happen</h3><small><Clock3 size={13} /> {selected.total}</small></div><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section></div>
     </article>
-    {mobileRecipeOpen && <div className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
+    {mobileRecipeOpen && <div ref={recipeSheetRef} className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
       <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div></div>
       <div className="benny-mobile-sheet-meta"><span>{selected.prep} prep</span><span>{selected.cook} cook</span><span>{activePortions} portions</span></div>
       <div className="benny-portions" aria-label="Adjust recipe portions"><div><strong>Adjust portions</strong><small>Ingredients update instantly</small></div><div className="benny-portion-stepper"><button onClick={() => updatePortions(activePortions - 1)} disabled={activePortions <= 1} aria-label="Decrease portions"><Minus size={15} /></button><output aria-live="polite">{activePortions}</output><button onClick={() => updatePortions(activePortions + 1)} aria-label="Increase portions"><Plus size={15} /></button></div></div>
