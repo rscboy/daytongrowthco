@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Minus, Plus, Printer, Search, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 
@@ -19,6 +19,18 @@ type Recipe = {
   ingredients: { category: string; items: string[] }[];
   steps: { title: string; text: string }[];
   note: string;
+  owner?: RecipeOwnerId;
+};
+
+type RecipeOwnerId = "sammy" | "sam-g" | "autumn" | "addison";
+
+type RecipeProfile = {
+  id: RecipeOwnerId;
+  label: string;
+  name: string;
+  initials: string;
+  image: string;
+  imagePosition: string;
 };
 
 const recipes: Recipe[] = [
@@ -51,6 +63,30 @@ const recipes: Recipe[] = [
   { id: "snickerdoodles", title: "Classic", subtitle: "Snickerdoodles", image: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=1200&q=85", description: "Soft, cinnamon-sugar-coated snickerdoodles with a tender middle and lightly crisp edges.", prep: "20 min", cook: "11 min", total: "31 min", yield: "16 cookies", tags: ["Sweet", "Baking", "Quick"], color: "gold", ingredients: [{ category: "Cookie dough", items: ["1.52 cups (190 g) all-purpose flour", "1 tsp cream of tartar", "½ tsp baking soda", "¼ tsp salt", "½ cup unsalted butter, softened", "¾ cup (150.7 g) sugar", "1 room-temperature egg", "½ tsp vanilla extract"] }, { category: "Cinnamon-sugar coating", items: ["⅓ cup (50 g) sugar", "1½ tsp ground cinnamon"] }], steps: [{ title: "Whisk the dry ingredients", text: "Whisk all-purpose flour, baking soda, cream of tartar, and salt together in a medium bowl." }, { title: "Beat the butter and sugar", text: "In a large bowl or the bowl of a stand mixer fitted with a paddle, beat sugar and softened butter on medium speed until light and fluffy, about 3 minutes. Add egg, scrape down the bowl, and add vanilla extract." }, { title: "Make the dough", text: "Set mixer to low and gradually add dry ingredients to wet ingredients. Beat until just combined, scraping down the sides and incorporating any remaining dry bits." }, { title: "Mix the cinnamon sugar", text: "In a small bowl, stir granulated sugar and ground cinnamon together for the cookie coating." }, { title: "Roll and coat", text: "Roll 30 g dough balls and coat them in cinnamon sugar. Place 2 inches apart on a baking sheet, then press each cookie dough ball down slightly." }, { title: "Bake", text: "Bake at 350°F for 11 minutes. Cool briefly on the baking sheet, then transfer to a wire rack." }], note: "For the best soft texture, do not wait for the cookies to brown deeply. Their centers should look just set when they come out of the oven." },
 ];
 
+const recipeProfiles: RecipeProfile[] = [
+  { id: "sammy", label: "Sammy's Recipes", name: "Sammy", initials: "S", image: "/recipe-book/sammy-cooks-chili.png", imagePosition: "center" },
+  { id: "sam-g", label: "Sam G's Recipes", name: "Sam G", initials: "SG", image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=1200&q=85", imagePosition: "center 56%" },
+  { id: "autumn", label: "Autumn's Recipes", name: "Autumn", initials: "Au", image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=85", imagePosition: "center" },
+  { id: "addison", label: "Addison's Recipes", name: "Addison", initials: "Ad", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1200&q=85", imagePosition: "center 45%" },
+];
+
+const samGRecipeIds = new Set([
+  "sams-fried-chicken",
+  "chuck-roast",
+  "chef-marshalls-challah",
+  "goldstein-snickerdoodles",
+  "snickerdoodles",
+]);
+
+function recipeOwner(recipe: Recipe): RecipeOwnerId {
+  if (recipe.owner) return recipe.owner;
+  return samGRecipeIds.has(recipe.id) ? "sam-g" : "sammy";
+}
+
+function recipeProfile(owner: RecipeOwnerId) {
+  return recipeProfiles.find((profile) => profile.id === owner) ?? recipeProfiles[0];
+}
+
 const collections = [
   { id: "All", label: "All recipes", matches: () => true },
   { id: "Dinner", label: "Dinner", matches: (recipe: Recipe) => recipe.tags.includes("Dinner") },
@@ -62,6 +98,7 @@ const collections = [
 
 function recipeSearchText(recipe: Recipe) {
   return [
+    recipeProfile(recipeOwner(recipe)).label,
     recipe.title,
     recipe.subtitle,
     recipe.description,
@@ -164,6 +201,7 @@ function CharliePizzaCalculator() {
 export function BennyRecipeBook() {
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("All");
+  const [activeOwner, setActiveOwner] = useState<RecipeOwnerId>("sammy");
   const [selectedId, setSelectedId] = useState(recipes[0].id);
   const [saved, setSaved] = useState<string[]>([]);
   const [showSaved, setShowSaved] = useState(false);
@@ -177,13 +215,20 @@ export function BennyRecipeBook() {
   const basePortions = recipePortions(selected);
   const activePortions = portions[selected.id] ?? basePortions;
   const portionMultiplier = activePortions / basePortions;
+  const activeProfile = recipeProfile(activeOwner);
+  const selectedProfile = recipeProfile(recipeOwner(selected));
+  const activeOwnerCount = recipes.filter((recipe) => recipeOwner(recipe) === activeOwner).length;
   const filtered = useMemo(() => {
     const activeCollection = collections.find((collection) => collection.id === tag) ?? collections[0];
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return recipes
       .filter((recipe) => (!showSaved || saved.includes(recipe.id)) && activeCollection.matches(recipe) && terms.every((term) => recipeSearchText(recipe).includes(term)))
-      .sort((first, second) => first.title.localeCompare(second.title));
-  }, [query, saved, showSaved, tag]);
+      .sort((first, second) => {
+        const firstPriority = recipeOwner(first) === activeOwner ? 0 : 1;
+        const secondPriority = recipeOwner(second) === activeOwner ? 0 : 1;
+        return firstPriority - secondPriority || first.title.localeCompare(second.title) || first.subtitle.localeCompare(second.subtitle);
+      });
+  }, [activeOwner, query, saved, showSaved, tag]);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
@@ -216,23 +261,32 @@ export function BennyRecipeBook() {
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setChecked((items) => items.includes(item) ? items.filter((entry) => entry !== item) : [...items, item]);
   const updatePortions = (value: number) => setPortions((items) => ({ ...items, [selected.id]: Math.max(1, value) }));
-  const nextRecipe = () => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) + 1) % recipes.length].id);
+  const nextRecipe = () => {
+    const sequence = filtered.length ? filtered : recipes;
+    const currentIndex = sequence.findIndex((recipe) => recipe.id === selected.id);
+    choose(sequence[(currentIndex + 1 + sequence.length) % sequence.length].id);
+  };
   const activeCollection = collections.find((collection) => collection.id === tag);
-  const resultTitle = showSaved ? "Saved recipes" : tag === "All" ? "Browse the box." : activeCollection?.label;
+  const resultTitle = showSaved ? "Saved recipes" : tag === "All" ? `${activeProfile.name}'s recipes first.` : activeCollection?.label;
 
   return <main className="benny-book">
     <header className="benny-header">
-      <a className="benny-brand" href="#top" aria-label="Sammy's Recipes home"><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
-      <div className="benny-title"><p>Private recipe book</p><h1>Sammy&apos;s Recipes</h1></div>
+      <a className="benny-brand" href="#top" aria-label={`${activeProfile.label} home`}><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
+      <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
       <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
     </header>
 
-    <section className="benny-intro" id="top">
-      <p className="benny-eyebrow">Sammy&apos;s recipe book</p>
+    <section className="benny-intro" id="top" style={{ "--benny-profile-image": `url("${activeProfile.image}")`, "--benny-profile-position": activeProfile.imagePosition } as CSSProperties}>
+      <p className="benny-eyebrow">{activeProfile.label}</p>
       <h2>What should we make<br /><i>tonight?</i></h2>
       <p>A small collection of comforting, fast, and worth-the-wait recipes.</p>
       <div className="benny-search"><Search size={18} /><input ref={searchInputRef} value={query} onChange={(event) => { setQuery(event.target.value); setShowSaved(false); }} placeholder="Search dishes or ingredients" aria-label="Search recipes" />{query ? <button onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button> : <kbd>/</kbd>}</div>
     </section>
+
+    <nav className="benny-owner-tabs" aria-label="Choose whose recipes appear first" role="tablist">
+      {recipeProfiles.map((profile) => <button key={profile.id} type="button" role="tab" aria-selected={activeOwner === profile.id} className={activeOwner === profile.id ? "active" : ""} onClick={() => { setActiveOwner(profile.id); setShowSaved(false); }}><span aria-hidden="true">{profile.initials}</span>{profile.label}</button>)}
+    </nav>
+    {activeOwnerCount === 0 && <div className="benny-owner-note" role="status"><strong>{activeProfile.name}&apos;s recipes haven&apos;t been added yet.</strong><span>The shared family recipe box is still here, ready to browse.</span></div>}
 
     <nav className="benny-filter" aria-label="Recipe categories">{collections.map((collection) => <button key={collection.id} className={!showSaved && tag === collection.id ? "active" : ""} onClick={() => { setTag(collection.id); setShowSaved(false); }}>{collection.label}</button>)}</nav>
 
@@ -247,16 +301,16 @@ export function BennyRecipeBook() {
     </section>
 
     <section className="benny-cards-section" aria-live="polite"><div className="benny-section-head"><div><p className="benny-eyebrow">The recipe box</p><h2>{resultTitle}</h2></div><span>{filtered.length} {filtered.length === 1 ? "recipe" : "recipes"}</span></div>
-      <div className="benny-cards">{filtered.map((recipe, index) => <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)} aria-label={`Open ${recipe.title} ${recipe.subtitle}`}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 3 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><p>{recipe.tags.slice(0, 2).join(" · ")}</p><h3>{recipe.title}<small>{recipe.subtitle}</small></h3><span className="benny-card-action">Open recipe <ChevronRight size={15} /></span></div></button>)}</div>
+      <div className="benny-cards">{filtered.map((recipe, index) => { const owner = recipeProfile(recipeOwner(recipe)); return <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)} aria-label={`Open ${recipe.title} ${recipe.subtitle}, by ${owner.name}`}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 3 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><div className="benny-card-tags"><span className="benny-owner-tag">By {owner.name}</span><span>{recipe.tags.slice(0, 2).join(" · ")}</span></div><h3>{recipe.title}<small>{recipe.subtitle}</small></h3><span className="benny-card-action">Open recipe <ChevronRight size={15} /></span></div></button>; })}</div>
       {!filtered.length && <div className="benny-empty"><Sparkles size={20} /><div><strong>No matches yet.</strong><p>Try a dish, ingredient, or choose another collection.</p></div><button onClick={() => { setQuery(""); setTag("All"); setShowSaved(false); }}>Show all recipes</button></div>}
     </section>
 
-    <aside className="benny-kitchen-moment"><img src="/recipe-book/sammy-and-tabby-bake.png" alt="Sammy baking beside his tabby cat sous-chef" loading="lazy" /></aside>
+    <aside className="benny-kitchen-moment"><img src={activeOwner === "sammy" ? "/recipe-book/sammy-and-tabby-bake.png" : activeProfile.image} alt={`${activeProfile.label} cover image`} loading="lazy" /></aside>
 
     <article className="benny-recipe" id="recipe">
       <div className="benny-recipe-heading"><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2><div><button onClick={() => window.print()}><Printer size={16} /> Print</button><button onClick={() => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) - 1 + recipes.length) % recipes.length].id)}><ArrowLeft size={16} /> Previous</button></div></div>
       <div className="benny-recipe-grid"><section className="benny-ingredients"><div className="benny-panel-title"><span>01</span><h3>Gather this</h3><small>{checked.length} / {ingredientCount} checked</small></div>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{item}</label>; })}</div>)}</section>
-      <section className="benny-method"><div className="benny-panel-title"><span>02</span><h3>Make it happen</h3><small><Clock3 size={13} /> {selected.total}</small></div><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section></div>
+      <section className="benny-method"><div className="benny-panel-title"><span>02</span><h3>Make it happen</h3><small><Clock3 size={13} /> {selected.total}</small></div><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>{selectedProfile.name}&apos;s note</strong><p>{selected.note}</p></div></aside></section></div>
     </article>
     {mobileRecipeOpen && <div ref={recipeSheetRef} className="benny-mobile-sheet" role="dialog" aria-modal="true" aria-label={`${selected.title} ${selected.subtitle}`}>
       <div className="benny-mobile-sheet-header"><div><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2></div><div className="benny-sheet-actions"><button className={saved.includes(selected.id) ? "is-saved" : ""} onClick={() => toggleSaved(selected.id)} aria-label="Save recipe"><Heart size={18} fill={saved.includes(selected.id) ? "currentColor" : "none"} /></button><button onClick={() => setMobileRecipeOpen(false)} aria-label="Close recipe"><X size={22} /></button></div></div>
@@ -265,7 +319,7 @@ export function BennyRecipeBook() {
       {selected.id === "ny-style-pizza" && <CharliePizzaCalculator />}
       <div className="benny-progress"><span>Shopping progress</span><b>{checked.length} of {ingredientCount}</b></div>
       <section className="benny-mobile-sheet-section"><h3>Gather this</h3>{selected.ingredients.map((group) => <div className="benny-ingredient-group" key={group.category}><h4>{group.category}</h4>{group.items.map((item, index) => { const key = `sheet-${group.category}-${index}`; const isChecked = checked.includes(key); return <label className={isChecked ? "done" : ""} key={key}><input type="checkbox" checked={isChecked} onChange={() => toggleChecked(key)} /><span><Check size={13} /></span>{scaleIngredient(item, portionMultiplier)}</label>; })}</div>)}</section>
-      <section className="benny-mobile-sheet-section"><h3>Make it happen</h3><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>Sammy's note</strong><p>{selected.note}</p></div></aside></section>
+      <section className="benny-mobile-sheet-section"><h3>Make it happen</h3><ol>{selected.steps.map((step, index) => <li key={step.title}><b>{String(index + 1).padStart(2, "0")}</b><div><h4>{step.title}</h4><p>{step.text}</p></div></li>)}</ol><aside><Sparkles size={17} /><div><strong>{selectedProfile.name}&apos;s note</strong><p>{selected.note}</p></div></aside></section>
       <button className="benny-next-recipe" onClick={nextRecipe}>Next recipe <ArrowRight size={17} /></button>
       <button className="benny-sheet-return" onClick={() => setMobileRecipeOpen(false)}><ArrowLeft size={17} /> Back to recipes</button>
     </div>}
