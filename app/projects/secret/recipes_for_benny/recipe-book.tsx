@@ -65,10 +65,10 @@ const recipes: Recipe[] = [
 ];
 
 const recipeProfiles: RecipeProfile[] = [
-  { id: "all", label: "All Recipes", name: "All", initials: "All", image: "/recipe-book/sammy-and-tabby-bake.png", imagePosition: "center" },
+  { id: "all", label: "All Recipes", name: "All", initials: "All", image: "/recipe-book/all-recipes-family.jpg", imagePosition: "center" },
   { id: "sammy", label: "Sammy's Recipes", name: "Sammy", initials: "S", image: "/recipe-book/sammy-cooks-chili.png", imagePosition: "center" },
   { id: "sam-g", label: "Sam G's Recipes", name: "Sam G", initials: "SG", image: "/recipe-book/sam-g-profile.jpg", imagePosition: "center 38%" },
-  { id: "autumn", label: "Autumn's Recipes", name: "Autumn", initials: "Au", image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=85", imagePosition: "center" },
+  { id: "autumn", label: "Autumn's Recipes", name: "Autumn", initials: "Au", image: "/recipe-book/autumn-profile.jpg", imagePosition: "center 38%" },
   { id: "addison", label: "Addison's Recipes", name: "Addison", initials: "Ad", image: "/recipe-book/addison-profile.jpg", imagePosition: "center 38%" },
 ];
 
@@ -410,7 +410,7 @@ export function BennyRecipeBook() {
       {!filtered.length && <div className="benny-empty"><Sparkles size={20} /><div><strong>No matches yet.</strong><p>Try a dish, ingredient, or choose another collection.</p></div><button onClick={() => { setQuery(""); setTag("All"); setShowSaved(false); }}>Show all recipes</button></div>}
     </section>
 
-    <aside className="benny-kitchen-moment"><img src={activeOwner === "sammy" || activeOwner === "all" ? "/recipe-book/sammy-and-tabby-bake.png" : activeProfile.image} alt={`${activeProfile.label} cover image`} loading="lazy" /></aside>
+    <aside className="benny-kitchen-moment"><img src={activeOwner === "sammy" ? "/recipe-book/sammy-and-tabby-bake.png" : activeProfile.image} alt={`${activeProfile.label} cover image`} loading="lazy" /></aside>
 
     <article className="benny-recipe" id="recipe">
       <div className="benny-recipe-heading"><p className="benny-eyebrow">Now cooking</p><h2>{selected.title} <em>{selected.subtitle}</em></h2><div><button onClick={() => window.print()}><Printer size={16} /> Print</button><button onClick={() => choose(recipes[(recipes.findIndex((recipe) => recipe.id === selected.id) - 1 + recipes.length) % recipes.length].id)}><ArrowLeft size={16} /> Previous</button></div></div>
