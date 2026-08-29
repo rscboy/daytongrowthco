@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, Download, Info, Mail, Phone, Printer, RotateCcw, WalletCards } from "lucide-react";
 import "./calculator.css";
 import "./financial-summary.css";
+import "./cost-visibility.css";
 
 type Mode = "goal" | "forecast";
 type PeriodView = "monthly" | "annual";
@@ -104,6 +105,7 @@ export default function ProfitCalculatorPage() {
   const [state, setState] = useState<State>(DEFAULTS);
   useEffect(() => { try { const saved = localStorage.getItem("dgc-profit-calculator"); if (saved) { const restored = JSON.parse(saved) as Partial<State>; setState({ ...DEFAULTS, ...restored, monthlyCosts: restored.annualCosts === undefined && restored.monthlyCosts === 333.19 ? DEFAULTS.monthlyCosts : restored.monthlyCosts ?? DEFAULTS.monthlyCosts }); } } catch {} }, []);
   useEffect(() => { try { localStorage.setItem("dgc-profit-calculator", JSON.stringify(state)); } catch {} }, [state]);
+  useEffect(() => { document.documentElement.style.setProperty("--dgc-annual-setup-cost", JSON.stringify(money(state.annualCosts))); }, [state.annualCosts]);
   const update = <K extends keyof State>(key: K, value: State[K]) => setState(current => ({ ...current, [key]: value }));
   const model = useMemo(() => calculate(state, scenario), [state, scenario]);
   const funnel = useMemo(() => reverseFunnel(state, model), [state, model]);
