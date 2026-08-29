@@ -12,14 +12,14 @@ type State = {
   goalPeriod: PeriodView; targetProfit: number; annualMix: number; monthlyMix: number;
   emailsPerDay: number; daysPerMonth: number; delivery: number; reply: number; positive: number; booking: number; show: number; close: number;
   callsOn: boolean; dialsPerDay: number; connect: number; qualified: number; callBooking: number; callShow: number; callClose: number;
-  monthlyCosts: number; onboarding: number; service: number; processing: number; tax: number; months: number;
+  monthlyCosts: number; annualCosts: number; onboarding: number; service: number; processing: number; tax: number; months: number;
 };
 
 const DEFAULTS: State = {
   goalPeriod: "annual", targetProfit: 120000, annualMix: 60, monthlyMix: 40, emailsPerDay: 150, daysPerMonth: 20,
   delivery: 96, reply: 4.5, positive: 35, booking: 55, show: 78, close: 32, callsOn: false,
   dialsPerDay: 0, connect: 18, qualified: 45, callBooking: 35, callShow: 72, callClose: 28,
-  monthlyCosts: 333.19, onboarding: 35, service: 42, processing: 2.9, tax: 22, months: 12,
+  monthlyCosts: 245.45, annualCosts: 187.74, onboarding: 35, service: 42, processing: 2.9, tax: 22, months: 12,
 };
 
 const money = (value: number, decimals = 0) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: decimals, minimumFractionDigits: decimals }).format(Number.isFinite(value) ? value : 0);
@@ -49,7 +49,8 @@ function calculate(state: State, scenario: Scenario) {
   const cashContribution = cashPerNewClient - state.onboarding - state.service - cashPerNewClient * rate(state.processing);
   const afterTaxCashContribution = Math.max(1, cashContribution * (1 - rate(state.tax)));
   const targetMonthly = state.goalPeriod === "annual" ? state.targetProfit / 12 : state.targetProfit;
-  const goalClients = Math.max(0, targetMonthly + state.monthlyCosts * (1 - rate(state.tax))) / afterTaxCashContribution;
+  const monthlyFixedCosts = state.monthlyCosts + state.annualCosts / 12;
+  const goalClients = Math.max(0, targetMonthly + monthlyFixedCosts * (1 - rate(state.tax))) / afterTaxCashContribution;
   return { annualShare, monthlyShare, emailClientRate, callClientRate, emailClients, callClients, newClients, annualClients, monthlyClients, cashPerNewClient, targetMonthly, goalClients, delivery, reply, positive, booking, show, close };
 }
 
@@ -65,11 +66,12 @@ function cashMonth(state: State, model: ReturnType<typeof calculate>, monthIndex
   const onboarding = model.newClients * state.onboarding;
   const service = model.newClients * activeMonths * state.service;
   const processing = cashCollected * rate(state.processing);
-  const expensesBeforeTax = operating + onboarding + service + processing;
+  const annualAndSetup = monthIndex === 0 ? state.annualCosts : 0;
+  const expensesBeforeTax = operating + annualAndSetup + onboarding + service + processing;
   const cashBeforeTax = cashCollected - expensesBeforeTax;
   const estimatedTax = Math.max(0, cashBeforeTax) * rate(state.tax);
   const cashProfit = cashBeforeTax - estimatedTax;
-  return { month: activeMonths, clients: model.newClients, activeClients: model.newClients * activeMonths, cashCollected, recognizedRevenue, operating, onboarding, service, processing, expensesBeforeTax, estimatedTax, cashProfit, cashMargin: cashCollected ? cashProfit / cashCollected : 0 };
+  return { month: activeMonths, clients: model.newClients, activeClients: model.newClients * activeMonths, cashCollected, recognizedRevenue, operating, annualAndSetup, onboarding, service, processing, expensesBeforeTax, estimatedTax, cashProfit, cashMargin: cashCollected ? cashProfit / cashCollected : 0 };
 }
 
 function reverseFunnel(state: State, model: ReturnType<typeof calculate>) {
@@ -84,7 +86,7 @@ function reverseFunnel(state: State, model: ReturnType<typeof calculate>) {
 }
 
 function sumPeriods(periods: ReturnType<typeof cashMonth>[]) {
-  return periods.reduce((total, item) => ({ ...total, cashCollected: total.cashCollected + item.cashCollected, recognizedRevenue: total.recognizedRevenue + item.recognizedRevenue, operating: total.operating + item.operating, onboarding: total.onboarding + item.onboarding, service: total.service + item.service, processing: total.processing + item.processing, expensesBeforeTax: total.expensesBeforeTax + item.expensesBeforeTax, estimatedTax: total.estimatedTax + item.estimatedTax, cashProfit: total.cashProfit + item.cashProfit }), { cashCollected: 0, recognizedRevenue: 0, operating: 0, onboarding: 0, service: 0, processing: 0, expensesBeforeTax: 0, estimatedTax: 0, cashProfit: 0 });
+  return periods.reduce((total, item) => ({ ...total, cashCollected: total.cashCollected + item.cashCollected, recognizedRevenue: total.recognizedRevenue + item.recognizedRevenue, operating: total.operating + item.operating, annualAndSetup: total.annualAndSetup + item.annualAndSetup, onboarding: total.onboarding + item.onboarding, service: total.service + item.service, processing: total.processing + item.processing, expensesBeforeTax: total.expensesBeforeTax + item.expensesBeforeTax, estimatedTax: total.estimatedTax + item.estimatedTax, cashProfit: total.cashProfit + item.cashProfit }), { cashCollected: 0, recognizedRevenue: 0, operating: 0, annualAndSetup: 0, onboarding: 0, service: 0, processing: 0, expensesBeforeTax: 0, estimatedTax: 0, cashProfit: 0 });
 }
 
 function Field({ label, value, min, max, step = 1, prefix, suffix, help, onChange }: { label: string; value: number; min: number; max: number; step?: number; prefix?: string; suffix?: string; help?: string; onChange: (value: number) => void }) {
@@ -100,7 +102,7 @@ export default function ProfitCalculatorPage() {
   const [forecastPeriod, setForecastPeriod] = useState<PeriodView>("monthly");
   const [scenario, setScenario] = useState<Scenario>("expected");
   const [state, setState] = useState<State>(DEFAULTS);
-  useEffect(() => { try { const saved = localStorage.getItem("dgc-profit-calculator"); if (saved) setState({ ...DEFAULTS, ...JSON.parse(saved) }); } catch {} }, []);
+  useEffect(() => { try { const saved = localStorage.getItem("dgc-profit-calculator"); if (saved) { const restored = JSON.parse(saved) as Partial<State>; setState({ ...DEFAULTS, ...restored, monthlyCosts: restored.annualCosts === undefined && restored.monthlyCosts === 333.19 ? DEFAULTS.monthlyCosts : restored.monthlyCosts ?? DEFAULTS.monthlyCosts }); } } catch {} }, []);
   useEffect(() => { try { localStorage.setItem("dgc-profit-calculator", JSON.stringify(state)); } catch {} }, [state]);
   const update = <K extends keyof State>(key: K, value: State[K]) => setState(current => ({ ...current, [key]: value }));
   const model = useMemo(() => calculate(state, scenario), [state, scenario]);
@@ -110,10 +112,10 @@ export default function ProfitCalculatorPage() {
   const annual = useMemo(() => sumPeriods(months), [months]);
   const selected = forecastPeriod === "monthly" ? monthly : annual;
   const maxChart = Math.max(1, ...months.map(item => Math.max(item.cashCollected, item.cashProfit)));
-  const downloadCsv = () => { const rows = [["Month", "New clients", "Cash collected", "Recognized revenue", "Expenses", "Estimated tax", "Cash profit"], ...months.map(item => [item.month, item.clients.toFixed(2), item.cashCollected.toFixed(2), item.recognizedRevenue.toFixed(2), item.expensesBeforeTax.toFixed(2), item.estimatedTax.toFixed(2), item.cashProfit.toFixed(2)])]; const blob = new Blob([rows.map(row => row.join(",")).join("\n")], { type: "text/csv" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "daytongrowthco-profit-forecast.csv"; link.click(); URL.revokeObjectURL(link.href); };
+  const downloadCsv = () => { const rows = [["Month", "New clients", "Cash collected", "Recognized revenue", "Monthly operating costs", "Annual and setup costs", "Onboarding", "Service", "Processing", "Estimated tax", "Cash profit"], ...months.map(item => [item.month, item.clients.toFixed(2), item.cashCollected.toFixed(2), item.recognizedRevenue.toFixed(2), item.operating.toFixed(2), item.annualAndSetup.toFixed(2), item.onboarding.toFixed(2), item.service.toFixed(2), item.processing.toFixed(2), item.estimatedTax.toFixed(2), item.cashProfit.toFixed(2)])]; const blob = new Blob([rows.map(row => row.join(",")).join("\n")], { type: "text/csv" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "daytongrowthco-profit-forecast.csv"; link.click(); URL.revokeObjectURL(link.href); };
   const reset = () => { setState(DEFAULTS); setMode("goal"); setScenario("expected"); setForecastPeriod("monthly"); };
 
-  const costs = <details className="simple-disclosure"><summary>Costs & pricing assumptions <ChevronDown size={15} /></summary><div className="simple-grid"><Field label="Annual plan share" value={state.annualMix} min={0} max={100} suffix="%" onChange={value => update("annualMix", value)} /><Field label="Monthly plan share" value={state.monthlyMix} min={0} max={100} suffix="%" onChange={value => update("monthlyMix", value)} /><Field label="Monthly operating costs" value={state.monthlyCosts} min={0} max={5000} step={10} prefix="$" onChange={value => update("monthlyCosts", value)} /><Field label="Onboarding cost / client" value={state.onboarding} min={0} max={1000} step={5} prefix="$" onChange={value => update("onboarding", value)} /><Field label="Service cost / client / month" value={state.service} min={0} max={1000} step={5} prefix="$" onChange={value => update("service", value)} /><Field label="Payment processing" value={state.processing} min={0} max={10} step={0.1} suffix="%" onChange={value => update("processing", value)} /><Field label="Taxes" value={state.tax} min={0} max={50} suffix="%" onChange={value => update("tax", value)} /></div><p className="disclosure-note">Defaults include Mailforge $180, PlusVibe $65.45, domains, and the connection cost.</p></details>;
+  const costs = <details className="simple-disclosure"><summary>Costs & pricing assumptions <ChevronDown size={15} /></summary><div className="simple-grid"><Field label="Annual plan share" value={state.annualMix} min={0} max={100} suffix="%" onChange={value => update("annualMix", value)} /><Field label="Monthly plan share" value={state.monthlyMix} min={0} max={100} suffix="%" onChange={value => update("monthlyMix", value)} /><Field label="Monthly operating costs" value={state.monthlyCosts} min={0} max={5000} step={10} prefix="$" help="Recurring monthly costs: Mailforge $180 and PlusVibe $65.45 by default." onChange={value => update("monthlyCosts", value)} /><Field label="Annual & setup costs" value={state.annualCosts} min={0} max={5000} step={5} prefix="$" help="Costs charged once in Month 1 and once in the first-year total." onChange={value => update("annualCosts", value)} /><Field label="Onboarding cost / client" value={state.onboarding} min={0} max={1000} step={5} prefix="$" onChange={value => update("onboarding", value)} /><Field label="Service cost / client / month" value={state.service} min={0} max={1000} step={5} prefix="$" onChange={value => update("service", value)} /><Field label="Payment processing" value={state.processing} min={0} max={10} step={0.1} suffix="%" onChange={value => update("processing", value)} /><Field label="Taxes" value={state.tax} min={0} max={50} suffix="%" onChange={value => update("tax", value)} /></div><p className="disclosure-note">Defaults: monthly — Mailforge $180 + PlusVibe $65.45; annual & setup — domains $87.74 + Mailforge connection $100. Annual & setup costs are included once in Month 1 and once in the first-year view.</p></details>;
 
   return <main className="simple-calculator"><header className="simple-header"><a className="simple-brand" href="/projects/secret-projects"><span className="simple-mark">DG</span><span><strong>DaytonGrowthCo.</strong><small>HVAC Review Growth Program</small></span></a><details className="more-options"><summary>More options <ChevronDown size={14} /></summary><div className="options-menu"><button onClick={downloadCsv}><Download size={14} /> Export CSV</button><button onClick={() => window.print()}><Printer size={14} /> Print summary</button><button onClick={reset}><RotateCcw size={14} /> Reset calculator</button></div></details></header>
     <div className="simple-wrap"><section className="simple-intro"><span className="simple-kicker">Private planning tool</span><h1>What will your<br /><em>outreach make?</em></h1><p>Plan the work you need to do, or see exactly where the money goes.</p></section>
