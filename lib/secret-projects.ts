@@ -109,7 +109,8 @@ export async function getSecretProjectSettings(): Promise<SettingsStore> {
     const result = await get(SETTINGS_BLOB_PATH, { access: "private", useCache: false });
     if (!result?.stream) return normalizeSettings({});
     return normalizeSettings(await new Response(result.stream).json());
-  } catch {
+  } catch (error) {
+    console.error("[secret-projects-storage] Unable to read project settings.", error);
     return normalizeSettings({});
   }
 }

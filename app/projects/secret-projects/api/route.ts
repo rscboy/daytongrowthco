@@ -50,7 +50,8 @@ export async function PATCH(request: Request) {
   settings[id] = next;
   try {
     await saveSecretProjectSettings(settings);
-  } catch {
+  } catch (error) {
+    console.error("[secret-projects-storage] Unable to save project settings.", error);
     return NextResponse.json({ error: "The setting could not be saved. Check the project storage connection." }, { status: 500 });
   }
 
