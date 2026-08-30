@@ -822,6 +822,52 @@ html body main#main-content.homepage > .hero-section .hero-media[data-ready="tru
     transform var(--dgc-duration-marketing) var(--dgc-ease-out);
 }
 
+/* Desktop homepage hero: restore the latest three-program ROI estimator beside
+   the current headline. The sticky header is already in document flow, so the
+   hero owns exactly the remaining viewport and the proof row begins off-screen. */
+@media (min-width: 70rem) {
+  html body main#main-content.homepage > .hero-section,
+  html body main#main-content.homepage > .hero-section .hero-content {
+    min-height: max(42rem, calc(100svh - var(--site-header-stack-height))) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-content {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.22fr) minmax(22rem, .78fr) !important;
+    gap: clamp(2rem, 3vw, 3.5rem) !important;
+    align-items: center !important;
+    padding:
+      clamp(2.75rem, 5vh, 4.5rem)
+      clamp(3rem, 4vw, 6rem)
+      clamp(3.25rem, 5.5vh, 4.75rem)
+      clamp(4.25rem, 5vw, 7.25rem) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .clay-hero-copy {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .clay-hero-copy h1 {
+    font-size: clamp(3.8rem, 4.55vw, 5.35rem) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-proof {
+    display: block !important;
+    width: 100% !important;
+    max-width: 27rem !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+}
+
+/* The restored estimator is intentionally a desktop enhancement. */
+@media (max-width: 69.99rem) {
+  html body main#main-content.homepage > .hero-section .hero-proof {
+    display: none !important;
+  }
+}
+
 .form-submit .form-submit-arrow,
 .form-submit .form-submit-check {
   transition:

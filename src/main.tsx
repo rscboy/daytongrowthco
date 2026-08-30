@@ -2376,6 +2376,9 @@ function Hero() {
             </p>
           ) : null}
         </div>
+        <aside className="hero-proof hero-entrance" aria-label="Interactive program return estimator">
+          <HeroRoiCalculator />
+        </aside>
       </div>
     </section>
   );
