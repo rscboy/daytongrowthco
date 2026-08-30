@@ -485,13 +485,89 @@ main#main-content.about-page .about-founder-copy blockquote { font-size: clamp(1
 .site-pricing-page :where(.site-pricing-selector-card, .site-pricing-selection-panel),
 .service-page :where(.service-card, .service-proof-card) { border-radius: var(--dgc-radius-md) !important; }
 
-/* Three engagement notes must divide the available shell instead of beginning
-   after a phantom heading column and running off canvas. */
+/* Engagement notes share one calm, full-width shell. Older route rules turned
+   both the section and every card into nested grids, which forced card copy
+   beyond its own boundary. */
+html body main#main-content.how-page .engagement-notes > div {
+  display: block !important;
+}
+
+html body main#main-content.how-page .engagement-notes .dedicated-heading {
+  display: grid !important;
+  grid-template-columns: minmax(15rem, .72fr) minmax(20rem, 1.28fr) !important;
+  align-items: end !important;
+  gap: clamp(2rem, 5vw, 5rem) !important;
+  max-width: none !important;
+  margin: 0 0 clamp(2rem, 4vw, 3.25rem) !important;
+}
+
+html body main#main-content.how-page .engagement-notes .dedicated-heading h2,
+html body main#main-content.how-page .engagement-notes .dedicated-heading p {
+  margin-bottom: 0 !important;
+}
+
+html body main#main-content.how-page .engagement-notes .dedicated-heading p {
+  display: block !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+}
+
 html body main#main-content.how-page .engagement-notes-grid {
+  counter-reset: engagement-note;
+  display: grid !important;
   width: 100% !important;
   max-width: none !important;
   margin-inline: 0 !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 1px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--dgc-line) !important;
+  border-radius: var(--dgc-radius-md) !important;
+  background: var(--dgc-line) !important;
+}
+
+html body main#main-content.how-page .engagement-notes-grid article {
+  counter-increment: engagement-note;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 13rem !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: clamp(1.35rem, 2.3vw, 2rem) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+html body main#main-content.how-page .engagement-notes-grid article::before {
+  content: "0" counter(engagement-note);
+  color: var(--dgc-muted) !important;
+  font-size: .72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .08em !important;
+}
+
+html body main#main-content.how-page .engagement-notes-grid article > h3,
+html body main#main-content.how-page .engagement-notes-grid article > p {
+  grid-column: auto !important;
+  min-width: 0 !important;
+}
+
+html body main#main-content.how-page .engagement-notes-grid article > h3 {
+  max-width: 17ch !important;
+  margin: 1.5rem 0 0 !important;
+  font-size: clamp(1.08rem, 1.4vw, 1.3rem) !important;
+  line-height: 1.18 !important;
+  text-wrap: balance;
+}
+
+html body main#main-content.how-page .engagement-notes-grid article > p {
+  max-width: 31ch !important;
+  margin: .8rem 0 0 !important;
+  font-size: .94rem !important;
+  line-height: 1.52 !important;
 }
 
 /* Preserve the slim visual track while giving the workflow calculator sliders
@@ -579,6 +655,11 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
 
   .products-page .products-flagship-grid { grid-template-columns: 1fr 1fr !important; grid-template-rows: auto !important; }
   .products-page .products-flagship-grid article:first-child { grid-row: auto !important; }
+
+  html body main#main-content.how-page .engagement-notes .dedicated-heading {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: .9rem !important;
+  }
 }
 
 @media (max-width: 43.75rem) {
@@ -626,6 +707,7 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
   .products-page .products-flagship-grid { grid-template-columns: 1fr !important; }
 
   html body main#main-content.how-page .engagement-notes-grid { grid-template-columns: 1fr !important; }
+  html body main#main-content.how-page .engagement-notes-grid article { min-height: 0 !important; }
 
   .home-process-repair-shell,
   main#main-content.homepage > section.home-faq .home-faq-inner,

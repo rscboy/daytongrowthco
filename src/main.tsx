@@ -3854,7 +3854,7 @@ function EngagementNotes() {
           <h2 id="engagement-notes-title">What we need from your team.</h2>
           <p>You do not need a polished specification. We need enough real material to understand the work before we recommend a change.</p>
         </div>
-        <div className="engagement-notes-grid" data-stagger>
+        <div className="engagement-notes-grid">
           {inputs.map(([title, text]) => (
             <article key={title}>
               <h3>{title}</h3>
