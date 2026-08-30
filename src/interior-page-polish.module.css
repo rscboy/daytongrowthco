@@ -278,6 +278,14 @@
   letter-spacing: -0.052em !important;
 }
 
+/* The About title contains a long brand name. Keep it inside the copy column
+   instead of letting the older no-wrap rule push it beneath the signal panel. */
+:global(main#main-content).page:global(.dedicated-page):global(.about-page) .titleBlock h1 {
+  max-width: 100% !important;
+  font-size: clamp(2.75rem, 4.1vw, 4rem) !important;
+  white-space: normal !important;
+}
+
 :global(main#main-content).page:global(.dedicated-page) .titleBlock > p {
   max-width: 47ch !important;
   margin-top: 1rem !important;
