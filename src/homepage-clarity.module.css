@@ -296,6 +296,55 @@
   background: var(--dgc-surface, #fdfdfb);
 }
 
+/*
+ * The legacy homepage stylesheet still contains section-level declarations
+ * with !important. Keep this small bridge until those layers can be retired;
+ * it makes these self-contained homepage components authoritative without
+ * widening their styles to any interior route.
+ */
+:global(main#main-content.homepage) > .quoteSection {
+  color: var(--dgc-ink, #20231f) !important;
+  background:
+    radial-gradient(circle at 78% 42%, rgba(79, 130, 168, 0.1), transparent 28rem),
+    var(--dgc-bg, #f8f8f5) !important;
+}
+
+:global(main#main-content.homepage) > .processSection {
+  color: var(--dgc-ink, #20231f) !important;
+  background:
+    linear-gradient(90deg, rgba(79, 130, 168, 0.05) 1px, transparent 1px) 0 0 / 3rem 3rem,
+    linear-gradient(rgba(79, 130, 168, 0.05) 1px, transparent 1px) 0 0 / 3rem 3rem,
+    #eef2f3 !important;
+}
+
+:global(main#main-content.homepage) > .faqSection {
+  color: var(--dgc-ink, #20231f) !important;
+  background: var(--dgc-surface, #fdfdfb) !important;
+}
+
+:global(main#main-content.homepage) > .quoteSection .quoteCopy h2,
+:global(main#main-content.homepage) > .processSection .processCopy h2,
+:global(main#main-content.homepage) > .faqSection .faqIntro h2,
+:global(main#main-content.homepage) > .processSection .processStep strong,
+:global(main#main-content.homepage) > .faqSection .faqQuestion {
+  color: var(--dgc-ink, #20231f) !important;
+}
+
+:global(main#main-content.homepage) > .quoteSection .quoteCopy > p,
+:global(main#main-content.homepage) > .processSection .processCopy > p,
+:global(main#main-content.homepage) > .processSection .processStep p,
+:global(main#main-content.homepage) > .faqSection .faqAnswer p {
+  color: var(--dgc-muted, #60675f) !important;
+}
+
+:global(main#main-content.homepage) > .quoteSection .primaryLink {
+  color: #fff !important;
+}
+
+:global(main#main-content.homepage) > .processSection .textLink {
+  color: var(--dgc-blue-strong, #315f82) !important;
+}
+
 .faqShell {
   display: grid;
   width: min(100%, var(--dgc-container, 76rem));

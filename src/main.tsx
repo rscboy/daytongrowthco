@@ -1502,7 +1502,7 @@ function BackgroundVideo({
       src={src}
       poster={poster}
       data-mux-stream={stream}
-      autoPlay={!reduceMotion && !paused}
+      autoPlay={!paused}
       muted
       loop
       playsInline
@@ -2326,7 +2326,7 @@ function Hero() {
               <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a className="hero-flow-cue" href="#programs">
-              <span>See how it fits together</span>
+              <span>How it works</span>
               <span className="hero-flow-cue-mark" aria-hidden="true">
                 <ArrowDown size={14} />
               </span>
@@ -6306,6 +6306,7 @@ function ProgramMatch() {
 }
 
 function BetterQuotePreview() {
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
   const currentQuote = 10000;
   const comparisonQuote = 7000;
   const grossDifference = currentQuote - comparisonQuote;
@@ -6342,9 +6343,12 @@ function BetterQuotePreview() {
         </div>
       </div>
 
-      <details className={homepageClarityStyles.calculatorDisclosure}>
+      <details
+        className={homepageClarityStyles.calculatorDisclosure}
+        onToggle={(event) => setCalculatorOpen(event.currentTarget.open)}
+      >
         <summary>Use the interactive savings calculator</summary>
-        <BetterQuoteSavingsCalculator />
+        {calculatorOpen ? <BetterQuoteSavingsCalculator /> : null}
       </details>
     </section>
   );

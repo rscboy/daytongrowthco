@@ -22,29 +22,29 @@ const homePageSchema = {
       mainEntity: [
         {
           "@type": "Question",
-          name: "What does DaytonGrowthCo build?",
+          name: "What kind of problem should I bring?",
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo offers The Better Quote Program™ for expensive service quotes, The Website Migration Program™ for moving to a self-owned site, AppointRelay™ for approved appointment queues, and a fully managed HVAC Google review generation program.",
+              "Start with work that repeats, stalls, gets missed, or costs more than it should. DaytonGrowthCo will help identify the smallest useful next step.",
           },
         },
         {
           "@type": "Question",
-          name: "How does DaytonGrowthCo reduce custom development cost?",
+          name: "Do you replace the tools we already use?",
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo uses AI-assisted development to reduce the hours a traditional custom development shop would bill for. The goal is custom-fit software, websites, and automations at a price small businesses can justify.",
+              "Not automatically. DaytonGrowthCo keeps what works, configures existing tools when they fit, and builds only where the workflow needs something more specific.",
           },
         },
         {
           "@type": "Question",
-          name: "Who is DaytonGrowthCo for?",
+          name: "How are scope and pricing handled?",
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo works with small and midsized businesses, including mechanics, contractors, other trades, service companies, professional offices, and owner-operated teams that rely on manual quoting, intake, scheduling, follow-up, social posting, spreadsheets, or scattered customer information.",
+              "You receive a written scope that explains what is included, what it costs, and what happens next before the work begins.",
           },
         },
       ],

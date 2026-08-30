@@ -340,31 +340,6 @@ main#main-content .page-cta-trust { margin-top: 1.35rem !important; }
 /* Homepage: compact proof, program decisions, process, FAQ, conversion. */
 .homepage > .post-hero-bridge { padding: 0 !important; }
 
-.homepage > section[class*="flagship-programs-module"] {
-  padding-block: var(--dgc-section-y-major) !important;
-}
-
-.homepage section[class*="flagship-programs-module"] [class*="__intro"] h2 {
-  max-width: 15ch !important;
-  font-size: clamp(2.25rem, 3.5vw, 3.25rem) !important;
-}
-
-.homepage section[class*="flagship-programs-module"] [class*="__featuredCard"] {
-  min-height: 18rem !important;
-  padding: clamp(1.5rem, 2.5vw, 2rem) !important;
-  border-radius: var(--dgc-radius-lg) !important;
-}
-
-.homepage section[class*="flagship-programs-module"] [class*="__secondaryCard"] {
-  min-height: 10rem !important;
-  padding: 1.35rem !important;
-  border-radius: var(--dgc-radius-md) !important;
-}
-
-.homepage section[class*="flagship-programs-module"] [class*="__cardHeader"] { margin-bottom: 1.2rem !important; }
-.homepage section[class*="flagship-programs-module"] [class*="__icon"] { width: 2.5rem !important; height: 2.5rem !important; flex-basis: 2.5rem !important; border-radius: 8px !important; }
-.homepage section[class*="flagship-programs-module"] [class*="__detail"] { margin-top: .8rem !important; }
-
 .homepage > section[class*="better-quote-savings-calculator-module"] {
   padding-block: var(--dgc-section-y) !important;
 }
@@ -519,6 +494,14 @@ html body main#main-content.how-page .engagement-notes-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
+/* Preserve the slim visual track while giving the workflow calculator sliders
+   a full-size pointer and touch hit area. */
+html body main#main-content.how-page input[type="range"] {
+  height: 44px !important;
+  min-height: 44px !important;
+  background: transparent !important;
+}
+
 /* Route-specific compression. High-specificity selectors retire older page
    billboard spacing without flattening the hierarchy inside each section. */
 html body main#main-content.how-page > section.build-principles,
@@ -644,10 +627,6 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
 
   html body main#main-content.how-page .engagement-notes-grid { grid-template-columns: 1fr !important; }
 
-  .homepage section[class*="flagship-programs-module"] [class*="__featuredGrid"],
-  .homepage section[class*="flagship-programs-module"] [class*="__secondaryGrid"] { grid-template-columns: 1fr !important; }
-  .homepage section[class*="flagship-programs-module"] [class*="__featuredCard"] { min-height: 0 !important; }
-
   .home-process-repair-shell,
   main#main-content.homepage > section.home-faq .home-faq-inner,
   main#main-content.homepage > section.home-faq .home-faq-list,
@@ -687,6 +666,39 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
     padding: 3.5rem var(--dgc-gutter) 3rem !important;
   }
 
+  html body main#main-content.homepage > .hero-section .hero-actions {
+    display: flex !important;
+    width: auto !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    gap: .65rem !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-actions .button {
+    width: auto !important;
+    max-width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding-inline: .75rem !important;
+    box-sizing: border-box !important;
+    font-size: .8rem !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-actions .button > svg {
+    display: none !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-flow-cue {
+    width: auto !important;
+    min-height: 44px !important;
+    justify-content: center !important;
+  }
+
+  main#main-content a.button,
+  main#main-content button.button {
+    min-height: 44px !important;
+  }
+
   html body main#main-content.site-pricing-page > section.site-pricing-services {
     padding: 2.5rem 1rem var(--dgc-section-y) !important;
   }
@@ -696,6 +708,8 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
   :root { --dgc-gutter: 1rem; }
   .site-header > nav { padding-inline: var(--dgc-gutter) !important; }
   .site-offer-banner .site-offer-action { gap: .25rem; }
+  html body main#main-content.homepage > .hero-section .hero-actions { gap: .4rem !important; }
+  html body main#main-content.homepage > .hero-section .hero-flow-cue { font-size: .72rem !important; gap: .4rem !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
