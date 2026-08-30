@@ -3773,39 +3773,6 @@ function ServiceArchitecture() {
   );
 }
 
-function QuoteWorkflowExample() {
-  const quoteInputs = ["Approved labor rules", "Material markup", "Scope and exclusions"];
-  return (
-    <section className="quote-workflow-example" aria-labelledby="quote-workflow-title">
-      <div className="section-film-media" aria-hidden="true">
-        <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
-      </div>
-      <div className="section-film-mask" aria-hidden="true" />
-      <div className="quote-workflow-shell mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="homepage-preview-copy" data-reveal>
-          <h2 id="quote-workflow-title">Turn pricing rules into a send-ready quote.</h2>
-          <p>Use the pricing your team has already approved, then make the next quote easier to review and send.</p>
-          <a href="/#cta">
-            Discuss your quoting process
-            <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </div>
-        <div className="quote-workflow-demo" aria-label="Illustrative quote workflow" data-reveal>
-          <div className="quote-workflow-source">
-            <span>Inputs that already exist</span>
-            <ul>{quoteInputs.map((item) => <li key={item}>{item}</li>)}</ul>
-          </div>
-          <ArrowRight className="quote-workflow-arrow" size={22} aria-hidden="true" />
-          <div className="quote-workflow-result">
-            <span>Quote ready to review</span>
-            <strong>Clear scope. Consistent price. One next step.</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function BuildPrinciples() {
   const principles = [
     ["Fix the expensive bottleneck first.", "Start where time, errors, or lost work cost the most."],
@@ -6660,7 +6627,6 @@ function ExamplesPage() {
         <PhoneAgentOffer />
         <OutcomeSection />
         <SpreadsheetTransformation />
-        <QuoteWorkflowExample />
         <AdvancedSystemPreview sectionId="connected-example" />
         <PageCTA />
       </main>
