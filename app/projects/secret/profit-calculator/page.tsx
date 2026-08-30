@@ -7,6 +7,8 @@ import "./financial-summary.css";
 import "./cost-visibility.css";
 import "./minimal-refresh.css";
 import "./team-planner.css";
+import "./ux-layer.css";
+import { useCalculatorUx } from "./ux-layer";
 
 type Mode = "goal" | "forecast";
 type PeriodView = "monthly" | "annual";
@@ -116,6 +118,7 @@ export default function ProfitCalculatorPage() {
   const annual = useMemo(() => sumPeriods(months), [months]);
   const selected = forecastPeriod === "monthly" ? monthly : annual;
   const maxChart = Math.max(1, ...months.map(item => Math.max(item.cashCollected, item.cashProfit)));
+  useCalculatorUx({ mode, clients: mode === "goal" ? model.goalClients : model.newClients, held: funnel.held, booked: funnel.booked, emails: funnel.emails, days: state.daysPerMonth, profit: selected.cashProfit });
   useEffect(() => {
     const output = document.querySelector(".financial-output");
     if (!output) return;
