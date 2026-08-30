@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, Download, Printer, RotateCcw, Sparkles, Users } from "lucide-react";
 import "./calculator-v3.css";
+import "./calculator-v3-compact.css";
 
 type Mode = "goal" | "forecast";
 type Scenario = "conservative" | "expected" | "optimistic";
