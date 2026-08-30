@@ -5,3 +5,48 @@ dist/
 .DS_Store
 .claude/
 .vercel
+.env.local
+.automation.env
+
+# Local Codex/agent workspace configuration (keep on this machine)
+/.agents/
+/.codex/
+/.github/hooks/
+/.github/skills/
+/AGENTS.md
+/CLAUDE.md
+/skills-lock.json
+
+# Local environment templates and automation configuration
+/.env.example
+/.automation.env.example
+
+# Standalone projects stored beside the main website
+# These are intentionally not part of the DaytonGrowthCo website deployment.
+/daytongrowthco-crm/
+/daytongrowthco-reviews/
+/daytongrowthco-video/
+/daytongrowthco-website-migration-audit/
+/finance-dashboard/
+/hvac-call-command-center/
+
+# Local launch operations, research, and planning workspaces
+/LAUNCH-OS/
+/LAUNCH-OS-archive-*/
+/competitor-profiles/
+/research/
+/plans/
+/waibel-market-research-staging/
+/BACKLINK-LISTING-SETUP.md
+/PRODUCT.md
+
+# Generated deliverables, working media, and reference captures
+/AgencyGod Captions/
+/brag-output*/
+/output/
+/outputs/
+/portal-reference-screenshots/
+/cold-call-list-*.csv
+/four-industry-review-call-test-*.csv
+/voicemail-drop-outreach-transcript.txt
+/voicemail-drop-outreach-transcript.vtt
