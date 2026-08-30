@@ -134,10 +134,14 @@
   height: 100%;
   border-radius: inherit;
   background: var(--dgc-blue, #4f82a8);
+  transform: scaleX(0);
   transform-origin: left center;
+  transition: transform var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .quoteBarRow:nth-child(2) i { background: #7d9f87; }
+.quoteVisual[data-visible="true"] .quoteBarRow i { transform: scaleX(1); }
+.quoteVisual[data-visible="true"] .quoteBarRow:nth-child(2) i { transition-delay: 70ms; }
 
 .quoteBarRow > strong {
   min-width: 5.4rem;
@@ -171,6 +175,17 @@
   letter-spacing: -0.055em;
   line-height: 0.9;
   font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--dgc-duration-standard, 220ms) ease,
+    transform var(--dgc-duration-standard, 220ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+.quoteVisual[data-visible="true"] .quoteResult strong {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 140ms;
 }
 
 .quoteVisual > p {
@@ -243,10 +258,44 @@
   content: "";
 }
 
+.processDiagram::after {
+  position: absolute;
+  top: 1.4rem;
+  left: 14%;
+  width: 72%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dgc-blue-strong, #315f82), #6f977c);
+  content: "";
+  pointer-events: none;
+  transform: scaleX(var(--process-progress, 0));
+  transform-origin: left center;
+  transition: transform var(--dgc-duration-standard, 220ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
 .processStep {
   position: relative;
   z-index: 1;
   min-width: 0;
+}
+
+.processTrigger {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.processTrigger:focus-visible {
+  outline: 2px solid var(--dgc-blue, #4f82a8);
+  outline-offset: 6px;
+  border-radius: var(--dgc-radius-sm, 6px);
 }
 
 .processNode {
@@ -282,7 +331,17 @@
   font-size: 0.95rem;
   line-height: 1.55;
   text-wrap: pretty;
+  transition:
+    color var(--dgc-duration-fast, 150ms) ease,
+    transform var(--dgc-duration-fast, 150ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
 }
+
+.processStep[data-active="true"] .processNode {
+  background: #477c62;
+  transform: translateY(-2px);
+}
+
+.processStep[data-active="true"] p { transform: translateY(-1px); }
 
 .textLink {
   width: max-content;
@@ -390,13 +449,27 @@
     opacity var(--dgc-duration-fast, 150ms) ease;
 }
 
-.faqAnswer > div { min-height: 0; overflow: hidden; }
+.faqAnswer > div { position: relative; min-height: 0; overflow: hidden; }
+.faqAnswer > div::before {
+  position: absolute;
+  top: 0.15rem;
+  bottom: 1.35rem;
+  left: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(var(--dgc-blue, #4f82a8), rgba(79, 130, 168, 0.22));
+  content: "";
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform var(--dgc-duration-standard, 220ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+}
 .faqItem[data-open="true"] .faqAnswer { grid-template-rows: 1fr; opacity: 1; }
+.faqItem[data-open="true"] .faqAnswer > div::before { transform: scaleY(1); }
 
 .faqAnswer p {
   max-width: 62ch;
   margin: 0;
-  padding: 0 3rem 1.25rem 0;
+  padding: 0 3rem 1.25rem 1.2rem;
   color: var(--dgc-muted, #60675f);
   font-size: 1rem;
   line-height: 1.6;
@@ -447,6 +520,7 @@
 
   .processDiagram { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .processDiagram::before { top: 1.4rem; bottom: 1.4rem; left: 1.4rem; width: 1px; height: auto; background: linear-gradient(var(--dgc-blue, #4f82a8), #7d9f87); }
+  .processDiagram::after { top: 1.4rem; bottom: 1.4rem; left: 1.35rem; width: 2px; height: auto; transform: scaleY(var(--process-progress, 0)); transform-origin: top center; }
   .processStep { min-height: 8rem; padding-left: 4.25rem; }
   .processNode { position: absolute; top: 0; left: 0; margin: 0; }
   .processStep p { max-width: 36ch; }
@@ -470,5 +544,13 @@
   .textLink svg,
   .processNode,
   .faqQuestion svg,
-  .faqAnswer { transition-duration: 0.01ms; }
+  .faqAnswer,
+  .faqAnswer > div::before,
+  .quoteBarRow i,
+  .quoteResult strong,
+  .processDiagram::after,
+  .processStep p { transition-duration: 0.01ms; }
+
+  .quoteBarRow i { transform: scaleX(1); }
+  .quoteResult strong { opacity: 1; transform: none; }
 }

@@ -21,6 +21,19 @@
   content: "";
 }
 
+.section::after {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 2px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent 2%, #7eb0d3 32%, #a9cce2 54%, transparent 98%);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
 .shell {
   position: relative;
   z-index: 1;
@@ -252,12 +265,30 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .pathLine i { animation: path-signal 700ms var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both; }
+  .section[data-arriving="true"]::after {
+    animation: destination-handoff var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both;
+  }
+
+  .pathLine i { animation: path-signal var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both; }
+  .pathLine:nth-child(4) i { animation-delay: 70ms; }
+  .pathNode { animation: path-node-settle var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both; }
 }
 
 @keyframes path-signal {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
+}
+
+@keyframes path-node-settle {
+  from { opacity: 0.55; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes destination-handoff {
+  0% { opacity: 0; transform: scaleX(0); }
+  18% { opacity: 1; }
+  78% { opacity: 0.9; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
 }
 
 @media (max-width: 62rem) {
@@ -302,6 +333,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .section::after { display: none; }
   .choice,
   .choice::after,
   .choiceArrow,

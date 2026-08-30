@@ -712,6 +712,52 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
   html body main#main-content.homepage > .hero-section .hero-flow-cue { font-size: .72rem !important; gap: .4rem !important; }
 }
 
+/* Purposeful motion handoffs: the hero film settles only after its first frame
+   is ready, and the inquiry action resolves into a clear received state. */
+html body main#main-content.homepage > .hero-section .hero-media[data-ready="false"] .hero-product-video {
+  opacity: 0 !important;
+  transform: scale(1.02);
+}
+
+html body main#main-content.homepage > .hero-section .hero-media[data-ready="true"] .hero-product-video {
+  opacity: 1 !important;
+  transform: scale(1);
+  transition:
+    opacity var(--dgc-duration-marketing) ease,
+    transform var(--dgc-duration-marketing) var(--dgc-ease-out);
+}
+
+.form-submit .form-submit-arrow,
+.form-submit .form-submit-check {
+  transition:
+    opacity var(--dgc-duration-fast) ease,
+    transform var(--dgc-duration-fast) var(--dgc-ease-out);
+}
+
+.form-submit .form-submit-check {
+  position: absolute;
+  right: 1rem;
+  opacity: 0;
+  transform: scale(.82);
+}
+
+.form-submit[data-state="sending"] .form-submit-check {
+  animation: none !important;
+  opacity: 0;
+  transform: scale(.82);
+}
+
+.form-submit[data-state="sent"] .form-submit-arrow {
+  animation: none !important;
+  opacity: 0;
+  transform: translateX(4px) scale(.82);
+}
+
+.form-submit[data-state="sent"] .form-submit-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto !important; }
   *, *::before, *::after {

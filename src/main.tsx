@@ -1114,6 +1114,8 @@ function RouteTransition() {
 }
 
 function useTurnstileProtection() {
+  const reduceMotion = useReducedMotion();
+
   useEffect(() => {
     const form = document.getElementById("auditForm") as HTMLFormElement | null;
     const configuredKey = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content.trim();
@@ -1188,6 +1190,7 @@ function useTurnstileProtection() {
     let cancelled = false;
     let widgetId: string | undefined;
     let turnstileApi: Turnstile | undefined;
+    let successTimer: number | undefined;
 
     const playSuccessCheck = (root: ParentNode | null) => {
       root?.querySelectorAll<HTMLElement>(".t-success-check").forEach((icon) => {
@@ -1371,20 +1374,22 @@ function useTurnstileProtection() {
             status.dataset.variant = "";
             status.textContent = "";
           }
-          // Keep the confirmation hidden until the request has settled
-          // successfully. Show it as a dismissible modal first, then leave the
-          // compact completed state in the form section after dismissal.
-          form.hidden = true;
-          if (successDialog?.showModal) {
-            successDialog.showModal();
-            playSuccessCheck(successDialog);
-            closeSuccessDialog?.focus();
-          } else if (successPanel) {
-            showCompletedState();
-          } else if (status) {
-            status.dataset.variant = "success";
-            status.textContent = "Request received. We’ll reply with next steps.";
-          }
+          // Let the submit control visibly resolve into its received state
+          // before the larger confirmation takes over. The short handoff makes
+          // success feel connected to the action that caused it.
+          successTimer = window.setTimeout(() => {
+            form.hidden = true;
+            if (successDialog?.showModal) {
+              successDialog.showModal();
+              playSuccessCheck(successDialog);
+              closeSuccessDialog?.focus();
+            } else if (successPanel) {
+              showCompletedState();
+            } else if (status) {
+              status.dataset.variant = "success";
+              status.textContent = "Request received. We’ll reply with next steps.";
+            }
+          }, reduceMotion ? 0 : 240);
         })
         .catch(() => {
           if (submitButton) submitButton.dataset.state = "idle";
@@ -1402,6 +1407,7 @@ function useTurnstileProtection() {
     form.addEventListener("submit", onSubmit);
     return () => {
       cancelled = true;
+      window.clearTimeout(successTimer);
       form.removeEventListener("submit", onSubmit);
       form.removeEventListener("focusin", onFormFocus);
       clearFieldListeners.forEach((remove) => remove());
@@ -1409,7 +1415,7 @@ function useTurnstileProtection() {
       closeSuccessDialog?.removeEventListener("click", dismissSuccessDialog);
       if (turnstileApi && widgetId !== undefined) turnstileApi.remove(widgetId);
     };
-  }, []);
+  }, [reduceMotion]);
 }
 
 function BackgroundVideo({
@@ -1420,6 +1426,7 @@ function BackgroundVideo({
   playbackRate,
   preload = "auto",
   paused = false,
+  onReady,
 }: {
   className: string;
   src?: string;
@@ -1428,6 +1435,7 @@ function BackgroundVideo({
   playbackRate?: number;
   preload?: "auto" | "metadata" | "none";
   paused?: boolean;
+  onReady?: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = useReducedMotion();
@@ -1508,6 +1516,7 @@ function BackgroundVideo({
       loop
       playsInline
       preload={src ? preload : "none"}
+      onLoadedData={onReady}
       aria-hidden="true"
     />
   );
@@ -2263,6 +2272,7 @@ function HeroRoiCalculator() {
 function Hero() {
   const reduceMotion = useReducedMotion();
   const mediaRef = useRef<HTMLDivElement>(null);
+  const [mediaReady, setMediaReady] = useState(false);
   const { profile, clear } = usePersonalization();
   const business = profile?.business?.trim();
 
@@ -2303,10 +2313,34 @@ function Hero() {
     };
   }, [reduceMotion]);
 
+  useEffect(() => {
+    if (mediaReady) return;
+    const fallback = window.setTimeout(() => setMediaReady(true), 1400);
+    return () => window.clearTimeout(fallback);
+  }, [mediaReady]);
+
+  const handleFlowCue = () => {
+    if (reduceMotion) return;
+    const destination = document.getElementById("programs");
+    if (!destination) return;
+    let expiry = 0;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      window.clearTimeout(expiry);
+      observer.disconnect();
+      destination.dataset.arriving = "true";
+      window.setTimeout(() => {
+        delete destination.dataset.arriving;
+      }, 560);
+    }, { threshold: 0.18 });
+    observer.observe(destination);
+    expiry = window.setTimeout(() => observer.disconnect(), 3000);
+  };
+
   return (
     <section id="top" className="hero-section homepage-motion-hero">
-      <div className="hero-media" aria-hidden="true" ref={mediaRef}>
-        <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} />
+      <div className="hero-media" aria-hidden="true" ref={mediaRef} data-ready={mediaReady ? "true" : "false"}>
+        <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} onReady={() => setMediaReady(true)} />
         <div className="hero-product-video-mask" />
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
@@ -2326,7 +2360,7 @@ function Hero() {
               Start a conversation
               <ArrowRight size={16} aria-hidden="true" />
             </a>
-            <a className="hero-flow-cue" href="#programs">
+            <a className="hero-flow-cue" href="#programs" onClick={handleFlowCue}>
               <span>How it works</span>
               <span className="hero-flow-cue-mark" aria-hidden="true">
                 <ArrowDown size={14} />
@@ -3248,7 +3282,8 @@ function ProjectForm({ className = "" }: { className?: string }) {
 
         <button type="submit" className="button button-primary large form-submit">
           <span className="form-submit-label">Send request</span>
-          <ArrowRight size={16} aria-hidden="true" />
+          <ArrowRight className="form-submit-arrow" size={16} aria-hidden="true" />
+          <Check className="form-submit-check" size={16} strokeWidth={2.5} aria-hidden="true" />
         </button>
         <p className="cta-trust form-cta-trust">Reply within 1 business day · No obligation</p>
         <a className="form-privacy-link" href="/privacy-policy/">Privacy policy</a>
@@ -4126,7 +4161,7 @@ function ServicePage({ service }: { service: ServicePageConfig }) {
   return (
     <>
       <PageChrome />
-      <main id="main-content" tabIndex={-1} className="service-page compact-service-page">
+      <main id="main-content" tabIndex={-1} className={`${interiorPageStyles.page} service-page compact-service-page`}>
         <section className="compact-service-hero">
           <div className="compact-service-hero-inner">
             <div>
@@ -4244,7 +4279,7 @@ function PricingPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="site-pricing-page" tabIndex={-1}>
+      <main id="main-content" className={`${interiorPageStyles.page} site-pricing-page`} tabIndex={-1}>
         <section className="site-pricing-services" id="priced-services" aria-labelledby="site-pricing-services-title">
           <div className="site-pricing-shell">
             <header className="site-pricing-section-head" data-reveal>
@@ -4363,7 +4398,7 @@ function ReviewTextingPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" tabIndex={-1} className="review-texting-page compact-service-page">
+      <main id="main-content" tabIndex={-1} className={`${interiorPageStyles.page} review-texting-page compact-service-page`}>
         <section className="review-texting-overview"><div className="compact-service-section-inner"><div><p className="review-texting-eyebrow">Automated Google Review Texting</p><h1>Turn more customers into Google reviews—automatically.</h1><p>DaytonGrowthCo sets up a professional text-message follow-up system that asks customers for an honest Google review after an appointment or completed service.</p></div>{cta}</div></section>
 
         <section className="review-texting-intro" aria-labelledby="review-texting-intro-title"><div className="compact-service-section-inner"><div><h2 id="review-texting-intro-title">A review request that does not depend on memory.</h2></div><div><p>Your customers already have an opinion about your business. The problem is consistently asking them to share it.</p><p>Automated Google Review Texting runs in the background after completed appointments and services. <strong>You handle the customer. The system handles the follow-up.</strong></p></div></div></section>
@@ -4443,7 +4478,7 @@ function WebsiteOwnershipCalculatorPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="ownership-calculator-page" tabIndex={-1}>
+      <main id="main-content" className={`${interiorPageStyles.page} ownership-calculator-page`} tabIndex={-1}>
         <section className="ownership-calculator-intro">
           <div className="ownership-calculator-shell">
             <div className="ownership-calculator-intro">
@@ -6307,11 +6342,33 @@ function ProgramMatch() {
 }
 
 function BetterQuotePreview() {
+  const reduceMotion = useReducedMotion();
   const [calculatorOpen, setCalculatorOpen] = useState(false);
+  const [visualVisible, setVisualVisible] = useState(false);
+  const visualRef = useRef<HTMLDivElement>(null);
   const currentQuote = 10000;
   const comparisonQuote = 7000;
   const grossDifference = currentQuote - comparisonQuote;
   const estimatedNetSavings = grossDifference - betterQuoteProgramFee(grossDifference);
+
+  useEffect(() => {
+    const visual = visualRef.current;
+    if (!visual) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setVisualVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setVisualVisible(true);
+        observer.disconnect();
+      },
+      { threshold: 0.28, rootMargin: "0px 0px -8% 0px" },
+    );
+    observer.observe(visual);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
 
   return (
     <section className={`${homepageClarityStyles.quoteSection} homepage-component`} aria-labelledby="home-quote-preview-title">
@@ -6325,7 +6382,12 @@ function BetterQuotePreview() {
           </a>
         </header>
 
-        <div className={homepageClarityStyles.quoteVisual} aria-label="Illustrative quote comparison">
+        <div
+          ref={visualRef}
+          className={homepageClarityStyles.quoteVisual}
+          data-visible={visualVisible ? "true" : "false"}
+          aria-label="Illustrative quote comparison"
+        >
           <div className={homepageClarityStyles.quoteBarRow}>
             <span>Current quote</span>
             <div><i style={{ inlineSize: "100%" }} /></div>
@@ -6356,6 +6418,7 @@ function BetterQuotePreview() {
 }
 
 function HowWeWork() {
+  const [activeStep, setActiveStep] = useState(0);
   const steps = [
     { title: "Map the work", text: "We find the handoffs, follow-ups, and bottlenecks worth fixing first." },
     { title: "Build the right system", text: "We configure the tools, rules, and connections around the way your team actually works." },
@@ -6370,12 +6433,31 @@ function HowWeWork() {
           <h2 id="homepage-process-title">Technology that fits the work.</h2>
           <p>One operating problem. One useful system. A clear handoff at every step.</p>
         </div>
-        <ol className={homepageClarityStyles.processDiagram} aria-label="How DaytonGrowthCo works with a team">
+        <ol
+          className={homepageClarityStyles.processDiagram}
+          aria-label="How DaytonGrowthCo works with a team"
+          style={{ "--process-progress": activeStep / Math.max(steps.length - 1, 1) } as React.CSSProperties}
+        >
           {steps.map((step, index) => (
-            <li key={step.title} className={homepageClarityStyles.processStep}>
-              <span className={homepageClarityStyles.processNode} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <strong>{step.title}</strong>
-              <p>{step.text}</p>
+            <li
+              key={step.title}
+              className={homepageClarityStyles.processStep}
+              data-active={activeStep === index ? "true" : "false"}
+            >
+              <button
+                type="button"
+                className={homepageClarityStyles.processTrigger}
+                aria-pressed={activeStep === index}
+                onClick={() => setActiveStep(index)}
+                onFocus={() => setActiveStep(index)}
+                onPointerEnter={(event) => {
+                  if (event.pointerType !== "touch") setActiveStep(index);
+                }}
+              >
+                <span className={homepageClarityStyles.processNode} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <strong>{step.title}</strong>
+                <p>{step.text}</p>
+              </button>
             </li>
           ))}
         </ol>
@@ -6478,8 +6560,44 @@ type PageHubIntroProps = {
 };
 
 function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
+  const introRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const [activeStage, setActiveStage] = useState(0);
+  const [progressVisible, setProgressVisible] = useState(false);
+
+  useEffect(() => {
+    const intro = introRef.current;
+    const page = intro?.closest("main");
+    if (!intro || !page) return;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const pageRect = page.getBoundingClientRect();
+      const available = Math.max(page.scrollHeight - window.innerHeight, 1);
+      const progress = Math.max(0, Math.min(1, -pageRect.top / available));
+      if (progressRef.current) progressRef.current.style.transform = `scaleY(${progress})`;
+      const nextStage = Math.min(stages.length - 1, Math.floor(progress * stages.length));
+      setActiveStage((current) => current === nextStage ? current : nextStage);
+      const shouldShow = pageRect.top < -48 && pageRect.bottom > window.innerHeight * 0.55;
+      setProgressVisible((current) => current === shouldShow ? current : shouldShow);
+    };
+    const queueUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", queueUpdate, { passive: true });
+    window.addEventListener("resize", queueUpdate);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", queueUpdate);
+      window.removeEventListener("resize", queueUpdate);
+    };
+  }, [stages]);
+
   return (
-    <header className={`${interiorPageStyles.intro} page-hub-intro`}>
+    <header ref={introRef} className={`${interiorPageStyles.intro} page-hub-intro`}>
       <div className={`${interiorPageStyles.introInner} page-hub-intro-inner`}>
         <div className={`${interiorPageStyles.titleBlock} page-hub-title-block`} data-reveal>
           <span className={interiorPageStyles.eyebrow}>{eyebrow}</span>
@@ -6493,7 +6611,7 @@ function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
           </div>
           <ol className={interiorPageStyles.signalList}>
             {stages.map((stage, index) => (
-              <li className={interiorPageStyles.signalRow} key={stage}>
+              <li className={interiorPageStyles.signalRow} data-active={activeStage === index ? "true" : "false"} key={stage}>
                 <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <strong>{stage}</strong>
                 <i aria-hidden="true" />
@@ -6501,6 +6619,15 @@ function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
             ))}
           </ol>
         </aside>
+      </div>
+      <div
+        className={interiorPageStyles.localNavigator}
+        data-visible={progressVisible ? "true" : "false"}
+        aria-hidden="true"
+      >
+        <span className={interiorPageStyles.localNavigatorLabel}>{stages[activeStage]}</span>
+        <span className={interiorPageStyles.localNavigatorTrack}><span ref={progressRef} /></span>
+        <span>{String(activeStage + 1).padStart(2, "0")}</span>
       </div>
     </header>
   );

@@ -125,6 +125,9 @@
   align-items: center;
   color: #f4f6f7;
   border-bottom: 1px solid var(--interior-line-dark);
+  transition:
+    background-color var(--dgc-duration-fast, 150ms) ease,
+    transform var(--dgc-duration-fast, 150ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .signalRow:last-child { border-bottom: 0; }
@@ -141,7 +144,14 @@
   font-size: 0.9rem;
   font-weight: 610;
   line-height: 1.3;
+  transition: color var(--dgc-duration-fast, 150ms) ease;
 }
+
+.signalRow[data-active="true"] {
+  background: rgba(126, 179, 218, 0.07);
+}
+
+.signalRow[data-active="true"] strong { color: #b8daf0; }
 
 .signalRow i {
   position: relative;
@@ -166,6 +176,76 @@
 .signalRow:nth-child(1) { --trace: 0.48; }
 .signalRow:nth-child(2) { --trace: 0.74; }
 .signalRow:nth-child(3) { --trace: 1; }
+
+.localNavigator {
+  position: fixed;
+  z-index: 20;
+  top: 50%;
+  right: max(1.25rem, env(safe-area-inset-right));
+  display: grid;
+  width: 2.75rem;
+  min-height: 9rem;
+  padding: 0.7rem 0.55rem;
+  grid-template-rows: minmax(0, 1fr) 3.5rem auto;
+  gap: 0.6rem;
+  justify-items: center;
+  color: rgba(237, 243, 246, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(8, 13, 17, 0.82);
+  box-shadow: 0 0.75rem 2.5rem rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0.5rem, -50%);
+  transition:
+    opacity var(--dgc-duration-standard, 220ms) ease,
+    transform var(--dgc-duration-standard, 220ms) var(--dgc-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+  backdrop-filter: blur(12px);
+}
+
+.localNavigator[data-visible="true"] {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.localNavigatorLabel {
+  overflow: hidden;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-orientation: mixed;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+.localNavigatorTrack {
+  position: relative;
+  display: block;
+  width: 2px;
+  height: 3.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.localNavigatorTrack > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(#8fb9d8, #b9d7ea);
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+
+.localNavigator > span:last-child {
+  color: #a6cde6;
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 720;
+}
 
 .sectionShell {
   width: min(calc(100% - (2 * var(--dgc-gutter, clamp(1.25rem, 3vw, 2.5rem)))), var(--dgc-container, 76rem));
@@ -217,7 +297,11 @@
 .page :global(.advanced-preview-console),
 .page :global(.phone-agent-demo),
 .page :global(.labor-console),
-.page :global(.about-founder-portrait) {
+.page :global(.about-founder-portrait),
+.page :global(.site-pricing-selector-card),
+.page :global(.compact-related-grid > a),
+.page :global(.compact-service-outcomes > li),
+.page :global(.review-texting-benefits > li) {
   box-shadow:
     0 0 0 1px rgba(32, 35, 31, 0.065),
     0 1rem 3rem rgba(20, 28, 24, 0.06) !important;
@@ -247,7 +331,9 @@
 .page :global(.products-flagship-grid article),
 .page :global(.products-operating-grid > a),
 .page :global(.discovery-path article),
-.page :global(.engagement-faq-item) {
+.page :global(.engagement-faq-item),
+.page :global(.site-pricing-selector-card),
+.page :global(.compact-related-grid > a) {
   transition:
     border-color 180ms ease,
     background-color 180ms ease,
@@ -270,6 +356,11 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .signalRow:hover {
+    background: rgba(126, 179, 218, 0.055);
+    transform: translateX(3px);
+  }
+
   .page :global(.products-flagship-grid article:hover) {
     transform: translateY(-3px);
     box-shadow:
@@ -294,6 +385,15 @@
   .page :global(.engagement-faq-item:hover) {
     border-color: rgba(49, 95, 130, 0.28) !important;
     background: rgba(79, 130, 168, 0.035) !important;
+  }
+
+  .page :global(.site-pricing-selector-card:hover),
+  .page :global(.compact-related-grid > a:hover) {
+    border-color: rgba(49, 95, 130, 0.2) !important;
+    box-shadow:
+      0 0 0 1px rgba(49, 95, 130, 0.08),
+      0 1.25rem 3rem rgba(20, 28, 24, 0.08) !important;
+    transform: translateY(-2px);
   }
 }
 
@@ -329,6 +429,8 @@
 }
 
 @media (max-width: 64rem) {
+  .localNavigator { display: none; }
+
   :global(main#main-content).page:global(.dedicated-page) .introInner {
     grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.72fr) !important;
     gap: clamp(2rem, 5vw, 3.5rem) !important;
@@ -366,11 +468,16 @@
 @media (prefers-reduced-motion: reduce) {
   .signal::after { display: none; }
   .signalRow i::after { animation: none; }
+  .signalRow,
+  .signalRow strong,
+  .localNavigator { transition: none; }
 
   .page :global(.products-flagship-grid article),
   .page :global(.products-operating-grid > a),
   .page :global(.discovery-path article),
   .page :global(.engagement-faq-item),
+  .page :global(.site-pricing-selector-card),
+  .page :global(.compact-related-grid > a),
   .page :global(.products-flagship-grid article > a svg),
   .page :global(.products-operating-grid > a > svg),
   .page :global(.about-founder-cta svg),
