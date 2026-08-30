@@ -6,6 +6,7 @@ import "./calculator.css";
 import "./financial-summary.css";
 import "./cost-visibility.css";
 import "./minimal-refresh.css";
+import "./team-planner.css";
 
 type Mode = "goal" | "forecast";
 type PeriodView = "monthly" | "annual";
@@ -115,6 +116,26 @@ export default function ProfitCalculatorPage() {
   const annual = useMemo(() => sumPeriods(months), [months]);
   const selected = forecastPeriod === "monthly" ? monthly : annual;
   const maxChart = Math.max(1, ...months.map(item => Math.max(item.cashCollected, item.cashProfit)));
+  useEffect(() => {
+    const output = document.querySelector(".financial-output");
+    if (!output) return;
+    let planner = output.querySelector<HTMLElement>("#team-planner");
+    if (!planner) {
+      planner = document.createElement("details");
+      planner.id = "team-planner";
+      planner.className = "team-planner";
+      output.append(planner);
+    }
+    const cashPerClient = model.annualShare * 2500 + model.monthlyShare * 250;
+    const netPerClient = Math.max(1, (cashPerClient * (1 - rate(state.processing)) - state.onboarding - state.service) * (1 - rate(state.tax)));
+    planner.innerHTML = `<summary><span>Build the team later <small>Optional planning</small></span><span>⌄</span></summary><div class="team-planner-body"><p>Try a future hire. This does not change your forecast until you decide it is real.</p><label>Monthly cost <input type="number" min="0" step="500" value="4500" /></label><strong></strong><span class="team-planner-note">A closer, appointment setter, or operations hire can be tested here.</span></div>`;
+    const input = planner.querySelector<HTMLInputElement>("input");
+    const answer = planner.querySelector("strong");
+    const refresh = () => { if (input && answer) answer.textContent = `${number((Number(input.value) || 0) / netPerClient, 1)} additional clients per month covers this hire.`; };
+    input?.addEventListener("input", refresh);
+    refresh();
+    return () => input?.removeEventListener("input", refresh);
+  }, [model, state.processing, state.tax, state.onboarding, state.service]);
   const downloadCsv = () => { const rows = [["Month", "New clients", "Cash collected", "Recognized revenue", "Monthly operating costs", "Annual and setup costs", "Onboarding", "Service", "Processing", "Estimated tax", "Cash profit"], ...months.map(item => [item.month, item.clients.toFixed(2), item.cashCollected.toFixed(2), item.recognizedRevenue.toFixed(2), item.operating.toFixed(2), item.annualAndSetup.toFixed(2), item.onboarding.toFixed(2), item.service.toFixed(2), item.processing.toFixed(2), item.estimatedTax.toFixed(2), item.cashProfit.toFixed(2)])]; const blob = new Blob([rows.map(row => row.join(",")).join("\n")], { type: "text/csv" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "daytongrowthco-profit-forecast.csv"; link.click(); URL.revokeObjectURL(link.href); };
   const reset = () => { setState(DEFAULTS); setMode("goal"); setScenario("expected"); setForecastPeriod("monthly"); };
 
