@@ -5,6 +5,7 @@ import { ChevronDown, Download, Info, Mail, Phone, Printer, RotateCcw, WalletCar
 import "./calculator.css";
 import "./financial-summary.css";
 import "./cost-visibility.css";
+import "./minimal-refresh.css";
 
 type Mode = "goal" | "forecast";
 type PeriodView = "monthly" | "annual";
