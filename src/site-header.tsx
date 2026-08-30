@@ -208,6 +208,10 @@ export function Header() {
               </Link>
             );
           })}
+          <Link className="mobile-nav-offer" href="/systems-that-pay/" onClick={handleMobileNavigation}>
+            Free homepage redesign
+            <ArrowRight size={15} aria-hidden="true" />
+          </Link>
           {isHome ? (
             <a className="button button-primary" href="#cta" onClick={() => { restoreMobileFocusRef.current = false; setMobileOpen(false); }}>
               Start a conversation

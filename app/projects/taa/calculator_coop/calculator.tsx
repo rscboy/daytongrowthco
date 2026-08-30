@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Check, Clipboard, Maximize2, Minimize2, RotateCcw, Share2 } from "lucide-react";
 import "./calculator.css";
+import "./calculator-overhaul.css";
 
 type PresetKey = "river" | "general" | "ceiling" | "riverStress" | "generalStress";
 
@@ -188,7 +189,8 @@ function formatRecovery(model: Model) {
   if (model.recoveryState === "not-reached") return "Not reached";
   if (model.recoveryState === "over") return "Over 12 months";
   if (!model.recoveryMonth || model.recoveryMonth < 1) return "Under 1 month";
-  return `${number(model.recoveryMonth, 1)} months`;
+  const recoveryMonth = Number(model.recoveryMonth.toFixed(1));
+  return `${number(recoveryMonth, 1)} ${recoveryMonth === 1 ? "month" : "months"}`;
 }
 
 function CashFlowChart({ rows, fee }: { rows: ProjectionRow[]; fee: number }) {

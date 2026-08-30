@@ -1,0 +1,247 @@
+/* 2026 sales-call overhaul. Kept as an additive layer so the original model styles remain available to legacy routes. */
+.taa-calculator {
+  --taa-bg: #07100f;
+  --taa-bg-soft: #0c1715;
+  --taa-paper: #f2f5f0;
+  --taa-ink: #0b1512;
+  --taa-muted: #64706a;
+  --taa-teal: #13b9b4;
+  --taa-teal-dark: #078984;
+  --taa-line-dark: rgba(232,244,238,.13);
+  --taa-line-light: rgba(10,25,20,.12);
+  --taa-ease: cubic-bezier(.16,1,.3,1);
+  position: relative;
+  min-height: 100dvh;
+  overflow: clip;
+  padding: 0;
+  background: var(--taa-bg);
+  color: var(--taa-paper);
+  font-family: "Hanken Grotesk Variable", "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: "wght" 480;
+}
+.taa-calculator::before { content: none; }
+.taa-calculator *, .taa-calculator *::before, .taa-calculator *::after { box-sizing: border-box; }
+.taa-calculator button, .taa-calculator input, .taa-calculator select { font: inherit; }
+
+.taa-ambient { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
+.taa-ambient::after { position: absolute; inset: 0; background-image: radial-gradient(rgba(41,205,198,.17) .7px,transparent .8px); background-size: 34px 34px; content: ""; opacity: .2; mask-image: linear-gradient(to bottom,#000,transparent 82%); }
+.taa-ambient i { position: absolute; width: 36rem; aspect-ratio: 1; border-radius: 50%; background: rgba(19,185,180,.11); filter: blur(100px); animation: taa-drift 16s ease-in-out infinite alternate; }
+.taa-ambient i:first-child { top: -20rem; right: -8rem; }
+.taa-ambient i:last-child { bottom: -24rem; left: 12%; animation-delay: -8s; }
+
+.taa-calculator .taa-shell { position: relative; z-index: 1; width: min(1440px,calc(100% - 48px)); margin: 0 auto; padding-bottom: 4rem; }
+.taa-calculator .taa-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; min-height: 76px; padding: 0; border-bottom: 1px solid var(--taa-line-dark); }
+.taa-calculator .taa-brand-lockup { display: inline-flex; grid-row: auto; align-items: center; gap: .8rem; min-width: 0; margin: 0; color: var(--taa-paper); line-height: 1.1; letter-spacing: normal; }
+.taa-calculator .taa-brand-mark { display: grid; flex: 0 0 38px; width: 38px; height: auto; aspect-ratio: 1; place-items: center; border: 1px solid rgba(255,255,255,.42); border-radius: 50%; color: var(--taa-teal); font-size: .66rem; font-weight: 850; letter-spacing: -.06em; transform: rotate(-11deg); }
+.taa-brand-lockup > span:last-child { min-width: 0; }
+.taa-brand-lockup strong, .taa-brand-lockup small { display: block; white-space: nowrap; }
+.taa-calculator .taa-brand-lockup strong { font-size: .82rem; font-weight: 720; }
+.taa-brand-lockup small { margin-top: .1rem; color: rgba(242,245,240,.46); font-size: .7rem; }
+.taa-live-status { display: inline-flex; align-items: center; gap: .5rem; color: rgba(242,245,240,.58); font-size: .72rem; }
+.taa-live-status i { width: 6px; height: 6px; border-radius: 50%; background: var(--taa-teal); box-shadow: 0 0 0 5px rgba(19,185,180,.12); }
+.taa-calculator .taa-header-actions { display: flex; justify-content: flex-end; gap: .45rem; }
+.taa-icon-button, .taa-presentation-button, .taa-calculator .taa-reset { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: .45rem; border: 1px solid var(--taa-line-dark); background: rgba(255,255,255,.035); color: rgba(242,245,240,.82); cursor: pointer; transition: border-color 180ms ease,background 180ms ease,color 180ms ease,transform 180ms var(--taa-ease); }
+.taa-icon-button { position: relative; width: 40px; border-radius: 50%; }
+.taa-icon-button span { position: absolute; top: calc(100% + 8px); right: 0; border-radius: 6px; background: var(--taa-paper); color: var(--taa-ink); padding: .3rem .45rem; font-size: .66rem; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.taa-presentation-button { min-width: 100px; border-color: rgba(19,185,180,.45); border-radius: 999px; color: #baf2ef; padding: 0 .9rem; font-size: .76rem; font-weight: 650; }
+.taa-icon-button:hover, .taa-presentation-button:hover, .taa-calculator .taa-reset:hover { border-color: var(--taa-teal); background: rgba(19,185,180,.12); color: #fff; transform: translateY(-1px); }
+.taa-icon-button:active, .taa-presentation-button:active, .taa-calculator .taa-reset:active { transform: scale(.97); }
+.taa-icon-button:focus-visible, .taa-presentation-button:focus-visible, .taa-calculator .taa-reset:focus-visible, .taa-number:focus-visible, .taa-range:focus-visible, .taa-scenario-select select:focus-visible, .taa-advanced summary:focus-visible, .taa-detail-drawer summary:focus-visible { outline: 3px solid rgba(19,185,180,.55); outline-offset: 3px; }
+
+.taa-calculator .taa-layout { display: grid; grid-template-columns: minmax(320px,370px) minmax(0,1fr); align-items: start; gap: 16px; padding-top: 18px; }
+.taa-calculator .taa-input-panel { position: sticky; top: 18px; overflow: hidden; border: 1px solid var(--taa-line-dark); border-radius: 20px; background: rgba(255,255,255,.035); padding: clamp(1.35rem,2.2vw,1.8rem); box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(18px); }
+.taa-input-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 1.35rem; }
+.taa-input-heading h1 { max-width: 9ch; margin: 0; color: #fff; font-size: clamp(1.7rem,2.6vw,2.25rem); font-weight: 620; letter-spacing: -.055em; line-height: .98; text-wrap: balance; }
+.taa-input-heading > span { color: rgba(242,245,240,.28); font-size: .7rem; }
+.taa-calculator .taa-eyebrow { margin: 0 0 .55rem; color: var(--taa-teal); font-size: .67rem; font-weight: 720; letter-spacing: .12em; text-transform: uppercase; }
+.taa-calculator .taa-scenario-select { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; border-top: 1px solid var(--taa-line-dark); border-bottom: 1px solid var(--taa-line-dark); padding: .85rem 0; color: inherit; font-size: inherit; letter-spacing: normal; text-transform: none; }
+.taa-scenario-select > span { color: rgba(242,245,240,.52); font-size: .76rem; }
+.taa-calculator .taa-scenario-select select { max-width: 160px; border: 0; border-radius: 8px; outline: 0; background: rgba(255,255,255,.07); color: #fff; cursor: pointer; padding: .48rem .65rem; font-size: .76rem; font-weight: 650; letter-spacing: 0; text-transform: none; }
+.taa-scenario-select option { background: var(--taa-bg-soft); color: #fff; }
+
+.taa-calculator .taa-fields { display: grid; gap: 0; padding: 0; }
+.taa-calculator .taa-field { padding: 1.08rem 0 .95rem; border-bottom: 1px solid var(--taa-line-dark); }
+.taa-calculator .taa-field-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0; }
+.taa-field-heading > div:first-child { min-width: 0; }
+.taa-field-heading label, .taa-field-heading span { display: block; }
+.taa-calculator .taa-field-heading label { color: rgba(247,250,247,.9); font-size: .82rem; font-weight: 620; line-height: 1.15; }
+.taa-field-heading > div:first-child > span { margin-top: .22rem; color: rgba(242,245,240,.38); font-size: .67rem; }
+.taa-calculator .taa-number-wrap { display: flex; flex: 0 0 112px; min-height: 42px; align-items: center; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; background: rgba(255,255,255,.055); box-shadow: none; transition: border-color 160ms ease,background 160ms ease; }
+.taa-number-wrap:focus-within { border-color: var(--taa-teal); background: rgba(19,185,180,.08); }
+.taa-calculator .taa-input-affix { color: rgba(242,245,240,.42); font-size: .78rem; padding: 0 .1rem 0 .65rem; }
+.taa-number-wrap .taa-input-affix:last-child { padding: 0 .65rem 0 .1rem; }
+.taa-calculator .taa-number { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #fff; padding: .55rem .35rem; font-size: .91rem; font-weight: 620; font-variant-numeric: tabular-nums; }
+.taa-number::-webkit-outer-spin-button, .taa-number::-webkit-inner-spin-button { margin: 0; appearance: none; }
+.taa-calculator .taa-range { display: block; width: 100%; height: 18px; margin: .72rem 0 -.25rem; appearance: none; background: transparent; cursor: pointer; }
+.taa-range::-webkit-slider-runnable-track { height: 2px; border-radius: 99px; background: linear-gradient(90deg,rgba(19,185,180,.8),rgba(255,255,255,.15)); }
+.taa-range::-webkit-slider-thumb { width: 17px; height: 17px; margin-top: -7px; appearance: none; border: 4px solid var(--taa-bg-soft); border-radius: 50%; background: var(--taa-paper); box-shadow: 0 0 0 1px rgba(255,255,255,.45); }
+.taa-range::-moz-range-track { height: 2px; background: rgba(255,255,255,.18); }
+.taa-range::-moz-range-thumb { width: 11px; height: 11px; border: 4px solid var(--taa-bg-soft); border-radius: 50%; background: var(--taa-paper); }
+.taa-calculator .taa-advanced { margin: 0; border-top: 0; border-bottom: 1px solid var(--taa-line-dark); }
+.taa-calculator .taa-advanced summary { position: relative; display: flex; flex-direction: column; gap: .18rem; padding: 1rem 1.4rem 1rem 0; color: inherit; cursor: pointer; list-style: none; }
+.taa-advanced summary::-webkit-details-marker, .taa-detail-drawer summary::-webkit-details-marker { display: none; }
+.taa-calculator .taa-advanced summary::after { top: 1.2rem; right: .2rem; width: 7px; height: 7px; border-color: rgba(255,255,255,.6); }
+.taa-calculator .taa-advanced summary span { color: rgba(247,250,247,.86); font-size: .78rem; font-weight: 620; }
+.taa-calculator .taa-advanced summary small { color: rgba(242,245,240,.37); font-size: .67rem; }
+.taa-advanced-fields { display: grid; gap: .2rem; padding-bottom: 1rem; }
+.taa-field-pair, .taa-upside-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .85rem; }
+.taa-field-pair .taa-field-heading { align-items: flex-start; flex-direction: column; }
+.taa-field-pair .taa-number-wrap { width: 100%; flex-basis: auto; }
+.taa-calculator .taa-upside { padding-top: 1rem; border-top: 0; }
+.taa-switch-row { display: flex; align-items: center; gap: .7rem; cursor: pointer; }
+.taa-switch-row input { position: absolute; opacity: 0; }
+.taa-calculator .taa-switch { position: relative; width: 34px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.18); }
+.taa-calculator .taa-switch::after { top: 3px; left: 3px; width: 14px; height: 14px; }
+.taa-switch-row input:checked + .taa-switch { background: var(--taa-teal); }
+.taa-switch-row input:checked + .taa-switch::after { transform: translateX(14px); }
+.taa-switch-row strong, .taa-switch-row small { display: block; }
+.taa-calculator .taa-switch-row strong { color: rgba(247,250,247,.88); font-size: .75rem; font-weight: 620; }
+.taa-calculator .taa-switch-row small { color: rgba(242,245,240,.38); font-size: .64rem; }
+.taa-calculator .taa-reset { width: 100%; margin: 1rem 0 0; border: 0; border-radius: 8px; background: transparent; padding: .45rem; color: rgba(242,245,240,.48); font-size: .72rem; }
+
+.taa-calculator .taa-results { width: auto; min-width: 0; margin: 0; }
+.taa-result-hero { position: relative; overflow: hidden; min-height: 680px; border-radius: 20px; background: var(--taa-paper); color: var(--taa-ink); padding: clamp(1.8rem,4vw,4.25rem); box-shadow: 0 34px 100px rgba(0,0,0,.22); }
+.taa-result-hero::after { position: absolute; right: -8rem; bottom: -12rem; width: 30rem; aspect-ratio: 1; border-radius: 50%; background: rgba(19,185,180,.1); filter: blur(70px); content: ""; pointer-events: none; }
+.taa-result-topline { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.taa-calculator .taa-campaign-tag { border: 1px solid rgba(7,137,132,.26); border-radius: 999px; background: rgba(19,185,180,.08); color: var(--taa-teal-dark); padding: .48rem .72rem; font-size: .69rem; font-weight: 650; white-space: nowrap; }
+.taa-calculator .taa-result-hero h2 { position: relative; z-index: 1; max-width: 11.5ch; margin: clamp(2rem,5vh,4rem) 0 0; color: var(--taa-ink); font-size: clamp(3.45rem,7.1vw,7.4rem); font-weight: 540; letter-spacing: -.082em; line-height: .82; text-wrap: balance; animation: taa-result-in 520ms var(--taa-ease) both; }
+.taa-result-hero h2 em { color: var(--taa-teal-dark); font-style: normal; font-variation-settings: "wght" 760; }
+.taa-result-hero h2 i { color: var(--taa-ink); font-style: italic; font-variation-settings: "wght" 400; }
+.taa-result-summary { position: relative; z-index: 1; max-width: 46rem; margin: 1.6rem 0 0; color: #66716b; font-size: clamp(.95rem,1.3vw,1.12rem); line-height: 1.48; }
+.taa-result-summary strong { color: var(--taa-ink); font-weight: 680; }
+.taa-path { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1.2fr; align-items: center; gap: .4rem; margin-top: clamp(2.5rem,6vh,4.6rem); border-top: 1px solid var(--taa-line-light); border-bottom: 1px solid var(--taa-line-light); padding: 1.15rem 0; }
+.taa-path > div { min-width: 0; }
+.taa-path span, .taa-path strong { display: block; }
+.taa-path span { color: #78827d; font-size: .67rem; }
+.taa-path strong { margin-top: .25rem; color: var(--taa-ink); font-size: clamp(1.05rem,1.7vw,1.4rem); font-weight: 720; letter-spacing: -.045em; font-variant-numeric: tabular-nums; animation: taa-value-in 250ms var(--taa-ease) both; }
+.taa-path > i { position: relative; display: block; width: 100%; height: 1px; background: #cbd3ce; }
+.taa-path > i::after { position: absolute; top: -3px; right: 0; width: 7px; height: 7px; border-top: 1px solid #9ba6a0; border-right: 1px solid #9ba6a0; content: ""; transform: rotate(45deg); }
+.taa-path .taa-path-result { border-radius: 10px; background: var(--taa-ink); padding: .7rem .85rem; }
+.taa-path .taa-path-result span { color: rgba(255,255,255,.55); }
+.taa-path .taa-path-result strong { color: #fff; }
+.taa-outcomes { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 1.5rem; }
+.taa-calculator .taa-metric { min-width: 0; padding: .25rem clamp(.7rem,1.5vw,1.35rem); }
+.taa-outcomes .taa-metric:first-child { padding-left: 0; }
+.taa-outcomes .taa-metric + .taa-metric { border-left: 1px solid var(--taa-line-light); }
+.taa-metric > span, .taa-metric > small { display: block; color: var(--taa-muted); }
+.taa-calculator .taa-metric > span { font-size: .69rem; }
+.taa-calculator .taa-metric > strong { display: block; margin: .46rem 0 .28rem; color: var(--taa-ink); font-size: clamp(1.4rem,2.6vw,2.35rem); font-weight: 720; letter-spacing: -.065em; line-height: .95; font-variant-numeric: tabular-nums; animation: taa-value-in 270ms var(--taa-ease) both; }
+.taa-calculator .taa-metric > small { color: var(--taa-muted); font-size: .66rem; line-height: 1.38; }
+.taa-calculator .taa-metric-positive > strong { color: var(--taa-teal-dark); }
+.taa-calculator .taa-metric-negative > strong, .taa-negative { color: #a63d37 !important; }
+.taa-calculator .taa-positive { color: var(--taa-teal-dark); }
+.taa-present-chart { display: none; }
+
+.taa-detail-stack { display: grid; margin-top: 12px; }
+.taa-detail-drawer { margin: 0; border-top: 0; border-bottom: 1px solid var(--taa-line-dark); }
+.taa-detail-drawer:first-child { border-top: 1px solid var(--taa-line-dark); }
+.taa-detail-drawer > summary { display: flex; min-height: 80px; align-items: center; justify-content: space-between; gap: 1rem; color: var(--taa-paper); cursor: pointer; list-style: none; padding: .8rem .2rem; }
+.taa-detail-drawer > summary > span { display: flex; align-items: center; gap: 1rem; }
+.taa-detail-drawer > summary b { color: rgba(242,245,240,.3); font-size: .68rem; font-weight: 520; }
+.taa-detail-drawer > summary strong, .taa-detail-drawer > summary small { display: block; }
+.taa-detail-drawer > summary strong { font-size: .9rem; font-weight: 620; }
+.taa-detail-drawer > summary small { margin-top: .18rem; color: rgba(242,245,240,.4); font-size: .68rem; }
+.taa-detail-drawer > summary > i { position: relative; width: 30px; height: 30px; border: 1px solid var(--taa-line-dark); border-radius: 50%; transition: background 180ms ease,transform 250ms var(--taa-ease); }
+.taa-detail-drawer > summary > i::before, .taa-detail-drawer > summary > i::after { position: absolute; top: 50%; left: 50%; width: 10px; height: 1px; background: rgba(255,255,255,.72); content: ""; transform: translate(-50%,-50%); }
+.taa-detail-drawer > summary > i::after { transform: translate(-50%,-50%) rotate(90deg); }
+.taa-detail-drawer[open] > summary > i { background: var(--taa-teal); transform: rotate(45deg); }
+.taa-detail-body { padding: .5rem 0 1.5rem; animation: taa-detail-in 320ms var(--taa-ease) both; }
+.taa-calculator .taa-visual-grid { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(280px,.75fr); gap: 12px; margin: 0; }
+.taa-calculator .taa-subpanel { min-width: 0; border: 0; border-radius: 16px; background: var(--taa-paper); color: var(--taa-ink); padding: clamp(1.2rem,2.2vw,1.7rem); box-shadow: none; }
+.taa-calculator .taa-subpanel-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding-bottom: .9rem; border-bottom: 1px solid var(--taa-line-light); }
+.taa-subpanel-heading h3 { margin: 0; font-size: 1.14rem; font-weight: 650; letter-spacing: -.035em; }
+.taa-subpanel-heading > span { color: var(--taa-teal-dark); font-size: .7rem; font-weight: 650; }
+.taa-calculator .taa-chart { padding-top: 1rem; }
+.taa-chart-legend { display: flex; gap: 1rem; color: var(--taa-muted); font-size: .64rem; }
+.taa-chart-legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.taa-legend-line, .taa-legend-zero { width: 16px; border-top: 2px solid var(--taa-teal); }
+.taa-legend-zero { border-top: 1px dashed #9ca6a1; }
+.taa-calculator .taa-chart svg { display: block; width: 100%; height: 190px; margin-top: .65rem; overflow: visible; }
+.taa-calculator .taa-flow-fill { fill: rgba(19,185,180,.12); }
+.taa-calculator .taa-flow-line { fill: none; stroke: var(--taa-teal-dark); stroke-width: 1.65; vector-effect: non-scaling-stroke; }
+.taa-calculator .taa-zero-line { stroke: #a5aea9; stroke-width: .65; vector-effect: non-scaling-stroke; }
+.taa-chart-axis { display: flex; justify-content: space-between; color: #8a938e; font-size: .62rem; }
+.taa-chart-caption { margin: .8rem 0 0; color: var(--taa-muted); font-size: .71rem; }
+.taa-funnel { display: grid; gap: 1rem; padding-top: 1.05rem; }
+.taa-funnel > div { display: grid; grid-template-columns: 1fr auto; gap: .4rem; }
+.taa-funnel span { color: var(--taa-muted); font-size: .7rem; }
+.taa-funnel strong { font-size: .79rem; font-weight: 680; }
+.taa-calculator .taa-funnel i { display: block; grid-column: 1/-1; height: 4px; border-radius: 99px; background: var(--taa-teal); }
+.taa-metric-grid-detail { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; overflow: hidden; margin-top: 12px; border-radius: 16px; background: #d8ded9; }
+.taa-metric-grid-detail .taa-metric { background: var(--taa-paper); padding: 1.25rem; }
+.taa-calculator .taa-metric-grid-detail .taa-metric > strong { font-size: 1.35rem; }
+.taa-calculator .taa-table-wrap { overflow-x: auto; border-radius: 16px; background: var(--taa-paper); color: var(--taa-ink); padding: .65rem 1.25rem 1rem; }
+.taa-calculator .taa-projection { margin: 0; }
+.taa-projection table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .73rem; }
+.taa-projection th, .taa-projection td { padding: .82rem .4rem; border-bottom: 1px solid var(--taa-line-light); text-align: right; }
+.taa-projection th:first-child, .taa-projection td:first-child { text-align: left; }
+.taa-projection thead th { color: var(--taa-muted); font-size: .61rem; font-weight: 650; }
+.taa-calculator .taa-footnote { display: grid; gap: .65rem; padding: 1.2rem .15rem 0; color: inherit; }
+.taa-footnote-meta { display: flex; justify-content: space-between; gap: 1rem; color: rgba(242,245,240,.38); font-size: .66rem; }
+.taa-calculator .taa-disclaimer { max-width: 78rem; margin: 0; color: rgba(242,245,240,.43); font-size: .67rem; line-height: 1.5; }
+
+.taa-calculator.is-presenting { position: fixed; z-index: 50; inset: 0; overflow-y: auto; padding: 0; }
+.is-presenting .taa-shell { width: min(1600px,calc(100% - 48px)); min-height: 100dvh; padding-bottom: 18px; }
+.taa-calculator.is-presenting .taa-header { min-height: 70px; grid-template-columns: 1fr auto; justify-content: stretch; border-bottom-color: transparent; }
+.is-presenting .taa-brand-lockup, .is-presenting .taa-live-status, .is-presenting .taa-icon-button, .is-presenting .taa-input-panel, .is-presenting .taa-detail-stack, .is-presenting .taa-footnote { display: none; }
+.is-presenting .taa-header-actions { grid-column: 2; }
+.taa-calculator.is-presenting .taa-layout { display: block; padding-top: 0; }
+.taa-calculator.is-presenting .taa-results { width: 100%; margin: 0; }
+.taa-calculator.is-presenting .taa-result-hero { display: flex; min-height: calc(100dvh - 88px); flex-direction: column; justify-content: center; border-radius: 26px; background: var(--taa-paper); padding: clamp(2.25rem,4vw,4rem); }
+.taa-calculator.is-presenting .taa-result-hero h2 { max-width: 13ch; margin-top: clamp(1.5rem,3vh,2.5rem); font-size: clamp(4.4rem,7.3vw,8rem); }
+.is-presenting .taa-result-summary { font-size: clamp(1.05rem,1.45vw,1.35rem); }
+.is-presenting .taa-path { margin-top: clamp(1.8rem,3.5vh,3rem); }
+.is-presenting .taa-outcomes { margin-top: 1.35rem; }
+.taa-calculator.is-presenting .taa-metric > strong { font-size: clamp(1.8rem,3vw,3.1rem); }
+.is-presenting .taa-present-chart { display: none; }
+
+@keyframes taa-drift { to { transform: translate3d(7vw,5vh,0) scale(1.12); } }
+@keyframes taa-result-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes taa-value-in { from { opacity: .2; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@keyframes taa-detail-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 1100px) {
+  .taa-calculator .taa-shell { width: min(100% - 28px,1440px); }
+  .taa-calculator .taa-layout { grid-template-columns: 320px minmax(0,1fr); }
+  .taa-calculator .taa-result-hero { padding: clamp(1.7rem,3.5vw,3rem); }
+  .taa-calculator .taa-result-hero h2 { font-size: clamp(3.6rem,7vw,6rem); }
+  .taa-path { grid-template-columns: 1fr 18px 1fr 18px 1fr 18px 1.2fr; }
+}
+@media (max-width: 860px) {
+  .taa-calculator .taa-header { grid-template-columns: 1fr auto; }
+  .taa-live-status { display: none; }
+  .taa-calculator .taa-layout { grid-template-columns: 1fr; }
+  .taa-calculator .taa-input-panel { position: static; }
+  .taa-calculator .taa-result-hero { min-height: 0; }
+  .taa-calculator .taa-visual-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .taa-calculator .taa-shell { width: min(100% - 20px,1440px); }
+  .taa-calculator .taa-header { min-height: 68px; }
+  .taa-calculator .taa-brand-mark { flex-basis: 34px; width: 34px; }
+  .taa-calculator .taa-brand-lockup strong { font-size: .74rem; }
+  .taa-brand-lockup small { display: none; }
+  .taa-icon-button { width: 36px; min-height: 36px; }
+  .taa-presentation-button { min-width: 38px; min-height: 38px; padding: 0 .65rem; }
+  .taa-presentation-button span { display: none; }
+  .taa-calculator .taa-layout { padding-top: 10px; }
+  .taa-calculator .taa-input-panel, .taa-calculator .taa-result-hero { border-radius: 16px; }
+  .taa-calculator .taa-input-panel { padding: 1.2rem; }
+  .taa-calculator .taa-result-hero { padding: 1.35rem; }
+  .taa-calculator .taa-result-hero h2 { margin-top: 2.4rem; font-size: clamp(3.1rem,15.2vw,4.9rem); }
+  .taa-path { grid-template-columns: repeat(2,1fr); gap: 0; margin-top: 2rem; padding: .5rem 0; }
+  .taa-path > div { padding: .8rem .2rem; }
+  .taa-path > i { display: none; }
+  .taa-path .taa-path-result { padding: .8rem; }
+  .taa-outcomes { grid-template-columns: 1fr; margin-top: 1rem; }
+  .taa-outcomes .taa-metric { padding: 1rem 0; }
+  .taa-outcomes .taa-metric + .taa-metric { border-top: 1px solid var(--taa-line-light); border-left: 0; }
+  .taa-field-pair, .taa-upside-fields, .taa-metric-grid-detail { grid-template-columns: 1fr; }
+  .taa-footnote-meta { flex-direction: column; }
+  .taa-calculator.is-presenting .taa-shell { width: min(100% - 16px,1600px); }
+  .taa-calculator.is-presenting .taa-result-hero { min-height: calc(100dvh - 68px); justify-content: flex-start; border-radius: 18px; padding: 1.4rem; }
+  .taa-calculator.is-presenting .taa-result-hero h2 { margin-top: 3rem; font-size: clamp(3.3rem,16vw,5.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taa-ambient i, .taa-result-hero h2, .taa-path strong, .taa-metric > strong, .taa-detail-body { animation: none; }
+}

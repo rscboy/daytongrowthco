@@ -3,6 +3,8 @@
    one-off "premium" overrides with a smaller, denser editorial system. */
 
 :root {
+  /* Authoritative public-site tokens. Older --brand-* and --air-* values remain
+     available only for intentionally isolated legacy and funnel surfaces. */
   --dgc-bg: #f8f8f5;
   --dgc-surface: #fdfdfb;
   --dgc-surface-muted: #f1f2ee;
@@ -18,10 +20,19 @@
   --dgc-line-dark: rgba(255, 255, 255, 0.14);
   --dgc-container: 76rem;
   --dgc-container-wide: 82.5rem;
-  --dgc-reading: 44rem;
+  --dgc-reading: 68ch;
   --dgc-gutter: clamp(1.25rem, 3vw, 2.5rem);
-  --dgc-section-y: clamp(3rem, 4.5vw, 4rem);
-  --dgc-section-y-major: clamp(3.5rem, 5.25vw, 4.75rem);
+  --dgc-space-1: 0.25rem;
+  --dgc-space-2: 0.5rem;
+  --dgc-space-3: 0.75rem;
+  --dgc-space-4: 1rem;
+  --dgc-space-6: 1.5rem;
+  --dgc-space-8: 2rem;
+  --dgc-space-12: 3rem;
+  --dgc-space-16: 4rem;
+  --dgc-space-24: 6rem;
+  --dgc-section-y: clamp(4rem, 6vw, 6rem);
+  --dgc-section-y-major: clamp(4.75rem, 7vw, 7rem);
   --dgc-h1: clamp(2.6rem, 3.55vw, 3.25rem);
   --dgc-h2: clamp(2rem, 3vw, 2.375rem);
   --dgc-h3: clamp(1.3rem, 1.8vw, 1.625rem);
@@ -29,9 +40,23 @@
   --dgc-radius-sm: 6px;
   --dgc-radius-md: 10px;
   --dgc-radius-lg: 14px;
-  --dgc-fast: 160ms;
-  --dgc-standard: 260ms;
-  --dgc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dgc-control: 2.75rem;
+  --dgc-control-touch: 3rem;
+  --dgc-shadow-raised:
+    0 0 0 1px rgba(32, 35, 31, 0.06),
+    0 2px 6px rgba(21, 28, 24, 0.05),
+    0 18px 48px rgba(21, 28, 24, 0.08);
+  --dgc-duration-fast: 150ms;
+  --dgc-duration-standard: 220ms;
+  --dgc-duration-marketing: 420ms;
+  --dgc-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dgc-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dgc-fast: var(--dgc-duration-fast);
+  --dgc-standard: var(--dgc-duration-standard);
+  --dgc-ease: var(--dgc-ease-out);
+  --dgc-layer-header: 50;
+  --dgc-layer-overlay: 80;
+  --dgc-layer-dialog: 100;
   --site-header-stack-height: 5.875rem;
   color-scheme: light;
 }
@@ -43,6 +68,15 @@ html {
 body {
   color: var(--dgc-ink);
   background: var(--dgc-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { color: #fff; background: var(--dgc-blue-strong); }
+
+:where(a) {
+  text-decoration-skip-ink: auto;
+  text-underline-offset: 0.18em;
 }
 
 body::after { opacity: 0.018; }
@@ -59,11 +93,11 @@ main :where(a, button) {
 }
 
 .button {
-  min-height: 2.875rem !important;
+  min-height: var(--dgc-control-touch) !important;
   padding: 0.7rem 1rem !important;
   gap: 0.65rem !important;
   border-radius: var(--dgc-radius-sm) !important;
-  font-size: 0.9rem !important;
+  font-size: 0.95rem !important;
   transition:
     color var(--dgc-fast) ease,
     border-color var(--dgc-fast) ease,
@@ -81,14 +115,13 @@ main a svg { transition: transform var(--dgc-fast) var(--dgc-ease); }
 }
 
 .button:active,
-main a:active,
-main button:active { transform: translateY(1px); }
+main button:active { transform: scale(0.96); }
 
 /* Header: two compact, legible rows with one active-state system. */
 .site-header {
   position: sticky !important;
   top: 0;
-  z-index: 50;
+  z-index: var(--dgc-layer-header);
   color: #fff;
   border-bottom: 1px solid var(--dgc-line-dark) !important;
   background: rgba(7, 9, 12, 0.94) !important;
@@ -134,7 +167,7 @@ main button:active { transform: translateY(1px); }
 main#main-content.dedicated-page { padding-top: 0 !important; }
 
 .dedicated-page > section:not(.page-cta),
-.homepage > section:not(.hero-section):not(.post-hero-bridge):not(.final-cta) {
+.homepage > section:not(.hero-section):not(.post-hero-bridge):not(.final-cta):not(.homepage-component) {
   min-height: 0 !important;
   padding-block: var(--dgc-section-y) !important;
 }
@@ -157,14 +190,14 @@ html body main#main-content.dedicated-page > section > .website-migration-offer.
 
 /* Authoritative typography for all non-hero marketing content. */
 .dedicated-page :where(h1, h2, h3),
-.homepage > section:not(.hero-section) :where(h2, h3) {
+.homepage > section:not(.hero-section):not(.homepage-component) :where(h2, h3) {
   color: inherit;
   font-family: var(--font-ui), "Hanken Grotesk", sans-serif !important;
   text-wrap: balance;
 }
 
 .dedicated-page h2,
-.homepage > section:not(.hero-section) h2 {
+.homepage > section:not(.hero-section):not(.homepage-component) h2 {
   font-size: var(--dgc-h2) !important;
   font-weight: 620 !important;
   line-height: 1.05 !important;
@@ -192,14 +225,14 @@ html body main#main-content.how-page .how-faq-intro > div > p {
 }
 
 .dedicated-page h3,
-.homepage > section:not(.hero-section) h3 {
+.homepage > section:not(.hero-section):not(.homepage-component) h3 {
   font-size: var(--dgc-h3) !important;
   line-height: 1.16 !important;
   letter-spacing: -0.025em !important;
 }
 
 .dedicated-page p,
-.homepage > section:not(.hero-section) p {
+.homepage > section:not(.hero-section):not(.homepage-component) p {
   font-size: var(--dgc-body);
   line-height: 1.55;
 }
@@ -207,7 +240,7 @@ html body main#main-content.how-page .how-faq-intro > div > p {
 .section-eyebrow,
 .page-hub-eyebrow,
 .dedicated-page :where([class*="eyebrow"], [class*="category"]) {
-  font-size: 0.72rem !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.08em !important;
 }
 
@@ -567,29 +600,44 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
 
 @media (max-width: 43.75rem) {
   :root {
-    --dgc-gutter: 1rem;
-    --dgc-section-y: 2.5rem;
-    --dgc-section-y-major: 3rem;
-    --dgc-h1: clamp(2.125rem, 10vw, 2.625rem);
-    --dgc-h2: clamp(1.7rem, 7.5vw, 2rem);
+    --dgc-gutter: 1.25rem;
+    --dgc-section-y: 3.5rem;
+    --dgc-section-y-major: 4rem;
+    --dgc-h1: clamp(2.25rem, 10vw, 2.75rem);
+    --dgc-h2: clamp(1.85rem, 7.8vw, 2.2rem);
     --dgc-h3: clamp(1.2rem, 5.8vw, 1.45rem);
-    --site-header-stack-height: 5.875rem;
+    --site-header-stack-height: 4rem;
   }
 
   .site-header > .site-offer-banner {
-    min-height: 2rem !important;
-    padding: .32rem 1rem !important;
+    display: none !important;
   }
-  .site-offer-banner .site-offer-copy > span { display: none !important; }
-  .site-offer-banner .site-offer-copy strong,
-  .site-offer-banner .site-offer-action { font-size: .69rem !important; }
-  .site-offer-banner .site-offer-action::before { display: none !important; content: none !important; }
-  .site-header > nav { height: 3.875rem !important; padding-inline: 1rem !important; }
+  .site-header > nav { height: 4rem !important; padding-inline: var(--dgc-gutter) !important; }
   .site-header .header-nav { display: none !important; }
   .site-header .header-actions > .button { display: none !important; }
-  .site-header .mobile-menu-toggle { display: inline-flex !important; width: 2.75rem !important; height: 2.75rem !important; border-radius: 7px !important; }
+  .site-header .mobile-menu-toggle { display: inline-flex !important; width: 2.75rem !important; height: 2.75rem !important; border-radius: var(--dgc-radius-sm) !important; }
 
-  main#main-content.dedicated-page > .page-hub-intro { padding: 1.75rem 1rem !important; }
+  .site-header .mobile-nav-offer {
+    display: flex !important;
+    min-height: 3rem;
+    margin: 0.75rem 0 1rem;
+    padding-inline: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    color: #d8eaf6 !important;
+    border: 1px solid rgba(139, 193, 229, 0.22);
+    border-radius: var(--dgc-radius-sm);
+    background: rgba(79, 130, 168, 0.1);
+    font-size: 0.9rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  main#main-content :is(input:not([type="range"]), select, textarea) {
+    font-size: 1rem !important;
+  }
+
+  main#main-content.dedicated-page > .page-hub-intro { padding: 2.25rem var(--dgc-gutter) 2.5rem !important; }
   main#main-content.dedicated-page .page-hub-index ol { grid-template-columns: 1fr !important; }
 
   .products-page .products-flagship-grid { grid-template-columns: 1fr !important; }
@@ -605,13 +653,13 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
   main#main-content.homepage > section.home-faq .home-faq-list,
   main#main-content.about-page .about-founder-inner { grid-template-columns: 1fr !important; }
 
-  main#main-content.homepage > .home-inquiry-repair.final-cta { padding: 3.25rem 1rem 3.75rem !important; }
+  main#main-content.homepage > .home-inquiry-repair.final-cta { padding: 4rem var(--dgc-gutter) 4.5rem !important; }
   main#main-content.homepage .home-inquiry-copy h2 { max-width: 22rem !important; font-size: clamp(2.05rem, 9.5vw, 2.5rem) !important; }
   main#main-content.homepage .home-inquiry-form.form-card { padding: 1rem !important; }
 
   main#main-content .page-cta {
     min-height: 17rem !important;
-    padding: 2.75rem 1rem !important;
+    padding: 3.5rem var(--dgc-gutter) 4rem !important;
   }
 
   main#main-content .page-cta h2 { font-size: clamp(2rem, 10vw, 2.75rem) !important; }
@@ -636,7 +684,7 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
   }
 
   html body main#main-content.homepage > .hero-section .hero-content {
-    padding: 3.5rem 1rem 3rem !important;
+    padding: 3.5rem var(--dgc-gutter) 3rem !important;
   }
 
   html body main#main-content.site-pricing-page > section.site-pricing-services {
@@ -645,9 +693,8 @@ html body:has(main#main-content.homepage) .quick-answers-trigger span { display:
 }
 
 @media (max-width: 22.5rem) {
-  :root { --dgc-gutter: .875rem; }
-  .site-header > .site-offer-banner,
-  .site-header > nav { padding-inline: .875rem !important; }
+  :root { --dgc-gutter: 1rem; }
+  .site-header > nav { padding-inline: var(--dgc-gutter) !important; }
   .site-offer-banner .site-offer-action { gap: .25rem; }
 }
 

@@ -52,7 +52,6 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type * as ThreeNS from "three";
-import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import { DotMatrix } from "@/components/ui/dot-matrix";
 import { KineticGrid } from "@/components/ui/kinetic-grid";
 import { ClearInput } from "./clear-input";
@@ -69,7 +68,8 @@ import {
   ProofCard,
 } from "./premium";
 import clientProofStyles from "./client-proof.module.css";
-import flagshipStyles from "./flagship-programs.module.css";
+import flagshipStyles from "./flagship-choice.module.css";
+import homepageClarityStyles from "./homepage-clarity.module.css";
 import appointRelayOfferStyles from "./appointrelay-offer.module.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
@@ -369,9 +369,6 @@ const toolScenarios = [
     icon: Search,
   },
 ];
-
-// A restrained value sequence for the final word of the homepage headline.
-const heroRotatingWords = ["simpler.", "faster.", "clearer.", "easier."];
 
 // ---------------------------------------------------------------------------
 // Visitor personalization
@@ -2317,7 +2314,7 @@ function Hero() {
             <span className="hero-line hero-line-primary" aria-hidden="true">Make repeated</span>
             <span className="hero-line hero-audience-line hero-statement-line" aria-hidden="true">
               <span className="hero-work-word">Work</span>
-              <AnimatedHeroPhrase phrases={heroRotatingWords} suffix="" className="hero-rotating-word" ariaHidden />
+              <span className="hero-rotating-word">simpler.</span>
             </span>
           </h1>
           <p>
@@ -5985,19 +5982,10 @@ function BuiltForStrip() {
     });
   };
 
-  const headingMotion = reduceMotion ? undefined : { opacity: [0, 1], y: [14, 0] };
-  const logoMotion = reduceMotion ? undefined : { opacity: [0, 1], y: [12, 0] };
-
   return (
     <div className={clientProofStyles.band}>
       <div className={clientProofStyles.inner}>
-        <motion.div
-          className={clientProofStyles.copy}
-          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-          whileInView={headingMotion ?? { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        >
+        <div className={clientProofStyles.copy}>
           <h2 id="client-proof-title" className={clientProofStyles.heading}>
             A few companies we&apos;ve worked with.
           </h2>
@@ -6005,30 +5993,22 @@ function BuiltForStrip() {
             <span className={clientProofStyles.desktopInstruction}>Select a mark to see the work behind it.</span>
             <span className={clientProofStyles.mobileInstruction}>Tap a client to see the work.</span>
           </p>
-        </motion.div>
+        </div>
 
         <div className={clientProofStyles.proofSystem}>
-          <motion.ul
+          <ul
             className={clientProofStyles.logos}
             aria-label="Companies we have worked with"
-            initial={reduceMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.45 }}
           >
             {orbitClients.map((client, index) => {
               const active = activeIndex === index;
               const selected = selectedIndex === index;
               return (
-                <motion.li
+                <li
                   className={`${clientProofStyles.logoItem} ${clientProofStyles[client.logoClassName]}`}
                   data-active={active ? "true" : "false"}
                   data-selected={selected ? "true" : "false"}
                   key={client.name}
-                  variants={{
-                    hidden: { opacity: 0, y: 12 },
-                    visible: logoMotion ?? { opacity: 1, y: 0 },
-                  }}
-                  transition={{ duration: 0.4, delay: reduceMotion ? 0 : index * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <a
                     className={clientProofStyles.logoLink}
@@ -6067,10 +6047,10 @@ function BuiltForStrip() {
                       {client.project}
                     </span>
                   </a>
-                </motion.li>
+                </li>
               );
             })}
-          </motion.ul>
+          </ul>
 
           <div className={clientProofStyles.selectionTrack} aria-hidden="true">
             <span style={{ transform: `translateX(${activeIndex * 100}%)` }} />
@@ -6116,92 +6096,128 @@ function PostHeroBridge() {
   );
 }
 
+const homepageOffers = [
+  {
+    id: "quote",
+    prompt: "An expensive quote",
+    category: "Quote comparison",
+    name: "The Better Quote Program™",
+    description: "A real person compares your written quote with legitimate local options.",
+    detail: "No qualifying savings means no fee.",
+    href: "/quote/start/",
+    action: "Check my quote",
+    icon: PhoneCall,
+  },
+  {
+    id: "website",
+    prompt: "Website platform costs",
+    category: "Website migration",
+    name: "The Website Migration Program™",
+    description: "Plan, migrate, test, and launch the pieces of your existing site that still matter.",
+    detail: "Keep the useful work. Leave the platform friction.",
+    href: "/website/",
+    action: "Plan my migration",
+    icon: Globe2,
+  },
+  {
+    id: "appointments",
+    prompt: "An appointment backlog",
+    category: "Appointment follow-up",
+    name: "AppointRelay™",
+    description: "Contact approved customers and hand useful scheduling context back to dispatch.",
+    detail: "Your team keeps final scheduling control.",
+    href: "/appointrelay/",
+    action: "Explore AppointRelay",
+    icon: Workflow,
+  },
+  {
+    id: "reviews",
+    prompt: "Missed review requests",
+    category: "HVAC review growth",
+    name: "The HVAC Google Review Growth Program™",
+    description: "Request honest Google reviews after eligible completed jobs without relying on memory.",
+    detail: "Managed setup, safeguards, reporting, and monitoring.",
+    href: "/google-reviews/book-call/",
+    action: "Review the program",
+    icon: MessageSquare,
+  },
+] as const;
+
+type HomepageOfferId = (typeof homepageOffers)[number]["id"];
+
 function FlagshipOverview() {
   useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_home_offer_viewed"); }, []);
   const reduceMotion = useReducedMotion();
-  const reveal = reduceMotion ? undefined : { opacity: [0.55, 1], y: [10, 0] };
+  const [activeOfferId, setActiveOfferId] = useState<HomepageOfferId>("quote");
+  const activeOffer = homepageOffers.find((offer) => offer.id === activeOfferId) ?? homepageOffers[0];
+  const ActiveIcon = activeOffer.icon;
+
   return (
-    <section className={flagshipStyles.section} id="programs" aria-labelledby="flagship-overview-title">
+    <section className={`${flagshipStyles.section} homepage-component`} id="programs" aria-labelledby="flagship-overview-title">
       <div className={flagshipStyles.shell}>
-        <motion.header
-          className={flagshipStyles.intro}
-          initial={false}
-          whileInView={reveal}
-          viewport={{ once: true, amount: 0.45 }}
-          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <header className={flagshipStyles.intro}>
           <h2 id="flagship-overview-title">Start with the work that costs you most.</h2>
-          <p>Choose the practical problem in front of you. We will help you solve it without adding more noise.</p>
-        </motion.header>
+          <p>Choose the operating problem in front of you. We will show you the clearest next step.</p>
+        </header>
 
-        <div className={flagshipStyles.featuredGrid}>
-          <motion.article
-            className={`${flagshipStyles.card} ${flagshipStyles.featuredCard} ${flagshipStyles.quoteCard}`}
-            initial={false}
-            whileInView={reveal}
-            viewport={{ once: true, amount: 0.28 }}
-            transition={{ duration: 0.48, delay: reduceMotion ? 0 : 0.06, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className={flagshipStyles.cardHeader}>
-              <span className={flagshipStyles.icon} aria-hidden="true"><PhoneCall size={21} /></span>
-              <span className={flagshipStyles.category}>Quote comparison</span>
-            </div>
-            <h3>The Better Quote Program<sup>™</sup></h3>
-            <p>Real people compare your written quote with legitimate local options. No qualifying savings, no fee.</p>
-            <span className={flagshipStyles.detail}>Pay only when a comparison qualifies</span>
-            <a className={flagshipStyles.primaryAction} href="/quote/start/">Check my quote <ArrowRight size={15} aria-hidden="true" /></a>
-          </motion.article>
-
-          <motion.article
-            className={`${flagshipStyles.card} ${flagshipStyles.featuredCard}`}
-            initial={false}
-            whileInView={reveal}
-            viewport={{ once: true, amount: 0.28 }}
-            transition={{ duration: 0.48, delay: reduceMotion ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className={flagshipStyles.cardHeader}>
-              <span className={flagshipStyles.icon} aria-hidden="true"><Globe2 size={21} /></span>
-              <span className={flagshipStyles.category}>Website migration</span>
-            </div>
-            <h3>The Website Migration Program<sup>™</sup></h3>
-            <p>Plan, migrate, test, and launch your existing site without losing the pieces that already work.</p>
-            <span className={flagshipStyles.detail}>Plan · migrate · test · launch</span>
-            <Link className={flagshipStyles.primaryAction} href="/website/">Plan my migration <ArrowRight size={15} aria-hidden="true" /></Link>
-          </motion.article>
+        <div className={flagshipStyles.selector} role="group" aria-label="Choose the problem you want to solve">
+          {homepageOffers.map((offer) => {
+            const Icon = offer.icon;
+            const active = offer.id === activeOffer.id;
+            return (
+              <button
+                key={offer.id}
+                type="button"
+                className={flagshipStyles.choice}
+                aria-pressed={active}
+                aria-controls="homepage-offer-detail"
+                onClick={() => setActiveOfferId(offer.id)}
+              >
+                <span className={flagshipStyles.choiceIcon} aria-hidden="true"><Icon size={19} /></span>
+                <span>{offer.prompt}</span>
+                <ArrowRight className={flagshipStyles.choiceArrow} size={16} aria-hidden="true" />
+              </button>
+            );
+          })}
         </div>
 
-        <div className={flagshipStyles.secondaryGrid}>
-          <motion.article
-            className={`${flagshipStyles.card} ${flagshipStyles.secondaryCard}`}
-            initial={false}
-            whileInView={reveal}
-            viewport={{ once: true, amount: 0.28 }}
-            transition={{ duration: 0.44, delay: reduceMotion ? 0 : 0.16, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className={flagshipStyles.icon} aria-hidden="true"><Workflow size={21} /></span>
-            <div className={flagshipStyles.secondaryCopy}>
-              <span className={flagshipStyles.category}>Appointment follow-up</span>
-              <h3>AppointRelay<sup>™</sup></h3>
-              <p>Contact approved customers, capture useful preferences, and hand clean scheduling context to dispatch.</p>
-              <Link className={flagshipStyles.textAction} href="/appointrelay/" onClick={() => trackFunnelEvent("appointrelay", "appointrelay_home_offer_clicked")}>Explore AppointRelay <ArrowRight size={15} aria-hidden="true" /></Link>
-            </div>
-          </motion.article>
+        <div className={flagshipStyles.resultGrid}>
+          <div className={flagshipStyles.pathVisual} aria-hidden="true" key={`path-${activeOffer.id}`}>
+            <span>Repeated friction</span>
+            <span className={flagshipStyles.pathLine}><i /></span>
+            <span className={flagshipStyles.pathNode}><ActiveIcon size={25} /></span>
+            <span className={flagshipStyles.pathLine}><i /></span>
+            <span>Clear next step</span>
+          </div>
 
-          <motion.article
-            className={`${flagshipStyles.card} ${flagshipStyles.secondaryCard}`}
-            initial={false}
-            whileInView={reveal}
-            viewport={{ once: true, amount: 0.28 }}
-            transition={{ duration: 0.44, delay: reduceMotion ? 0 : 0.21, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className={flagshipStyles.icon} aria-hidden="true"><MessageSquare size={21} /></span>
-            <div className={flagshipStyles.secondaryCopy}>
-              <span className={flagshipStyles.category}>Review growth</span>
-              <h3>HVAC Google Review Growth Program<sup>™</sup></h3>
-              <p>Send consistent, honest review requests after every eligible completed job without relying on memory.</p>
-              <Link className={flagshipStyles.textAction} href="/google-reviews/book-call/">Grow Google reviews <ArrowRight size={15} aria-hidden="true" /></Link>
-            </div>
-          </motion.article>
+          <div className={flagshipStyles.detailViewport} id="homepage-offer-detail" aria-live="polite" aria-atomic="true">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.article
+                className={flagshipStyles.offerDetail}
+                key={activeOffer.id}
+                initial={reduceMotion ? false : { opacity: 0, transform: "translateY(8px)" }}
+                animate={{ opacity: 1, transform: "translateY(0px)" }}
+                exit={reduceMotion ? undefined : { opacity: 0, transform: "translateY(-4px)" }}
+                transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <span className={flagshipStyles.category}>{activeOffer.category}</span>
+                <h3>{activeOffer.name}</h3>
+                <p>{activeOffer.description}</p>
+                <strong>{activeOffer.detail}</strong>
+                <Link
+                  className={flagshipStyles.primaryAction}
+                  href={activeOffer.href}
+                  onClick={() => {
+                    if (activeOffer.id === "appointments") {
+                      trackFunnelEvent("appointrelay", "appointrelay_home_offer_clicked");
+                    }
+                  }}
+                >
+                  {activeOffer.action} <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </motion.article>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>
@@ -6289,6 +6305,51 @@ function ProgramMatch() {
   return <section className="program-match" aria-labelledby="program-match-title"><div className="flagship-shell"><header><h2 id="program-match-title">Which system do you need?</h2></header><div className="program-match-grid"><article><p>I’m trying to lower an expensive service quote.</p><strong>Use The Better Quote Program™</strong><a href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a></article><article><p>I need to move, rebuild, or modernize an existing website.</p><strong>Use The Website Migration Program™</strong><Link href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Our team has an approved appointment queue it cannot keep up with.</p><strong>Use AppointRelay™</strong><Link href="/appointrelay/">Review the Queue <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Completed HVAC jobs are not consistently becoming Google reviews.</p><strong>Use The HVAC Google Review Growth Program™</strong><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={15} aria-hidden="true" /></Link></article></div></div></section>;
 }
 
+function BetterQuotePreview() {
+  const currentQuote = 10000;
+  const comparisonQuote = 7000;
+  const grossDifference = currentQuote - comparisonQuote;
+  const estimatedNetSavings = grossDifference - betterQuoteProgramFee(grossDifference);
+
+  return (
+    <section className={`${homepageClarityStyles.quoteSection} homepage-component`} aria-labelledby="home-quote-preview-title">
+      <div className={homepageClarityStyles.quoteShell}>
+        <header className={homepageClarityStyles.quoteCopy}>
+          <span className={homepageClarityStyles.eyebrow}>Better Quote example</span>
+          <h2 id="home-quote-preview-title">See the decision, not another wall of numbers.</h2>
+          <p>A real person reviews comparable written quotes. This example shows how the published fee would affect a qualifying comparison.</p>
+          <a className={homepageClarityStyles.primaryLink} href="/quote/start/">
+            Check my quote <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </header>
+
+        <div className={homepageClarityStyles.quoteVisual} aria-label="Illustrative quote comparison">
+          <div className={homepageClarityStyles.quoteBarRow}>
+            <span>Current quote</span>
+            <div><i style={{ inlineSize: "100%" }} /></div>
+            <strong>{formatCompactCurrency(currentQuote)}</strong>
+          </div>
+          <div className={homepageClarityStyles.quoteBarRow}>
+            <span>Comparable lower quote</span>
+            <div><i style={{ inlineSize: "70%" }} /></div>
+            <strong>{formatCompactCurrency(comparisonQuote)}</strong>
+          </div>
+          <div className={homepageClarityStyles.quoteResult}>
+            <span>Estimated net savings after the program fee</span>
+            <strong>{formatCompactCurrency(estimatedNetSavings)}</strong>
+          </div>
+          <p>Illustrative only. Quotes must be legitimate and comparable. Savings are not guaranteed.</p>
+        </div>
+      </div>
+
+      <details className={homepageClarityStyles.calculatorDisclosure}>
+        <summary>Use the interactive savings calculator</summary>
+        <BetterQuoteSavingsCalculator />
+      </details>
+    </section>
+  );
+}
+
 function HowWeWork() {
   const steps = [
     { title: "Map the work", text: "We find the handoffs, follow-ups, and bottlenecks worth fixing first." },
@@ -6297,21 +6358,23 @@ function HowWeWork() {
   ];
 
   return (
-    <section className="home-process-repair" aria-labelledby="homepage-process-title">
-      <div className="home-process-repair-shell">
-        <div className="home-process-repair-copy">
+    <section className={`${homepageClarityStyles.processSection} homepage-component`} aria-labelledby="homepage-process-title">
+      <div className={homepageClarityStyles.processShell}>
+        <div className={homepageClarityStyles.processCopy}>
+          <span className={homepageClarityStyles.eyebrow}>How the work moves</span>
           <h2 id="homepage-process-title">Technology that fits the work.</h2>
-          <p>We begin with one real operating problem. Then we map, build, and refine the part your team will actually use.</p>
-          <a className="button button-primary" href="#cta">Start a conversation <ArrowRight size={15} aria-hidden="true" /></a>
+          <p>One operating problem. One useful system. A clear handoff at every step.</p>
         </div>
-        <ol className="home-process-repair-list" aria-label="How DaytonGrowthCo works with a team" data-stagger data-mobile-motion="process">
-          {steps.map((step) => (
-            <li key={step.title}>
+        <ol className={homepageClarityStyles.processDiagram} aria-label="How DaytonGrowthCo works with a team">
+          {steps.map((step, index) => (
+            <li key={step.title} className={homepageClarityStyles.processStep}>
+              <span className={homepageClarityStyles.processNode} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               <strong>{step.title}</strong>
               <p>{step.text}</p>
             </li>
           ))}
         </ol>
+        <a className={homepageClarityStyles.textLink} href="#cta">Talk through the first step <ArrowRight size={15} aria-hidden="true" /></a>
       </div>
     </section>
   );
@@ -6319,69 +6382,59 @@ function HowWeWork() {
 
 const homeFaqs = [
   {
-    q: "Is The Better Quote Program™ automated or AI-driven?",
-    a: "No. Real people review your request and contact providers.",
+    q: "What kind of problem should I bring?",
+    a: "Start with work that repeats, stalls, gets missed, or costs more than it should. We will help identify the smallest useful next step.",
   },
   {
-    q: "What if you cannot find a lower quote?",
-    a: "If we do not find a qualifying lower, comparable quote, you pay nothing.",
+    q: "Do you replace the tools we already use?",
+    a: "Not automatically. We keep what works, configure existing tools when they fit, and build only where the workflow needs something more specific.",
   },
   {
-    q: "How long does The Better Quote Program™ take?",
-    a: "Usually within about 48 business hours after we receive the required information.",
-  },
-  {
-    q: "Do you always find the absolute cheapest provider?",
-    a: "No. We look for a better comparable quote from legitimate local providers.",
-  },
-  {
-    q: "Can you migrate an existing website instead of rebuilding everything from scratch?",
-    a: "Often, yes. The plan depends on your current platform and site.",
-  },
-  {
-    q: "Will my website go offline during the migration?",
-    a: "We plan the move carefully and test the new site before launch.",
-  },
-  {
-    q: "What happens to forms, analytics, pages, and integrations?",
-    a: "They are reviewed during planning and included in the launch checklist.",
-  },
-  {
-    q: "Can you improve the site during the migration?",
-    a: "Yes. The migration can include cleanup and modernization where useful.",
+    q: "How are scope and pricing handled?",
+    a: "You receive a written scope that explains what is included, what it costs, and what happens next before the work begins.",
   },
 ];
 
 function HomeFaq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="home-faq" aria-labelledby="home-faq-title" data-mobile-motion="faq">
-      <div className="home-faq-inner">
-        <div className="home-faq-aside">
+    <section className={`${homepageClarityStyles.faqSection} homepage-component`} aria-labelledby="home-faq-title">
+      <div className={homepageClarityStyles.faqShell}>
+        <div className={homepageClarityStyles.faqIntro}>
+          <span className={homepageClarityStyles.eyebrow}>Before we talk</span>
           <h2 id="home-faq-title">
             Questions, answered plainly.
           </h2>
         </div>
-        <ul className="home-faq-list">
+        <ul className={homepageClarityStyles.faqList}>
           {homeFaqs.map((item, index) => {
             const isOpen = open === index;
+            const buttonId = `home-faq-button-${index}`;
+            const panelId = `home-faq-panel-${index}`;
             return (
               <li
                 key={item.q}
-                className={`home-faq-item t-acc ${isOpen ? "is-open" : ""}`}
+                className={homepageClarityStyles.faqItem}
                 data-open={isOpen ? "true" : "false"}
               >
                 <button
+                  id={buttonId}
                   type="button"
-                  className="home-faq-q t-acc-head"
+                  className={homepageClarityStyles.faqQuestion}
                   aria-expanded={isOpen}
+                  aria-controls={panelId}
                   onClick={() => setOpen(isOpen ? -1 : index)}
                 >
                   <span>{item.q}</span>
-                  <ChevronDown className="t-acc-chevron" size={18} aria-hidden="true" />
+                  <ChevronDown size={18} aria-hidden="true" />
                 </button>
-                <div className="home-faq-a t-acc-panel" role="region">
-                  <div className="home-faq-a-inner t-acc-panel-inner">
+                <div
+                  id={panelId}
+                  className={homepageClarityStyles.faqAnswer}
+                  role="region"
+                  aria-labelledby={buttonId}
+                >
+                  <div>
                     <p>{item.a}</p>
                   </div>
                 </div>
@@ -6402,7 +6455,7 @@ function Homepage() {
         <Hero />
         <PostHeroBridge />
         <FlagshipOverview />
-        <BetterQuoteSavingsCalculator />
+        <BetterQuotePreview />
         <HowWeWork />
         <HomeFaq />
         <FinalCTA />
