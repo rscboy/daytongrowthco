@@ -6,6 +6,9 @@ import "../src/home-flow.css";
 import "../src/systems-that-pay.css";
 import "../src/website-ownership-calculator.css";
 import "../src/air-redesign.css";
+import "../src/dgc-redesign.css";
+import "../src/homepage-mobile-repair.css";
+import "../src/design-system-overhaul.css";
 
 const siteUrl = "https://www.daytongrowth.co";
 const faviconUrl = `${siteUrl}/favicon.png`;
@@ -24,13 +27,9 @@ const siteSchema = {
       logo: faviconUrl,
       image: `${siteUrl}/thumbnail.jpeg`,
       description:
-        "DaytonGrowthCo offers The Better Quote Program™ and The Website Migration Program™, plus practical business tools for small and midsized businesses.",
+        "DaytonGrowthCo offers The Better Quote Program™, The Website Migration Program™, AppointRelay™ appointment setting, and The HVAC Google Review Growth Program™, plus practical business tools for small and midsized businesses.",
       email: "help@daytongrowth.co",
       telephone: "+1-937-369-0829",
-      founder: {
-        "@type": "Person",
-        name: "Samuel Caruso",
-      },
       address: {
         "@type": "PostalAddress",
         addressLocality: "Dayton",
@@ -81,6 +80,8 @@ const siteSchema = {
         "website ownership",
         "quote shopping service",
         "The Better Quote Program",
+        "AppointRelay AI Appointment Setter Program",
+        "The HVAC Google Review Growth Program",
         "local SEO",
         "answer engine optimization",
       ],
@@ -164,6 +165,13 @@ const siteSchema = {
         },
         {
           "@type": "Offer",
+          name: "AppointRelay™",
+          description:
+            "A managed AI appointment workflow that contacts approved customers, captures usable scheduling preferences, documents exceptions, and relays clean handoffs while the client retains final scheduling control.",
+          url: `${siteUrl}/appointrelay/`,
+        },
+        {
+          "@type": "Offer",
           name: "Website and SEO Setup",
           description:
             "Modern websites, service pages, sales pages, technical SEO, local SEO, and answer-engine-ready content for small businesses.",
@@ -184,15 +192,15 @@ const siteSchema = {
         },
         {
           "@type": "Offer",
-          name: "Automated Google Review Texting",
+          name: "The HVAC Google Review Growth Program™",
           description:
-            "A managed review-request system that sends customers a personalized text and direct Google review link after a completed appointment or service.",
-          url: `${siteUrl}/google-review-texting/`,
+            "A fully managed HVAC review-generation system that connects to completed-job data and sends eligible customers an honest Google review request by SMS and email.",
+          url: `${siteUrl}/google-reviews/`,
           priceSpecification: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",
-            price: "499",
-            description: "$499 setup plus $199 per month for ongoing system management, hosting, monitoring, maintenance, text-message allowance, adjustments, and support.",
+            price: "2500",
+            description: "$2,500 annual managed program fee plus actual third-party usage and registration costs. Qualifying HVAC companies receive a 20-new-reviews-in-30-days performance guarantee.",
           },
         },
       ],

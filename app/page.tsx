@@ -7,9 +7,9 @@ const homePageSchema = {
       "@type": "WebPage",
       "@id": "https://www.daytongrowth.co/#webpage",
       url: "https://www.daytongrowth.co/",
-      name: "DaytonGrowthCo. | Website Migration and Business Tools",
+      name: "DaytonGrowthCo. | Website Migration, Better Quote, AppointRelay, and HVAC Review Growth",
       description:
-        "DaytonGrowthCo offers The Better Quote Program™, The Website Migration Program™, and practical business tools for small and midsized businesses.",
+        "DaytonGrowthCo offers The Better Quote Program™, The Website Migration Program™, AppointRelay™ for operational appointment queues, and The HVAC Google Review Growth Program™.",
       isPartOf: { "@id": "https://www.daytongrowth.co/#website" },
       about: { "@id": "https://www.daytongrowth.co/#organization" },
       mainEntity: { "@id": "https://www.daytongrowth.co/#primary-service" },
@@ -26,7 +26,7 @@ const homePageSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text:
-              "DaytonGrowthCo offers The Better Quote Program™ for expensive service quotes, The Website Migration Program™ for moving to a self-owned site, and practical business tools such as phone agents, automated follow-up and scheduling, quote tools, dashboards, social media scheduling, portals, and custom apps.",
+              "DaytonGrowthCo offers The Better Quote Program™ for expensive service quotes, The Website Migration Program™ for moving to a self-owned site, AppointRelay™ for approved appointment queues, and a fully managed HVAC Google review generation program.",
           },
         },
         {

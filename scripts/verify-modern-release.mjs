@@ -12,10 +12,55 @@ const requiredMarkers = [
   {
     file: "src/main.tsx",
     markers: [
+      "Make repeated work simpler.",
+      "Start with the work that costs you most.",
+      "Tell us what repeats. We will help simplify it.",
       "Clear pricing for the services with a defined starting point.",
       "Website Migration Program™",
       "The Better Quote Program™",
-      "Interactive program return estimator",
+      "Technology that fits the work.",
+    ],
+    forbidden: [
+      "We build phone agents",
+      "Two flagship programs.",
+    ],
+  },
+  {
+    file: "app/projects/secret/recipes_for_benny/page.tsx",
+    markers: [
+      'title: "Sammy\'s Recipe Book Website"',
+      'siteName: "Sammy\'s Recipe Book Website"',
+      "recipe_sammy.png",
+    ],
+    forbidden: [
+      'title: "Benny\'s recipe book"',
+      'siteName: "Recipes for Benny"',
+    ],
+  },
+  {
+    file: "app/projects/secret/recipes_for_benny/recipe-book.tsx",
+    markers: [
+      'label: "Sammy\'s Recipes"',
+      'image: "/recipe-book/sammy-cooks-chili.png"',
+      "Choose whose recipes appear first",
+      "Adjust portions",
+    ],
+  },
+  {
+    file: "app/projects/secret-projects/project-manager.tsx",
+    markers: [
+      "Everything you’ve built,",
+      "Visitor password",
+      "live preview",
+      "Copy share link",
+    ],
+  },
+  {
+    file: "lib/secret-projects.ts",
+    markers: [
+      'const SETTINGS_BLOB_PATH = "secret-projects/settings.json"',
+      "hashProjectPassword",
+      "createProjectAccessSession",
     ],
   },
   {
@@ -59,4 +104,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("[release-guard] Modern design, pricing route, and calculator markers verified.");
+console.log("[release-guard] Homepage, recipe book, Secret Projects studio, pricing route, and calculator markers verified.");

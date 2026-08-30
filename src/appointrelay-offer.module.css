@@ -1,0 +1,325 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(4rem, 7vw, 7.25rem) 0;
+  color: #f6f8fb;
+  background:
+    radial-gradient(58rem 32rem at 100% 0%, rgb(54 94 147 / 0.22), transparent 68%),
+    radial-gradient(34rem 28rem at 10% 100%, rgb(48 67 128 / 0.18), transparent 74%),
+    #10151d !important;
+}
+
+:global(main#main-content.examples-page) > .section {
+  background:
+    radial-gradient(58rem 32rem at 100% 0%, rgb(54 94 147 / 0.22), transparent 68%),
+    radial-gradient(34rem 28rem at 10% 100%, rgb(48 67 128 / 0.18), transparent 74%),
+    #10151d !important;
+}
+
+.section::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.2;
+  background-image: linear-gradient(90deg, rgb(164 205 244 / 0.16) 1px, transparent 1px);
+  background-size: clamp(8rem, 14vw, 14rem) 100%;
+  content: "";
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  pointer-events: none;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(22.5rem, 25.5rem) minmax(0, 1fr);
+  gap: clamp(4rem, 9vw, 8rem);
+  align-items: start;
+  width: min(100% - 3rem, 78rem);
+  margin-inline: auto;
+}
+
+.copy {
+  padding-top: 0.25rem;
+}
+
+.copy h2 {
+  max-width: 10.5ch;
+  margin: 0;
+  color: #f7f9fc;
+  font-size: clamp(3rem, 4.8vw, 4.75rem);
+  font-weight: 650;
+  letter-spacing: -0.065em;
+  line-height: 1.01;
+  text-wrap: balance;
+}
+
+.copy p {
+  max-width: 35ch;
+  margin: 1.45rem 0 0;
+  color: #c4ccd8;
+  font-size: clamp(1.05rem, 1.28vw, 1.2rem);
+  line-height: 1.52;
+}
+
+.action {
+  display: inline-flex;
+  gap: 0.85rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.35rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1.15rem 0.75rem 1.3rem;
+  border: 1px solid transparent;
+  border-radius: 0.85rem;
+  background: #f6f8fb;
+  color: #10151d;
+  font-size: 1rem;
+  font-weight: 720;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.action svg {
+  transition: transform 180ms ease;
+}
+
+.action:hover {
+  background: #dbeafe;
+  box-shadow: 0 12px 28px rgb(3 9 20 / 0.26);
+  transform: translateY(-1px);
+}
+
+.action:hover svg {
+  transform: translateX(0.28rem);
+}
+
+.action:active {
+  transform: translateY(1px);
+}
+
+.action:focus-visible,
+.step:focus-visible {
+  outline: 3px solid #8bc9f0;
+  outline-offset: 4px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(190 215 239 / 0.28);
+}
+
+.step {
+  position: relative;
+  min-height: 14.25rem;
+  padding: 1.35rem 1.45rem 1.35rem 0;
+  border-bottom: 1px solid rgb(190 215 239 / 0.2);
+  transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.step + .step {
+  padding-left: 1.45rem;
+  border-left: 1px solid rgb(190 215 239 / 0.2);
+}
+
+.step::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: #8bc9f0;
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.55);
+  transform-origin: left;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.step:hover {
+  background: rgb(142 188 230 / 0.055);
+  box-shadow: inset 0 1px 0 rgb(205 230 253 / 0.1);
+  transform: translateY(-2px);
+}
+
+.step:hover::after,
+.step:focus-within::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.index {
+  display: block;
+  color: #8bc9f0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.step strong {
+  display: block;
+  margin-top: 2.6rem;
+  color: #f7f9fc;
+  font-size: clamp(1.25rem, 1.55vw, 1.55rem);
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.step p {
+  max-width: 18ch;
+  margin: 0.78rem 0 0;
+  color: #b8c2cf;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 1099px) {
+  .section {
+    padding: clamp(3rem, 6vw, 4rem) 0;
+  }
+
+  .shell {
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+    width: min(100% - 3rem, 52rem);
+  }
+
+  .copy h2 {
+    max-width: 13ch;
+    font-size: clamp(2.65rem, 6vw, 3.45rem);
+  }
+
+  .copy p {
+    max-width: 39ch;
+  }
+
+  .steps {
+    position: relative;
+    gap: 0.9rem;
+    padding-left: 1.55rem;
+    border-top: 0;
+  }
+
+  .steps::before {
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 0.34rem;
+    width: 1px;
+    background: rgb(139 201 240 / 0.36);
+    content: "";
+  }
+
+  .step,
+  .step + .step {
+    min-height: 0;
+    padding: 1.2rem 1.25rem;
+    border: 1px solid rgb(190 215 239 / 0.2);
+    border-radius: 0.9rem;
+    background: rgb(255 255 255 / 0.035);
+  }
+
+  .step::before {
+    position: absolute;
+    top: 1.62rem;
+    left: -1.94rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid #8bc9f0;
+    border-radius: 50%;
+    background: #10151d;
+    content: "";
+  }
+
+  .step strong {
+    margin-top: 1rem;
+  }
+
+  .step p {
+    max-width: 52ch;
+  }
+}
+
+@media (max-width: 699px) {
+  .section {
+    padding: 2.75rem 0 3rem;
+  }
+
+  .section::before {
+    display: none;
+  }
+
+  .shell {
+    gap: 2.25rem;
+    width: min(100% - 2rem, 40rem);
+  }
+
+  .copy h2 {
+    max-width: 12.5ch;
+    font-size: clamp(2.38rem, 10vw, 2.9rem);
+    line-height: 1.04;
+  }
+
+  .copy p {
+    margin-top: 1.15rem;
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .action {
+    width: 100%;
+    min-height: 3.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    padding-left: 1.25rem;
+  }
+
+  .steps::before {
+    top: 1.15rem;
+    bottom: 1.15rem;
+    left: 0.25rem;
+  }
+
+  .step,
+  .step + .step {
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .step::before {
+    top: 1.4rem;
+    left: -1.64rem;
+    width: 0.58rem;
+    height: 0.58rem;
+  }
+
+  .step strong {
+    margin-top: 0.78rem;
+    font-size: 1.28rem;
+  }
+
+  .step p {
+    margin-top: 0.5rem;
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .action svg,
+  .step,
+  .step::after {
+    transition: none;
+  }
+}

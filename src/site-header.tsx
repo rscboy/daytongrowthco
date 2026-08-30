@@ -10,7 +10,7 @@ type PrimaryNavLink = { href: string; label: string; mobileLabel?: string };
 const MOBILE_NAV_SCROLL_KEY = "dgc:mobile-nav-scroll-top";
 
 export const primaryNavLinks: PrimaryNavLink[] = [
-  { href: "/products/", label: "Products" },
+  { href: "/products/", label: "Solutions" },
   { href: "/quote/pricing", label: "Pricing" },
   { href: "/examples/", label: "Examples" },
   { href: "/how-it-works/", label: "How It Works", mobileLabel: "Process" },
@@ -29,7 +29,7 @@ export function Header() {
   const restoreMobileFocusRef = useRef(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const productPaths = new Set(["/ai-phone-agents", "/website-design", "/missed-call-follow-up", "/google-review-texting", "/quote-tools", "/local-search", "/dashboards-portals"]);
+  const productPaths = new Set(["/ai-phone-agents", "/website-design", "/missed-call-follow-up", "/google-reviews", "/google-review-texting", "/quote-tools", "/local-search", "/dashboards-portals"]);
   const isNavLinkActive = (href: string) => {
     const normalizedPath = pathname.replace(/\/$/, "") || "/";
     const normalizedHref = href.replace(/\/$/, "") || "/";
@@ -111,13 +111,12 @@ export function Header() {
 
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
-      <Link className="site-offer-banner" href="/systems-that-pay/" aria-label="Free homepage redesign available. Claim the offer.">
+      <Link className="site-offer-banner" href="/systems-that-pay/" aria-label="Free homepage redesign. Claim the offer.">
         <span className="site-offer-copy">
-          <strong>Free homepage redesign available.</strong>
-          <span>Custom concept · No obligation</span>
+          <strong>Free homepage redesign.</strong>
         </span>
         <span className="site-offer-action">
-          Claim free redesign
+          Claim offer
           <ArrowRight size={15} aria-hidden="true" />
         </span>
       </Link>

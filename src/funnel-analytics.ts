@@ -1,4 +1,4 @@
-export type FunnelName = "marketing-site" | "website-migration" | "ai-call-system" | "better-quote";
+export type FunnelName = "marketing-site" | "website-migration" | "ai-call-system" | "better-quote" | "foundation-inspections" | "appointrelay" | "google-review-program";
 export type FunnelEventParams = Record<string, string | number | boolean | undefined>;
 export type Attribution = Partial<Record<"utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "fbclid" | "gclid" | "msclkid" | "funnel_variant", string>>;
 
@@ -13,7 +13,30 @@ const metaStandardEvents: Record<string, "ViewContent" | "Lead" | "Schedule" | "
   hvac_calendar_viewed: "Contact",
   hvac_appointment_booked: "Schedule",
   better_quote_case_submitted: "Lead",
+  foundation_calendar_viewed: "Contact",
+  foundation_assessment_submitted: "Lead",
+  foundation_appointment_booked: "Schedule",
+  appointrelay_landing_viewed: "ViewContent",
+  appointrelay_vsl_lead_captured: "Lead",
+  appointrelay_assessment_submitted: "Lead",
+  appointrelay_calendar_viewed: "Contact",
+  appointrelay_appointment_booked: "Schedule",
+  google_review_landing_viewed: "ViewContent",
+  google_review_assessment_submitted: "Lead",
+  google_review_vsl_lead_captured: "Lead",
+  google_review_calendar_viewed: "Contact",
+  google_review_appointment_booked: "Schedule",
 };
+
+function getAttributionNamespace(funnel: FunnelName) {
+  if (funnel === "website-migration") return "migration";
+  if (funnel === "ai-call-system") return "hvac";
+  if (funnel === "better-quote") return "better_quote";
+  if (funnel === "foundation-inspections") return "foundation_inspections";
+  if (funnel === "appointrelay") return "appointrelay";
+  if (funnel === "google-review-program") return "google_review_program";
+  return "site";
+}
 
 export function getFunnelSessionId(funnel: FunnelName) {
   if (typeof window === "undefined") return "";
@@ -49,7 +72,7 @@ export function captureAttribution(storageNamespace = "site"): Attribution {
 /** Keeps a visitor on the same A/B variant across the inline qualification flow. */
 export function setFunnelVariant(funnel: FunnelName, variant: string) {
   if (typeof window === "undefined") return;
-  const attributionNamespace = funnel === "website-migration" ? "migration" : funnel === "ai-call-system" ? "hvac" : funnel === "better-quote" ? "better_quote" : "site";
+  const attributionNamespace = getAttributionNamespace(funnel);
   try {
     const key = `dgc_${attributionNamespace}_attribution`;
     const current = JSON.parse(window.sessionStorage.getItem(key) || "{}") as Attribution;
@@ -75,7 +98,7 @@ export function trackFunnelEvent(funnel: FunnelName, name: string, params: Funne
   const gtag = analyticsWindow.gtag || ((command: "event", eventName: string, eventParams?: FunnelEventParams) => {
     (analyticsWindow.dataLayer ||= []).push([command, eventName, eventParams]);
   });
-  const attributionNamespace = funnel === "website-migration" ? "migration" : funnel === "ai-call-system" ? "hvac" : funnel === "better-quote" ? "better_quote" : "site";
+  const attributionNamespace = getAttributionNamespace(funnel);
   const attribution = captureAttribution(attributionNamespace);
   const { fbclid: _fbclid, gclid: _gclid, msclkid: _msclkid, ...analyticsAttribution } = attribution;
   void _fbclid; void _gclid; void _msclkid;

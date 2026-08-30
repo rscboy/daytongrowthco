@@ -1,274 +1,392 @@
-# DaytonGrowthCo Design System
+# AI portal — visual design reference
 
-This is the working design standard for DaytonGrowthCo. Use it when designing a page, product surface, sales asset, or marketing touchpoint. It documents the visual decisions already expressed in the site and turns them into repeatable rules.
+> This document describes the visual system observed in the reference AI workspace. It is intended as a practical guide for bringing another portal closer to this product’s design language; it is not an attempt to copy its content, data, or product behavior.
 
-## 1. Brand in one sentence
+## Source screens reviewed
 
-DaytonGrowthCo builds useful digital infrastructure around the way a business actually works. The design should make custom software feel tangible, trustworthy, and worth the investment to a practical business owner.
+This reference is based on visual inspection of the live product at a 1,324 × 768 browser-window capture size, across five distinct application states:
 
-### Audience and job to be done
+1. **Agents list** — the default workspace shell with the nested “All Agents” panel and a tabular list.
+2. **Home / Conductor** — a deliberately quiet, centered conversational assistant view.
+3. **Analytics** — metrics, chart cards, tabs, filters, and dashboard controls.
+4. **Contacts** — a full-width data table with banner, filters, and row density.
+5. **Agent editor** — a focused, distraction-free editor with a compact rail, three vertical work panels, and a dense utility header.
 
-We serve owners and operators of small and midsized businesses, especially service businesses, contractors, professional offices, and owner-run teams in Dayton and the Miami Valley. Many are evaluating a custom tool between jobs, often on a phone. They need to understand quickly that DaytonGrowthCo can solve a specific operational problem, explain the work plainly, and offer a credible path to action.
+Reference captures live alongside this document in [`portal-reference-screenshots`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots). The visual conclusions below should take precedence over exact pixel measurements, which will naturally shift with browser zoom and viewport size.
 
-### Personality
+## The overall character
 
-**Premium, practical, precise.**
+The product feels **quiet, professional, and operational**. It does not use large branded hero areas, heavy color blocks, oversized icons, or decorative illustrations. Its confidence comes from strong spatial organization: wide white work surfaces, fine neutral borders, small typography, restrained iconography, and a low-contrast lavender-gray application background.
 
-The visual experience should feel custom-built and polished, but the language should sound like an honest operator. Confidence comes from specificity, clear process, real interfaces, and practical cost framing, never hype.
+The system has two especially important qualities worth borrowing:
 
-## 2. Logo system
+- **The chrome stays visually light.** Navigation, account information, workspace switching, utility controls, and dividers are all present, but none competes with the active content.
+- **Complexity is contained in modules.** The same product supports chat, tables, analytics, long-form configuration, and testing. Instead of changing visual language for each one, it keeps a stable frame and changes only the content region.
 
-### Primary wordmark
+There is a useful hierarchy: ink-dark text establishes certainty; muted gray explains or labels; blue-violet marks activity, links, badges, and chart data; and pale lavender/blue surfaces provide low-pressure grouping. There are no large saturated fields except the occasional dark primary action.
 
-The primary logo is the text wordmark **“DaytonGrowthCo.”** set as a single unit. In the live site, “Dayton” carries the indigo accent and “GrowthCo.” uses near-black. Use the existing `BrandWordmark` component whenever the application is available:
+## Canvas, background, and enclosure
 
-```tsx
-import { BrandWordmark } from "@/src/brand-wordmark";
+### Main application canvas
 
-<BrandWordmark />
+Below the browser chrome, the application occupies a cool off-white/lavender-gray field. Visually it reads close to `#F8F7FC` or `#F7F6FB`, rather than pure white. This background is only lightly tinted; the effect is more “softened desktop software” than obviously purple.
+
+The desktop shell is inset about **8–10 px** from the viewport edge. Large page areas are then contained inside white cards or white panels with a subtle, single-pixel border around `#ECEBF2`. Corners are consistently rounded, generally around **12–16 px** for large panels, **8–10 px** for controls, and fully pill-like only for small tags/status chips.
+
+The page shell uses the full available height. It does not place a page inside a narrow centered max-width column. In most sections, the dominant working region is allowed to extend horizontally; whitespace appears *inside* content modules rather than as huge external gutters.
+
+### Border, shadow, and depth
+
+Depth is intentionally minimal:
+
+- Major cards are white with fine gray/lavender outline borders.
+- Many surfaces have no discernible drop shadow at all.
+- Selected navigation rows are filled, not elevated.
+- Floating/sticky elements use only a faint border and a very soft shadow, if any.
+
+That restraint makes the UI feel more like a well-tuned application canvas than a marketing site. For an implementation, avoid card shadows as a primary separation method. Use background contrast, border lines, and spacing first.
+
+## Typography and font behavior
+
+### Font family
+
+The visible type is a modern neutral sans-serif with a high-x-height, compact spacing, rounded terminals, and very clean digit forms. It reads as an **Inter / Geist / SF Pro–style UI sans**. It is not a serif, grotesque display face, or monospaced system. If matching the feeling rather than the exact proprietary source, use:
+
+```css
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+  "Segoe UI", sans-serif;
 ```
 
-Source: `src/brand-wordmark.tsx` and `src/brand-wordmark.module.css`.
+The typography is exceptionally consistent. Small navigation labels, table labels, chart labels, and utility labels all look like the same family, with hierarchy achieved primarily by weight, shade, size, and spacing—not by changing families.
 
-Wordmark rules:
+### Approximate type scale
 
-- Keep the capitalization and terminal period: `DaytonGrowthCo.`
-- Keep it on one line and preserve its tight editorial letter spacing.
-- Do not redraw it in a substitute typeface, stretch it, outline it, shadow it, or place it inside a badge.
-- Use the standard light-surface version by default. On a very dark surface, use the existing `onDark` treatment or a high-contrast approved lockup.
-- The hover-only `DGC` condensation is a small desktop interaction, not a replacement logo. Never make the abbreviated form the only way to identify the company.
+The product favors a small, dense type scale. These estimates were made from the desktop captures:
 
-### Icon mark
+| Role | Approx. size / line height | Weight | Color / behavior |
+|---|---:|---:|---|
+| Main page title, e.g. “Analytics”, “Contacts” | 18–20 px / 26 px | 600–650 | Near-black charcoal |
+| Centered home greeting | 20–22 px / 28 px | 600 | Near-black charcoal |
+| Editor title / top-level title | 16–18 px / 24 px | 600 | Near-black charcoal |
+| Card title / section heading | 14–16 px / 20–22 px | 550–600 | Charcoal |
+| Regular nav, table values, control labels | 13–14 px / 18–20 px | 400–500 | Dark slate-gray |
+| Secondary description, dates, placeholder, helper | 12–13 px / 16–18 px | 400–450 | Cool medium gray |
+| Sidebar group heading | 10–11 px / 14 px | 500–600 | Muted gray, uppercase |
+| Table column heading / small meta label | 11–12 px / 16 px | 450–550 | Gray, not black |
+| Tags, counters, statuses | 11–12 px / 16 px | 500–600 | Contextual muted or violet/blue |
 
-The icon is a dimensional white **D** with a rising blue-to-violet checkmark on a deep indigo circular field. It communicates completion, forward movement, and dependable systems.
+Large type is rare. The home greeting is the only explicitly large scale seen, and even it stays restrained. A portal inspired by this should resist typical dashboard habits like 32 px titles or 48 px metric figures everywhere. Let layout and data create the sense of scale.
 
-Approved source assets:
+### Text color hierarchy
 
-- `favicon.png` and `public/favicon.png`, 1254 × 1254 PNG
-- `siteicon.png` and `public/siteicon.png`, 1024 × 1024 PNG
-- `logo_zoomedout.jpg` and `public/logo_zoomedout.jpg`, 1254 × 1254 JPG
+Use four clearly separated neutral ink levels:
 
-Use the icon for favicons, app icons, social avatars, compact product contexts, and small brand moments. Keep the supplied circular silhouette and generous breathing room. Do not crop into the D, recolor the checkmark, flatten it into a generic checkbox, add text inside it, or use it as a repeated decorative pattern.
+1. **Primary ink:** nearly black navy-charcoal, approximately `#202634` to `#2A2E3A`. Used for titles, active navigation, major values, and body copy in focused areas.
+2. **Standard ink:** slate/charcoal around `#555B68`. Used for normal navigation labels and interactive control text.
+3. **Muted ink:** cool gray around `#8B909C` to `#9AA0AC`. Used for placeholders, column labels, timestamps, helper text, and deselected tabs.
+4. **Faint ink/border:** cool gray-lavender around `#DCDDE6` to `#EEEEF4`. Used for separators, inactive details, chart grid lines, and strokes.
 
-### Clear space and minimum size
+The contrast is calm but still legible. Avoid using low-opacity black as the default—it tends to look muddy. Use deliberately chosen blue-gray neutrals.
 
-- Wordmark clear space: at least the height of the capital `D` on every side.
-- Icon clear space: at least 15% of the icon diameter on every side.
-- Do not use the wordmark below 120 px wide in raster use or 14 px text size in UI.
-- Do not use the icon below 16 px. Prefer 24 px or larger when it must be recognizable.
+## Logo and workspace treatment
 
-## 3. Color system
+### Logo location and construction
 
-The canonical public-site palette is defined in `src/index.css`. Use semantic tokens instead of introducing one-off hex values.
+The logo lives alone at the **very top-left of the primary sidebar**, approximately 18–20 px from the left edge and 18–22 px from the top edge of the application. It consists of a compact dotted/radial mark followed by a simple wordmark. The wordmark is dark text, around **16 px**, and set on the same baseline as the mark.
 
-| Role | Token | Value | Use |
-| --- | --- | --- | --- |
-| Primary accent | `--brand-indigo` | `#18174D` | Key emphasis, hero action, active states, wordmark accent |
-| Accent hover | `--brand-indigo-hover` | `#262587` | Hover and editorial emphasis |
-| Supporting blue | `--brand-blue` | `#5796C8` | Gradient midpoint, diagrams, restrained secondary emphasis |
-| Pale blue | `--brand-paleblue` | `#DDE9FC` | Soft washes, secondary hover fill, light UI accents |
-| Charcoal | `--brand-charcoal` | `#1F211F` | Default primary buttons and dark text |
-| Near-black | `--brand-near-black` | `#05070C` | Footer and deepest dark surfaces |
-| Main surface | `--brand-surface` | `#FBFBF9` | Default warm-white page surface |
-| Muted surface | `--brand-surface-muted` | `#F7F6F1` | Alternate sections and subdued panels |
-| Border | `--brand-border` | `#EDEDEB` | Light dividers and control outlines |
-| Muted text | `--brand-text-muted` | `#5F5C56` | Supporting copy on light surfaces |
-| Success | `--brand-success` | `#1F7A52` | Positive status only |
-| Danger | `--brand-danger` | `#B42318` | Errors and destructive actions only |
+There is no tagline, marketing descriptor, workspace name, or extra text below the logo. That absence is important: the very top of the sidebar looks like a small brand signature, not a header module. The logo area is only about **42–48 px** tall before the workspace switcher begins.
 
-### Color application
+For a similar portal, keep the mark-and-wordmark compact and horizontally aligned. Do not stack a slogan under it. Do not give it a banner background. Do not enlarge it into a hero. The simple top-left signature is part of the product’s calmness.
 
-- Let warm off-white and charcoal do most of the work. Indigo is the single key accent, not a blanket background.
-- Use pale blue as atmosphere, not a body-text color or a substitute for contrast.
-- The approved expressive gradient is `linear-gradient(105deg, #2A2880 0%, #4744C4 45%, #DDE9FC 115%)`. Reserve it for a single high-value moment such as a hero keyword, final CTA, or controlled brand flourish.
-- Dark sections should use near-black or the dark panel colors (`#0B0B1F`, `#131233`) with pale blue, white, or muted cool-gray text.
-- Build depth with very soft indigo-tinted shadows and washes, not generic gray drop shadows.
-- The blue/orange values in `daytongrowthco-website-migration-audit/assets/daytongrowthco/brand.json` are specific to that audit tool’s report template. They are not the canonical public-site palette.
+### Workspace selector
 
-## 4. Typography
+Immediately below the logo is a rounded workspace switcher, about **200 px wide × 50 px high** in the left rail. It has:
 
-### Type families
+- a 32–36 px rounded-square avatar at the left (a blue/violet gradient or branded letter tile),
+- a tiny muted “Workspace” eyebrow label,
+- a stronger workspace name below it, truncated with ellipsis if needed,
+- and small up/down chevrons at the far right.
 
-| Role | Family | Use |
-| --- | --- | --- |
-| Display/editorial | Fraunces Variable | H1s, H2s, major page statements, select italic emphasis |
-| UI/body | Hanken Grotesk Variable | Navigation, body copy, buttons, cards, labels, forms |
-| Technical/data | Fira Code or system mono fallback | Dashboards, data labels, code-like workflow and metrics |
+It is white against the lavender sidebar background, outlined in a hairline gray border. The control reads as an identity/tenant selector without inviting unnecessary attention. The value is two-line; this is a key distinction from a simple dropdown label.
 
-Fraunces supplies restraint and an editorial point of view. Hanken Grotesk keeps the product and explanatory content direct. Mono is a utility, never a decorative headline font.
+## Primary sidebar: exact organization and placement
 
-### Type hierarchy
+### Dimensions and behavior
 
-Use the existing roles from `src/index.css` rather than creating arbitrary scales.
+The full navigation sidebar is roughly **220–228 px wide** at the inspected viewport. It is fixed to the left edge and extends from under the browser toolbar to the bottom of the application. Its right edge is a subtle divider rather than a heavy shadow.
 
-| Role | Desktop intent | Mobile intent | Weight / leading |
-| --- | --- | --- | --- |
-| Display | `clamp(4rem, 6vw, 5rem)` | `2.625rem` | 550 / 1.0 |
-| Section | `clamp(2.75rem, 4.4vw, 3.625rem)` | `1.875–2.25rem` | 530 / 1.04 |
-| Compact section | `clamp(2.125rem, 3.2vw, 2.625rem)` | `1.625–1.875rem` | 530 / 1.06 |
-| Card title | `1.125–1.375rem` | `1.0625–1.1875rem` | 700 / 1.15 |
-| Body | `1–1.125rem` | `.9375–1rem` | 420 / 1.6 |
-| Supporting UI | `.875rem` | `.875rem` | 580 / 1.45 |
-| Eyebrow utility | `.72rem` | `.72rem` | 700 / 1.45, tracking `.12em` |
+The navigation is vertically scrollable. At the observed height, items through “Analytics” are visible while later monitor/system items are below the fold. The scrollbar is visually subdued and close to the sidebar’s right edge.
 
-Although an eyebrow utility exists for product metadata, marketing pages should not add eyebrow/kicker labels or uppercase chips above section headings. Lead with the headline.
+Horizontal padding is about **14–18 px**. Individual nav rows are approximately **32–36 px** tall, while section labels have generous vertical gaps around them. The result is compact without being crowded.
 
-### Typographic rules
+### Sequence from top to bottom
 
-- Headings are sentence case, compact, and usually no more than two to three lines.
-- Use tight display tracking, approximately `-0.035em`; do not letter-space body copy for effect.
-- Use `text-wrap: balance` for large headlines and `text-wrap: pretty` for paragraphs where supported.
-- Use editorial italics sparingly to emphasize one meaningful word or phrase, not entire headlines.
-- Keep body copy readable with a 1.6 line height and a bounded text measure, usually 43–60 characters for primary explanatory columns.
-- Avoid all-caps paragraph text, novelty fonts, light-gray body copy, and dense blocks of sales language.
+The sidebar follows this exact conceptual order:
 
-## 5. Page design principles
+1. Compact product logo.
+2. Workspace selector card.
+3. A single **Home** row.
+4. Uppercase group heading: **BUILD**.
+5. Build links: **Agents**, **Knowledge Base**.
+6. Uppercase group heading: **DEPLOY**.
+7. Deploy links: **Phone Numbers**, **Batch Call**.
+8. Uppercase group heading: **DATA**.
+9. Data links: **Call History**, **Chat History**, **Contacts**.
+10. Uppercase group heading: **MONITOR**.
+11. Monitor links: **Analytics**, **Live Monitoring**, **AI Quality Assurance**, **Alerting**.
+12. Uppercase group heading: **SYSTEM**.
+13. System links: **Integrations**, **Billing**, **Settings**.
+14. Bottom-docked utility stack: plan/billing, usage/concurrency, account, then Help and Updates.
 
-### Show the tool, do not merely describe it
+The group labels are not tabs or cards. They are small, uppercase, muted text with approximately 14–20 px of breathing room above and 8–10 px below. They provide scanning landmarks while remaining visually subordinate to the clickable rows.
 
-The offering is often invisible software. Make it concrete with interface-style proof: mini dashboards, workflow diagrams, quote rows, pipeline states, clear metrics, document previews, and before/after process examples. The visual should help an owner picture their own business using the outcome.
+### Navigation row styling
 
-### Build a deliberate page narrative
+Each navigation row pairs a **14–16 px thin-stroke line icon** with a text label. Icon and text are left-aligned; label begins approximately 10–12 px after the icon. Rows do not show chevrons by default. Icon stroke and label text share the same muted gray when inactive.
 
-A strong page normally follows this order:
+The active row uses a very pale lavender-blue fill—roughly `#EDECF7` / `#EFEEF8`—with a **6–8 px** radius. The active icon changes to a stronger indigo/blue and the label becomes dark charcoal with medium/semibold weight. The row does not use a colored left bar, underline, or strong filled button.
 
-1. **Clear value statement:** State what is built, for whom, and why it matters.
-2. **Concrete proof:** Show a product-like artifact, capability map, process, example, or cost logic.
-3. **Operational relevance:** Connect the system to time saved, revenue captured, fewer misses, or a clearer handoff.
-4. **How it works:** Make the engagement feel finite, understandable, and low-risk.
-5. **Focused CTA:** Invite one practical next step, such as starting a conversation or discussing a specific workflow.
+This is a good pattern to replicate: selection should be visible at a glance, but it should not make the sidebar feel busy. One pale rounded rectangle is enough.
 
-Not every page needs every module, but every section must advance the decision. Avoid filler, capability laundry lists, repeated card grids, and decorative sections without a job.
+### Bottom utilities, account access, and help
 
-### Layout and rhythm
+The lower sidebar has a clearly separated fixed utility zone that begins around 95–125 px from the bottom, depending on content and scroll. This area is not simply another item in the scrolling nav.
 
-- Use a restrained editorial grid with generous whitespace and visible hierarchy.
-- Use the site’s container convention: `max-w-7xl` with `px-5` on small screens and `sm:px-8` where appropriate.
-- Alternate warm light surfaces, pale-blue washes, and occasional dark editorial panels to establish rhythm. Do not alternate colors mechanically.
-- Use a subtle dot-grid texture or low-opacity glow only to frame a story moment. It should be felt before it is noticed.
-- Use thin, quiet borders and soft elevation. Standard panels use `18px` radii; large feature panels can use `28px`; buttons use `10px`. Do not turn every element into a bubble.
-- Let a hero breathe. Page heroes use a large top offset for the fixed header and a short, confident lower edge, not a full screen of vague messaging.
-- On mobile, preserve the narrative but simplify layout. Stack columns, remove hover-dependent behavior, and prioritize the main proof and CTA.
+1. **Plan button.** A white, outlined rounded rectangle about 200 px × 34 px. It contains a small card/billing icon, the plan label (“Pay As You Go”), and a far-right chevron. It sits above the account control.
+2. **Usage snippet.** In some screens, a tiny line between plan and account reports remaining balance and concurrency. It is small muted text with a subtle expandable affordance.
+3. **Account control.** Another white, outlined rounded rectangle, approximately the same width and height. It includes a small circular user avatar, truncated email/name, and chevrons at the far right. This is where personal account access lives; it is placed **near the bottom left**, not top-right.
+4. **Help and Updates.** A final small horizontal row along the bottom. “Help” sits at the left with a compact outline icon; “Updates” sits to its right with a megaphone/speaker-like icon and an unread red dot visible near the far right. A very fine vertical divider separates the two segments.
 
-### Image and illustration direction
+The low placement makes help and account access persistent but peripheral. Replicate the priority: top = product/workspace; middle = work navigation; bottom = subscription, account, support, updates.
 
-- Prefer real proof, product-like UI, diagrams, workflow artifacts, and intentional founder or customer imagery.
-- Photography should feel grounded, calm, and useful, never generic agency stock.
-- Interface mockups should look plausible: real labels, sensible status states, readable hierarchy, and a limited palette.
-- Decorative texture is allowed only when it supports depth, atmosphere, or a section transition. Film grain is very subtle, never visibly noisy.
-- Avoid random 3D blobs, generic AI sparkles, unrelated abstract art, loud gradient backgrounds, clip-art icons, and mockups that exist only to fill space.
+## Agents list: nested navigation plus data table
 
-## 6. Components and interaction patterns
+The Agents page demonstrates how the product manages a screen that needs a second navigational layer.
 
-### Header and navigation
+### Second rail
 
-- Keep the header fixed, warm, lightly translucent, and quiet. Its job is orientation, not decoration.
-- Use the primary navigation labels already established: **What We Build**, **Examples**, **How It Works**, and **About**.
-- Keep one clear header CTA, currently **Start a conversation**.
-- The mobile menu must have obvious open/close state, Escape support, scroll locking, and page-top reset after navigation.
+To the immediate right of the global sidebar is a **~260 px white subpanel** with a rounded outer edge. It begins at the top of the main application content, almost flush with the viewport’s 8 px outer inset.
 
-### Buttons and links
+At its top is a pale lavender selected row with a small agents icon and the label “All Agents.” Near the boundary between this rail and the main area is a small circular collapse control with a left chevron. Below, the panel has:
 
-- Primary buttons are charcoal or, in the hero, indigo. Use one primary action per decision area.
-- Secondary buttons are white with a thin border and a pale-blue fill on hover.
-- Buttons use a 10px radius, a minimum height of 40px, direct verbs, and optional right-arrow motion.
-- Links and buttons may lift about 1–2px on fine-pointer hover and press subtly on activation. Do not use large bounces or perpetual motion.
-- Never use pill-shaped badges. Avoid pill-shaped controls unless a compact input affordance genuinely requires it.
+- an uppercase muted “FOLDERS” label,
+- a tiny plus icon aligned to the right to add a folder,
+- a folder row with a line folder icon and “Template Agents,”
+- large remaining whitespace.
 
-### Cards and product proof
+This subrail uses the same language as the primary nav but is more card-like: white surface, defined rounded container, and a very simple internal hierarchy.
 
-- Cards are content containers, not a default layout. Use them when a bounded unit needs scanning, comparison, or interaction.
-- Give cards a useful internal hierarchy: small context, clear title, concise explanation, evidence or a next action.
-- Prefer one stronger feature panel over many identical cards. Vary scale and composition intentionally.
-- Use thin borders, warm-white or muted surfaces, and restrained indigo-tinted shadows. Hover should clarify interactivity, not make a static layout jump around.
+### Main list panel
 
-### Forms and CTAs
+The main content begins with “All Agents” at the upper-left, around 18 px, and actions at the upper-right. The top control row includes:
 
-- Forms should ask only for information needed to begin a useful conversation.
-- Use visible labels, clear helper text, simple input borders, and concise validation messages.
-- Place forms in a calm, high-contrast context. The final CTA may be dark and editorial, but the form itself should remain bright and easy to read.
-- Explain what happens next in plain language. Reduce uncertainty rather than creating urgency.
+- a long search input with a search icon and muted “Search…” placeholder,
+- a small neutral outlined “Import” button,
+- a dark charcoal primary “Create an Agent” button with a dropdown chevron.
 
-### States and accessibility
+The content table begins only about **12–16 px** below this row. Its header is a pale gray/lavender strip, about **46 px high**, and contains labels such as Agent Name, Agent Type, Voice, Phone, and Edited by. Header labels are 12–13 px and muted gray.
 
-- Meet WCAG 2.1 AA: 4.5:1 minimum contrast for normal text, 3:1 for large text and relevant UI boundaries.
-- All interactive controls need visible `:focus-visible` styling. The current site uses a 2px `#6F90AD` outline with a 3px offset.
-- Keep touch targets at least 44 × 44 px where practical, especially in mobile navigation and social controls.
-- Use semantic elements first: headings in order, actual buttons for actions, actual links for navigation, labels for inputs, and useful alt text.
-- Never rely on color alone to convey a status, selection, or error.
-- Ensure hover information is available on touch and keyboard. Fine-pointer hover effects must not change the core content or hide functionality.
+Rows are compact (approximately 52–56 px each), separated by very fine horizontal rules. The first column pairs a square/rounded-square application icon with the boldish agent name. “Single Prompt” is rendered as a tiny neutral lavender pill. Phone data appears as an outlined rounded chip. Avatar and name form the voice value. The final row action is just a vertical ellipsis—never a large labeled button.
 
-## 7. Motion
+The table has no dominant enclosing card perimeter inside the already-white panel. It feels like a native continuation of the workspace surface. Use that choice for dense admin data: once the page panel is already well framed, avoid nesting another heavy card around the table.
 
-Motion should communicate polish, hierarchy, and cause-and-effect, never spectacle for its own sake.
+## Home / Conductor: using whitespace as a feature
 
-- Use short, soft transitions: roughly 150–240ms for UI feedback and up to 340ms for a deliberate reveal.
-- Preferred easing is a smooth deceleration, such as `cubic-bezier(0.16, 1, 0.3, 1)` or the existing `--ease-emil-out` token.
-- Appropriate motion: a 1–2px button lift, arrow movement, a short menu sequence, a card’s subtle elevation, or a very slow atmospheric hero field.
-- Avoid auto-playing ornamental motion that competes with copy, scroll-jacking, heavy parallax, bounce effects, and animation that changes layout unexpectedly.
-- `prefers-reduced-motion` is mandatory. Remove or make instantaneous all nonessential transforms, loops, reveals, and staggered animation. Content must remain fully visible and usable with motion reduced.
+The Home screen uses a three-zone arrangement:
 
-## 8. Voice and content design
+1. Global sidebar at left (~220 px).
+2. A **~210 px** Conductor History panel.
+3. A very large white conversation canvas occupying all remaining width.
 
-### Write like a practical expert
+The History panel is an independent white rounded panel. It has a top title line with a small headset-like icon and “Conductor History,” a full-width 32–36 px search field, a simple “+ New chat” text action, then compact conversation rows. Each row is a truncated single-line title with a small muted time stamp beneath. No conversation row has a big card treatment or picture.
 
-- Lead with a concrete outcome, process, or business problem.
-- Use plain words, short sentences, specific examples, and honest ranges or numbers when useful.
-- Explain the so-what: feature → operational change → business value.
-- Use familiar operational language such as quote, handoff, missed follow-up, dashboard, intake, customer portal, and time saved.
-- Use commas, colons, periods, or “to” for ranges. Do not use em dashes.
+The large conversation area is intentionally almost empty. A small purple sparkle icon and “Conductor” label sit at its top-left. The welcome title is positioned visually close to the center of the open field—slightly below the true vertical center—rather than pinned at the top. Beneath it sits a large prompt composer about **490–540 px wide** and **80–88 px high**.
 
-### Avoid
+The composer is a white rounded rectangle with a thin **violet focus border**, radius around 12 px. Its placeholder sits in the upper-left, while the attachment/plus controls sit on the bottom-left and send arrow on the bottom-right. A small greenish model/credit indicator appears among the lower-left controls. This is a good model for an AI feature: centered intention, generous space, minimal decoration, and one obvious input.
 
-- Generic agency language: “digital solutions,” “full-service,” or vague capability claims.
-- Hype: “revolutionary,” “transformative,” “game-changing,” “cutting-edge,” or manufactured urgency.
-- AI jargon when a business outcome says more.
-- Corporate filler, dense text walls, unexplained acronyms, and clever headlines that hide the offer.
-- Uppercase section chips, arbitrary status pills, and claims the page cannot substantiate.
+## Analytics: dashboard density without visual heaviness
 
-## 9. Design QA checklist
+### Header and controls
 
-Before shipping a page or asset, verify the following.
+The Analytics page uses a wide white panel with about **14–20 px** internal padding. “Analytics” appears top-left around 18 px / 600 weight. Directly below is a tab row: “Call Dashboard” is active with dark text and a thin dark underline; “Chat Dashboard” is gray/inactive. A square plus button sits next to tabs to create a new dashboard.
 
-### Brand
+The next row is a horizontal toolbar. On the left: a date-range button with calendar icon, Filter, and Breakdown. On the right: “+ Add Chart” and a small rounded-square ellipsis button. Controls are compact outline buttons, about **30–32 px tall**, all visually in the same family. They use white backgrounds, pale borders, small 13 px labels, and 14–16 px icons.
 
-- [ ] Uses the DaytonGrowthCo. wordmark or approved icon asset correctly.
-- [ ] Uses the canonical indigo, ice-blue, charcoal, and warm-surface system.
-- [ ] Has one clear visual idea, not several competing styles.
-- [ ] Feels premium through restraint, specificity, spacing, and craft.
+### Metric cards and charts
 
-### Content and conversion
+The first row contains three equal metric cards, with roughly **10–12 px gaps**, spanning the content width. At the reference viewport they are each around **345 px wide × 200 px high**. Each card has:
 
-- [ ] The first viewport states a concrete value proposition.
-- [ ] The page shows tangible proof of the system or outcome.
-- [ ] Each section advances the decision or is removed.
-- [ ] CTAs are direct, consistent, and not overly repeated.
-- [ ] Copy is plainspoken, specific, and free of banned hype.
+- white surface, 12–14 px radius, very subtle border;
+- 14–15 px title near top-left;
+- a very pale internal data area (not always necessary, but visible here);
+- a centered value in 30–34 px dark type.
 
-### Visual and interaction quality
+The chart row combines a wider card (about two-thirds of the available width) with a narrower card (about one-third). Charts use fine dotted gray grid lines, light blue-violet strokes, and an extremely soft translucent blue area fill. Legends are tiny, anchored toward the lower left, using a 9–10 px colored square plus muted label.
 
-- [ ] Hierarchy is clear at a glance, especially on a phone.
-- [ ] Headings, body text, cards, buttons, and spacing follow the shared roles and tokens.
-- [ ] Hover, active, focus, loading, empty, error, and success states are considered where applicable.
-- [ ] Motion is subtle and has a reduced-motion path.
-- [ ] The page uses no pill badges, generic stock filler, gradient overload, or template-like repeated sections.
+This is notable: the charts are informative but not visually loud. Do not use thick axes, bold graph backgrounds, strongly saturated fills, or huge numerical labels. The chart data itself should be the strongest color in the card, and even that remains gentle.
 
-### Accessibility and technical quality
+## Contacts: data-heavy but spacious
 
-- [ ] Keyboard navigation works from header through CTA.
-- [ ] Focus is visible, labels and semantics are correct, and contrast meets AA.
-- [ ] Touch targets and mobile spacing are comfortable.
-- [ ] Images have meaningful alternative text or are correctly marked decorative.
-- [ ] Page performance is protected: optimize media, avoid needless animation, and do not ship decorative weight without a purpose.
+The Contacts view is the clearest reference for a high-volume table.
 
-## 10. Source of truth
+### Announcement strip
 
-The living implementation is the authority when this document and a component differ. Start here:
+At the very top, inside the page panel, is a full-width, short, pale periwinkle-blue announcement bar. It is about **40 px high** with 10–12 px rounded corners. At the left is a small bright-blue “New” badge, then regular dark text; a simple “Connect” action sits flush to the far right. This banner is intentionally one line tall and not a large alert module.
 
-- `src/index.css` for design tokens, typography, components, motion, focus, and responsive behavior
-- `src/brand-wordmark.tsx` and `src/brand-wordmark.module.css` for the wordmark
-- `src/site-header.tsx` for navigation and the header CTA
-- `app/page.tsx`, `app/what-we-build/page.tsx`, `app/how-it-works/page.tsx`, and `app/examples/page.tsx` for page composition patterns
-- `PRODUCT.md` for product positioning, audience, and non-negotiable brand constraints
+### Title and table tools
 
-When extending the system, add or refine a shared token or component before introducing a one-off style. The goal is not to make every page look identical. It is to make every page unmistakably DaytonGrowthCo.
+Below the banner, a “Contacts” title sits at left. On the right, there is a compact Feedback button with a speech/comment icon. The next control row spreads intentionally: Filter is left; Search is centered/right; a tiny table-settings icon button follows; a dark “Actions” dropdown sits at the far right.
+
+This pattern uses **spatial distribution rather than control grouping boxes**. Items sit in a clean line with large white gaps between functional clusters. It feels organized without additional dividers.
+
+### Table details
+
+The table header is a very light gray/lavender band about **30–34 px** high. The header is smaller and lower-contrast than table data. The rows are approximately **46–48 px high**, each with a hairline separator. There are no zebra stripes. Long IDs are muted gray instead of primary black, ensuring the phone number and more useful values are read first.
+
+Column widths are purposeful and fixed-looking: phone number (moderate), first/last name (short), contact ID (wide), related conversations (moderate), latest conversation (wide), do-not-call (moderate), external ID (moderate). This provides a precise, operational rhythm rather than auto-sizing every column to content.
+
+## Agent editor: focused three-panel workbench
+
+The agent editor deliberately drops the global sidebar and replaces it with an extremely slim vertical rail. This signals a change from browsing the product to working inside a focused object.
+
+### Top header
+
+The editor top bar is about **40–44 px high** and spans the full content width. From left to right it has:
+
+- a compact “go back” icon button;
+- three small tabs (Agent, Workflow, Simulation) near the left, with Agent selected;
+- the agent title, followed by a compact Environment tag;
+- an ellipsis/overflow button;
+- a share icon button;
+- compact version pill/button (for example “V37”);
+- Test button with play icon;
+- white outlined “Create new version” button;
+- a rightmost Conductor button, distinguished by a small violet sparkle.
+
+The header prioritizes context and actions, but each control is kept short. It does not use a huge page title with a big action row below. Instead, the object title and its actions share a single narrow, dense toolbar.
+
+### Slim vertical rail
+
+Along the left edge, a rail of roughly **50–56 px** contains centered stacked icon+label destinations: Agent, Workflow, Simulation. The active item has a pale blue/lavender background/indicator and strong indigo icon. The label is tiny, about 10 px, placed below its icon. This rail is distinct from the primary sidebar because the context is local to the editor.
+
+### Three work columns
+
+Below the header, the editor uses three vertical panels with 6–10 px gutters:
+
+- **Left configuration/content panel:** approximately 48–50% of the width.
+- **Middle settings accordion panel:** approximately 25–26%.
+- **Right testing panel:** approximately 25–26%.
+
+Each panel is white, lightly bordered, rounded at 12–14 px, and fills most of the viewport height. They feel like coordinated panes rather than three separate cards.
+
+The left panel starts with a tight metadata strip (“Agent Details,” cost, latency, tokens, ID). Then compact selector buttons for model, voice, and language, followed by the large textarea/configuration document. The textarea is visually the dominant working object: light border, rounded corners, substantial internal padding, normal small body text, and a real document-like scrollable block. Below it are smaller configuration blocks and headings.
+
+The middle panel is an accordion stack. Each item is around 45–48 px tall, with a left line icon, left-aligned boldish title, and far-right downward chevron. The rows are separated by thin dividers; no cards are nested inside. Accordion naming is clear, compact, and mechanically scannable.
+
+The right panel begins with a compact tab strip (Test Audio selected, Test LLM inactive) and a code-like icon. Its empty state centers a very large pale microphone icon vertically, with a soft lavender informational strip lower in the panel and a centered outline “Run Test” button beneath. The action is intentionally modest until the user is ready to test.
+
+## Color tokens to emulate
+
+The following are visual approximations, not extracted source tokens. Use them as a starting palette and tune from your own screenshots.
+
+```css
+:root {
+  --app-bg: #f8f7fc;
+  --panel: #ffffff;
+  --panel-subtle: #fbfaff;
+  --border: #e8e7ef;
+  --border-strong: #dedde8;
+
+  --ink: #242936;
+  --ink-secondary: #5f6573;
+  --ink-muted: #9298a5;
+  --ink-faint: #b7bac5;
+
+  --selection: #efeff9;
+  --selection-strong: #e9eaff;
+  --accent: #6378d8;
+  --accent-deep: #4f63c6;
+  --accent-soft: #eef1ff;
+  --banner: #edf3ff;
+
+  --primary-button: #303a50;
+  --primary-button-hover: #252e42;
+  --success-soft: #eaf7e9;
+  --danger-dot: #eb7786;
+}
+```
+
+The accent color is more blue-violet/periwinkle than royal blue, and the main action color is a deep slate rather than a pure black. Keep the blue accent selective: active icons, focused composer border, badges, chart marks, and a few small highlight states. Never make it the dominant screen background.
+
+## Component recipe for a similar portal
+
+### Suggested spatial constants
+
+```css
+:root {
+  --sidebar-width: 224px;
+  --sidebar-padding-x: 14px;
+  --outer-gutter: 8px;
+  --content-padding: 14px;
+  --row-height: 34px;
+  --control-height: 32px;
+  --radius-panel: 14px;
+  --radius-control: 9px;
+  --radius-chip: 999px;
+  --hairline: 1px;
+}
+```
+
+At normal desktop widths, keep shell gutters small. The product earns its spaciousness from the broad white work area, not giant margins. Place the left sidebar at a stable width, let the content grow, and use responsive breakpoints to collapse or hide secondary panels before squeezing all text.
+
+### Buttons
+
+- **Primary:** dark slate fill, white 13 px medium-weight text, 32–34 px high, 8–9 px radius, optional downward chevron aligned 8–10 px after label.
+- **Secondary:** white fill, pale border, dark slate text, same height/radius as primary.
+- **Icon-only:** small rounded-square white/transparent control with a 14–16 px line icon. Use tiny border or no border depending on surrounding density.
+- **Text action:** compact icon + label, no button fill, dark or muted text, e.g. Feedback, New chat.
+
+### Inputs
+
+Search fields are shallow and broad (around 32 px high). They use a leading 14 px search icon, muted placeholder, white fill, a very soft border, 8–9 px radius, and generous horizontal inner padding. Do not use a thick active outline except during actual focus.
+
+Long-form text inputs receive more pronounced rounding and internal padding, but they still use a thin gray border. The violet/blue focus edge on the Conductor composer is an intentional moment of emphasis; do not apply it to every control in the default state.
+
+### Cards and panels
+
+Use a single visual hierarchy:
+
+- Application background: tinted off-white.
+- Primary working surface: white rounded panel.
+- Nested, low-emphasis region: barely tinted background or divider line—not a darker card.
+- Data card: white with hairline boundary and 12–14 px radius.
+
+Avoid: colored header bands on every card, overly large card padding, strong shadows, and multiple unrelated radius values.
+
+## What to preserve when translating the brand
+
+If the goal is to upgrade an existing portal while adopting this brand character, the most important decisions are structural rather than cosmetic:
+
+1. **Give the sidebar a clear three-level priority:** brand/workspace at top, task navigation in the middle, account/help at bottom.
+2. **Keep the logo compact and alone.** Mark + wordmark at top-left; no subtitle beneath it.
+3. **Use one active-nav treatment:** a pale lavender rounded row plus a slightly more saturated blue-violet icon.
+4. **Make labels small and consistent.** Sidebar section labels should be uppercase, tiny, letter-spaced/muted, and never compete with navigation names.
+5. **Rely on near-white surfaces and hairline borders.** The product’s polish is primarily quiet contrast and alignment.
+6. **Reserve dark fills for primary decisions.** “Create,” “Actions,” and similar decisive actions are dark; almost everything else is neutral outlined or text-only.
+7. **Use large whitespace deliberately in assistant/workflow spaces.** The Conductor home screen proves a product can feel premium by withholding visual noise.
+8. **Switch the shell when the task changes.** A local object editor can use a slim rail and work panes instead of carrying the entire global navigation into every focused task.
+
+## Implementation cautions
+
+- Do not infer exact font licensing or source CSS from visual inspection. Treat the typeface recommendation as an aesthetic match.
+- Do not copy the reference product’s logo, wordmark, proprietary icons, or exact branded assets. Build an equivalent composition with your own brand assets.
+- Do not overfit to the captured 1,324 px viewport. The values here are intentionally presented as ranges and proportions where possible.
+- Preserve accessibility: muted text needs sufficient contrast, every icon button needs a programmatic label, selection should not rely only on color, and tables should remain usable with keyboard navigation.
+
+## Screenshot index
+
+- [`01-agents.png`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots/01-agents.png) — global sidebar, nested agent rail, table.
+- [`02-home.png`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots/02-home.png) — Conductor history and centered chat composition.
+- [`03-analytics.png`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots/03-analytics.png) — tabs, controls, metrics, cards, charts.
+- [`04-contacts.png`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots/04-contacts.png) — announcement strip and high-density table.
+- [`05-agent-editor.png`](/Users/goblu/Documents/Code/Main%20-%20DaytonGrowthCo/portal-reference-screenshots/05-agent-editor.png) — focused editor toolbar, local rail, three-panel workbench.

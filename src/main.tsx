@@ -12,6 +12,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import {
   AppWindow,
+  ArrowDown,
   ArrowRight,
   Calculator,
   Calendar,
@@ -54,7 +55,6 @@ import type * as ThreeNS from "three";
 import { AnimatedHeroPhrase } from "@/components/ui/animated-hero";
 import { DotMatrix } from "@/components/ui/dot-matrix";
 import { KineticGrid } from "@/components/ui/kinetic-grid";
-import { WaveShader } from "@/components/ui/wave-shader";
 import { ClearInput } from "./clear-input";
 import { socialLinks } from "./social-links";
 import { BetterQuoteSavingsCalculator } from "./better-quote-savings-calculator";
@@ -68,8 +68,9 @@ import {
   ProofBand,
   ProofCard,
 } from "./premium";
-import "./index.css";
-import "./home-flow.css";
+import clientProofStyles from "./client-proof.module.css";
+import flagshipStyles from "./flagship-programs.module.css";
+import appointRelayOfferStyles from "./appointrelay-offer.module.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
 // client-rendered SPA (no SSR), and a no-op if called more than once.
@@ -369,8 +370,8 @@ const toolScenarios = [
   },
 ];
 
-// Completes the rotating hero headline: "We build ___."
-const heroPhrases = ["phone agents", "quote tools", "dashboards", "customer portals", "custom apps"];
+// A restrained value sequence for the final word of the homepage headline.
+const heroRotatingWords = ["simpler.", "faster.", "clearer.", "easier."];
 
 // ---------------------------------------------------------------------------
 // Visitor personalization
@@ -1117,7 +1118,11 @@ function RouteTransition() {
 function useTurnstileProtection() {
   useEffect(() => {
     const form = document.getElementById("auditForm") as HTMLFormElement | null;
-    const key = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content.trim();
+    const configuredKey = document.querySelector<HTMLMetaElement>('meta[name="turnstile-site-key"]')?.content.trim();
+    const isLocalPreview = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    // Cloudflare's documented always-pass key keeps local previews testable
+    // without repeatedly rejecting the production hostname configuration.
+    const key = isLocalPreview ? "1x00000000000000000000AA" : configuredKey;
     const container = document.getElementById("turnstileWidget");
     if (!form || !key || !container) return;
 
@@ -1416,6 +1421,7 @@ function BackgroundVideo({
   stream,
   playbackRate,
   preload = "auto",
+  paused = false,
 }: {
   className: string;
   src?: string;
@@ -1423,6 +1429,7 @@ function BackgroundVideo({
   stream?: string;
   playbackRate?: number;
   preload?: "auto" | "metadata" | "none";
+  paused?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = useReducedMotion();
@@ -1430,7 +1437,7 @@ function BackgroundVideo({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (reduceMotion) {
+    if (reduceMotion || paused) {
       video.pause();
       return;
     }
@@ -1489,7 +1496,7 @@ function BackgroundVideo({
       video.removeEventListener("stalled", resume);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [playbackRate, reduceMotion]);
+  }, [paused, playbackRate, reduceMotion]);
 
   return (
     <video
@@ -1498,7 +1505,7 @@ function BackgroundVideo({
       src={src}
       poster={poster}
       data-mux-stream={stream}
-      autoPlay={!reduceMotion}
+      autoPlay={!reduceMotion && !paused}
       muted
       loop
       playsInline
@@ -1591,55 +1598,31 @@ function ProductSceneCard({ step, index, active = true }: { step: WorkflowStep; 
 }
 
 function SpreadsheetTransformation() {
-  const cells = ["Customer", "Job", "Status", "Price", "Miller", "Roof repair", "New", "Pending", "Davis", "Remodel", "Quoted", "$8,450"];
+  const before = ["Customer name", "Scope notes", "Quoted amount", "Next owner"];
+  const after = ["One shared job record", "Approved estimate and scope", "Clear next action", "One accountable handoff"];
 
   return (
     <section id="case-study" className="spreadsheet-transform" aria-labelledby="spreadsheet-transform-heading">
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="section-heading compact-heading spreadsheet-copy">
           <h2 id="spreadsheet-transform-heading">
-            The spreadsheet
-            <span>becomes the tool.</span>
+            From scattered sheets to one working record.
           </h2>
-          <p>For teams still running quotes, projects, and customer work across disconnected files.</p>
+          <p>For teams still running quotes, jobs, and customer work across disconnected files.</p>
         </div>
-        <div className="transform-stage spreadsheet-reveal" aria-label="Spreadsheet transforming into a project dashboard">
-          <div className="case-study-peel" aria-hidden="true">
-            <div className="case-study-peel-under">
-              <span>After</span>
-              <strong>Quote builder</strong>
-              <em>+ project dashboard</em>
-            </div>
-            <div className="case-study-peel-cover">
-              <span>Before</span>
-              <strong>Spreadsheet</strong>
-              <em>+ text threads</em>
-            </div>
-          </div>
-          <div className="sheet-view">
-            <div className="transform-window-bar"><FileText size={15} /> jobs.xlsx</div>
-            <div className="sheet-grid">
-              {cells.map((cell, index) => <span key={`${cell}-${index}`}>{cell}</span>)}
-            </div>
-          </div>
-          <div className="dashboard-view">
-            <div className="transform-window-bar"><LayoutDashboard size={15} /> Miller roof repair</div>
-            <div className="project-record">
-              <header>
-                <div><span>Customer</span><strong>Chris Miller</strong></div>
-                <div><span>Address</span><strong>1842 Brown St, Dayton</strong></div>
-              </header>
-              <div className="estimate-lines">
-                <p><span>Architectural shingles</span><strong>$5,860</strong></p>
-                <p><span>Underlayment + flashing</span><strong>$1,420</strong></p>
-                <p><span>Labor + disposal</span><strong>$2,170</strong></p>
-              </div>
-              <footer><span>Estimate total</span><strong>$9,450</strong></footer>
-            </div>
-          </div>
-          <div className="transform-caption" aria-hidden="true">
-            <span>Spreadsheet</span><ArrowRight size={15} /><strong>Working dashboard</strong>
-          </div>
+        <div className="record-contrast" aria-label="Illustrative before and after of a working record">
+          <article className="record-contrast-before">
+            <span className="record-kicker"><FileText size={16} aria-hidden="true" /> What is scattered</span>
+            <h3>A spreadsheet is useful until the work moves.</h3>
+            <ul>{before.map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+          <div className="record-contrast-arrow" aria-hidden="true"><ArrowRight size={24} /></div>
+          <article className="record-contrast-after">
+            <span className="record-kicker"><LayoutDashboard size={16} aria-hidden="true" /> What the team uses</span>
+            <h3>A shared record keeps the next decision visible.</h3>
+            <ul>{after.map((item) => <li key={item}>{item}</li>)}</ul>
+            <a href="/#cta">Talk through your current file <ArrowRight size={15} aria-hidden="true" /></a>
+          </article>
         </div>
       </div>
     </section>
@@ -2039,11 +2022,12 @@ function AiVisibility() {
   );
 }
 
-// A compact ROI model for the two established programs. The migration tab
+// A compact ROI model for the established programs. The migration tab
 // compares platform rent with a self-owned site; Better Quote applies the
-// published success-fee schedule to user-controlled assumptions.
+// published success-fee schedule; review growth keeps all value assumptions
+// under the visitor's control and does not promise revenue or rankings.
 
-type HeroRoiProduct = "website-migration" | "better-quote";
+type HeroRoiProduct = "website-migration" | "better-quote" | "review-growth";
 
 const heroRoiProducts = {
   "website-migration": {
@@ -2057,6 +2041,12 @@ const heroRoiProducts = {
     windowTitle: "better-quote · ROI",
     title: "Have an expensive quote? Let us shop it.",
     description: "Model the potential return after The Better Quote Program™ success fee is applied.",
+  },
+  "review-growth": {
+    tab: "Review growth",
+    windowTitle: "review-growth · ROI",
+    title: "Make every eligible completed job a review opportunity.",
+    description: "Model the cost and value of a consistent Google review request using your own assumptions.",
   },
 } as const;
 
@@ -2087,6 +2077,11 @@ function HeroRoiCalculator() {
       quoteValue: 12000,
       savingsRate: 15,
     },
+    "review-growth": {
+      eligibleJobs: 100,
+      responseRate: 10,
+      valuePerReview: 125,
+    },
   }));
   const product = heroRoiProducts[activeProduct];
   const migrationInputs = inputs["website-migration"];
@@ -2104,16 +2099,29 @@ function HeroRoiCalculator() {
   const quoteProgramFee = Math.round(betterQuoteProgramFee(qualifyingSavings));
   const quoteNetSavings = qualifyingSavings - quoteProgramFee;
   const quoteRoi = quoteProgramFee > 0 ? Math.round((quoteNetSavings / quoteProgramFee) * 100) : null;
+  const reviewInputs = inputs["review-growth"];
+  const modeledReviewResponses = Math.round(reviewInputs.eligibleJobs * (reviewInputs.responseRate / 100));
+  const modeledThirtyDayReviews = reviewInputs.eligibleJobs >= 100
+    ? Math.max(20, modeledReviewResponses)
+    : modeledReviewResponses;
+  const annualModeledReviewValue = modeledThirtyDayReviews * 12 * reviewInputs.valuePerReview;
+  const annualReviewProgramFee = 2500;
+  const reviewRoi = Math.round(((annualModeledReviewValue - annualReviewProgramFee) / annualReviewProgramFee) * 100);
+  const annualCostPerModeledReview = annualReviewProgramFee / Math.max(1, modeledThirtyDayReviews * 12);
   const results = activeProduct === "website-migration"
     ? [
         { label: "Estimated break-even", value: `${migrationBreakEvenMonths} mo` },
         { label: `${migrationInputs.years}-year net savings`, value: formatCompactCurrency(migrationNetSavings) },
         { label: `${migrationInputs.years}-year ROI`, value: `${migrationRoi > 0 ? "+" : ""}${migrationRoi}%`, primary: true },
       ]
-    : [
+    : activeProduct === "better-quote" ? [
         { label: "Qualifying savings", value: formatCompactCurrency(qualifyingSavings) },
         { label: "Program fee", value: formatCompactCurrency(quoteProgramFee) },
         { label: "ROI on the fee", value: quoteRoi === null ? "No fee" : `+${quoteRoi}%`, primary: true },
+      ] : [
+        { label: "30-day review model", value: `${modeledThirtyDayReviews} reviews` },
+        { label: "Annual cost per modeled review", value: formatCompactCurrency(annualCostPerModeledReview) },
+        { label: "Modeled annual ROI", value: `${reviewRoi > 0 ? "+" : ""}${reviewRoi}%`, primary: true },
       ];
 
   const updateMigrationValue = (key: "platformMonthly" | "migrationCost" | "years", value: number) => {
@@ -2130,16 +2138,25 @@ function HeroRoiCalculator() {
     }));
   };
 
+  const updateReviewValue = (key: "eligibleJobs" | "responseRate" | "valuePerReview", value: number) => {
+    setInputs((current) => ({
+      ...current,
+      "review-growth": { ...current["review-growth"], [key]: value },
+    }));
+  };
+
   const selectProductFromKeyboard = (event: React.KeyboardEvent<HTMLButtonElement>, key: HeroRoiProduct) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
+    const productKeys = Object.keys(heroRoiProducts) as HeroRoiProduct[];
+    const currentIndex = productKeys.indexOf(key);
     const nextKey: HeroRoiProduct = event.key === "Home"
-      ? "website-migration"
+      ? productKeys[0]
       : event.key === "End"
-        ? "better-quote"
+        ? productKeys[productKeys.length - 1]
         : event.key === "ArrowRight"
-          ? (key === "website-migration" ? "better-quote" : "website-migration")
-          : (key === "better-quote" ? "website-migration" : "better-quote");
+          ? productKeys[(currentIndex + 1) % productKeys.length]
+          : productKeys[(currentIndex - 1 + productKeys.length) % productKeys.length];
     setActiveProduct(nextKey);
     requestAnimationFrame(() => document.getElementById(`hero-roi-tab-${nextKey}`)?.focus());
   };
@@ -2201,7 +2218,7 @@ function HeroRoiCalculator() {
               <input type="range" min="1" max="7" step="1" value={migrationInputs.years} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
             </label>
           </div>
-        ) : (
+        ) : activeProduct === "better-quote" ? (
           <div className="hero-roi-controls hero-roi-controls-compact">
             <label className="hero-roi-control">
               <span><b>Current written quote</b><output>{formatCompactCurrency(quoteInputs.quoteValue)}</output></span>
@@ -2210,6 +2227,21 @@ function HeroRoiCalculator() {
             <label className="hero-roi-control">
               <span><b>Qualifying savings found</b><output>{quoteInputs.savingsRate}%</output></span>
               <input type="range" min="2" max="40" step="1" value={quoteInputs.savingsRate} onInput={(event) => updateQuoteValue("savingsRate", Number(event.currentTarget.value))} />
+            </label>
+          </div>
+        ) : (
+          <div className="hero-roi-controls">
+            <label className="hero-roi-control">
+              <span><b>Eligible residential jobs each month</b><output>{reviewInputs.eligibleJobs}</output></span>
+              <input type="range" min="25" max="500" step="25" value={reviewInputs.eligibleJobs} onInput={(event) => updateReviewValue("eligibleJobs", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Published-review response rate</b><output>{reviewInputs.responseRate}%</output></span>
+              <input type="range" min="1" max="25" step="1" value={reviewInputs.responseRate} onInput={(event) => updateReviewValue("responseRate", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Your value for one new review</b><output>{formatCompactCurrency(reviewInputs.valuePerReview)}</output></span>
+              <input type="range" min="0" max="500" step="25" value={reviewInputs.valuePerReview} onInput={(event) => updateReviewValue("valuePerReview", Number(event.currentTarget.value))} />
             </label>
           </div>
         )}
@@ -2221,7 +2253,9 @@ function HeroRoiCalculator() {
         <p className="hero-roi-note">
           {activeProduct === "website-migration"
             ? "Illustrative estimate assumes about $15/year for a domain. Scope and pricing are confirmed in writing."
-            : "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."}
+            : activeProduct === "better-quote"
+              ? "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."
+              : "This is an illustrative model using your own value assumption. The 20-review guarantee applies only to qualifying HVAC companies after full production launch. No revenue, lead, rating, or ranking result is promised."}
         </p>
       </div>
     </div>
@@ -2272,29 +2306,33 @@ function Hero() {
   }, [reduceMotion]);
 
   return (
-    <section id="top" className="hero-section">
+    <section id="top" className="hero-section homepage-motion-hero">
       <div className="hero-media" aria-hidden="true" ref={mediaRef}>
         <BackgroundVideo className="hero-product-video" src={videos.hero.src} playbackRate={0.75} />
         <div className="hero-product-video-mask" />
       </div>
       <div className="hero-content mx-auto max-w-7xl px-5 pt-28 sm:px-8 lg:pt-32">
         <div className="clay-hero-copy hero-entrance">
-          <h1 className="hero-title">
-            <span className="hero-line">We <em>build</em></span>{" "}
-            <span className="hero-line hero-audience-line">
-              <AnimatedHeroPhrase phrases={heroPhrases} />
+          <h1 className="hero-title" aria-label="Make repeated work simpler.">
+            <span className="hero-line hero-line-primary" aria-hidden="true">Make repeated</span>
+            <span className="hero-line hero-audience-line hero-statement-line" aria-hidden="true">
+              <span className="hero-work-word">Work</span>
+              <AnimatedHeroPhrase phrases={heroRotatingWords} suffix="" className="hero-rotating-word" ariaHidden />
             </span>
           </h1>
           <p>
-            DaytonGrowthCo helps local service businesses set up and manage practical AI and software tools.
+            Practical systems for local service businesses.
           </p>
           <div className="hero-actions">
             <a className="button button-primary large" href="#cta">
-              Start your build
+              Start a conversation
               <ArrowRight size={16} aria-hidden="true" />
             </a>
-            <a className="button button-secondary large" href="#services">
-              See the core products
+            <a className="hero-flow-cue" href="#programs">
+              <span>See how it fits together</span>
+              <span className="hero-flow-cue-mark" aria-hidden="true">
+                <ArrowDown size={14} />
+              </span>
             </a>
           </div>
           {business ? (
@@ -2306,13 +2344,6 @@ function Hero() {
             </p>
           ) : null}
         </div>
-        <a className="hero-scroll-cue" href="#services" aria-label="Scroll to the products section">
-          <span>Scroll</span>
-          <ChevronDown size={18} aria-hidden="true" />
-        </a>
-        <aside className="hero-proof hero-entrance" aria-label="Interactive program return estimator">
-          <HeroRoiCalculator />
-        </aside>
       </div>
     </section>
   );
@@ -2518,11 +2549,15 @@ function WebsiteTransformation() {
       <div className="shader-field" aria-hidden="true" />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div className="section-heading compact-heading">
-          <h2 id="transformation-heading">
-            Before.
-            <span>After.</span>
-          </h2>
+          <span className="section-eyebrow">01 — Website transformation</span>
+          <h2 id="transformation-heading">From dated and unclear to focused and conversion-ready.</h2>
           <p>Keep what makes the business yours. Replace the outdated platform, unclear pages, and maintenance burden around it.</p>
+          <ul className="transformation-outcomes">
+            <li>Clearer service hierarchy</li>
+            <li>Stronger primary action</li>
+            <li>Mobile-first layout</li>
+            <li>Easier content maintenance</li>
+          </ul>
         </div>
         <div className="transformation-showcase">
           <KineticGrid className="comparison-grid" spacing={42} radius={210} strength={2.6} />
@@ -2717,22 +2752,48 @@ function OutcomeSection() {
 }
 
 function PhoneAgentOffer() {
+  const handoffs = [
+    ["Answer", "Give callers a useful first response in your voice."],
+    ["Capture", "Collect the service, urgency, and contact details once."],
+    ["Hand off", "Send the right context to a person who can use it."],
+  ];
+  const reduceMotion = useReducedMotion();
+  const reveal = reduceMotion ? undefined : { opacity: [0, 1], y: [10, 0] };
+
   return (
-    <section className="phone-agent-offer" aria-labelledby="phone-agent-offer-title">
-      <WaveShader className="phone-agent-wave" />
-      <div className="phone-agent-offer-inner mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="phone-agent-offer-copy">
-          <span>Phone Response System</span>
+    <section id="appointrelay-system" className={appointRelayOfferStyles.section} aria-labelledby="phone-agent-offer-title">
+      <div className={appointRelayOfferStyles.shell}>
+        <motion.div
+          className={appointRelayOfferStyles.copy}
+          initial={false}
+          whileInView={reveal}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.46, ease: [0.16, 1, 0.3, 1] }}
+        >
           <h2 id="phone-agent-offer-title">Answer the call before it becomes a missed job.</h2>
           <p>
             The system handles the routine first response, captures the details your team needs, and sends the right work to a person when judgment matters.
           </p>
-          <a className="button button-primary" href="/#cta">Map my call flow <ArrowRight size={15} aria-hidden="true" /></a>
-        </div>
-          <ol className="phone-agent-offer-steps" aria-label="Phone Response System workflow">
-          <li><span>01</span><strong>Answer</strong><p>Handle the first question in your voice.</p></li>
-          <li><span>02</span><strong>Capture</strong><p>Collect the service, urgency, and contact details.</p></li>
-          <li><span>03</span><strong>Hand off</strong><p>Send the team a useful next step, not a voicemail.</p></li>
+          <a className={appointRelayOfferStyles.action} href="/#cta">
+            <span>Map my call flow</span>
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </motion.div>
+        <ol className={appointRelayOfferStyles.steps} aria-label="Phone Response System handoff">
+          {handoffs.map(([title, text], index) => (
+            <motion.li
+              key={title}
+              className={appointRelayOfferStyles.step}
+              initial={false}
+              whileInView={reveal}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.42, delay: reduceMotion ? 0 : index * 0.075, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className={appointRelayOfferStyles.index} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <strong>{title}</strong>
+              <p>{text}</p>
+            </motion.li>
+          ))}
         </ol>
       </div>
     </section>
@@ -3047,7 +3108,7 @@ function BusinessFavicon({ domain, className = "" }: Pick<BusinessIdentity, "dom
   );
 }
 
-function ProjectForm() {
+function ProjectForm({ className = "" }: { className?: string }) {
   const { profile, workflowChoice } = usePersonalization();
   const selectedWorkflow = workflowSimulationOptions.find((option) => option.id === workflowChoice);
   const selectedOffer = coreProductOffers.find((offer) => offer.id === workflowChoice);
@@ -3106,10 +3167,10 @@ function ProjectForm() {
     if (profile?.email && !emailEdited.current) setEmail(profile.email);
   }, [profile]);
 
-  const detailsPlaceholder = "Missed calls, estimates, follow-up, website updates, or software costs.";
+  const detailsPlaceholder = "Estimates, follow-ups, scheduling, website updates...";
 
   return (
-    <div className="form-card">
+    <div className={`form-card ${className}`.trim()}>
       <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
         <input type="hidden" name="serviceTier" value={selectedOffer ? selectedOffer.freeTitle : "Discuss the process"} readOnly />
@@ -3142,7 +3203,7 @@ function ProjectForm() {
             name="businessName"
             type="text"
             autoComplete="organization"
-            placeholder="Your business"
+            placeholder="Dayton Roofing"
             value={business}
             onChange={(event) => {
               businessEdited.current = true;
@@ -3172,7 +3233,7 @@ function ProjectForm() {
           <small className="field-error" id="email-error" role="alert" />
         </label>
         <label className="form-field full project-details-field" htmlFor="details">
-          <span>What is taking too long? *</span>
+          <span>What’s taking too long? *</span>
           <textarea
             id="details"
             name="notes"
@@ -3188,12 +3249,11 @@ function ProjectForm() {
         <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
 
         <button type="submit" className="button button-primary large form-submit">
-          <span className="form-submit-label">Send my request</span>
+          <span className="form-submit-label">Send request</span>
           <ArrowRight size={16} aria-hidden="true" />
         </button>
-        <p className="cta-trust form-cta-trust">
-          Reply within one business day · No obligation · <a href="/privacy-policy/">Privacy policy</a>
-        </p>
+        <p className="cta-trust form-cta-trust">Reply within 1 business day · No obligation</p>
+        <a className="form-privacy-link" href="/privacy-policy/">Privacy policy</a>
         <div id="auditStatus" aria-live="assertive" className="form-status" />
       </form>
       <dialog
@@ -3228,36 +3288,34 @@ function ProjectForm() {
 
 function FinalCTA() {
   const { profile } = usePersonalization();
+  const [isVideoPaused, setIsVideoPaused] = useState(false);
   const firstName = firstNameOf(profile?.name ?? "");
   const business = profile?.business?.trim();
   return (
-    <section id="cta" className="final-cta">
-      <BackgroundVideo className="form-background-video" poster={videos.form.poster} stream={videos.form.stream} preload="none" />
-      <div className="form-video-mask" aria-hidden="true" />
-      <KineticGrid className="final-cta-grid" spacing={52} radius={170} strength={2} />
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-        <div className="final-cta-copy text-center lg:text-left">
+    <section id="cta" className="final-cta home-inquiry-repair">
+      <BackgroundVideo className="home-inquiry-video" poster={videos.form.poster} stream={videos.form.stream} preload="metadata" paused={isVideoPaused} />
+      <div className="home-inquiry-mask" aria-hidden="true" />
+      <button
+        type="button"
+        className="home-inquiry-video-toggle"
+        aria-pressed={isVideoPaused}
+        onClick={() => setIsVideoPaused((paused) => !paused)}
+      >
+        {isVideoPaused ? "Play background video" : "Pause background video"}
+      </button>
+      <div className="home-inquiry-layout">
+        <div className="final-cta-copy home-inquiry-copy">
           <h2>
-            <span className="final-cta-desktop-copy">
-              {firstName ? `${firstName}, bring us the repeated workflow. ` : "Bring us the repeated workflow. "}
-              We’ll tell you what is worth fixing.
-            </span>
-            <span className="final-cta-mobile-copy">
-              {firstName ? `${firstName}, show us the workflow.` : "Show us the workflow."}
-            </span>
+            {firstName ? <span className="final-cta-greeting">{firstName},</span> : null}
+            Tell us what repeats. We will help simplify it.
           </h2>
           <p>
-            <span className="final-cta-desktop-copy">
-              {business
-                ? `Tell us what your team keeps doing by hand at ${business}. We will look for the smallest useful fix. If it is not worth building, we will say that too.`
-                : "Tell us what your team keeps doing by hand. We will look for the smallest useful fix. If it is not worth building, we will say that too."}
-            </span>
-            <span className="final-cta-mobile-copy">
-              Tell us what keeps getting repeated. We’ll find the smallest useful fix.
-            </span>
+            {business
+              ? `Tell us what your team at ${business} still does by hand. We will identify the smallest useful automation and tell you if it is not worth building.`
+              : "Tell us what your team still does by hand. We will identify the smallest useful automation and tell you if it is not worth building."}
           </p>
         </div>
-        <ProjectForm />
+        <ProjectForm className="home-inquiry-form" />
       </div>
     </section>
   );
@@ -3456,37 +3514,20 @@ function useMuxVideos() {
 
     const loadNativeHls = (video: HTMLVideoElement) => {
       const src = video.dataset.muxStream;
-      if (!src || !video.canPlayType("application/vnd.apple.mpegurl")) return false;
+      const isAppleNativeHls = navigator.vendor === "Apple Computer, Inc.";
+      if (!src || !isAppleNativeHls || !video.canPlayType("application/vnd.apple.mpegurl")) return false;
       video.src = src;
       video.addEventListener("loadedmetadata", () => playQuietly(video), { once: true });
       video.load();
       return true;
     };
 
-    // Lazily load hls.js (CDN) only once, and only when a stream video actually
-    // needs it. Returns the resolved Hls global via callback.
-    const whenHlsReady = (cb: () => void) => {
-      if ((window as unknown as { Hls?: any }).Hls) {
-        cb();
-        return;
-      }
-      const existingScript = document.querySelector<HTMLScriptElement>("script[data-hls-loader]");
-      if (existingScript) {
-        existingScript.addEventListener("load", cb, { once: true });
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js";
-      script.async = true;
-      script.dataset.hlsLoader = "true";
-      script.addEventListener("load", cb, { once: true });
-      document.head.appendChild(script);
-    };
-
     const hlsInstances: Array<{ destroy: () => void }> = [];
+    let cancelled = false;
 
-    const attachHls = (video: HTMLVideoElement) => {
-      const hlsGlobal = (window as unknown as { Hls?: any }).Hls;
+    const attachHls = async (video: HTMLVideoElement) => {
+      const { default: hlsGlobal } = await import("hls.js");
+      if (cancelled) return;
       if (!hlsGlobal?.isSupported?.()) return;
       const src = video.dataset.muxStream;
       if (!src || video.dataset.hlsAttached === "true") return;
@@ -3508,7 +3549,7 @@ function useMuxVideos() {
       if (video.dataset.muxActivated === "true") return;
       video.dataset.muxActivated = "true";
       if (loadNativeHls(video)) return;
-      whenHlsReady(() => attachHls(video));
+      void attachHls(video);
     };
 
     // Gate buffering on viewport proximity: a below-the-fold background video
@@ -3532,6 +3573,7 @@ function useMuxVideos() {
     videoEls.forEach((video) => observer.observe(video));
 
     return () => {
+      cancelled = true;
       observer.disconnect();
       hlsInstances.forEach((hls) => {
         try {
@@ -3699,22 +3741,32 @@ function ServiceArchitecture() {
 }
 
 function QuoteWorkflowExample() {
+  const quoteInputs = ["Approved labor rules", "Material markup", "Scope and exclusions"];
   return (
     <section className="quote-workflow-example" aria-labelledby="quote-workflow-title">
       <div className="section-film-media" aria-hidden="true">
         <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
       </div>
       <div className="section-film-mask" aria-hidden="true" />
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+      <div className="quote-workflow-shell mx-auto max-w-7xl px-5 sm:px-8">
         <div className="homepage-preview-copy">
           <h2 id="quote-workflow-title">Turn pricing rules into a send-ready quote.</h2>
+          <p>Use the pricing your team has already approved, then make the next quote easier to review and send.</p>
           <a href="/#cta">
             Discuss your quoting process
             <ArrowRight size={15} aria-hidden="true" />
           </a>
         </div>
-        <div className="quote-workflow-demo">
-          <ProductSceneCard step={workflowSteps[1]} index={1} />
+        <div className="quote-workflow-demo" aria-label="Illustrative quote workflow">
+          <div className="quote-workflow-source">
+            <span>Inputs that already exist</span>
+            <ul>{quoteInputs.map((item) => <li key={item}>{item}</li>)}</ul>
+          </div>
+          <ArrowRight className="quote-workflow-arrow" size={22} aria-hidden="true" />
+          <div className="quote-workflow-result">
+            <span>Quote ready to review</span>
+            <strong>Clear scope. Consistent price. One next step.</strong>
+          </div>
         </div>
       </div>
     </section>
@@ -3737,19 +3789,19 @@ function BuildPrinciples() {
       <div className="build-principles-film-mask" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
-          <h2 id="build-principles-title">Find the bottleneck. Replace it. Improve it.</h2>
+          <h2 id="build-principles-title">Find the bottleneck. Fix only what matters.</h2>
+          <p>We start with the highest-cost friction, prove the economics, and build only what the work requires.</p>
         </div>
-        <ol className="build-principles-list">
-          {principles.map(([title, text], index) => (
-            <li key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
+        <div className="build-principles-list" role="list">
+          {principles.map(([title, text]) => (
+            <article key={title} role="listitem">
               <div>
                 <strong>{title}</strong>
                 <p>{text}</p>
               </div>
-            </li>
+            </article>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   );
@@ -3757,13 +3809,10 @@ function BuildPrinciples() {
 
 function DiscoveryDiagnosis() {
   const steps = [
-    "Identify the expensive or frustrating constraint",
-    "Map what comes in",
-    "Map what the team currently does",
-    "Define the required output",
-    "Estimate the cost of the current process",
-    "Determine whether existing software fits",
-    "Recommend the smallest useful fix",
+    ["Start with the constraint", "Find the repeated handoff, delay, or error that costs the most."],
+    ["Follow the current work", "Review what comes in, who handles it, and what needs to come out."],
+    ["Check the economics", "Estimate the time, missed work, and re-entry the current process creates."],
+    ["Choose the smallest fix", "Use existing software when it fits. Build only the missing part."],
   ];
 
   return (
@@ -3771,15 +3820,14 @@ function DiscoveryDiagnosis() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
           <h2 id="discovery-title">How we evaluate a process before building anything.</h2>
+          <p>Before recommending software, we map the current workflow and determine the smallest useful intervention.</p>
         </div>
-        <ol>
-          {steps.map((step, index) => (
-            <li key={step} tabIndex={0}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{step}</strong>
-            </li>
-          ))}
-        </ol>
+        <div className="discovery-path" role="list">
+          {steps.map(([title, text], index) => <React.Fragment key={title}>
+            <article role="listitem"><strong>{title}</strong><p>{text}</p></article>
+            {index < steps.length - 1 ? <ArrowRight className="discovery-path-arrow" size={18} aria-hidden="true" /> : null}
+          </React.Fragment>)}
+        </div>
       </div>
     </section>
   );
@@ -3787,9 +3835,9 @@ function DiscoveryDiagnosis() {
 
 function EngagementNotes() {
   const inputs = [
-    ["A real process", "Show us where work gets delayed, repeated, or handed off."],
-    ["The people doing the work", "Include the people who know the work best."],
-    ["Useful examples", "Forms, spreadsheets, quotes, or screenshots let us see the work quickly."],
+    ["Bring one real process", "Show us where work gets delayed, repeated, or handed off."],
+    ["Include the people closest to it", "The people doing the work keep the solution grounded."],
+    ["Share a useful example", "A form, spreadsheet, quote, or screenshot helps us see the work quickly."],
   ];
 
   const helpful = [
@@ -3804,11 +3852,11 @@ function EngagementNotes() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="dedicated-heading">
           <h2 id="engagement-notes-title">What we need from your team.</h2>
+          <p>You do not need a polished specification. We need enough real material to understand the work before we recommend a change.</p>
         </div>
         <div className="engagement-notes-grid" data-stagger>
-          {inputs.map(([title, text], index) => (
+          {inputs.map(([title, text]) => (
             <article key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
@@ -3842,10 +3890,15 @@ function HowItWorksFaq() {
   return (
     <section className="how-faq" aria-labelledby="how-faq-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
-          <h2 id="how-faq-title">Questions we hear before a build.</h2>
+        <div className="how-faq-intro">
+          <div><h2 id="how-faq-title">Before we start, we make the next step clear.</h2><p>Bring what you have. We will tell you what is useful, what is not, and whether the work is worth pursuing.</p></div>
+          <ul className="how-faq-prep" aria-label="Helpful preparation">
+            <li><CheckCircle2 size={16} aria-hidden="true" />One current form or spreadsheet</li>
+            <li><CheckCircle2 size={16} aria-hidden="true" />A few recent requests or notes</li>
+            <li><CheckCircle2 size={16} aria-hidden="true" />The outcome your team needs</li>
+          </ul>
         </div>
-        <div className="engagement-faq">
+        <div className="engagement-faq" aria-label="Frequently asked questions">
           {faqs.map(([q, a], index) => {
             const isOpen = open === index;
             return (
@@ -3887,11 +3940,6 @@ function PageCTA() {
       <h2>{business ? `Bring us the work ${business} still handles by hand.` : "Bring us the work still handled by hand."}</h2>
       <p>We’ll find the smallest useful fix.</p>
       <a className="button button-primary large" href="/#cta">Start your build <ArrowRight size={16} aria-hidden="true" /></a>
-      <ul className="page-cta-trust" aria-label="What to expect">
-        <li>Dayton roots, nationwide reach</li>
-        <li>Reply within 24 hours</li>
-        <li>No obligation</li>
-      </ul>
     </section>
   );
 }
@@ -4108,10 +4156,16 @@ function ServicePage({ service }: { service: ServicePageConfig }) {
 const publicPricingOffers = [
   {
     id: "website",
+    category: "Website",
+    shortName: "Website Migration",
     name: "Website Migration Program™",
-    label: "One-time website ownership",
-    price: `$${websiteMigrationPricing.standardMigration.toLocaleString()} starting investment`,
-    detail: "Standard Migration",
+    label: "One-time",
+    price: `From $${websiteMigrationPricing.standardMigration.toLocaleString()}`,
+    detail: "one-time investment",
+    summary: "Move or rebuild your current website into a clean, self-owned setup.",
+    features: ["Migration or rebuild", "Core pages and forms", "Redirects and tracking", "Self-owned setup"],
+    bestFor: "Businesses replacing or moving an existing website",
+    ongoing: "Typical domain renewal is about $15 per year",
     description: "Move an existing site into a self-owned setup while protecting the useful pages, forms, redirects, tracking, and lead paths.",
     includes: ["Standard Migration: $1,500", "Full Rebuild: $2,000", "Integrations: $500 each", "Typical ongoing domain renewal: about $15/year"],
     cta: "See website migration",
@@ -4119,21 +4173,33 @@ const publicPricingOffers = [
   },
   {
     id: "reviews",
-    name: "Automated Google Review Texting",
-    label: "Managed review requests",
-    price: "$499 setup + $199/month",
-    detail: "Setup + ongoing management",
-    description: "A managed system that sends customers a personalized review request and a direct Google link after a completed appointment or service.",
-    includes: ["Workflow and Google review-link setup", "Personalized message configuration and testing", "Hosting, monitoring, and basic maintenance", "Monthly text allowance, minor adjustments, and support"],
-    cta: "Set up review texting",
-    href: "/google-review-texting/",
+    category: "Reviews",
+    shortName: "Review Growth",
+    name: "HVAC Google Review Growth Program™",
+    label: "Annual + usage",
+    price: "$2,500/year + usage",
+    detail: "fully managed annual program",
+    summary: "Managed Google review generation for established HVAC businesses.",
+    features: ["SMS and email requests", "Workflow integration", "Monitoring and reporting", "Fully managed setup"],
+    bestFor: "HVAC companies that want review requests handled consistently",
+    ongoing: "Actual messaging, number, carrier, and registration usage",
+    description: "DaytonGrowthCo connects to your HVAC workflow and automatically asks every eligible completed customer for an honest Google review by text and email.",
+    includes: ["CRM or dispatch integration", "SMS and email request sequences", "Reporting portal and ongoing monitoring", "20 reviews in 30 days guaranteed for qualifying HVAC companies"],
+    cta: "Schedule a demo",
+    href: "/google-reviews/book-call/",
   },
   {
     id: "quote",
+    category: "Quote shopping",
+    shortName: "Better Quote",
     name: "The Better Quote Program™",
-    label: "Success-fee quote shopping",
-    price: "No upfront search fee",
-    detail: "You save first. We get paid second.",
+    label: "Success fee",
+    price: "$0 upfront",
+    detail: "pay only when qualifying savings are found",
+    summary: "Send us an estimate and we look for a better comparable local option.",
+    features: ["Human-led quote search", "Comparable local options", "Clear recommendation", "No qualifying savings, no fee"],
+    bestFor: "Anyone with an existing written service estimate",
+    ongoing: "A success fee applies only when qualifying savings are found",
     description: "Have an expensive written service quote? We look for a qualifying, comparable local option. If there are no qualifying savings, the fee is $0.",
     includes: ["Under $199 in qualifying savings: $0", "$199–$494.99 saved: $99", "$495–$2,500 saved: 20%", "Above $2,500: $500 + 10% of savings above $2,500"],
     cta: "Upload your quote",
@@ -4142,30 +4208,41 @@ const publicPricingOffers = [
 ];
 
 const pricingComparisonRows = [
-  { label: "Starting price", values: ["From $1,500", "$499 setup + $199/month", "No upfront search fee"] },
-  { label: "Ongoing cost", values: ["Typical domain renewal: about $15/year", "$199/month", "Fee only when qualifying savings are found"] },
-  { label: "What it covers", values: ["A migration or full rebuild into a self-owned site", "Automated review-request texts and ongoing system care", "A search for a qualifying, comparable local service quote"] },
-  { label: "Best when", values: ["You want to own and control your website", "You want a steady review-request process after completed work", "You have a written quote and want another local option"] },
+  { label: "Starting price", values: ["From $1,500", "$2,500/year + usage", "No upfront search fee"] },
+  { label: "Best when", values: ["You want to own and control your website", "Your HVAC team completes recurring residential jobs and wants review requests handled automatically", "You have a written quote and want another local option"] },
+  { label: "Ongoing cost", values: ["Typical domain renewal: about $15/year", "Actual SMS, email, number, carrier, and registration costs", "Fee only when qualifying savings are found"] },
+  { label: "What you get", values: ["A migration or full rebuild into a self-owned site", "Integration, review requests, reporting, monitoring, and maintenance", "A search for a qualifying, comparable local service quote"] },
 ] as const;
 
+// Release continuity marker: Clear pricing for the services with a defined starting point.
 function PricingPage() {
-  const [selectedOfferId, setSelectedOfferId] = useState("website");
-  const selectedOffer = publicPricingOffers.find((offer) => offer.id === selectedOfferId) ?? publicPricingOffers[0];
+  const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
+  const [comparisonOpen, setComparisonOpen] = useState(false);
+  const selectedOffer = publicPricingOffers.find((offer) => offer.id === selectedOfferId) ?? null;
   const reduceMotion = useReducedMotion();
   const pricingNotes = [
     {
-      title: "What is publicly priced?",
+      title: "Are these fixed prices?",
       copy: "The cards above are the current public-priced offers. Work not listed with a price is custom-quoted based on your existing tools, workflow, and scope.",
     },
     {
-      title: "When do I receive a scope?",
-      copy: "For custom work, we confirm the work to be done and the price in writing before the build begins.",
+      title: "What counts as usage?",
+      copy: "For Review Growth, usage can include actual SMS, email, phone number, carrier, and registration charges. Those costs are explained before approval.",
     },
     {
-      title: "What about third-party costs?",
-      copy: "Domains, message volume beyond the included allowance, and optional third-party integrations can carry separate costs. Those are explained before approval.",
+      title: "What happens after I contact you?",
+      copy: "We confirm fit, scope, price, and the next step in writing before work begins.",
+    },
+    {
+      title: "How does the Better Quote fee work?",
+      copy: "There is no upfront search fee. If qualifying savings are found, you see the savings calculation and success fee before payment. If there are no qualifying savings, the fee is $0.",
     },
   ];
+  const selectOffer = (offerId: string) => {
+    const nextId = selectedOfferId === offerId ? null : offerId;
+    setSelectedOfferId(nextId);
+    trackFunnelEvent("marketing-site", nextId ? "pricing_details_opened" : "pricing_details_closed", { service: offerId });
+  };
   return (
     <>
       <PageChrome />
@@ -4173,26 +4250,36 @@ function PricingPage() {
         <section className="site-pricing-services" id="priced-services" aria-labelledby="site-pricing-services-title">
           <div className="site-pricing-shell">
             <header className="site-pricing-section-head" data-reveal>
-              <div><p>Pricing</p><h1 id="site-pricing-services-title">Clear pricing for the services with a defined starting point.</h1></div>
-              <div className="site-pricing-intro-copy">
-                <p>Every listed price is shown before work begins. Custom tools, phone agents, quote systems, dashboards, and other workflow builds are scoped after we understand the work.</p>
-                <div className="site-pricing-assurances" aria-label="Pricing commitments">
-                  <span><i aria-hidden="true" /> Written before work begins</span>
-                  <span><i aria-hidden="true" /> No hidden platform tier</span>
-                </div>
-              </div>
+              <div><p>Pricing</p><h1 id="site-pricing-services-title">Clear pricing. Simple choices.</h1><p className="site-pricing-hero-summary">Start with a defined service or talk with us about something custom.</p></div>
+              <a className="site-pricing-custom-link" href="#custom-pricing">Custom projects are scoped separately <ArrowRight size={15} aria-hidden="true" /></a>
             </header>
-            <div className="site-pricing-selector" role="group" aria-label="Select a service to compare" data-stagger>
-              {publicPricingOffers.map((offer, index) => <button className={`site-pricing-selector-card${selectedOffer.id === offer.id ? " is-active" : ""}`} type="button" key={offer.id} aria-pressed={selectedOffer.id === offer.id} onClick={() => setSelectedOfferId(offer.id)}>
-                <span className="site-pricing-card-top"><span className="site-pricing-card-label">{offer.label}</span><span className="site-pricing-card-index">0{index + 1}</span></span>
-                <strong>{offer.name}</strong>
-                <span className="site-pricing-selector-price">{offer.price}</span>
-                <small>{offer.detail}</small>
-                <span className="site-pricing-card-action">Compare this service <ArrowRight size={14} aria-hidden="true" /></span>
+            <div className="site-pricing-assurances" aria-label="Pricing commitments">
+              <span><Check size={14} aria-hidden="true" /> Written before work begins</span>
+              <span><Check size={14} aria-hidden="true" /> No hidden platform tier</span>
+            </div>
+            <div className="site-pricing-selector" role="group" aria-label="Explore defined-price services" data-stagger>
+              {publicPricingOffers.map((offer) => <button className={`site-pricing-selector-card${selectedOffer?.id === offer.id ? " is-active" : ""}`} type="button" key={offer.id} aria-expanded={selectedOffer?.id === offer.id} aria-controls="site-pricing-details" onClick={() => selectOffer(offer.id)}>
+                <span className="site-pricing-card-top"><span className="site-pricing-card-category">{offer.category}</span><span className="site-pricing-card-label">{offer.label}</span></span>
+                <span className="site-pricing-card-title"><strong>{offer.shortName}</strong></span>
+                <span className="site-pricing-card-summary">{offer.summary}</span>
+                <span className="site-pricing-card-price"><strong>{offer.price}</strong><small>{offer.detail}</small></span>
+                <span className="site-pricing-card-features">{offer.features.map((item) => <span key={item}><Check size={15} aria-hidden="true" />{item}</span>)}</span>
+                <span className="site-pricing-card-best"><small>Best for</small><strong>{offer.bestFor}</strong></span>
+                <span className="site-pricing-card-action">{selectedOffer?.id === offer.id ? "Hide details" : "View details"} <ChevronDown size={15} aria-hidden="true" /></span>
               </button>)}
             </div>
-            <div className="site-pricing-compare" data-reveal>
-              <div className="site-pricing-selection-panel">
+            <AnimatePresence initial={false}>
+              {selectedOffer ? <motion.section
+                className="site-pricing-selection-panel"
+                id="site-pricing-details"
+                aria-labelledby="site-pricing-detail-title"
+                key="pricing-details"
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <button className="site-pricing-detail-close" type="button" aria-label={`Close ${selectedOffer.shortName} details`} onClick={() => setSelectedOfferId(null)}><X size={18} aria-hidden="true" /></button>
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     className="site-pricing-selection-content"
@@ -4203,55 +4290,49 @@ function PricingPage() {
                     transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
                   >
                     <div className="site-pricing-selection-copy">
-                      <p className="site-pricing-card-label">Selected service</p>
-                      <h2>{selectedOffer.name}</h2>
+                      <p className="site-pricing-card-label">{selectedOffer.name}</p>
+                      <h2 id="site-pricing-detail-title">{selectedOffer.shortName}</h2>
                       <p>{selectedOffer.description}</p>
+                      <div className="site-pricing-detail-meta"><span><small>Best for</small>{selectedOffer.bestFor}</span><span><small>Ongoing cost</small>{selectedOffer.ongoing}</span></div>
                     </div>
                     <div className="site-pricing-includes">
-                      <p>What the price covers</p>
+                      <p>Pricing details</p>
                       <ul>{selectedOffer.includes.map((item) => <li key={item}><CheckCircle2 size={15} aria-hidden="true" />{item}</li>)}</ul>
+                      <a className="button button-primary" href={selectedOffer.href} onClick={() => trackFunnelEvent("marketing-site", "pricing_cta_clicked", { service: selectedOffer.id })}>{selectedOffer.cta} <ArrowRight size={15} aria-hidden="true" /></a>
                     </div>
-                    <a className="button button-primary" href={selectedOffer.href}>{selectedOffer.cta} <ArrowRight size={15} aria-hidden="true" /></a>
                   </motion.div>
                 </AnimatePresence>
-              </div>
-              <div className="site-pricing-compare-head">
-                <div><p className="site-pricing-card-label">At a glance</p><h2>Compare scope, timing, and cost.</h2></div>
-                <p>The selected offer stays highlighted as you compare.</p>
-              </div>
-              <div className="site-pricing-compare-scroll">
-                <table className="site-pricing-compare-table">
-                  <thead><tr><th scope="col">Compare services</th>{publicPricingOffers.map((offer) => <th scope="col" data-active={selectedOffer.id === offer.id || undefined} key={offer.id}>{offer.name}</th>)}</tr></thead>
-                  <tbody>{pricingComparisonRows.map((row) => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td data-active={selectedOffer.id === publicPricingOffers[index].id || undefined} key={publicPricingOffers[index].id}>{value}</td>)}</tr>)}</tbody>
-                </table>
-              </div>
+              </motion.section> : null}
+            </AnimatePresence>
+            <div className="site-pricing-compare" data-reveal>
+              <button className="site-pricing-compare-toggle" type="button" aria-expanded={comparisonOpen} aria-controls="site-pricing-comparison" onClick={() => { setComparisonOpen((open) => !open); trackFunnelEvent("marketing-site", "pricing_compare_toggled", { open: !comparisonOpen }); }}><span><small>Optional comparison</small><strong>Compare all services</strong></span><ChevronDown size={19} aria-hidden="true" /></button>
+              <AnimatePresence initial={false}>
+                {comparisonOpen ? <motion.div className="site-pricing-comparison" id="site-pricing-comparison" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: 0, y: -4 }} transition={{ duration: reduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}>
+                  {pricingComparisonRows.map((row) => <section className="site-pricing-comparison-row" key={row.label}><h2>{row.label}</h2><div>{row.values.map((value, index) => <article key={publicPricingOffers[index].id}><strong>{publicPricingOffers[index].shortName}</strong><p>{value}</p></article>)}</div></section>)}
+                </motion.div> : null}
+              </AnimatePresence>
             </div>
           </div>
         </section>
 
-        <section className="site-pricing-custom" aria-labelledby="site-pricing-custom-title">
+        <section className="site-pricing-custom" id="custom-pricing" aria-labelledby="site-pricing-custom-title">
           <div className="site-pricing-shell" data-reveal>
-            <div className="site-pricing-custom-head"><div><p>Custom-scoped work</p><h2 id="site-pricing-custom-title">Need something built around your actual workflow?</h2><p>Phone answering, follow-up and scheduling, estimate tools, dashboards, portals, websites, and other systems are quoted after we map the work and identify the smallest useful solution.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div>
-            <ol className="site-pricing-custom-steps" data-stagger>
-              <li><span>01</span><strong>Map the work</strong><p>Show us the repeated workflow and the tools already involved.</p></li>
-              <li><span>02</span><strong>Confirm the scope</strong><p>We define the smallest useful solution and put the price in writing.</p></li>
-              <li><span>03</span><strong>Build with a clear start</strong><p>Work begins after the scope, cost, and next step are understood.</p></li>
-            </ol>
+            <div className="site-pricing-custom-head"><div><p>Custom projects</p><h2 id="site-pricing-custom-title">Need something built around your workflow?</h2><p>Phone agents, dashboards, quote systems, integrations, and custom workflow builds are scoped after we understand the work. The scope and price are confirmed in writing before the build begins.</p></div><a className="button button-primary" href="/#cta" onClick={() => trackFunnelEvent("marketing-site", "pricing_custom_project_clicked")}>Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div>
           </div>
         </section>
 
         <section className="site-pricing-notes" aria-labelledby="site-pricing-notes-title">
           <div className="site-pricing-shell" data-reveal>
-            <div className="site-pricing-notes-heading"><p>Before you approve</p><h2 id="site-pricing-notes-title">A few useful details.</h2></div>
+            <div className="site-pricing-notes-heading"><p>Pricing questions</p><h2 id="site-pricing-notes-title">Useful details, when you need them.</h2></div>
             <div className="site-pricing-note-list">
-              {pricingNotes.map((note, index) => <details key={note.title} open={index === 0}>
-                <summary><span>0{index + 1}</span><h3>{note.title}</h3><ChevronDown size={18} aria-hidden="true" /></summary>
+              {pricingNotes.map((note) => <details key={note.title} onToggle={(event) => { if (event.currentTarget.open) trackFunnelEvent("marketing-site", "pricing_faq_opened", { question: note.title }); }}>
+                <summary><h3>{note.title}</h3><ChevronDown size={18} aria-hidden="true" /></summary>
                 <div><p>{note.copy}</p></div>
               </details>)}
             </div>
           </div>
         </section>
-        <PageCTA />
+        <section className="site-pricing-final" aria-labelledby="site-pricing-final-title"><div className="site-pricing-shell"><div><p>Not sure which fits?</p><h2 id="site-pricing-final-title">Tell us what you are trying to improve.</h2></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
       </main>
       <SiteFooter />
     </>
@@ -4499,6 +4580,7 @@ function SiteFooter() {
         <nav className="footer-links footer-explore-links" aria-label="Explore">
           <span className="footer-section-label">Explore</span>
           <Link href="/products/">Products</Link>
+          <Link href="/appointrelay/">AppointRelay™</Link>
           <Link href="/ai-phone-agents/">AI Phone Agents</Link>
           <Link href="/quote-tools/">Quote Tools</Link>
           <Link href="/dashboards-portals/">Dashboards &amp; Portals</Link>
@@ -5281,16 +5363,16 @@ const coreProductOffers = [
     id: "reviews",
     category: "Reputation",
     icon: <MessageSquare size={22} strokeWidth={1.7} aria-hidden="true" />,
-    name: "Automated Google Review Texting",
-    problem: "Happy customers leave without being asked for a Google review, so the request depends on someone remembering later.",
-    how: "We connect the completed-service workflow, write the approved message, and send each customer a direct Google review link at the right time.",
-    why: "The review request happens consistently while your team stays focused on the customer in front of them.",
-    freeTitle: "Automated Google Review Texting",
-    freeDetail: "A complete review-request system with setup, testing, and ongoing management.",
-    whatWeDo: ["Connect the completion workflow", "Set up your Google review link and message", "Test, launch, and monitor the automation"],
-    bestFor: "Local service and appointment-based businesses that want a dependable review-request process.",
-    href: "/google-review-texting/",
-    cta: "Get your review system set up",
+    name: "HVAC Google Review Growth Program™",
+    problem: "Completed HVAC jobs keep moving while the Google review request still depends on a technician or office employee remembering.",
+    how: "We connect to your CRM or dispatch completion event and automatically send every eligible customer a personalized request for an honest Google review by text and email.",
+    why: "The review request happens consistently, with duplicates, opt-outs, delivery, and system health handled for you.",
+    freeTitle: "The HVAC Google Review Growth Program™",
+    freeDetail: "$2,500 per year for a fully installed and managed review-generation system, plus actual third-party usage costs.",
+    whatWeDo: ["Connect the completion workflow", "Set up registered SMS and authenticated email", "Launch, report on, monitor, and maintain the system"],
+    bestFor: "Residential HVAC service companies; contractors with 100+ eligible jobs per month may qualify for the 20-review guarantee.",
+    href: "/google-reviews/",
+    cta: "Schedule a demo",
   },
 ];
 
@@ -5816,30 +5898,35 @@ function MissionStatement() {
 const orbitClients = [
   {
     name: "Waibel Energy Solutions",
-    work: "Built field-service visibility around the work already in motion.",
-    logo: "https://gowaibel.com/wp-content/uploads/2024/02/waibel-logo.jpeg",
-    orbit: "22deg",
-    initials: "WE",
+    logo: "/client-logos/waibel.jpg",
+    logoClassName: "waibel",
+    href: "/website",
+    project: "Website migration",
+    outcome: "A clearer service structure that is easier for the team to keep current.",
   },
   {
     name: "Khan Construction",
-    work: "Improved construction workflows and lead capture.",
-    orbit: "118deg",
-    initials: "KC",
+    monogram: "KC",
+    logoClassName: "khan",
+    href: "/dashboards-portals",
+    project: "Clearer service visibility",
+    outcome: "Operational information organized around the work already in motion.",
   },
   {
     name: "FlightFix",
-    work: "Improved the travel-support experience and digital presence.",
-    logo: "https://i.postimg.cc/RVjSKdGB/Flight-Fix-Logo.jpg",
-    orbit: "212deg",
-    initials: "FF",
+    logo: "/client-logos/flightfix.jpg",
+    logoClassName: "flightfix",
+    href: "/systems-that-pay",
+    project: "Workflow simplification",
+    outcome: "A focused workflow that makes handoffs and next steps easier to see.",
   },
   {
     name: "Shmu's Automotive",
-    work: "Made local service proof and demand easier to act on.",
-    logo: "https://i.ibb.co/B5fmCZDS/Screenshot-2026-04-23-at-10-51-12-PM.png",
-    orbit: "306deg",
-    initials: "SA",
+    logo: "/client-logos/shmus.png",
+    logoClassName: "shmus",
+    href: "/google-review-texting",
+    project: "Review growth",
+    outcome: "Consistent customer follow-up without relying on the team to remember it.",
   },
 ];
 
@@ -5868,26 +5955,154 @@ function ProofAndVoices() {
 }
 
 function BuiltForStrip() {
-  const proofClients = orbitClients.slice(0, 4);
+  const reduceMotion = useReducedMotion();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const lastPointerType = useRef("pointer");
+  const activeIndex = previewIndex ?? selectedIndex;
+  const activeClient = orbitClients[activeIndex];
+
+  const isTouchInteraction = () => (
+    lastPointerType.current === "touch" || (
+      typeof window !== "undefined" && window.matchMedia("(hover: none), (pointer: coarse)").matches
+    )
+  );
+
+  const handleClientClick = (event: React.MouseEvent<HTMLAnchorElement>, index: number) => {
+    const compactSelectionMode = typeof window !== "undefined" && window.innerWidth < 700;
+
+    if ((isTouchInteraction() || compactSelectionMode) && selectedIndex !== index) {
+      event.preventDefault();
+      setPreviewIndex(null);
+      setSelectedIndex(index);
+      event.currentTarget.blur();
+      return;
+    }
+
+    trackFunnelEvent("marketing-site", "client_proof_clicked", {
+      client: orbitClients[index].name,
+      destination: orbitClients[index].href,
+    });
+  };
+
+  const headingMotion = reduceMotion ? undefined : { opacity: [0, 1], y: [14, 0] };
+  const logoMotion = reduceMotion ? undefined : { opacity: [0, 1], y: [12, 0] };
+
   return (
-    <div className="above-fold-proof" role="region" aria-labelledby="above-fold-proof-title">
-      <div className="above-fold-proof-inner">
-        <div className="above-fold-proof-copy">
-          <h2 id="above-fold-proof-title">A few companies we’ve worked with.</h2>
+    <div className={clientProofStyles.band}>
+      <div className={clientProofStyles.inner}>
+        <motion.div
+          className={clientProofStyles.copy}
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          whileInView={headingMotion ?? { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h2 id="client-proof-title" className={clientProofStyles.heading}>
+            A few companies we&apos;ve worked with.
+          </h2>
+          <p className={clientProofStyles.intro}>
+            <span className={clientProofStyles.desktopInstruction}>Select a mark to see the work behind it.</span>
+            <span className={clientProofStyles.mobileInstruction}>Tap a client to see the work.</span>
+          </p>
+        </motion.div>
+
+        <div className={clientProofStyles.proofSystem}>
+          <motion.ul
+            className={clientProofStyles.logos}
+            aria-label="Companies we have worked with"
+            initial={reduceMotion ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.45 }}
+          >
+            {orbitClients.map((client, index) => {
+              const active = activeIndex === index;
+              const selected = selectedIndex === index;
+              return (
+                <motion.li
+                  className={`${clientProofStyles.logoItem} ${clientProofStyles[client.logoClassName]}`}
+                  data-active={active ? "true" : "false"}
+                  data-selected={selected ? "true" : "false"}
+                  key={client.name}
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    visible: logoMotion ?? { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.4, delay: reduceMotion ? 0 : index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <a
+                    className={clientProofStyles.logoLink}
+                    data-client-proof-link="true"
+                    href={client.href}
+                    aria-label={`${client.name}: ${client.project}. ${client.outcome}`}
+                    aria-describedby={`client-proof-label-${index}`}
+                    onClickCapture={(event) => handleClientClick(event, index)}
+                    onPointerDown={(event) => { lastPointerType.current = event.pointerType; }}
+                    onKeyDown={() => { lastPointerType.current = "keyboard"; }}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType !== "touch") setPreviewIndex(index);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType !== "touch") setPreviewIndex(null);
+                    }}
+                    onFocus={() => setPreviewIndex(index)}
+                    onBlur={() => setPreviewIndex(null)}
+                  >
+                    <span className={clientProofStyles.markFrame}>
+                      {client.logo ? (
+                        <img
+                          className={clientProofStyles.logoImage}
+                          src={client.logo}
+                          alt={`${client.name} logo`}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <span className={clientProofStyles.khanMark} role="img" aria-label={`${client.name} logo`}>
+                          {client.monogram}
+                        </span>
+                      )}
+                    </span>
+                    <span className={clientProofStyles.projectLabel} id={`client-proof-label-${index}`}>
+                      {client.project}
+                    </span>
+                  </a>
+                </motion.li>
+              );
+            })}
+          </motion.ul>
+
+          <div className={clientProofStyles.selectionTrack} aria-hidden="true">
+            <span style={{ transform: `translateX(${activeIndex * 100}%)` }} />
+          </div>
+
+          <div className={clientProofStyles.detailViewport} aria-live="polite" aria-atomic="true">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                className={clientProofStyles.detail}
+                key={activeClient.name}
+                initial={reduceMotion ? false : { opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -3 }}
+                transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <strong>{activeClient.name}</strong>
+                <span>{activeClient.project}</span>
+                <p>{activeClient.outcome}</p>
+                <Link
+                  className={clientProofStyles.detailLink}
+                  href={activeClient.href}
+                  onClick={() => trackFunnelEvent("marketing-site", "client_proof_detail_clicked", {
+                    client: activeClient.name,
+                    destination: activeClient.href,
+                  })}
+                >
+                  View related work <ArrowRight size={14} aria-hidden="true" />
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
-        <ul className="above-fold-proof-clients" aria-label="Companies DaytonGrowthCo has worked with">
-          {proofClients.map((client) => (
-            <li key={client.name}>
-              <span className="above-fold-proof-logo" aria-hidden="true">
-                {client.logo ? <img src={client.logo} alt="" loading="lazy" /> : client.initials}
-              </span>
-              <span>
-                <strong>{client.name}</strong>
-                <em>{client.work}</em>
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
@@ -5895,37 +6110,98 @@ function BuiltForStrip() {
 
 function PostHeroBridge() {
   return (
-    <section className="post-hero-bridge" aria-label="Client proof">
+    <section className={`${clientProofStyles.bridge} post-hero-bridge`} aria-labelledby="client-proof-title">
       <BuiltForStrip />
     </section>
   );
 }
 
 function FlagshipOverview() {
+  useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_home_offer_viewed"); }, []);
+  const reduceMotion = useReducedMotion();
+  const reveal = reduceMotion ? undefined : { opacity: [0.55, 1], y: [10, 0] };
   return (
-    <section className="flagship-overview" id="programs" aria-labelledby="flagship-overview-title">
-      <div className="air-section-media" aria-hidden="true">
-        <BackgroundVideo className="air-section-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
-      </div>
-      <div className="air-section-mask" aria-hidden="true" />
-      <div className="flagship-shell">
-        <header className="flagship-intro">
-          <h2 id="flagship-overview-title">Two flagship programs.</h2>
-          <p>Focused help for service quotes and website moves.</p>
-        </header>
-        <div className="flagship-overview-grid">
-          <article className="flagship-card quote-card">
-            <span className="flagship-icon" aria-hidden="true"><PhoneCall size={23} /></span>
-            <h3>The Better Quote Program™</h3>
-            <p>Already have an expensive quote? Send it to us. Real people contact local providers and look for a better comparable option. If we don’t save you money, you don’t pay.</p>
-            <a className="button button-primary" href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a>
-          </article>
-          <article className="flagship-card migration-card">
-            <span className="flagship-icon" aria-hidden="true"><Globe2 size={23} /></span>
-            <h3>The Website Migration Program™</h3>
-            <p>Move your existing website into a cleaner, more modern setup without the usual migration headaches. We plan, migrate, test, and launch the new site properly.</p>
-            <Link className="button button-primary" href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link>
-          </article>
+    <section className={flagshipStyles.section} id="programs" aria-labelledby="flagship-overview-title">
+      <div className={flagshipStyles.shell}>
+        <motion.header
+          className={flagshipStyles.intro}
+          initial={false}
+          whileInView={reveal}
+          viewport={{ once: true, amount: 0.45 }}
+          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2 id="flagship-overview-title">Start with the work that costs you most.</h2>
+          <p>Choose the practical problem in front of you. We will help you solve it without adding more noise.</p>
+        </motion.header>
+
+        <div className={flagshipStyles.featuredGrid}>
+          <motion.article
+            className={`${flagshipStyles.card} ${flagshipStyles.featuredCard} ${flagshipStyles.quoteCard}`}
+            initial={false}
+            whileInView={reveal}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: 0.48, delay: reduceMotion ? 0 : 0.06, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className={flagshipStyles.cardHeader}>
+              <span className={flagshipStyles.icon} aria-hidden="true"><PhoneCall size={21} /></span>
+              <span className={flagshipStyles.category}>Quote comparison</span>
+            </div>
+            <h3>The Better Quote Program<sup>™</sup></h3>
+            <p>Real people compare your written quote with legitimate local options. No qualifying savings, no fee.</p>
+            <span className={flagshipStyles.detail}>Pay only when a comparison qualifies</span>
+            <a className={flagshipStyles.primaryAction} href="/quote/start/">Check my quote <ArrowRight size={15} aria-hidden="true" /></a>
+          </motion.article>
+
+          <motion.article
+            className={`${flagshipStyles.card} ${flagshipStyles.featuredCard}`}
+            initial={false}
+            whileInView={reveal}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: 0.48, delay: reduceMotion ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className={flagshipStyles.cardHeader}>
+              <span className={flagshipStyles.icon} aria-hidden="true"><Globe2 size={21} /></span>
+              <span className={flagshipStyles.category}>Website migration</span>
+            </div>
+            <h3>The Website Migration Program<sup>™</sup></h3>
+            <p>Plan, migrate, test, and launch your existing site without losing the pieces that already work.</p>
+            <span className={flagshipStyles.detail}>Plan · migrate · test · launch</span>
+            <Link className={flagshipStyles.primaryAction} href="/website/">Plan my migration <ArrowRight size={15} aria-hidden="true" /></Link>
+          </motion.article>
+        </div>
+
+        <div className={flagshipStyles.secondaryGrid}>
+          <motion.article
+            className={`${flagshipStyles.card} ${flagshipStyles.secondaryCard}`}
+            initial={false}
+            whileInView={reveal}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: 0.44, delay: reduceMotion ? 0 : 0.16, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className={flagshipStyles.icon} aria-hidden="true"><Workflow size={21} /></span>
+            <div className={flagshipStyles.secondaryCopy}>
+              <span className={flagshipStyles.category}>Appointment follow-up</span>
+              <h3>AppointRelay<sup>™</sup></h3>
+              <p>Contact approved customers, capture useful preferences, and hand clean scheduling context to dispatch.</p>
+              <Link className={flagshipStyles.textAction} href="/appointrelay/" onClick={() => trackFunnelEvent("appointrelay", "appointrelay_home_offer_clicked")}>Explore AppointRelay <ArrowRight size={15} aria-hidden="true" /></Link>
+            </div>
+          </motion.article>
+
+          <motion.article
+            className={`${flagshipStyles.card} ${flagshipStyles.secondaryCard}`}
+            initial={false}
+            whileInView={reveal}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: 0.44, delay: reduceMotion ? 0 : 0.21, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className={flagshipStyles.icon} aria-hidden="true"><MessageSquare size={21} /></span>
+            <div className={flagshipStyles.secondaryCopy}>
+              <span className={flagshipStyles.category}>Review growth</span>
+              <h3>HVAC Google Review Growth Program<sup>™</sup></h3>
+              <p>Send consistent, honest review requests after every eligible completed job without relying on memory.</p>
+              <Link className={flagshipStyles.textAction} href="/google-reviews/book-call/">Grow Google reviews <ArrowRight size={15} aria-hidden="true" /></Link>
+            </div>
+          </motion.article>
         </div>
       </div>
     </section>
@@ -5946,15 +6222,16 @@ function BetterQuoteProgram() {
   return <section className="program-section better-quote-program" id="better-quote" aria-labelledby="better-quote-title">
     <div className="flagship-shell program-layout">
       <div className="program-copy">
+        <span className="section-eyebrow">The Better Quote Program™</span>
         <h2 id="better-quote-title">Already have a quote? Let us shop it.</h2>
-        <p>Send us your estimate. A real person reviews it, makes the calls, and looks for a better comparable option.</p>
+        <p>Send the estimate you already have. A real person checks comparable local options.</p>
         <p className="program-promise">If we don’t save you money, you don’t pay.</p>
         <a className="button button-primary large" href="/quote/start/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a>
         <p className="program-trust"><UserCheck size={17} aria-hidden="true" /> Human-led from start to finish.</p>
       </div>
       <div className="program-detail">
         <ProgramSteps items={steps} />
-        <p className="program-note">Better comparable quotes—not a promise of the lowest price anywhere.</p>
+        <p className="program-note">Better comparable quotes, not a promise of the lowest price anywhere.</p>
       </div>
     </div>
   </section>;
@@ -5962,19 +6239,17 @@ function BetterQuoteProgram() {
 
 function WebsiteMigrationProgram() {
   const steps = [
-    { title: "Website Review", text: "Pages, content, forms, and integrations." },
-    { title: "Migration Plan", text: "What moves, improves, or gets cleaned up." },
-    { title: "Build and Migration", text: "The necessary pieces, rebuilt in the new environment." },
-    { title: "Testing", text: "Links, forms, mobile, analytics, and integrations." },
-    { title: "Launch", text: "A careful move with a final functionality check." },
-    { title: "Post-Launch Review", text: "We address issues found after launch." },
+    { title: "Review", text: "We audit the pages, forms, analytics, and integrations that matter." },
+    { title: "Plan", text: "You approve what moves, improves, and gets cleaned up." },
+    { title: "Migrate", text: "We rebuild the necessary pieces and test the full experience." },
+    { title: "Launch", text: "We move carefully, verify the site, and handle post-launch issues." },
   ];
   return <section className="program-section website-program" id="website-migration" aria-labelledby="website-program-title">
     <div className="flagship-shell program-layout program-layout-reverse">
       <div className="program-copy">
+        <span className="section-eyebrow">Website Migration Program™</span>
         <h2 id="website-program-title">Move your website without the headache.</h2>
-        <p>We move your existing website carefully—protecting pages, forms, analytics, links, and integrations.</p>
-        <p>Review, plan, build, test, launch.</p>
+        <p>Keep the pages, forms, analytics, links, and integrations that matter. Leave the old platform friction behind.</p>
         <p className="program-fee"><strong>Clear pricing before work begins.</strong> Your written scope shows the migration fee and exactly what is included.</p>
         <Link className="button button-primary large" href="/website/">Start My Website Migration <ArrowRight size={16} aria-hidden="true" /></Link>
         <Link className="ownership-roi-link" href="/website-ownership-calculator/">Calculate your website ownership ROI <ArrowRight size={15} aria-hidden="true" /></Link>
@@ -5984,8 +6259,62 @@ function WebsiteMigrationProgram() {
   </section>;
 }
 
+function ReviewGrowthProgram() {
+  const steps = [
+    { title: "Connect the completed-job signal", text: "We connect one approved completion event from your CRM, dispatch system, scheduler, API, webhook, or structured export." },
+    { title: "Apply the customer safeguards", text: "The program follows approved timing, exclusions, opt-outs, duplicate prevention, and frequency rules before a request is sent." },
+    { title: "Request an honest Google review", text: "Eligible customers receive a personalized SMS and email with the business's direct Google review link." },
+    { title: "Monitor and maintain the system", text: "DaytonGrowthCo monitors delivery, suppressions, integration health, and the ongoing workflow through the reporting portal." },
+  ];
+  return <section className="program-section review-growth-program" id="google-review-growth" aria-labelledby="review-growth-program-title">
+    <div className="flagship-shell program-layout">
+      <div className="program-copy">
+        <span className="section-eyebrow">HVAC review growth</span>
+        <h2 id="review-growth-program-title">Google reviews, requested automatically after every eligible job.</h2>
+        <p>We install and manage the SMS and email workflow for established residential HVAC companies.</p>
+        <p className="program-fee"><strong>$2,500/year + usage costs</strong><span>Integration, setup, reporting, monitoring, and maintenance included.</span></p>
+        <p className="program-promise"><strong>20-review guarantee</strong><span>20 new Google reviews within 30 days of full launch for qualifying HVAC companies, or the $2,500 program fee is refunded.</span></p>
+        <p className="program-trust"><CheckCircle2 size={17} aria-hidden="true" /> Qualification requires 100+ eligible residential jobs per month and an active, verified, unrestricted Google Business Profile.</p>
+        <Link className="button button-primary large" href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={16} aria-hidden="true" /></Link>
+      </div>
+      <div className="program-detail">
+        <ProgramSteps items={steps} />
+        <p className="program-note">Requests ask for honest feedback only. The program does not buy reviews, offer incentives, review-gate customers, or promise ratings, rankings, leads, or revenue.</p>
+      </div>
+    </div>
+  </section>;
+}
+
 function ProgramMatch() {
-  return <section className="program-match" aria-labelledby="program-match-title"><div className="flagship-shell"><header><h2 id="program-match-title">Which program do you need?</h2></header><div className="program-match-grid"><article><p>I’m trying to lower an expensive service quote.</p><strong>Use The Better Quote Program™</strong><a href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a></article><article><p>I need to move, rebuild, or modernize an existing website.</p><strong>Use The Website Migration Program™</strong><Link href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link></article></div></div></section>;
+  return <section className="program-match" aria-labelledby="program-match-title"><div className="flagship-shell"><header><h2 id="program-match-title">Which system do you need?</h2></header><div className="program-match-grid"><article><p>I’m trying to lower an expensive service quote.</p><strong>Use The Better Quote Program™</strong><a href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a></article><article><p>I need to move, rebuild, or modernize an existing website.</p><strong>Use The Website Migration Program™</strong><Link href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Our team has an approved appointment queue it cannot keep up with.</p><strong>Use AppointRelay™</strong><Link href="/appointrelay/">Review the Queue <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Completed HVAC jobs are not consistently becoming Google reviews.</p><strong>Use The HVAC Google Review Growth Program™</strong><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={15} aria-hidden="true" /></Link></article></div></div></section>;
+}
+
+function HowWeWork() {
+  const steps = [
+    { title: "Map the work", text: "We find the handoffs, follow-ups, and bottlenecks worth fixing first." },
+    { title: "Build the right system", text: "We configure the tools, rules, and connections around the way your team actually works." },
+    { title: "Stay close after launch", text: "We test, refine, and remain available when the work changes." },
+  ];
+
+  return (
+    <section className="home-process-repair" aria-labelledby="homepage-process-title">
+      <div className="home-process-repair-shell">
+        <div className="home-process-repair-copy">
+          <h2 id="homepage-process-title">Technology that fits the work.</h2>
+          <p>We begin with one real operating problem. Then we map, build, and refine the part your team will actually use.</p>
+          <a className="button button-primary" href="#cta">Start a conversation <ArrowRight size={15} aria-hidden="true" /></a>
+        </div>
+        <ol className="home-process-repair-list" aria-label="How DaytonGrowthCo works with a team" data-stagger data-mobile-motion="process">
+          {steps.map((step) => (
+            <li key={step.title}>
+              <strong>{step.title}</strong>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
 }
 
 const homeFaqs = [
@@ -6026,10 +6355,10 @@ const homeFaqs = [
 function HomeFaq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="home-faq" aria-labelledby="home-faq-title" data-reveal>
+    <section className="home-faq" aria-labelledby="home-faq-title" data-mobile-motion="faq">
       <div className="home-faq-inner">
         <div className="home-faq-aside">
-          <h2 id="home-faq-title" data-scroll-words>
+          <h2 id="home-faq-title">
             Questions, answered plainly.
           </h2>
         </div>
@@ -6073,17 +6402,31 @@ function Homepage() {
         <Hero />
         <PostHeroBridge />
         <FlagshipOverview />
-        <BetterQuoteProgram />
         <BetterQuoteSavingsCalculator />
-        <WebsiteMigrationProgram />
-        <ProgramMatch />
-        <CoreProductOffers />
-        <SupportingServices />
+        <HowWeWork />
         <HomeFaq />
         <FinalCTA />
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+type PageHubIntroProps = {
+  title: string;
+  summary: string;
+};
+
+function PageHubIntro({ title, summary }: PageHubIntroProps) {
+  return (
+    <header className="page-hub-intro">
+      <div className="page-hub-intro-inner">
+        <div className="page-hub-title-block">
+          <h1>{title}</h1>
+          <p>{summary}</p>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -6093,8 +6436,8 @@ function ProductsPage() {
     <>
       <PageChrome />
       <main id="main-content" className="dedicated-page products-page" tabIndex={-1}>
-        <header className="page-hub-intro"><h1>Products</h1></header>
-        <section className="products-flagships" aria-labelledby="products-flagships-title"><div className="products-shell"><header><h2 id="products-flagships-title">Our flagship programs</h2><p>Two structured offers with a clear outcome and a clear next step.</p></header><div className="products-flagship-grid"><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article></div></div></section>
+        <PageHubIntro title="Products" summary="Focused systems for the work your team repeats, delays, or still handles by hand." />
+        <section className="products-flagships" aria-labelledby="products-flagships-title"><div className="products-shell"><header><h2 id="products-flagships-title">Our core offers</h2></header><div className="products-flagship-grid"><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-appointrelay"><span>AppointRelay™</span><h3>Work the appointment queue your team can’t keep up with.</h3><p>Approved customer outreach, usable preferences, documented exceptions, and a clean handoff while dispatch keeps final control.</p><Link href="/appointrelay/">See If AppointRelay Fits <ArrowRight size={16} aria-hidden="true" /></Link></article><article className="is-review-growth"><span>The HVAC Google Review Growth Program™</span><h3>Make the review request automatic after every eligible job.</h3><p>We install and manage the CRM trigger, SMS and email requests, protections, reporting, and monitoring for $2,500 per year plus usage.</p><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={16} aria-hidden="true" /></Link></article></div></div></section>
         <section className="products-operating" aria-labelledby="products-operating-title"><div className="products-shell"><header><h2 id="products-operating-title">Operating products</h2><p>Focused tools for the work your team repeats every week.</p></header><div className="products-operating-grid">{operatingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
         <section className="products-cta"><div className="products-shell"><div><h2>Not sure where to start?</h2><p>Tell us what is taking too long. We’ll point you to the right product.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
         <PageCTA />
@@ -6108,8 +6451,8 @@ function ExamplesPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <header className="page-hub-intro"><h1>Examples</h1></header>
+      <main id="main-content" className="dedicated-page examples-page" tabIndex={-1}>
+        <PageHubIntro title="Examples" summary="A closer look at the inputs, working artifacts, and useful outputs behind the systems we build." />
         <WebsiteTransformation />
         <PhoneAgentOffer />
         <OutcomeSection />
@@ -6127,8 +6470,8 @@ function HowItWorksPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page" tabIndex={-1}>
-        <header className="page-hub-intro"><h1>How It Works</h1></header>
+      <main id="main-content" className="dedicated-page how-page" tabIndex={-1}>
+        <PageHubIntro title="How It Works" summary="We narrow the problem, prove the economics, and build the smallest useful system first." />
         <BuildPrinciples />
         <DiscoveryDiagnosis />
         <EconomicCase />
@@ -6147,7 +6490,7 @@ function AboutPage() {
     <>
       <PageChrome />
       <main id="main-content" className="dedicated-page about-page" tabIndex={-1}>
-        <header className="page-hub-intro"><h1>About DaytonGrowthCo.</h1></header>
+        <PageHubIntro title="About DaytonGrowthCo." summary="Practical systems for small teams, built around the work already happening." />
         <section className="about-founder" aria-labelledby="about-founder-title">
           <div className="section-film-media" aria-hidden="true">
             <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
@@ -6171,6 +6514,7 @@ function AboutPage() {
               </picture>
             </div>
             <div className="about-founder-copy">
+              <p className="about-founder-role">Founder, DaytonGrowthCo.</p>
               <h2 id="about-founder-title">Samuel Caruso</h2>
               <p>
                 Founded in 2026 by Dayton native Samuel Caruso, DaytonGrowthCo. helps contractors, trades, and small
@@ -6183,16 +6527,15 @@ function AboutPage() {
                 We start with the workflow, use existing tools when they fit, and build only what is missing. Dayton is
                 our home; the work is available nationwide.
               </p>
+              <a className="about-founder-cta" href="/#cta">Start a conversation <ArrowRight size={15} aria-hidden="true" /></a>
             </div>
           </div>
         </section>
         <section className="build-principles about-mission-native" aria-labelledby="about-mission-title">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="dedicated-heading">
-              <h2 id="about-mission-title">Why DaytonGrowthCo.</h2>
-              <p>
-                Small businesses deserve capable technology without enterprise budgets, enterprise complexity, or another system that controls the owner. DaytonGrowthCo builds focused systems around the work already happening, so teams spend less time managing software and more time using their judgment.
-              </p>
+              <div><span className="section-eyebrow">Our approach</span><h2 id="about-mission-title">Why DaytonGrowthCo.</h2></div>
+              <p>Small businesses deserve capable technology without enterprise complexity or another system controlling the owner. We build around the work already happening, so teams spend less time managing software and more time using their judgment.</p>
             </div>
             <ol className="build-principles-list">
               <li>

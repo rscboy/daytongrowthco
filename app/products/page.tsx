@@ -4,10 +4,10 @@ import HomeApp from "../../src/main";
 const url = "https://www.daytongrowth.co/products/";
 
 export const metadata: Metadata = {
-  title: "Products | Quote Shopping, Website Migration & Tools",
-  description: "Explore The Better Quote Program™, The Website Migration Program™, and focused products for calls, follow-up, reviews, estimates, dashboards, and local visibility.",
+  title: "Products | Quote Shopping, Website Migration & HVAC Review Growth",
+  description: "Explore The Better Quote Program™, The Website Migration Program™, AppointRelay™, and The HVAC Google Review Growth Program™.",
   alternates: { canonical: url, types: { "text/markdown": "/md/products.md" } },
-  openGraph: { title: "Products | DaytonGrowthCo.", description: "Two flagship programs and focused products for calls, follow-up, reviews, estimates, dashboards, and local visibility.", url, images: ["/thumbnail.jpeg"] },
+  openGraph: { title: "Products | DaytonGrowthCo.", description: "Structured programs for quotes, websites, appointment queues, HVAC review generation, and practical business operations.", url, images: ["/thumbnail.jpeg"] },
   twitter: { card: "summary_large_image", title: "Products | DaytonGrowthCo.", description: "Two flagship programs and focused business products.", images: ["/thumbnail.jpeg"] },
 };
 
@@ -35,7 +35,7 @@ const productsSchema = {
         { "@type": "ListItem", position: 3, name: "24/7 Phone Answering & Booking", url: "https://www.daytongrowth.co/ai-phone-agents/" },
         { "@type": "ListItem", position: 4, name: "Estimate & Proposal Tools", url: "https://www.daytongrowth.co/quote-tools/" },
         { "@type": "ListItem", position: 5, name: "Dashboards & Portals", url: "https://www.daytongrowth.co/dashboards-portals/" },
-        { "@type": "ListItem", position: 6, name: "Automated Google Review Texting", url: "https://www.daytongrowth.co/google-review-texting/" },
+        { "@type": "ListItem", position: 6, name: "The HVAC Google Review Growth Program™", url: "https://www.daytongrowth.co/google-reviews/" },
       ],
     },
     {

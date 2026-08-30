@@ -1,0 +1,537 @@
+.bridge {
+  width: 100%;
+  min-height: 0 !important;
+  margin: 0;
+  padding: 0 !important;
+  overflow: clip;
+  border-top: 1px solid rgba(30, 37, 40, 0.18);
+  border-bottom: 1px solid rgba(30, 37, 40, 0.12);
+  background: #f4f3ef !important;
+}
+
+.band {
+  position: relative;
+  width: 100%;
+  min-height: 0 !important;
+  padding: clamp(2rem, 2.8vw, 2.75rem) clamp(1.5rem, 4vw, 3.5rem);
+  overflow: hidden;
+  color: #20231f !important;
+  background:
+    radial-gradient(circle at 73% 48%, rgba(99, 155, 193, 0.055), transparent 22rem),
+    #f4f3ef !important;
+  isolation: isolate;
+}
+
+.band::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.32;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(35, 43, 45, 0.09) 0 0.55px, transparent 0.7px),
+    radial-gradient(circle at 80% 65%, rgba(35, 43, 45, 0.06) 0 0.5px, transparent 0.65px);
+  background-position: 0 0, 7px 9px;
+  background-size: 13px 13px, 17px 17px;
+  content: "";
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(13rem, 16.5rem) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  width: min(100%, 78rem);
+  margin-inline: auto;
+}
+
+.copy {
+  min-width: 0;
+}
+
+.heading {
+  max-width: 12ch;
+  margin: 0;
+  color: #20231f !important;
+  font-size: clamp(1.5rem, 1.7vw, 1.8rem);
+  font-weight: 650;
+  letter-spacing: -0.048em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.intro {
+  max-width: 23ch;
+  margin: 0.7rem 0 0;
+  color: #6a6e69;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.mobileInstruction {
+  display: none;
+}
+
+.proofSystem {
+  min-width: 0;
+}
+
+.logos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(1rem, 2.4vw, 2.5rem);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logoItem {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.logoLink {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 4.75rem;
+  padding: 0.35rem 0.35rem 0.7rem;
+  place-items: center;
+  align-content: center;
+  color: #242925;
+  text-align: center;
+  text-decoration: none;
+  opacity: 0.65;
+  transform: translateY(0);
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 150ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.logoLink::before {
+  position: absolute;
+  inset: 50% 8% 0;
+  z-index: -1;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse, rgba(79, 145, 187, 0.12), transparent 68%);
+  content: "";
+  transition: opacity 150ms ease-out;
+}
+
+.logoLink::after {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0;
+  left: 0.45rem;
+  height: 1px;
+  background: #4d94bf;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logoItem[data-active="true"] .logoLink,
+.logoLink:is(:hover, :focus-visible) {
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+.logoItem[data-active="true"] .logoLink::before,
+.logoLink:is(:hover, :focus-visible)::before {
+  opacity: 1;
+}
+
+.logoItem[data-active="true"] .logoLink::after,
+.logoLink:is(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+}
+
+.logoLink:focus-visible {
+  outline: 2px solid #4d94bf;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.logoLink:active {
+  opacity: 0.88;
+  transform: translateY(1px);
+}
+
+.markFrame {
+  display: flex;
+  width: 100%;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImage {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.waibel .logoImage {
+  width: min(100%, 10.25rem);
+  mix-blend-mode: multiply;
+}
+
+.flightfix .logoImage {
+  width: clamp(3.6rem, 4.8vw, 4.55rem);
+  filter: grayscale(1) invert(1) contrast(2.2) brightness(1.25);
+  mix-blend-mode: multiply;
+}
+
+.shmus .logoImage {
+  width: clamp(4.15rem, 5.4vw, 5.15rem);
+  mix-blend-mode: multiply;
+}
+
+.khanMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #303633;
+  font-size: clamp(1.65rem, 2.15vw, 2.05rem);
+  font-weight: 740;
+  letter-spacing: -0.085em;
+  line-height: 1;
+}
+
+.projectLabel {
+  display: block;
+  min-height: 1rem;
+  margin-top: 0.35rem;
+  color: #4d7188;
+  font-size: 0.69rem;
+  font-weight: 680;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 140ms ease-out;
+}
+
+.logoItem[data-active="true"] .projectLabel,
+.logoLink:is(:hover, :focus-visible) .projectLabel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.selectionTrack {
+  position: relative;
+  height: 1px;
+  margin-top: 0.55rem;
+  overflow: hidden;
+  background: rgba(36, 43, 42, 0.16);
+}
+
+.selectionTrack > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 25%;
+  background: #4d94bf;
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.detailViewport {
+  min-height: 4rem;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: minmax(9.5rem, 0.9fr) minmax(8rem, 0.75fr) minmax(15rem, 1.7fr) auto;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.65rem);
+  min-height: 4rem;
+  padding-top: 0.8rem;
+  color: #20231f;
+}
+
+.detail strong,
+.detail span,
+.detail p {
+  min-width: 0;
+  margin: 0;
+}
+
+.detail strong {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.detail > span {
+  color: #4d7188;
+  font-size: 0.73rem;
+  font-weight: 680;
+  line-height: 1.35;
+}
+
+.detail p {
+  color: #646965;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.detailLink {
+  display: inline-flex;
+  min-height: 2.75rem;
+  padding-inline: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  color: #263f50;
+  font-size: 0.73rem;
+  font-weight: 720;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.detailLink svg {
+  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.detailLink:is(:hover, :focus-visible) svg {
+  transform: translateX(3px);
+}
+
+.detailLink:focus-visible {
+  outline: 2px solid #4d94bf;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+@media (max-width: 899px) {
+  .band {
+    padding: clamp(2rem, 5vw, 2.75rem) clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+  }
+
+  .heading {
+    max-width: 19ch;
+  }
+
+  .intro {
+    max-width: 34ch;
+  }
+
+  .detail {
+    grid-template-columns: minmax(9rem, 0.8fr) minmax(8rem, 0.75fr) minmax(13rem, 1.5fr) auto;
+  }
+}
+
+@media (max-width: 699px) {
+  .band {
+    padding: 2.15rem max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));
+    background: #f6f5f1 !important;
+  }
+
+  .band::before {
+    opacity: 0.08;
+  }
+
+  .inner {
+    gap: 1.15rem;
+  }
+
+  .heading {
+    max-width: 16ch;
+    font-size: clamp(1.9rem, 8.4vw, 2.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.047em;
+  }
+
+  .intro {
+    max-width: 30ch;
+    margin-top: 0.65rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .desktopInstruction {
+    display: none;
+  }
+
+  .mobileInstruction {
+    display: inline;
+  }
+
+  .logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem clamp(0.75rem, 4vw, 1rem);
+    align-items: stretch;
+  }
+
+  .logoItem {
+    min-height: 4.75rem;
+  }
+
+  .logoLink {
+    display: flex !important;
+    min-height: 4.75rem;
+    padding: 0.3rem 0.4rem 0.65rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.74;
+  }
+
+  .logoLink::before {
+    display: none;
+  }
+
+  .logoLink::after {
+    right: 20%;
+    left: 20%;
+    bottom: 0;
+  }
+
+  .logoItem[data-active="true"] .logoLink,
+  .logoLink:is(:hover, :focus-visible) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .logoLink:active {
+    opacity: 0.88;
+    transform: translateY(1px);
+  }
+
+  .markFrame {
+    display: flex !important;
+    width: 100%;
+    height: 3.2rem;
+    overflow: hidden;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logoImage {
+    display: block !important;
+    max-height: 3.05rem;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .projectLabel {
+    display: none !important;
+  }
+
+  .waibel .logoImage {
+    width: min(100%, 8rem);
+    mix-blend-mode: multiply !important;
+  }
+
+  .flightfix .logoImage {
+    width: clamp(3.35rem, 15vw, 3.85rem);
+    mix-blend-mode: multiply !important;
+  }
+
+  .shmus .logoImage {
+    width: clamp(3.75rem, 16vw, 4.15rem);
+    mix-blend-mode: multiply !important;
+  }
+
+  .khanMark {
+    font-size: clamp(1.65rem, 7.5vw, 1.95rem);
+  }
+
+  .selectionTrack {
+    display: none;
+  }
+
+  .detailViewport {
+    min-height: 0;
+    margin-top: 0.85rem;
+    border-top: 1px solid rgba(36, 43, 42, 0.16);
+  }
+
+  .detail {
+    display: block;
+    min-height: 0;
+    padding-top: 0.9rem;
+  }
+
+  .detail strong,
+  .detail > span,
+  .detail p {
+    display: block;
+    width: 100%;
+  }
+
+  .detail strong {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .detail > span {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .detail p {
+    max-width: 40ch;
+    margin-top: 0.55rem;
+    color: #656a65;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .detailLink {
+    width: max-content;
+    min-height: 2.75rem;
+    margin-top: 0.55rem;
+    padding: 0;
+    justify-content: flex-start;
+    font-size: 0.82rem;
+  }
+}
+
+@media (min-width: 390px) and (max-width: 699px) {
+  .band {
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoLink,
+  .logoLink::before,
+  .logoLink::after,
+  .projectLabel,
+  .selectionTrack > span,
+  .detailLink svg {
+    transition: none !important;
+  }
+
+  .logoItem[data-active="true"] .logoLink,
+  .logoLink:is(:hover, :focus-visible),
+  .logoLink:active {
+    transform: none;
+  }
+}
+
+/* Beat the legacy homepage h2 role without inflating the credibility band. */
+:global(main#main-content.homepage) > .bridge .heading {
+  font-size: clamp(1.5rem, 1.7vw, 1.8rem) !important;
+  line-height: 1.04 !important;
+}

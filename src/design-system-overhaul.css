@@ -1,0 +1,661 @@
+/* DaytonGrowthCo design-system consolidation.
+   This file is deliberately imported last. It replaces the accumulated
+   one-off "premium" overrides with a smaller, denser editorial system. */
+
+:root {
+  --dgc-bg: #f8f8f5;
+  --dgc-surface: #fdfdfb;
+  --dgc-surface-muted: #f1f2ee;
+  --dgc-ink: #20231f;
+  --dgc-muted: #60675f;
+  --dgc-dark: #0b0f13;
+  --dgc-dark-raised: #111820;
+  --dgc-on-dark: #f6f8f8;
+  --dgc-on-dark-muted: #b8c0c7;
+  --dgc-blue: #4f82a8;
+  --dgc-blue-strong: #315f82;
+  --dgc-line: rgba(32, 35, 31, 0.16);
+  --dgc-line-dark: rgba(255, 255, 255, 0.14);
+  --dgc-container: 76rem;
+  --dgc-container-wide: 82.5rem;
+  --dgc-reading: 44rem;
+  --dgc-gutter: clamp(1.25rem, 3vw, 2.5rem);
+  --dgc-section-y: clamp(3rem, 4.5vw, 4rem);
+  --dgc-section-y-major: clamp(3.5rem, 5.25vw, 4.75rem);
+  --dgc-h1: clamp(2.6rem, 3.55vw, 3.25rem);
+  --dgc-h2: clamp(2rem, 3vw, 2.375rem);
+  --dgc-h3: clamp(1.3rem, 1.8vw, 1.625rem);
+  --dgc-body: clamp(1rem, 1.1vw, 1.0625rem);
+  --dgc-radius-sm: 6px;
+  --dgc-radius-md: 10px;
+  --dgc-radius-lg: 14px;
+  --dgc-fast: 160ms;
+  --dgc-standard: 260ms;
+  --dgc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --site-header-stack-height: 5.875rem;
+  color-scheme: light;
+}
+
+html {
+  scroll-padding-top: calc(var(--site-header-stack-height) + 1rem);
+}
+
+body {
+  color: var(--dgc-ink);
+  background: var(--dgc-bg);
+}
+
+body::after { opacity: 0.018; }
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--dgc-blue) 64%, white);
+  outline-offset: 3px;
+}
+
+/* Shared interaction language. */
+.button,
+main :where(a, button) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button {
+  min-height: 2.875rem !important;
+  padding: 0.7rem 1rem !important;
+  gap: 0.65rem !important;
+  border-radius: var(--dgc-radius-sm) !important;
+  font-size: 0.9rem !important;
+  transition:
+    color var(--dgc-fast) ease,
+    border-color var(--dgc-fast) ease,
+    background-color var(--dgc-fast) ease,
+    box-shadow var(--dgc-fast) ease,
+    transform var(--dgc-fast) var(--dgc-ease) !important;
+}
+
+.button svg,
+main a svg { transition: transform var(--dgc-fast) var(--dgc-ease); }
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover svg,
+  main a:hover > svg:last-child { transform: translateX(3px); }
+}
+
+.button:active,
+main a:active,
+main button:active { transform: translateY(1px); }
+
+/* Header: two compact, legible rows with one active-state system. */
+.site-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 50;
+  color: #fff;
+  border-bottom: 1px solid var(--dgc-line-dark) !important;
+  background: rgba(7, 9, 12, 0.94) !important;
+  backdrop-filter: blur(16px) saturate(1.15);
+}
+
+.site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14); }
+
+.site-header > .site-offer-banner {
+  min-height: 1.75rem !important;
+  padding: 0.22rem max(var(--dgc-gutter), calc((100vw - var(--dgc-container)) / 2)) !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #07090c !important;
+  font-size: 0.75rem !important;
+}
+
+.site-header > nav {
+  width: min(100%, var(--dgc-container));
+  max-width: none !important;
+  height: 4.125rem !important;
+  padding-inline: var(--dgc-gutter) !important;
+}
+
+.site-header .header-nav { display: flex !important; gap: 0 !important; }
+.site-header .header-nav a { position: relative; padding-inline: clamp(.7rem, 1.1vw, 1rem) !important; color: rgba(255,255,255,.7) !important; font-size: .9rem !important; white-space: nowrap; }
+.header-nav a::after {
+  right: clamp(.7rem, 1.1vw, 1rem) !important;
+  bottom: -0.65rem !important;
+  left: clamp(.7rem, 1.1vw, 1rem) !important;
+  height: 2px !important;
+  background: #72a7cd !important;
+}
+.header-nav a:is(:hover, .is-active, [aria-current="page"]) { color: #fff !important; }
+.site-header .button-primary { color: #fff !important; border-color: rgba(255,255,255,.48) !important; background: transparent !important; }
+
+/* Full-bleed backgrounds; constrained content is handled by inner shells. */
+.dedicated-page,
+.homepage { width: 100%; overflow: clip; }
+
+/* The sticky header participates in document flow; legacy compensation added
+   a second header-height of empty space on every interior route. */
+main#main-content.dedicated-page { padding-top: 0 !important; }
+
+.dedicated-page > section:not(.page-cta),
+.homepage > section:not(.hero-section):not(.post-hero-bridge):not(.final-cta) {
+  min-height: 0 !important;
+  padding-block: var(--dgc-section-y) !important;
+}
+
+.dedicated-page :where(.mx-auto.max-w-7xl, .products-shell, .flagship-shell),
+.homepage :where(.home-process-repair-shell, .home-faq-inner) {
+  width: min(calc(100% - (2 * var(--dgc-gutter))), var(--dgc-container)) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+}
+
+html body main#main-content.dedicated-page > section > .mx-auto.max-w-7xl,
+html body main#main-content.dedicated-page > section > .website-migration-offer.mx-auto.max-w-7xl {
+  width: min(calc(100% - (2 * var(--dgc-gutter))), var(--dgc-container)) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+}
+
+/* Authoritative typography for all non-hero marketing content. */
+.dedicated-page :where(h1, h2, h3),
+.homepage > section:not(.hero-section) :where(h2, h3) {
+  color: inherit;
+  font-family: var(--font-ui), "Hanken Grotesk", sans-serif !important;
+  text-wrap: balance;
+}
+
+.dedicated-page h2,
+.homepage > section:not(.hero-section) h2 {
+  font-size: var(--dgc-h2) !important;
+  font-weight: 620 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.04em !important;
+}
+
+html body main#main-content.dedicated-page > section:not(.page-cta) h2 {
+  font-size: var(--dgc-h2) !important;
+  line-height: 1.05 !important;
+}
+
+html body main#main-content.dedicated-page.dedicated-page > section:not(.page-cta) h2 {
+  font-size: var(--dgc-h2) !important;
+  line-height: 1.05 !important;
+}
+
+/* Prevent the older dark-theme heading color from leaking into the light
+   preparation/FAQ intro on the How It Works page. */
+html body main#main-content.how-page .how-faq-intro h2 {
+  color: var(--dgc-ink) !important;
+}
+
+html body main#main-content.how-page .how-faq-intro > div > p {
+  color: var(--dgc-muted) !important;
+}
+
+.dedicated-page h3,
+.homepage > section:not(.hero-section) h3 {
+  font-size: var(--dgc-h3) !important;
+  line-height: 1.16 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.dedicated-page p,
+.homepage > section:not(.hero-section) p {
+  font-size: var(--dgc-body);
+  line-height: 1.55;
+}
+
+.section-eyebrow,
+.page-hub-eyebrow,
+.dedicated-page :where([class*="eyebrow"], [class*="category"]) {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Inner-page orientation strip: useful context, not a second billboard. */
+main#main-content.dedicated-page > .page-hub-intro {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: clamp(1.75rem, 2.75vw, 2.25rem) var(--dgc-gutter) !important;
+  color: var(--dgc-on-dark) !important;
+  background:
+    radial-gradient(circle at 78% 16%, rgba(79, 130, 168, .16), transparent 28rem),
+    var(--dgc-dark) !important;
+}
+
+main#main-content.dedicated-page .page-hub-intro-inner {
+  display: grid !important;
+  width: min(100%, var(--dgc-container)) !important;
+  grid-template-columns: minmax(0, 46rem) !important;
+  gap: 0 !important;
+  align-items: start !important;
+}
+
+main#main-content.dedicated-page .page-hub-title-block h1 {
+  max-width: 15ch !important;
+  font-size: var(--dgc-h1) !important;
+  font-weight: 630 !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.045em !important;
+}
+
+main#main-content.dedicated-page .page-hub-title-block > p {
+  max-width: 52ch !important;
+  margin-top: 0.85rem !important;
+  color: var(--dgc-on-dark-muted) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+main#main-content.dedicated-page .page-hub-index { margin-top: 0 !important; padding: .65rem 0 0 !important; }
+main#main-content.dedicated-page .page-hub-index ol { display: grid !important; gap: .35rem !important; }
+main#main-content.dedicated-page .page-hub-index li { min-height: 0 !important; padding: .35rem 0 !important; font-size: .8rem !important; }
+
+/* The shared close is a focused invitation, not a second full-page hero. */
+main#main-content .page-cta {
+  display: grid !important;
+  min-height: 18rem !important;
+  padding: clamp(3rem, 4.5vw, 4rem) var(--dgc-gutter) !important;
+  place-content: center !important;
+  text-align: center !important;
+}
+
+main#main-content .page-cta h2 {
+  max-width: 17ch !important;
+  margin-inline: auto !important;
+  font-size: clamp(2.25rem, 3.5vw, 3.25rem) !important;
+}
+
+main#main-content .page-cta p { margin-top: .85rem !important; }
+main#main-content .page-cta .button { margin-top: 1.25rem !important; }
+main#main-content .page-cta-trust { margin-top: 1.35rem !important; }
+
+/* Reusable editorial section heading. */
+.dedicated-heading,
+.section-heading,
+.products-flagships > .products-shell > header,
+.products-operating > .products-shell > header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 5fr) minmax(18rem, 7fr) !important;
+  gap: clamp(1.5rem, 4vw, 3.5rem) !important;
+  margin-bottom: clamp(1.5rem, 2.75vw, 2.25rem) !important;
+  padding-top: 0.9rem !important;
+  border-top: 1px solid var(--dgc-line) !important;
+}
+
+.dedicated-heading h2,
+.section-heading h2,
+.products-flagships h2,
+.products-operating h2 {
+  max-width: 18ch !important;
+  margin: 0 !important;
+  font-size: var(--dgc-h2) !important;
+}
+
+.dedicated-heading > p,
+.section-heading > p,
+.products-flagships header > p,
+.products-operating header > p {
+  height: auto !important;
+  max-width: 52ch !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  color: var(--dgc-muted) !important;
+  font-size: 1rem !important;
+}
+
+/* Homepage: compact proof, program decisions, process, FAQ, conversion. */
+.homepage > .post-hero-bridge { padding: 0 !important; }
+
+.homepage > section[class*="flagship-programs-module"] {
+  padding-block: var(--dgc-section-y-major) !important;
+}
+
+.homepage section[class*="flagship-programs-module"] [class*="__intro"] h2 {
+  max-width: 15ch !important;
+  font-size: clamp(2.25rem, 3.5vw, 3.25rem) !important;
+}
+
+.homepage section[class*="flagship-programs-module"] [class*="__featuredCard"] {
+  min-height: 18rem !important;
+  padding: clamp(1.5rem, 2.5vw, 2rem) !important;
+  border-radius: var(--dgc-radius-lg) !important;
+}
+
+.homepage section[class*="flagship-programs-module"] [class*="__secondaryCard"] {
+  min-height: 10rem !important;
+  padding: 1.35rem !important;
+  border-radius: var(--dgc-radius-md) !important;
+}
+
+.homepage section[class*="flagship-programs-module"] [class*="__cardHeader"] { margin-bottom: 1.2rem !important; }
+.homepage section[class*="flagship-programs-module"] [class*="__icon"] { width: 2.5rem !important; height: 2.5rem !important; flex-basis: 2.5rem !important; border-radius: 8px !important; }
+.homepage section[class*="flagship-programs-module"] [class*="__detail"] { margin-top: .8rem !important; }
+
+.homepage > section[class*="better-quote-savings-calculator-module"] {
+  padding-block: var(--dgc-section-y) !important;
+}
+
+main#main-content.homepage > .home-process-repair {
+  padding-block: var(--dgc-section-y) !important;
+}
+
+.home-process-repair-shell { width: min(calc(100% - (2 * var(--dgc-gutter))), 68rem) !important; }
+html body main#main-content.homepage > .home-process-repair .home-process-repair-copy h2 { font-size: var(--dgc-h2) !important; }
+
+main#main-content.homepage > section.home-faq {
+  padding: var(--dgc-section-y) var(--dgc-gutter) 2rem !important;
+}
+
+html body main#main-content.homepage > section.home-faq .home-faq-aside h2 {
+  font-size: var(--dgc-h2) !important;
+}
+
+main#main-content.homepage > .home-inquiry-repair.final-cta {
+  padding: var(--dgc-section-y-major) var(--dgc-gutter) !important;
+}
+
+html body main#main-content.homepage > .home-inquiry-repair .home-inquiry-copy h2 {
+  max-width: 23ch !important;
+  font-size: clamp(2.4rem, 4vw, 3.25rem) !important;
+  line-height: 1 !important;
+}
+
+main#main-content.homepage .home-inquiry-copy > p { margin-top: 1rem !important; font-size: 1rem !important; }
+main#main-content.homepage .home-inquiry-form.form-card {
+  max-width: 52rem !important;
+  padding: clamp(1.25rem, 2vw, 1.6rem) !important;
+  border-radius: var(--dgc-radius-md) !important;
+}
+
+main#main-content.homepage .home-inquiry-form .project-form { gap: .85rem 1rem !important; }
+main#main-content.homepage .home-inquiry-form .form-field :is(input, select) { min-height: 3rem !important; height: 3rem !important; }
+
+@media (min-width: 70rem) {
+  html body main#main-content.homepage > .hero-section {
+    min-height: clamp(36rem, 72svh, 42rem) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-content {
+    min-height: clamp(36rem, 72svh, 42rem) !important;
+    padding: 3rem var(--dgc-gutter) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .clay-hero-copy h1 {
+    font-size: clamp(4rem, 3.55vw, 4.25rem) !important;
+    line-height: .93 !important;
+  }
+}
+
+@media (min-width: 43.75rem) and (max-width: 69.99rem) {
+  html body main#main-content.homepage > .hero-section,
+  html body main#main-content.homepage > .hero-section .hero-content {
+    min-height: 42rem !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-content {
+    padding: 3.5rem var(--dgc-gutter) !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .clay-hero-copy h1 {
+    font-size: clamp(3.5rem, 6vw, 4rem) !important;
+  }
+}
+
+/* Products: one flagship and a dense service ledger. */
+.products-page .products-flagship-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(2, minmax(15rem, auto)) !important;
+  gap: .75rem !important;
+}
+.products-page .products-flagship-grid article {
+  padding: 1.5rem !important;
+  border-radius: var(--dgc-radius-md) !important;
+}
+.products-page .products-flagship-grid article:first-child { min-height: 38rem !important; }
+.products-page .products-flagship-grid article:not(:first-child) { min-height: 11.5rem !important; }
+.products-page .products-operating-grid > a { min-height: 4.75rem !important; }
+
+html body main#main-content.dedicated-page.products-page > .products-flagships h2 {
+  font-size: var(--dgc-h2) !important;
+}
+
+html body main#main-content.dedicated-page.products-page .products-flagship-grid article:first-child {
+  min-height: 15rem !important;
+  grid-row: auto !important;
+}
+
+html body main#main-content.dedicated-page.products-page .products-flagship-grid article:not(:first-child) {
+  min-height: 15rem !important;
+}
+
+html body main#main-content.dedicated-page.products-page .products-flagship-grid article p {
+  font-size: .94rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Examples: case-study rhythm, lower chrome, readable proof. */
+.examples-page > section:not(.page-cta) { padding-block: var(--dgc-section-y) !important; }
+.examples-page :where(.transformation-section, .homepage-preview, .spreadsheet-transform, .quote-workflow-example) :where(.comparison-stage, .homepage-preview-visual, .spreadsheet-demo) {
+  border-radius: var(--dgc-radius-md) !important;
+  box-shadow: 0 18px 44px rgba(18, 24, 27, .08) !important;
+}
+
+/* How it works: thin-rule sequences instead of floating cards. */
+main#main-content.how-page .build-principles-list li,
+main#main-content.how-page .build-principles-list li:first-child,
+main#main-content.how-page .discovery-diagnosis li,
+main#main-content.how-page .engagement-notes-grid article {
+  min-height: 0 !important;
+  padding-block: 1rem !important;
+}
+main#main-content.how-page .build-principles-list li strong { color: var(--dgc-ink) !important; }
+main#main-content.how-page .build-principles-list li p { color: var(--dgc-muted) !important; }
+
+/* About: portrait is proof, not decoration. */
+main#main-content.about-page .about-founder-inner {
+  width: min(calc(100% - (2 * var(--dgc-gutter))), var(--dgc-container)) !important;
+  grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr) !important;
+  gap: clamp(2rem, 4.5vw, 4rem) !important;
+}
+main#main-content.about-page > .about-founder { padding-block: var(--dgc-section-y) !important; }
+main#main-content.about-page .about-founder-portrait { max-width: 17rem !important; border-radius: var(--dgc-radius-md) !important; }
+main#main-content.about-page .about-founder-copy h2 { font-size: var(--dgc-h2) !important; }
+main#main-content.about-page .about-founder-copy blockquote { font-size: clamp(1.5rem, 2.3vw, 2rem) !important; }
+
+/* Pricing and service pages retain their components but inherit compact type. */
+.site-pricing-page :where(.site-pricing-services, .site-pricing-custom, .site-pricing-notes, .site-pricing-final),
+.service-page > section:not(.page-cta) { padding-block: var(--dgc-section-y) !important; }
+.site-pricing-page .site-pricing-section-head { gap: clamp(1.5rem, 4vw, 3.5rem) !important; }
+.site-pricing-page .site-pricing-assurances { margin-bottom: 1.5rem !important; }
+.site-pricing-page .site-pricing-selector-card { padding: clamp(1.25rem, 2vw, 1.6rem) !important; }
+.site-pricing-page .site-pricing-card-title { margin-top: 1rem !important; }
+.site-pricing-page .site-pricing-card-price { margin-top: 1.2rem !important; }
+.site-pricing-page .site-pricing-card-features { margin-top: 1.1rem !important; }
+.site-pricing-page .site-pricing-section-head h1,
+.service-page .page-hero h1 { font-size: var(--dgc-h1) !important; }
+.site-pricing-page :where(.site-pricing-selector-card, .site-pricing-selection-panel),
+.service-page :where(.service-card, .service-proof-card) { border-radius: var(--dgc-radius-md) !important; }
+
+/* Three engagement notes must divide the available shell instead of beginning
+   after a phantom heading column and running off canvas. */
+html body main#main-content.how-page .engagement-notes-grid {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+/* Route-specific compression. High-specificity selectors retire older page
+   billboard spacing without flattening the hierarchy inside each section. */
+html body main#main-content.how-page > section.build-principles,
+html body main#main-content.how-page > section.discovery-diagnosis,
+html body main#main-content.how-page > section.engagement-notes,
+html body main#main-content.how-page > section.how-faq,
+html body main#main-content.about-page > section.about-founder {
+  padding-block: var(--dgc-section-y) !important;
+}
+
+html body main#main-content.how-page .build-principles .dedicated-heading {
+  margin-bottom: 2rem !important;
+}
+
+html body main#main-content.site-pricing-page > section.site-pricing-services {
+  padding: clamp(3.25rem, 5vw, 4.5rem) var(--dgc-gutter) var(--dgc-section-y) !important;
+}
+
+.products-flagships > .products-shell > header:has(> h2:only-child) {
+  grid-template-columns: 1fr !important;
+}
+
+/* Fixed helper stays clear of device safe areas and page actions. */
+.quick-answers {
+  right: max(1.25rem, env(safe-area-inset-right)) !important;
+  bottom: max(1.25rem, env(safe-area-inset-bottom)) !important;
+}
+html body:has(main#main-content) .quick-answers-trigger {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 2.75rem !important;
+  min-height: 2.75rem !important;
+  padding: .6rem .8rem !important;
+  gap: .45rem !important;
+  border-radius: 8px !important;
+  background: #111418 !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18) !important;
+}
+html body:has(main#main-content) .quick-answers-trigger span {
+  display: inline !important;
+  font-size: .76rem !important;
+}
+html body:has(main#main-content) .quick-answers-trigger svg { width: 1rem; height: 1rem; }
+html body:has(main#main-content.homepage) .quick-answers-trigger {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 2.75rem !important;
+  min-height: 2.75rem !important;
+  padding: .6rem .8rem !important;
+  border-radius: 8px !important;
+}
+html body:has(main#main-content.homepage) .quick-answers-trigger span { display: inline !important; }
+.quick-answers-panel {
+  width: min(20rem, calc(100vw - 2rem)) !important;
+  max-height: min(32rem, calc(100dvh - 5rem));
+  padding: .8rem !important;
+  overflow-y: auto;
+  border-radius: 10px !important;
+}
+
+@media (max-width: 64rem) {
+  :root { --dgc-gutter: clamp(1.25rem, 3.5vw, 2rem); }
+
+  main#main-content.dedicated-page .page-hub-intro-inner,
+  .dedicated-heading,
+  .section-heading,
+  .products-flagships > .products-shell > header,
+  .products-operating > .products-shell > header {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  main#main-content.dedicated-page .page-hub-index { margin-top: 1rem !important; }
+  main#main-content.dedicated-page .page-hub-index ol { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  .products-page .products-flagship-grid { grid-template-columns: 1fr 1fr !important; grid-template-rows: auto !important; }
+  .products-page .products-flagship-grid article:first-child { grid-row: auto !important; }
+}
+
+@media (max-width: 43.75rem) {
+  :root {
+    --dgc-gutter: 1rem;
+    --dgc-section-y: 2.5rem;
+    --dgc-section-y-major: 3rem;
+    --dgc-h1: clamp(2.125rem, 10vw, 2.625rem);
+    --dgc-h2: clamp(1.7rem, 7.5vw, 2rem);
+    --dgc-h3: clamp(1.2rem, 5.8vw, 1.45rem);
+    --site-header-stack-height: 5.875rem;
+  }
+
+  .site-header > .site-offer-banner {
+    min-height: 2rem !important;
+    padding: .32rem 1rem !important;
+  }
+  .site-offer-banner .site-offer-copy > span { display: none !important; }
+  .site-offer-banner .site-offer-copy strong,
+  .site-offer-banner .site-offer-action { font-size: .69rem !important; }
+  .site-offer-banner .site-offer-action::before { display: none !important; content: none !important; }
+  .site-header > nav { height: 3.875rem !important; padding-inline: 1rem !important; }
+  .site-header .header-nav { display: none !important; }
+  .site-header .header-actions > .button { display: none !important; }
+  .site-header .mobile-menu-toggle { display: inline-flex !important; width: 2.75rem !important; height: 2.75rem !important; border-radius: 7px !important; }
+
+  main#main-content.dedicated-page > .page-hub-intro { padding: 1.75rem 1rem !important; }
+  main#main-content.dedicated-page .page-hub-index ol { grid-template-columns: 1fr !important; }
+
+  .products-page .products-flagship-grid { grid-template-columns: 1fr !important; }
+
+  html body main#main-content.how-page .engagement-notes-grid { grid-template-columns: 1fr !important; }
+
+  .homepage section[class*="flagship-programs-module"] [class*="__featuredGrid"],
+  .homepage section[class*="flagship-programs-module"] [class*="__secondaryGrid"] { grid-template-columns: 1fr !important; }
+  .homepage section[class*="flagship-programs-module"] [class*="__featuredCard"] { min-height: 0 !important; }
+
+  .home-process-repair-shell,
+  main#main-content.homepage > section.home-faq .home-faq-inner,
+  main#main-content.homepage > section.home-faq .home-faq-list,
+  main#main-content.about-page .about-founder-inner { grid-template-columns: 1fr !important; }
+
+  main#main-content.homepage > .home-inquiry-repair.final-cta { padding: 3.25rem 1rem 3.75rem !important; }
+  main#main-content.homepage .home-inquiry-copy h2 { max-width: 22rem !important; font-size: clamp(2.05rem, 9.5vw, 2.5rem) !important; }
+  main#main-content.homepage .home-inquiry-form.form-card { padding: 1rem !important; }
+
+  main#main-content .page-cta {
+    min-height: 17rem !important;
+    padding: 2.75rem 1rem !important;
+  }
+
+  main#main-content .page-cta h2 { font-size: clamp(2rem, 10vw, 2.75rem) !important; }
+
+  html body:has(main#main-content) .quick-answers-trigger {
+    width: 2.75rem !important;
+    padding: 0 !important;
+    justify-content: center;
+    border-radius: 50% !important;
+  }
+  html body:has(main#main-content) .quick-answers-trigger span { display: none !important; }
+  html body:has(main#main-content.homepage) .quick-answers-trigger {
+    width: 2.75rem !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+  }
+  html body:has(main#main-content.homepage) .quick-answers-trigger span { display: none !important; }
+
+  html body main#main-content.homepage > .hero-section,
+  html body main#main-content.homepage > .hero-section .hero-content {
+    min-height: 38rem !important;
+  }
+
+  html body main#main-content.homepage > .hero-section .hero-content {
+    padding: 3.5rem 1rem 3rem !important;
+  }
+
+  html body main#main-content.site-pricing-page > section.site-pricing-services {
+    padding: 2.5rem 1rem var(--dgc-section-y) !important;
+  }
+}
+
+@media (max-width: 22.5rem) {
+  :root { --dgc-gutter: .875rem; }
+  .site-header > .site-offer-banner,
+  .site-header > nav { padding-inline: .875rem !important; }
+  .site-offer-banner .site-offer-action { gap: .25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

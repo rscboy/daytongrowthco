@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TaaCalculator } from "../../taa/calculator_coop/calculator";
+import { requireSecretProjectAccess } from "@/lib/secret-project-access";
 
 const calculatorUrl = "https://daytongrowth.co/projects/secret/taa_roi_calculator";
 
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SecretTaaRoiCalculatorPage() {
+export default async function SecretTaaRoiCalculatorPage() {
+  await requireSecretProjectAccess("taa_roi_calculator");
   return <TaaCalculator />;
 }

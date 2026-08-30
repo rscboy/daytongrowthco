@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { createMigrationBookingAccess, migrationBookingCookie, migrationBookingMaxAge } from "@/src/migration-booking-access";
 
-// Keep the assessment handoff off the Cloudflare-proxied public CRM hostname.
-const crmEndpoint = "https://daytongrowthco-crm.vercel.app/api/internal/funnel-leads";
+// Keep the assessment handoff off the Cloudflare-proxied public CRM hostname by default.
+const crmEndpoint = process.env.FUNNEL_CRM_ENDPOINT || "https://daytongrowthco-crm.vercel.app/api/internal/funnel-leads";
 
 type LeadBody = Record<string, unknown> & { funnel?: unknown; qualification?: unknown; email?: unknown; phone?: unknown };
 
