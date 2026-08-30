@@ -70,6 +70,7 @@ import {
 import clientProofStyles from "./client-proof.module.css";
 import flagshipStyles from "./flagship-choice.module.css";
 import homepageClarityStyles from "./homepage-clarity.module.css";
+import interiorPageStyles from "./interior-page-polish.module.css";
 import appointRelayOfferStyles from "./appointrelay-offer.module.css";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
@@ -2545,7 +2546,7 @@ function WebsiteTransformation() {
     <section className="transformation-section" aria-labelledby="transformation-heading">
       <div className="shader-field" aria-hidden="true" />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-        <div className="section-heading compact-heading">
+        <div className="section-heading compact-heading" data-reveal>
           <span className="section-eyebrow">01 — Website transformation</span>
           <h2 id="transformation-heading">From dated and unclear to focused and conversion-ready.</h2>
           <p>Keep what makes the business yours. Replace the outdated platform, unclear pages, and maintenance burden around it.</p>
@@ -2556,7 +2557,7 @@ function WebsiteTransformation() {
             <li>Easier content maintenance</li>
           </ul>
         </div>
-        <div className="transformation-showcase">
+        <div className="transformation-showcase" data-reveal>
           <KineticGrid className="comparison-grid" spacing={42} radius={210} strength={2.6} />
           <span className="grid-interaction-hint" aria-hidden="true">
             <MousePointer2 size={13} strokeWidth={1.8} />
@@ -2599,7 +2600,7 @@ function WebsiteTransformation() {
         </div>
       </div>
       <div className="website-migration-offer mx-auto max-w-7xl px-5 sm:px-8">
-        <section className="migration-feature-grid" aria-labelledby="migration-feature-title">
+        <section className="migration-feature-grid" aria-labelledby="migration-feature-title" data-stagger>
           <article className="migration-feature-stack">
             <span className="migration-feature-eyebrow"><PanelTop size={15} aria-hidden="true" /> Current setup</span>
             <h3 id="migration-feature-title">Move the site forward without giving up control.</h3>
@@ -2738,7 +2739,7 @@ function OutcomeSection() {
   return (
     <section className="section-shell outcome-section" id="outcomes">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <h2>Choose a bottleneck. See the first build.</h2>
           <p>Pick a common problem to see what a focused system could do.</p>
         </div>
@@ -3642,11 +3643,11 @@ function AdvancedSystemPreview({ sectionId = "outcomes" }: { sectionId?: string 
   return (
     <section className="homepage-preview advanced-preview" id={sectionId} aria-labelledby={`${sectionId}-title`}>
       <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-        <div className="homepage-preview-copy">
+        <div className="homepage-preview-copy" data-reveal>
           <h2 id={`${sectionId}-title`}>A focused tool for the work between the work.</h2>
           <p>Connect customer details, pricing, and project updates without entering the same information twice.</p>
         </div>
-        <div className="advanced-preview-console">
+        <div className="advanced-preview-console" data-reveal>
           <div className="advanced-preview-tag" aria-hidden="true">
             <span>Connected workflow</span>
             <span>DGC / 002</span>
@@ -3715,7 +3716,7 @@ function ServiceArchitecture() {
   return (
     <section className="service-architecture" aria-labelledby="service-architecture-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
+        <div className="dedicated-heading" data-reveal>
           <h2 id="service-architecture-title">One operating model. Focused systems for the work that creates friction.</h2>
         </div>
         <div className="service-detail-grid" data-stagger>
@@ -3746,7 +3747,7 @@ function QuoteWorkflowExample() {
       </div>
       <div className="section-film-mask" aria-hidden="true" />
       <div className="quote-workflow-shell mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="homepage-preview-copy">
+        <div className="homepage-preview-copy" data-reveal>
           <h2 id="quote-workflow-title">Turn pricing rules into a send-ready quote.</h2>
           <p>Use the pricing your team has already approved, then make the next quote easier to review and send.</p>
           <a href="/#cta">
@@ -3754,7 +3755,7 @@ function QuoteWorkflowExample() {
             <ArrowRight size={15} aria-hidden="true" />
           </a>
         </div>
-        <div className="quote-workflow-demo" aria-label="Illustrative quote workflow">
+        <div className="quote-workflow-demo" aria-label="Illustrative quote workflow" data-reveal>
           <div className="quote-workflow-source">
             <span>Inputs that already exist</span>
             <ul>{quoteInputs.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -3785,11 +3786,11 @@ function BuildPrinciples() {
       </div>
       <div className="build-principles-film-mask" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
+        <div className="dedicated-heading" data-reveal>
           <h2 id="build-principles-title">Find the bottleneck. Fix only what matters.</h2>
           <p>We start with the highest-cost friction, prove the economics, and build only what the work requires.</p>
         </div>
-        <div className="build-principles-list" role="list">
+        <div className="build-principles-list" role="list" data-stagger>
           {principles.map(([title, text]) => (
             <article key={title} role="listitem">
               <div>
@@ -3815,11 +3816,11 @@ function DiscoveryDiagnosis() {
   return (
     <section className="engagement-process discovery-diagnosis" aria-labelledby="discovery-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
+        <div className="dedicated-heading" data-reveal>
           <h2 id="discovery-title">How we evaluate a process before building anything.</h2>
           <p>Before recommending software, we map the current workflow and determine the smallest useful intervention.</p>
         </div>
-        <div className="discovery-path" role="list">
+        <div className="discovery-path" role="list" data-stagger>
           {steps.map(([title, text], index) => <React.Fragment key={title}>
             <article role="listitem"><strong>{title}</strong><p>{text}</p></article>
             {index < steps.length - 1 ? <ArrowRight className="discovery-path-arrow" size={18} aria-hidden="true" /> : null}
@@ -3847,7 +3848,7 @@ function EngagementNotes() {
   return (
     <section className="engagement-notes" aria-labelledby="engagement-notes-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="dedicated-heading">
+        <div className="dedicated-heading" data-reveal>
           <h2 id="engagement-notes-title">What we need from your team.</h2>
           <p>You do not need a polished specification. We need enough real material to understand the work before we recommend a change.</p>
         </div>
@@ -3887,7 +3888,7 @@ function HowItWorksFaq() {
   return (
     <section className="how-faq" aria-labelledby="how-faq-title">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="how-faq-intro">
+        <div className="how-faq-intro" data-reveal>
           <div><h2 id="how-faq-title">Before we start, we make the next step clear.</h2><p>Bring what you have. We will tell you what is useful, what is not, and whether the work is worth pursuing.</p></div>
           <ul className="how-faq-prep" aria-label="Helpful preparation">
             <li><CheckCircle2 size={16} aria-hidden="true" />One current form or spreadsheet</li>
@@ -3895,7 +3896,7 @@ function HowItWorksFaq() {
             <li><CheckCircle2 size={16} aria-hidden="true" />The outcome your team needs</li>
           </ul>
         </div>
-        <div className="engagement-faq" aria-label="Frequently asked questions">
+        <div className="engagement-faq" aria-label="Frequently asked questions" data-stagger>
           {faqs.map(([q, a], index) => {
             const isOpen = open === index;
             return (
@@ -3931,7 +3932,7 @@ function PageCTA() {
   const { profile } = usePersonalization();
   const business = profile?.business?.trim();
   return (
-    <section className="page-cta" id="cta">
+    <section className="page-cta" id="cta" data-reveal>
       <BackgroundVideo className="page-cta-video" src={videos.supportingFilm.src} playbackRate={0.58} preload="metadata" />
       <div className="page-cta-film-mask" aria-hidden="true" />
       <h2>{business ? `Bring us the work ${business} still handles by hand.` : "Bring us the work still handled by hand."}</h2>
@@ -6470,18 +6471,36 @@ function Homepage() {
 }
 
 type PageHubIntroProps = {
+  eyebrow: string;
   title: string;
   summary: string;
+  stages: readonly [string, string, string];
 };
 
-function PageHubIntro({ title, summary }: PageHubIntroProps) {
+function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
   return (
-    <header className="page-hub-intro">
-      <div className="page-hub-intro-inner">
-        <div className="page-hub-title-block">
+    <header className={`${interiorPageStyles.intro} page-hub-intro`}>
+      <div className={`${interiorPageStyles.introInner} page-hub-intro-inner`}>
+        <div className={`${interiorPageStyles.titleBlock} page-hub-title-block`} data-reveal>
+          <span className={interiorPageStyles.eyebrow}>{eyebrow}</span>
           <h1>{title}</h1>
           <p>{summary}</p>
         </div>
+        <aside className={interiorPageStyles.signal} aria-label={`${title} overview`} data-reveal>
+          <div className={interiorPageStyles.signalHeader}>
+            <span>Working path</span>
+            <span>{title}</span>
+          </div>
+          <ol className={interiorPageStyles.signalList}>
+            {stages.map((stage, index) => (
+              <li className={interiorPageStyles.signalRow} key={stage}>
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <strong>{stage}</strong>
+                <i aria-hidden="true" />
+              </li>
+            ))}
+          </ol>
+        </aside>
       </div>
     </header>
   );
@@ -6492,11 +6511,11 @@ function ProductsPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page products-page" tabIndex={-1}>
-        <PageHubIntro title="Products" summary="Focused systems for the work your team repeats, delays, or still handles by hand." />
-        <section className="products-flagships" aria-labelledby="products-flagships-title"><div className="products-shell"><header><h2 id="products-flagships-title">Our core offers</h2></header><div className="products-flagship-grid"><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-appointrelay"><span>AppointRelay™</span><h3>Work the appointment queue your team can’t keep up with.</h3><p>Approved customer outreach, usable preferences, documented exceptions, and a clean handoff while dispatch keeps final control.</p><Link href="/appointrelay/">See If AppointRelay Fits <ArrowRight size={16} aria-hidden="true" /></Link></article><article className="is-review-growth"><span>The HVAC Google Review Growth Program™</span><h3>Make the review request automatic after every eligible job.</h3><p>We install and manage the CRM trigger, SMS and email requests, protections, reporting, and monitoring for $2,500 per year plus usage.</p><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={16} aria-hidden="true" /></Link></article></div></div></section>
-        <section className="products-operating" aria-labelledby="products-operating-title"><div className="products-shell"><header><h2 id="products-operating-title">Operating products</h2><p>Focused tools for the work your team repeats every week.</p></header><div className="products-operating-grid">{operatingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
-        <section className="products-cta"><div className="products-shell"><div><h2>Not sure where to start?</h2><p>Tell us what is taking too long. We’ll point you to the right product.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
+      <main id="main-content" className={`${interiorPageStyles.page} dedicated-page products-page`} tabIndex={-1}>
+        <PageHubIntro eyebrow="Focused systems" title="Products" summary="Focused systems for the work your team repeats, delays, or still handles by hand." stages={["Find the friction", "Choose the focused system", "Put it to work"]} />
+        <section className="products-flagships" aria-labelledby="products-flagships-title"><div className={`${interiorPageStyles.sectionShell} products-shell`}><header data-reveal><h2 id="products-flagships-title">Our core offers</h2></header><div className="products-flagship-grid" data-stagger><article className="is-quote"><span>The Better Quote Program™</span><h3>Have an expensive quote? Let us shop it.</h3><p>Real people compare your written quote with legitimate local options. No qualifying savings? No fee.</p><a href="/quote/">Upload Your Quote <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-migration"><span>The Website Migration Program™</span><h3>Move your site without keeping the platform bill.</h3><p>A one-time migration into a self-owned site, with scope and annual-cost comparison confirmed in writing.</p><a href="/website/">Start My Migration <ArrowRight size={16} aria-hidden="true" /></a></article><article className="is-appointrelay"><span>AppointRelay™</span><h3>Work the appointment queue your team can’t keep up with.</h3><p>Approved customer outreach, usable preferences, documented exceptions, and a clean handoff while dispatch keeps final control.</p><Link href="/appointrelay/">See If AppointRelay Fits <ArrowRight size={16} aria-hidden="true" /></Link></article><article className="is-review-growth"><span>The HVAC Google Review Growth Program™</span><h3>Make the review request automatic after every eligible job.</h3><p>We install and manage the CRM trigger, SMS and email requests, protections, reporting, and monitoring for $2,500 per year plus usage.</p><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={16} aria-hidden="true" /></Link></article></div></div></section>
+        <section className="products-operating" aria-labelledby="products-operating-title"><div className={`${interiorPageStyles.sectionShell} products-shell`}><header data-reveal><h2 id="products-operating-title">Operating products</h2><p>Focused tools for the work your team repeats every week.</p></header><div className="products-operating-grid" data-stagger>{operatingProducts.map((product) => <Link href={product.href} key={product.id}><span className="products-icon">{product.icon}</span><div><strong>{product.name}</strong><p>{product.problem}</p></div><ArrowRight size={17} aria-hidden="true" /></Link>)}</div></div></section>
+        <section className="products-cta"><div className={`${interiorPageStyles.sectionShell} products-shell`} data-reveal><div><h2>Not sure where to start?</h2><p>Tell us what is taking too long. We’ll point you to the right product.</p></div><a className="button button-primary" href="/#cta">Start a conversation <ArrowRight size={16} aria-hidden="true" /></a></div></section>
         <PageCTA />
       </main>
       <SiteFooter />
@@ -6508,8 +6527,8 @@ function ExamplesPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page examples-page" tabIndex={-1}>
-        <PageHubIntro title="Examples" summary="A closer look at the inputs, working artifacts, and useful outputs behind the systems we build." />
+      <main id="main-content" className={`${interiorPageStyles.page} dedicated-page examples-page`} tabIndex={-1}>
+        <PageHubIntro eyebrow="Working proof" title="Examples" summary="A closer look at the inputs, working artifacts, and useful outputs behind the systems we build." stages={["See the input", "Inspect the workflow", "Judge the output"]} />
         <WebsiteTransformation />
         <PhoneAgentOffer />
         <OutcomeSection />
@@ -6527,8 +6546,8 @@ function HowItWorksPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page how-page" tabIndex={-1}>
-        <PageHubIntro title="How It Works" summary="We narrow the problem, prove the economics, and build the smallest useful system first." />
+      <main id="main-content" className={`${interiorPageStyles.page} dedicated-page how-page`} tabIndex={-1}>
+        <PageHubIntro eyebrow="Operating method" title="How It Works" summary="We narrow the problem, prove the economics, and build the smallest useful system first." stages={["Narrow the problem", "Prove the economics", "Build the smallest useful system"]} />
         <BuildPrinciples />
         <DiscoveryDiagnosis />
         <EconomicCase />
@@ -6546,15 +6565,15 @@ function AboutPage() {
   return (
     <>
       <PageChrome />
-      <main id="main-content" className="dedicated-page about-page" tabIndex={-1}>
-        <PageHubIntro title="About DaytonGrowthCo." summary="Practical systems for small teams, built around the work already happening." />
+      <main id="main-content" className={`${interiorPageStyles.page} dedicated-page about-page`} tabIndex={-1}>
+        <PageHubIntro eyebrow="Built in Dayton" title="About DaytonGrowthCo." summary="Practical systems for small teams, built around the work already happening." stages={["Start with the work", "Keep ownership clear", "Improve what matters"]} />
         <section className="about-founder" aria-labelledby="about-founder-title">
           <div className="section-film-media" aria-hidden="true">
             <BackgroundVideo className="section-film-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
           </div>
           <div className="section-film-mask" aria-hidden="true" />
           <div className="about-founder-inner">
-            <div className="about-founder-portrait" aria-hidden="true">
+            <div className="about-founder-portrait" aria-hidden="true" data-reveal>
               <picture>
                 <source media="(max-width: 700px)" srcSet="/samuel-caruso-320.jpg" width="320" height="480" />
                 <img
@@ -6570,7 +6589,7 @@ function AboutPage() {
                 />
               </picture>
             </div>
-            <div className="about-founder-copy">
+            <div className="about-founder-copy" data-reveal>
               <p className="about-founder-role">Founder, DaytonGrowthCo.</p>
               <h2 id="about-founder-title">Samuel Caruso</h2>
               <p>
@@ -6590,11 +6609,11 @@ function AboutPage() {
         </section>
         <section className="build-principles about-mission-native" aria-labelledby="about-mission-title">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="dedicated-heading">
+            <div className="dedicated-heading" data-reveal>
               <div><span className="section-eyebrow">Our approach</span><h2 id="about-mission-title">Why DaytonGrowthCo.</h2></div>
               <p>Small businesses deserve capable technology without enterprise complexity or another system controlling the owner. We build around the work already happening, so teams spend less time managing software and more time using their judgment.</p>
             </div>
-            <ol className="build-principles-list">
+            <ol className="build-principles-list" data-stagger>
               <li>
                 <span>01</span>
                 <strong>Process first</strong>
