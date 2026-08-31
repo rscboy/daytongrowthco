@@ -17,7 +17,7 @@ const projectId = "review_call_command_center";
 const blobPath = "secret-projects/review-call-command-center/records.json";
 const localPath = path.join(process.cwd(), "data", "review-call-command-center-records.json");
 const maximumProspectId = 2000;
-const currentDirectoryVersion = 2;
+const currentDirectoryVersion = 3;
 
 const outcomes = new Set([
   "Not called",
@@ -59,14 +59,17 @@ function normalizeStore(value: unknown): RecordStore {
   const raw = value && typeof value === "object" ? value as Partial<RecordStore> : {};
   const directoryVersion = typeof raw.directoryVersion === "number" ? raw.directoryVersion : 1;
   const records = normalizeRecords(raw.records);
-  if (directoryVersion < currentDirectoryVersion) {
+  if (directoryVersion < 2) {
     for (let id = 1001; id <= 1100; id += 1) delete records[String(id)];
+  }
+  if (directoryVersion < 3) {
+    for (let id = 1061; id <= 1100; id += 1) delete records[String(id)];
   }
   return {
     records,
     updatedAt: typeof raw.updatedAt === "number" && Number.isFinite(raw.updatedAt) ? raw.updatedAt : 0,
     directoryVersion: currentDirectoryVersion,
-    resetReplacementRecords: directoryVersion < currentDirectoryVersion,
+    resetReplacementRecords: directoryVersion < 2,
   };
 }
 
@@ -126,8 +129,11 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json() as { records?: unknown; directoryVersion?: number };
     incoming = normalizeRecords(body.records);
-    if (body.directoryVersion !== currentDirectoryVersion) {
+    if (!body.directoryVersion || body.directoryVersion < 2) {
       for (let id = 1001; id <= 1100; id += 1) delete incoming[String(id)];
+    }
+    if (!body.directoryVersion || body.directoryVersion < 3) {
+      for (let id = 1061; id <= 1100; id += 1) delete incoming[String(id)];
     }
   } catch {
     return noStoreJson({ error: "Invalid request" }, 400);
