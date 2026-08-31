@@ -17,6 +17,7 @@ const projectId = "review_call_command_center";
 const blobPath = "secret-projects/review-call-command-center/records.json";
 const localPath = path.join(process.cwd(), "data", "review-call-command-center-records.json");
 const maximumProspectId = 2000;
+const currentDirectoryVersion = 2;
 
 const outcomes = new Set([
   "Not called",
@@ -29,7 +30,7 @@ const outcomes = new Set([
 ]);
 
 type StoredRecord = { outcome: string; notes: string; updatedAt: number };
-type RecordStore = { records: Record<string, StoredRecord>; updatedAt: number };
+type RecordStore = { records: Record<string, StoredRecord>; updatedAt: number; directoryVersion: number; resetReplacementRecords?: boolean };
 
 function blobConfigured() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN || (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN));
@@ -56,9 +57,16 @@ function normalizeRecords(value: unknown) {
 
 function normalizeStore(value: unknown): RecordStore {
   const raw = value && typeof value === "object" ? value as Partial<RecordStore> : {};
+  const directoryVersion = typeof raw.directoryVersion === "number" ? raw.directoryVersion : 1;
+  const records = normalizeRecords(raw.records);
+  if (directoryVersion < currentDirectoryVersion) {
+    for (let id = 1001; id <= 1100; id += 1) delete records[String(id)];
+  }
   return {
-    records: normalizeRecords(raw.records),
+    records,
     updatedAt: typeof raw.updatedAt === "number" && Number.isFinite(raw.updatedAt) ? raw.updatedAt : 0,
+    directoryVersion: currentDirectoryVersion,
+    resetReplacementRecords: directoryVersion < currentDirectoryVersion,
   };
 }
 
@@ -128,7 +136,7 @@ export async function PUT(request: Request) {
     if (!merged[id] || record.updatedAt >= merged[id].updatedAt) merged[id] = record;
   }
 
-  const store = { records: merged, updatedAt: Date.now() };
+  const store = { records: merged, updatedAt: Date.now(), directoryVersion: currentDirectoryVersion };
   await writeStore(store);
   return noStoreJson(store);
 }

@@ -45,43 +45,9 @@ function timeLabel() {
   return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
-function prospectKeys(prospect: { business: string; phone: string | null }) {
-  const phone = prospect.phone?.replace(/\D/g, "");
-  const business = prospect.business.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return [phone ? `phone:${phone}` : "", `business:${business}`].filter(Boolean);
-}
-
-const replacementByKey = new Map(replacementProspects.flatMap((prospect) => prospectKeys(prospect).map((key) => [key, prospect] as const)));
-
-function replacementFor(prospect: { business: string; phone: string | null }) {
-  return prospectKeys(prospect).map((key) => replacementByKey.get(key)).find(Boolean);
-}
-
-function migrateContactedRecords(records: Records) {
-  const migrated = { ...records };
-  for (const prospect of legacyProspects) {
-    const record = records[prospect.id];
-    if (!record || record.outcome === "Not called") continue;
-    const replacement = replacementFor(prospect);
-    if (replacement && (!migrated[replacement.id] || record.updatedAt > migrated[replacement.id].updatedAt)) {
-      migrated[replacement.id] = record;
-    }
-  }
-  return migrated;
-}
-
 function directoryProspects(records: Records) {
-  const contacted: typeof legacyProspects = [];
-  const seen = new Set<number>();
-  for (const prospect of legacyProspects) {
-    if (!records[prospect.id] || records[prospect.id].outcome === "Not called") continue;
-    const preserved = replacementFor(prospect) ?? prospect;
-    if (!seen.has(preserved.id)) {
-      contacted.push(preserved);
-      seen.add(preserved.id);
-    }
-  }
-  return [...contacted, ...replacementProspects.filter((prospect) => !seen.has(prospect.id))];
+  const contacted = legacyProspects.filter((prospect) => records[prospect.id] && records[prospect.id].outcome !== "Not called");
+  return [...contacted, ...replacementProspects];
 }
 
 function telValue(phone: string) {
@@ -161,9 +127,13 @@ export function ReviewCallCommandCenter() {
       try {
         const response = await fetch(recordsEndpoint, { cache: "no-store" });
         if (!response.ok) throw new Error(`Load failed with ${response.status}`);
-        const payload = await response.json() as { records?: unknown };
+        const payload = await response.json() as { records?: unknown; resetReplacementRecords?: boolean };
         if (cancelled) return;
-        const merged = migrateContactedRecords(mergeRecords(recordsRef.current, normalizeRecords(payload.records)));
+        const localRecords = { ...recordsRef.current };
+        if (payload.resetReplacementRecords) {
+          for (let id = 1001; id <= 1100; id += 1) delete localRecords[id];
+        }
+        const merged = mergeRecords(localRecords, normalizeRecords(payload.records));
         applyRecords(merged);
         const next = directoryProspects(merged).find((prospect) => !merged[prospect.id] || merged[prospect.id].outcome === "Not called");
         if (next) setCurrentId(next.id);
@@ -171,7 +141,6 @@ export function ReviewCallCommandCenter() {
       } catch (error) {
         console.error("[review-call-command-center] Unable to load shared records.", error);
         if (!cancelled) {
-          local = migrateContactedRecords(local);
           applyRecords(local);
           const next = directoryProspects(local).find((prospect) => !local[prospect.id] || local[prospect.id].outcome === "Not called");
           if (next) setCurrentId(next.id);
