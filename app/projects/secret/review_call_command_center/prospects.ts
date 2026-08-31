@@ -14,7 +14,7 @@ export type Prospect = {
   phoneSource: string | null
 };
 
-export const prospects: Prospect[] = [
+export const legacyProspects: Prospect[] = [
   {
     "id": 1,
     "industry": "Auto repair",
@@ -2868,6 +2868,38 @@ export const prospects: Prospect[] = [
 ];
 
 export const industryScripts: Record<string, readonly [string, string]> = {
+  "Accounting and tax": ["a tax return or accounting engagement is completed", "the client"],
+  "Auto audio tint detailing": ["an installation or detailing job is completed", "the customer"],
+  "Auto detailing": ["a detailing job is completed", "the customer"],
+  "Carpet cleaning": ["a cleaning job is completed", "the customer"],
+  "Cleaning and janitorial": ["a cleaning service is completed", "the client"],
+  "Cleaning services": ["a cleaning job is completed", "the customer"],
+  "Custom home builder": ["a project reaches an appropriate completion milestone", "the homeowner"],
+  "Dumpster rental": ["a rental is completed", "the customer"],
+  "Exterior cleaning": ["an exterior cleaning job is completed", "the customer"],
+  "Home builder": ["a project reaches an appropriate completion milestone", "the homeowner"],
+  "Home improvement": ["a home-improvement job is completed", "the homeowner"],
+  "Home inspection": ["an inspection report is delivered", "the client"],
+  "Home technology": ["an installation or service visit is completed", "the customer"],
+  "House cleaning": ["a cleaning visit is completed", "the customer"],
+  "IT services": ["a service request or project is completed", "the client"],
+  "Junk removal": ["a removal job is completed", "the customer"],
+  "Landscaping": ["a landscaping job or service visit is completed", "the customer"],
+  "Marketing agency": ["a client reaches an appropriate campaign or project milestone", "the client"],
+  "Mobile RV repair": ["a repair is completed", "the customer"],
+  "Mobile auto detailing": ["a detailing job is completed", "the customer"],
+  "Mobile diesel repair": ["a repair is completed", "the customer"],
+  "Mobile notary": ["an appointment is completed", "the client"],
+  "Plumbing and electrical": ["a service call is completed", "the customer"],
+  "Pressure washing": ["a pressure-washing job is completed", "the customer"],
+  "Real estate": ["a transaction closes", "the client"],
+  "Remodeling": ["a remodeling project reaches an appropriate completion milestone", "the homeowner"],
+  "Roofing and exteriors": ["a roofing or exterior project is completed", "the homeowner"],
+  "Roofing and remodeling": ["a roofing or remodeling project is completed", "the homeowner"],
+  "Roofing and restoration": ["a roofing or restoration project is completed", "the homeowner"],
+  "Roofing and siding": ["a roofing or siding project is completed", "the homeowner"],
+  "Tree service": ["a tree-service job is completed", "the customer"],
+  "Trenchless plumbing": ["a repair is completed", "the customer"],
   "Accounting firms": [
     "a client engagement wraps up",
     "the client"

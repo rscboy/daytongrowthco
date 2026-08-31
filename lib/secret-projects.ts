@@ -67,7 +67,7 @@ export const secretProjects: readonly SecretProjectDefinition[] = [
   {
     id: "review_call_command_center",
     title: "Google Review Voicemail Command Center",
-    description: "A 190-prospect, industry-tailored voicemail workspace with call tracking and phone-source checks.",
+    description: "A synchronized, industry-tailored voicemail workspace that preserves contacted prospects and prioritizes text-capable leads.",
     href: "/projects/secret/review_call_command_center/",
     type: "Reference",
     accent: "#176b4d",

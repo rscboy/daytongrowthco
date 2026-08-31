@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Clipboard, ExternalLink, Phone, Search } from "lucide-react";
-import { industryScripts, prospects } from "./prospects";
+import { industryScripts, legacyProspects } from "./prospects";
+import { replacementProspects } from "./replacement-prospects";
 import styles from "./review-call-command-center.module.css";
 
 type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Landline / no-go" | "Wrong number" | "Skip";
@@ -44,6 +45,45 @@ function timeLabel() {
   return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
+function prospectKeys(prospect: { business: string; phone: string | null }) {
+  const phone = prospect.phone?.replace(/\D/g, "");
+  const business = prospect.business.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return [phone ? `phone:${phone}` : "", `business:${business}`].filter(Boolean);
+}
+
+const replacementByKey = new Map(replacementProspects.flatMap((prospect) => prospectKeys(prospect).map((key) => [key, prospect] as const)));
+
+function replacementFor(prospect: { business: string; phone: string | null }) {
+  return prospectKeys(prospect).map((key) => replacementByKey.get(key)).find(Boolean);
+}
+
+function migrateContactedRecords(records: Records) {
+  const migrated = { ...records };
+  for (const prospect of legacyProspects) {
+    const record = records[prospect.id];
+    if (!record || record.outcome === "Not called") continue;
+    const replacement = replacementFor(prospect);
+    if (replacement && (!migrated[replacement.id] || record.updatedAt > migrated[replacement.id].updatedAt)) {
+      migrated[replacement.id] = record;
+    }
+  }
+  return migrated;
+}
+
+function directoryProspects(records: Records) {
+  const contacted: typeof legacyProspects = [];
+  const seen = new Set<number>();
+  for (const prospect of legacyProspects) {
+    if (!records[prospect.id] || records[prospect.id].outcome === "Not called") continue;
+    const preserved = replacementFor(prospect) ?? prospect;
+    if (!seen.has(preserved.id)) {
+      contacted.push(preserved);
+      seen.add(preserved.id);
+    }
+  }
+  return [...contacted, ...replacementProspects.filter((prospect) => !seen.has(prospect.id))];
+}
+
 function telValue(phone: string) {
   return `+1${phone.replace(/\D/g, "").slice(-10)}`;
 }
@@ -55,7 +95,7 @@ function makeScript(industry: string, business: string) {
 
 export function ReviewCallCommandCenter() {
   const [records, setRecords] = useState<Records>({});
-  const [currentId, setCurrentId] = useState(1);
+  const [currentId, setCurrentId] = useState(replacementProspects[0].id);
   const [query, setQuery] = useState("");
   const [industry, setIndustry] = useState("All industries");
   const [status, setStatus] = useState<"All" | "Remaining" | "Completed">("All");
@@ -123,15 +163,17 @@ export function ReviewCallCommandCenter() {
         if (!response.ok) throw new Error(`Load failed with ${response.status}`);
         const payload = await response.json() as { records?: unknown };
         if (cancelled) return;
-        const merged = mergeRecords(recordsRef.current, normalizeRecords(payload.records));
+        const merged = migrateContactedRecords(mergeRecords(recordsRef.current, normalizeRecords(payload.records)));
         applyRecords(merged);
-        const next = prospects.find((prospect) => !merged[prospect.id] || merged[prospect.id].outcome === "Not called");
+        const next = directoryProspects(merged).find((prospect) => !merged[prospect.id] || merged[prospect.id].outcome === "Not called");
         if (next) setCurrentId(next.id);
         await syncLatest();
       } catch (error) {
         console.error("[review-call-command-center] Unable to load shared records.", error);
         if (!cancelled) {
-          const next = prospects.find((prospect) => !local[prospect.id] || local[prospect.id].outcome === "Not called");
+          local = migrateContactedRecords(local);
+          applyRecords(local);
+          const next = directoryProspects(local).find((prospect) => !local[prospect.id] || local[prospect.id].outcome === "Not called");
           if (next) setCurrentId(next.id);
           setSyncState("Offline — saved on this device");
         }
@@ -151,20 +193,22 @@ export function ReviewCallCommandCenter() {
     };
   }, [applyRecords, syncLatest]);
 
-  const current = prospects.find((prospect) => prospect.id === currentId) ?? prospects[0];
+  const activeProspects = useMemo(() => directoryProspects(records), [records]);
+  const current = activeProspects.find((prospect) => prospect.id === currentId) ?? activeProspects[0];
   const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "", updatedAt: 0 };
-  const completed = Object.values(records).filter((item) => item.outcome !== "Not called").length;
-  const industries = useMemo(() => ["All industries", ...Array.from(new Set(prospects.map((prospect) => prospect.industry))).sort()], []);
+  const completed = activeProspects.filter((prospect) => records[prospect.id]?.outcome && records[prospect.id].outcome !== "Not called").length;
+  const industries = useMemo(() => ["All industries", ...Array.from(new Set(activeProspects.map((prospect) => prospect.industry))).sort()], [activeProspects]);
   const voicemail = makeScript(current.industry, current.business);
+  const currentPosition = activeProspects.findIndex((prospect) => prospect.id === current.id) + 1;
 
-  const filtered = useMemo(() => prospects.filter((prospect) => {
+  const filtered = useMemo(() => activeProspects.filter((prospect) => {
     const result = records[prospect.id]?.outcome ?? "Not called";
     const isDone = result !== "Not called";
     const text = `${prospect.business} ${prospect.cityArea} ${prospect.industry}`.toLowerCase();
     return text.includes(query.toLowerCase())
       && (industry === "All industries" || prospect.industry === industry)
       && (status === "All" || (status === "Completed" ? isDone : !isDone));
-  }), [industry, query, records, status]);
+  }), [activeProspects, industry, query, records, status]);
 
   function persistRecords(next: Records) {
     applyRecords(next);
@@ -177,9 +221,9 @@ export function ReviewCallCommandCenter() {
   }
 
   function moveNext(sourceRecords: Records, skipId?: number) {
-    const index = prospects.findIndex((prospect) => prospect.id === current.id);
+    const index = activeProspects.findIndex((prospect) => prospect.id === current.id);
     const isRemaining = (prospect: typeof current) => prospect.id !== skipId && (sourceRecords[prospect.id]?.outcome ?? "Not called") === "Not called";
-    const next = prospects.slice(index + 1).find(isRemaining) ?? prospects.find(isRemaining);
+    const next = activeProspects.slice(index + 1).find(isRemaining) ?? activeProspects.find(isRemaining);
     if (next) setCurrentId(next.id);
   }
 
@@ -204,7 +248,7 @@ export function ReviewCallCommandCenter() {
     <main className={styles.shell}>
       <header className={styles.topbar}>
         <div className={styles.brand}><span>DG</span><div><strong>Voicemail Command Center</strong><small>DaytonGrowthCo. · Secret Project</small></div></div>
-        <div className={styles.progress}><div><span style={{ width: `${completed / prospects.length * 100}%` }} /></div><small>{completed} of {prospects.length} complete</small></div>
+        <div className={styles.progress}><div><span style={{ width: `${completed / activeProspects.length * 100}%` }} /></div><small>{completed} of {activeProspects.length} complete</small></div>
         <a className={styles.backLink} href="/projects/secret-projects"><ArrowLeft size={15} /> Back to Secret Projects</a>
       </header>
 
@@ -217,10 +261,10 @@ export function ReviewCallCommandCenter() {
           </select>
           <div className={styles.filters}>{(["All", "Remaining", "Completed"] as const).map((value) => <button key={value} className={status === value ? styles.activeFilter : ""} onClick={() => setStatus(value)}>{value}</button>)}</div>
           <div className={styles.prospectList}>
-            {filtered.map((prospect) => {
+            {filtered.map((prospect, index) => {
               const result = records[prospect.id]?.outcome ?? "Not called";
               return <button key={prospect.id} className={`${styles.prospectRow} ${current.id === prospect.id ? styles.currentRow : ""}`} onClick={() => setCurrentId(prospect.id)}>
-                <span className={result !== "Not called" ? styles.doneMark : ""}>{result !== "Not called" ? <Check size={13} /> : prospect.id}</span>
+                <span className={result !== "Not called" ? styles.doneMark : ""}>{result !== "Not called" ? <Check size={13} /> : index + 1}</span>
                 <span><strong>{prospect.business}</strong><small>{prospect.industry} · {prospect.cityArea}</small></span>
                 <em>{prospect.phone ?? "No phone"}</em>
               </button>;
@@ -230,7 +274,7 @@ export function ReviewCallCommandCenter() {
 
         <section className={styles.workspace}>
           <div className={styles.kicker}>
-            <span>VOICEMAIL {current.id} OF {prospects.length}</span>
+            <span>VOICEMAIL {currentPosition} OF {activeProspects.length}</span>
             <div className={styles.kickerActions}>
               <span>{current.industry}</span>
               <div className={styles.quickOutcomes}>
