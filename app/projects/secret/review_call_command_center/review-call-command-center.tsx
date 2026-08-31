@@ -183,11 +183,15 @@ export function ReviewCallCommandCenter() {
     if (next) setCurrentId(next.id);
   }
 
-  function saveVoicemailAndNext() {
+  function saveOutcomeAndNext(outcome: Outcome) {
     const latest = recordsRef.current[current.id] ?? record;
-    const next = { ...recordsRef.current, [current.id]: { ...latest, outcome: "Voicemail left" as Outcome, updatedAt: Date.now() } };
+    const next = { ...recordsRef.current, [current.id]: { ...latest, outcome, updatedAt: Date.now() } };
     persistRecords(next);
     moveNext(next, current.id);
+  }
+
+  function saveVoicemailAndNext() {
+    saveOutcomeAndNext("Voicemail left");
   }
 
   async function copyScript() {
@@ -227,7 +231,13 @@ export function ReviewCallCommandCenter() {
         <section className={styles.workspace}>
           <div className={styles.kicker}>
             <span>VOICEMAIL {current.id} OF {prospects.length}</span>
-            <div className={styles.kickerActions}><span>{current.industry}</span><button onClick={saveVoicemailAndNext}>Voicemail left · Next <span>→</span></button></div>
+            <div className={styles.kickerActions}>
+              <span>{current.industry}</span>
+              <div className={styles.quickOutcomes}>
+                <button onClick={saveVoicemailAndNext}>Voicemail left <span>Next →</span></button>
+                <button className={styles.landlineNext} onClick={() => saveOutcomeAndNext("Landline / no-go")}>Landline / no-go <span>Next →</span></button>
+              </div>
+            </div>
           </div>
           <article className={styles.prospectCard}>
             <div className={styles.prospectTitle}><div><p>{current.cityArea} · Priority {current.priority}</p><h1>{current.business}</h1></div><span className={`${styles.confidence} ${styles[`confidence${current.confidence}`]}`}>{current.confidence} confidence</span></div>
