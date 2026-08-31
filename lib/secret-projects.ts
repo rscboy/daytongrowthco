@@ -64,6 +64,14 @@ export const secretProjects: readonly SecretProjectDefinition[] = [
     type: "Calculator",
     accent: "#6e5aa8",
   },
+  {
+    id: "review_call_command_center",
+    title: "Google Review Voicemail Command Center",
+    description: "A 190-prospect, industry-tailored voicemail workspace with call tracking and phone-source checks.",
+    href: "/projects/secret/review_call_command_center/",
+    type: "Reference",
+    accent: "#176b4d",
+  },
 ] as const;
 
 const SETTINGS_BLOB_PATH = "secret-projects/settings.json";

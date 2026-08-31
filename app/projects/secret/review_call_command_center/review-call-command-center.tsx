@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Check, Clipboard, ExternalLink, Phone, Search } from "lucide-react";
+import { industryScripts, prospects } from "./prospects";
+import styles from "./review-call-command-center.module.css";
+
+type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Wrong number" | "Skip";
+type RecordState = { outcome: Outcome; notes: string };
+type Records = Record<number, RecordState>;
+
+const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Wrong number", "Skip"];
+const storageKey = "dgc-secret-review-voicemail-command-center-v1";
+
+function telValue(phone: string) {
+  return `+1${phone.replace(/\D/g, "").slice(-10)}`;
+}
+
+function makeScript(industry: string, business: string) {
+  const [moment, audience] = industryScripts[industry] ?? ["a customer interaction is completed", "the customer"];
+  return `Hi [Name], Sam Caruso with DaytonGrowthCo. Quick question: when ${moment}, does ${business} automatically ask ${audience} for a Google review, or does someone have to remember? I built a system that handles it automatically. Call or text me at 937-369-0829. Again, 937-369-0829.`;
+}
+
+export function ReviewCallCommandCenter() {
+  const [records, setRecords] = useState<Records>({});
+  const [currentId, setCurrentId] = useState(1);
+  const [query, setQuery] = useState("");
+  const [industry, setIndustry] = useState("All industries");
+  const [status, setStatus] = useState<"All" | "Remaining" | "Completed">("All");
+  const [copied, setCopied] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Records;
+        setRecords(parsed);
+        const next = prospects.find((prospect) => !parsed[prospect.id] || parsed[prospect.id].outcome === "Not called");
+        if (next) setCurrentId(next.id);
+      }
+    } finally {
+      setReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (ready) window.localStorage.setItem(storageKey, JSON.stringify(records));
+  }, [ready, records]);
+
+  const current = prospects.find((prospect) => prospect.id === currentId) ?? prospects[0];
+  const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "" };
+  const completed = Object.values(records).filter((item) => item.outcome !== "Not called").length;
+  const industries = useMemo(() => ["All industries", ...Array.from(new Set(prospects.map((prospect) => prospect.industry))).sort()], []);
+  const voicemail = makeScript(current.industry, current.business);
+
+  const filtered = useMemo(() => prospects.filter((prospect) => {
+    const result = records[prospect.id]?.outcome ?? "Not called";
+    const isDone = result !== "Not called";
+    const text = `${prospect.business} ${prospect.cityArea} ${prospect.industry}`.toLowerCase();
+    return text.includes(query.toLowerCase())
+      && (industry === "All industries" || prospect.industry === industry)
+      && (status === "All" || (status === "Completed" ? isDone : !isDone));
+  }), [industry, query, records, status]);
+
+  function updateRecord(update: Partial<RecordState>) {
+    setRecords((existing) => ({ ...existing, [current.id]: { ...record, ...update } }));
+  }
+
+  function moveNext(skipId?: number) {
+    const index = prospects.findIndex((prospect) => prospect.id === current.id);
+    const isRemaining = (prospect: typeof current) => prospect.id !== skipId && (records[prospect.id]?.outcome ?? "Not called") === "Not called";
+    const next = prospects.slice(index + 1).find(isRemaining) ?? prospects.find(isRemaining);
+    if (next) setCurrentId(next.id);
+  }
+
+  function saveVoicemailAndNext() {
+    setRecords((existing) => ({ ...existing, [current.id]: { ...record, outcome: "Voicemail left" } }));
+    window.setTimeout(() => moveNext(current.id), 0);
+  }
+
+  async function copyScript() {
+    await navigator.clipboard.writeText(voicemail);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1400);
+  }
+
+  return (
+    <main className={styles.shell}>
+      <header className={styles.topbar}>
+        <div className={styles.brand}><span>DG</span><div><strong>Voicemail Command Center</strong><small>DaytonGrowthCo. · Secret Project</small></div></div>
+        <div className={styles.progress}><div><span style={{ width: `${completed / prospects.length * 100}%` }} /></div><small>{completed} of {prospects.length} complete</small></div>
+        <a className={styles.backLink} href="/projects/secret-projects"><ArrowLeft size={15} /> Back to Secret Projects</a>
+      </header>
+
+      <div className={styles.layout}>
+        <aside className={styles.directory}>
+          <div className={styles.directoryHeading}><p>PROSPECT DIRECTORY</p><strong>{filtered.length} showing</strong></div>
+          <label className={styles.search}><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search businesses" aria-label="Search businesses" /></label>
+          <select value={industry} onChange={(event) => setIndustry(event.target.value)} aria-label="Filter by industry">
+            {industries.map((value) => <option key={value}>{value}</option>)}
+          </select>
+          <div className={styles.filters}>{(["All", "Remaining", "Completed"] as const).map((value) => <button key={value} className={status === value ? styles.activeFilter : ""} onClick={() => setStatus(value)}>{value}</button>)}</div>
+          <div className={styles.prospectList}>
+            {filtered.map((prospect) => {
+              const result = records[prospect.id]?.outcome ?? "Not called";
+              return <button key={prospect.id} className={`${styles.prospectRow} ${current.id === prospect.id ? styles.currentRow : ""}`} onClick={() => setCurrentId(prospect.id)}>
+                <span className={result !== "Not called" ? styles.doneMark : ""}>{result !== "Not called" ? <Check size={13} /> : prospect.id}</span>
+                <span><strong>{prospect.business}</strong><small>{prospect.industry} · {prospect.cityArea}</small></span>
+                <em>{prospect.phone ?? "No phone"}</em>
+              </button>;
+            })}
+          </div>
+        </aside>
+
+        <section className={styles.workspace}>
+          <div className={styles.kicker}><span>VOICEMAIL {current.id} OF {prospects.length}</span><span>{current.industry}</span></div>
+          <article className={styles.prospectCard}>
+            <div className={styles.prospectTitle}><div><p>{current.cityArea} · Priority {current.priority}</p><h1>{current.business}</h1></div><span className={`${styles.confidence} ${styles[`confidence${current.confidence}`]}`}>{current.confidence} confidence</span></div>
+            <div className={styles.phoneBlock}>
+              {current.phone ? <><a href={`tel:${telValue(current.phone)}`}><Phone size={18} /><span><small>CALL & LEAVE VOICEMAIL</small><strong>{current.phone}</strong></span></a>{current.phoneSource ? <a className={styles.sourceLink} href={current.phoneSource} target="_blank" rel="noreferrer">Phone source <ExternalLink size={12} /></a> : null}</> : <div className={styles.missingPhone}><strong>Phone not publicly verified</strong><span>Check the prospect source before dialing. No number was guessed.</span></div>}
+            </div>
+            <dl className={styles.prospectNotes}>
+              <div><dt>Why it fits</dt><dd>{current.fitReason}</dd></div>
+              <div><dt>Before calling</dt><dd>{current.qualificationNote}</dd></div>
+            </dl>
+            <a className={styles.prospectSource} href={current.prospectSource} target="_blank" rel="noreferrer">Open original prospect source <ExternalLink size={13} /></a>
+          </article>
+
+          <article className={styles.scriptCard}>
+            <div className={styles.scriptHeader}><div><p>DEFAULT VOICEMAIL</p><span>Tailored for {current.industry.toLowerCase()}</span></div><button onClick={copyScript}><Clipboard size={15} /> Copy</button></div>
+            <blockquote>“{voicemail}”</blockquote>
+            <p className={styles.deliveryNote}><strong>Read it naturally.</strong> Pause after the question, then say the number slowly twice.</p>
+          </article>
+
+          <article className={styles.resultCard}>
+            <div className={styles.resultHeading}><div><p>LOG THE RESULT</p><h2>What happened?</h2></div><span>{record.outcome}</span></div>
+            <div className={styles.outcomes}>{outcomes.map((outcome) => <button key={outcome} className={record.outcome === outcome ? styles.selectedOutcome : ""} onClick={() => updateRecord({ outcome })}>{outcome}</button>)}</div>
+            <label className={styles.notes}>Notes<textarea value={record.notes} onChange={(event) => updateRecord({ notes: event.target.value })} placeholder="Name, callback time, correction, or next step…" /></label>
+            <div className={styles.resultActions}><button className={styles.clear} onClick={() => updateRecord({ outcome: "Not called", notes: "" })}>Clear</button><button className={styles.saveNext} onClick={saveVoicemailAndNext}>Mark voicemail & next <span>→</span></button></div>
+          </article>
+
+          <p className={styles.guardrail}>Manual outreach only. Ask eligible customers for honest reviews and follow healthcare, privacy, consent, and professional rules for each industry.</p>
+        </section>
+      </div>
+      {copied ? <div className={styles.toast}>Script copied</div> : null}
+    </main>
+  );
+}
