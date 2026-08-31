@@ -50,7 +50,7 @@ function telValue(phone: string) {
 
 function makeScript(industry: string, business: string) {
   const [moment, audience] = industryScripts[industry] ?? ["a customer interaction is completed", "the customer"];
-  return `Hi [Name], Sam Caruso with DaytonGrowthCo. Quick question: when ${moment}, does ${business} automatically ask ${audience} for a Google review, or does someone have to remember? I built a system that handles it automatically. Call or text me at 937-369-0829. Again, 937-369-0829.`;
+  return `Hi [Name], Sam Caruso with DaytonGrowthCo. Quick question: when ${moment}, does ${business} automatically ask ${audience} for a Google review, or does someone have to remember? I built a system that handles it automatically. The goal is 8 to 12 new reviews a month on autopilot, helping you win more business from people already finding you on Google without adding ad spend. Call or text me at 937-369-0829. Again, 937-369-0829.`;
 }
 
 export function ReviewCallCommandCenter() {
