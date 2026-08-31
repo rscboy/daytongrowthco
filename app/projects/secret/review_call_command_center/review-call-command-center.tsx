@@ -12,6 +12,8 @@ type Records = Record<number, RecordState>;
 
 const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Landline / no-go", "Wrong number", "Skip"];
 const storageKey = "dgc-secret-review-voicemail-command-center-v1";
+const directoryVersionKey = "dgc-secret-review-voicemail-directory-version";
+const directoryVersion = 2;
 const recordsEndpoint = "/projects/secret/review_call_command_center/api";
 const validOutcomes = new Set<Outcome>(["Not called", ...outcomes]);
 
@@ -95,7 +97,7 @@ export function ReviewCallCommandCenter() {
         const response = await fetch(recordsEndpoint, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ records: recordsRef.current }),
+          body: JSON.stringify({ records: recordsRef.current, directoryVersion }),
         });
         if (!response.ok) throw new Error(`Sync failed with ${response.status}`);
         const payload = await response.json() as { records?: unknown };
@@ -117,6 +119,10 @@ export function ReviewCallCommandCenter() {
     try {
       const saved = window.localStorage.getItem(storageKey);
       if (saved) local = normalizeRecords(JSON.parse(saved));
+      if (Number(window.localStorage.getItem(directoryVersionKey) || 1) < directoryVersion) {
+        for (let id = 1001; id <= 1100; id += 1) delete local[id];
+        window.localStorage.setItem(directoryVersionKey, String(directoryVersion));
+      }
     } catch {
       window.localStorage.removeItem(storageKey);
     }

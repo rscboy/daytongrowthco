@@ -124,8 +124,11 @@ export async function PUT(request: Request) {
 
   let incoming: Record<string, StoredRecord>;
   try {
-    const body = await request.json() as { records?: unknown };
+    const body = await request.json() as { records?: unknown; directoryVersion?: number };
     incoming = normalizeRecords(body.records);
+    if (body.directoryVersion !== currentDirectoryVersion) {
+      for (let id = 1001; id <= 1100; id += 1) delete incoming[String(id)];
+    }
   } catch {
     return noStoreJson({ error: "Invalid request" }, 400);
   }
