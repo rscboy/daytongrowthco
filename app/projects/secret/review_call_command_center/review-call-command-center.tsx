@@ -225,7 +225,10 @@ export function ReviewCallCommandCenter() {
         </aside>
 
         <section className={styles.workspace}>
-          <div className={styles.kicker}><span>VOICEMAIL {current.id} OF {prospects.length}</span><span>{current.industry}</span></div>
+          <div className={styles.kicker}>
+            <span>VOICEMAIL {current.id} OF {prospects.length}</span>
+            <div className={styles.kickerActions}><span>{current.industry}</span><button onClick={saveVoicemailAndNext}>Voicemail left · Next <span>→</span></button></div>
+          </div>
           <article className={styles.prospectCard}>
             <div className={styles.prospectTitle}><div><p>{current.cityArea} · Priority {current.priority}</p><h1>{current.business}</h1></div><span className={`${styles.confidence} ${styles[`confidence${current.confidence}`]}`}>{current.confidence} confidence</span></div>
             <div className={styles.phoneBlock}>
