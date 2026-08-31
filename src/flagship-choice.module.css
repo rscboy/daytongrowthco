@@ -205,9 +205,9 @@
   color: #96c0dc;
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.02em;
   line-height: 1.3;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .offerDetail h3 {
@@ -309,10 +309,36 @@
   .intro { margin-bottom: 1.75rem; padding-top: 0.85rem; }
   .intro h2 { font-size: clamp(2.2rem, 10.5vw, 2.75rem); line-height: 1.02; }
   .intro p { font-size: 1rem; line-height: 1.55; }
-  .choice { min-height: 5.25rem; padding: 0.85rem; gap: 0.6rem; font-size: 0.84rem; }
+  .selector {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14));
+    border-radius: var(--dgc-radius-md, 10px);
+  }
+  .choice {
+    min-height: 3.85rem;
+    padding: 0.65rem 0.8rem;
+    gap: 0.7rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14));
+    font-size: 0.9rem;
+  }
+  .choice:nth-child(2),
+  .choice:nth-child(3) { border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14)); }
+  .choice:last-child { border-bottom: 0; }
+  .choice::after {
+    top: 0.55rem;
+    right: auto;
+    bottom: 0.55rem;
+    left: -1px;
+    width: 3px;
+    height: auto;
+    transform: scaleY(0);
+  }
+  .choice[aria-pressed="true"]::after { transform: scaleY(1); }
   .choiceIcon { width: 2.2rem; height: 2.2rem; }
-  .choiceArrow { display: none; }
-  .resultGrid { margin-top: 2.5rem; }
+  .choiceArrow { display: block; }
+  .resultGrid { margin-top: 2rem; }
   .pathVisual { min-height: 6rem; grid-template-columns: auto minmax(1rem,1fr) auto minmax(1rem,1fr) auto; font-size: 0.66rem; }
   .pathVisual > span:first-child,
   .pathVisual > span:last-child { max-width: 4.4rem; }

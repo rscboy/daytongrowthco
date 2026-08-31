@@ -855,7 +855,7 @@ html body main#main-content.homepage > .hero-section .hero-media[data-ready="tru
   html body main#main-content.homepage > .hero-section .hero-proof {
     display: block !important;
     width: 100% !important;
-    max-width: 27rem !important;
+    max-width: 26.25rem !important;
     align-self: center !important;
     justify-self: end !important;
   }
@@ -897,6 +897,135 @@ html body main#main-content.homepage > .hero-section .hero-media[data-ready="tru
 .form-submit[data-state="sent"] .form-submit-check {
   opacity: 1;
   transform: scale(1);
+}
+
+/* The homepage inquiry starts with the work, then asks for contact details. */
+main#main-content.homepage > .home-inquiry-repair.final-cta {
+  scroll-margin-top: 0;
+}
+
+main#main-content.homepage .home-inquiry-form .project-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .9rem !important;
+}
+
+main#main-content.homepage .home-inquiry-form .form-step-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid rgba(32, 35, 31, .13);
+}
+
+main#main-content.homepage .home-inquiry-form .form-step-status span {
+  color: #6b716b;
+  font-size: .72rem;
+  font-weight: 680;
+}
+
+main#main-content.homepage .home-inquiry-form .form-step-status strong {
+  color: #242925;
+  font-size: .82rem;
+  font-weight: 720;
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage {
+  display: grid;
+  min-width: 0;
+  gap: .85rem 1rem;
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage[hidden] {
+  display: none !important;
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage-two :is(.turnstile-field, .form-stage-actions, .form-cta-trust, .form-privacy-link, .form-status) {
+  grid-column: 1 / -1 !important;
+}
+
+main#main-content.homepage .home-inquiry-form .project-details-field textarea {
+  min-height: 5.25rem !important;
+}
+
+main#main-content.homepage .home-inquiry-form :is(.form-continue, .form-submit) {
+  width: 100%;
+  min-height: 3.25rem !important;
+  margin: .1rem 0 0 !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  background: #20231f !important;
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage-actions {
+  display: grid;
+  grid-template-columns: auto minmax(12rem, 1fr);
+  gap: .75rem;
+  align-items: center;
+}
+
+main#main-content.homepage .home-inquiry-form .form-stage-actions .form-submit {
+  grid-column: auto !important;
+  margin: 0 !important;
+}
+
+body main#main-content.homepage > .home-inquiry-repair.final-cta .home-inquiry-form .form-stage-actions .form-submit {
+  grid-column: auto !important;
+}
+
+main#main-content.homepage .home-inquiry-form .form-back {
+  min-height: 3.25rem;
+  padding-inline: 1rem;
+  color: #4d5650;
+  border: 1px solid #cbd0c8;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font: 680 .85rem/1 var(--font-ui), sans-serif;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+main#main-content.homepage .home-inquiry-form .form-back:is(:hover, :focus-visible) {
+  border-color: #8f9991;
+  background: rgba(32, 35, 31, .05);
+}
+
+.quick-answers {
+  opacity: 1;
+  transition: opacity 180ms ease, transform 220ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.quick-answers.is-suppressed {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(.65rem);
+}
+
+@media (max-width: 43.75rem) {
+  body main#main-content.homepage > .home-inquiry-repair.final-cta {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  main#main-content.homepage .home-inquiry-form .form-stage-two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  main#main-content.homepage .home-inquiry-form .form-stage-two :is(.turnstile-field, .form-stage-actions, .form-cta-trust, .form-privacy-link, .form-status) {
+    grid-column: 1 !important;
+  }
+
+  main#main-content.homepage .home-inquiry-form .form-stage-actions {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

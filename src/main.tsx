@@ -2042,20 +2042,28 @@ const heroRoiProducts = {
     windowTitle: "website-migration · ROI",
     title: "Move your site without keeping the platform bill.",
     description: "Compare the cost of continuing to rent your website with moving it into a self-owned setup.",
+    href: "/website/",
+    action: "Explore website migration",
   },
   "better-quote": {
     tab: "Better Quote Program",
     windowTitle: "better-quote · ROI",
     title: "Have an expensive quote? Let us shop it.",
     description: "Model the potential return after The Better Quote Program™ success fee is applied.",
+    href: "/quote/start/",
+    action: "Check my quote",
   },
   "review-growth": {
     tab: "Review growth",
     windowTitle: "review-growth · ROI",
     title: "Make every eligible completed job a review opportunity.",
     description: "Model the cost and value of a consistent Google review request using your own assumptions.",
+    href: "/google-reviews/book-call/",
+    action: "Review the program",
   },
 } as const;
+
+const heroRoiProductKeys = Object.keys(heroRoiProducts) as HeroRoiProduct[];
 
 function formatCompactCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -2072,11 +2080,17 @@ function betterQuoteProgramFee(savings: number) {
   return 500 + (savings - 2500) * 0.1;
 }
 
+function roiRangeStyle(value: number, min: number, max: number) {
+  const progress = ((value - min) / (max - min)) * 100;
+  return { "--roi-range-progress": `${Math.max(0, Math.min(100, progress))}%` } as React.CSSProperties;
+}
+
 function HeroRoiCalculator() {
+  const reduceMotion = useReducedMotion();
   const [activeProduct, setActiveProduct] = useState<HeroRoiProduct>("website-migration");
   const [inputs, setInputs] = useState(() => ({
     "website-migration": {
-      platformMonthly: 99,
+      platformMonthly: 100,
       migrationCost: websiteMigrationPricing.standardMigration,
       years: 5,
     },
@@ -2091,6 +2105,7 @@ function HeroRoiCalculator() {
     },
   }));
   const product = heroRoiProducts[activeProduct];
+  const activeProductIndex = heroRoiProductKeys.indexOf(activeProduct);
   const migrationInputs = inputs["website-migration"];
   const quoteInputs = inputs["better-quote"];
   const ownedDomainCost = migrationInputs.years * 15;
@@ -2155,15 +2170,14 @@ function HeroRoiCalculator() {
   const selectProductFromKeyboard = (event: React.KeyboardEvent<HTMLButtonElement>, key: HeroRoiProduct) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
-    const productKeys = Object.keys(heroRoiProducts) as HeroRoiProduct[];
-    const currentIndex = productKeys.indexOf(key);
+    const currentIndex = heroRoiProductKeys.indexOf(key);
     const nextKey: HeroRoiProduct = event.key === "Home"
-      ? productKeys[0]
+      ? heroRoiProductKeys[0]
       : event.key === "End"
-        ? productKeys[productKeys.length - 1]
+        ? heroRoiProductKeys[heroRoiProductKeys.length - 1]
         : event.key === "ArrowRight"
-          ? productKeys[(currentIndex + 1) % productKeys.length]
-          : productKeys[(currentIndex - 1 + productKeys.length) % productKeys.length];
+          ? heroRoiProductKeys[(currentIndex + 1) % heroRoiProductKeys.length]
+          : heroRoiProductKeys[(currentIndex - 1 + heroRoiProductKeys.length) % heroRoiProductKeys.length];
     setActiveProduct(nextKey);
     requestAnimationFrame(() => document.getElementById(`hero-roi-tab-${nextKey}`)?.focus());
   };
@@ -2181,7 +2195,12 @@ function HeroRoiCalculator() {
       </div>
 
       <div className="hero-roi-tabs" role="tablist" aria-label="Choose a program to estimate">
-        {(Object.keys(heroRoiProducts) as HeroRoiProduct[]).map((key) => (
+        <span
+          className="hero-roi-tab-indicator"
+          style={{ transform: `translateX(${activeProductIndex * 100}%)` }}
+          aria-hidden="true"
+        />
+        {heroRoiProductKeys.map((key) => (
           <button
             type="button"
             role="tab"
@@ -2214,56 +2233,59 @@ function HeroRoiCalculator() {
           <div className="hero-roi-controls">
             <label className="hero-roi-control">
               <span><b>Current website platform / month</b><output>{formatCompactCurrency(migrationInputs.platformMonthly)}</output></span>
-              <input type="range" min="25" max="500" step="5" value={migrationInputs.platformMonthly} onInput={(event) => updateMigrationValue("platformMonthly", Number(event.currentTarget.value))} />
+              <input type="range" min="25" max="500" step="5" value={migrationInputs.platformMonthly} style={roiRangeStyle(migrationInputs.platformMonthly, 25, 500)} onInput={(event) => updateMigrationValue("platformMonthly", Number(event.currentTarget.value))} />
             </label>
             <label className="hero-roi-control">
               <span><b>Migration investment</b><output>{formatCompactCurrency(migrationInputs.migrationCost)}</output></span>
-              <input type="range" min="1500" max="3000" step="500" value={migrationInputs.migrationCost} onInput={(event) => updateMigrationValue("migrationCost", Number(event.currentTarget.value))} />
+              <input type="range" min="1500" max="3000" step="500" value={migrationInputs.migrationCost} style={roiRangeStyle(migrationInputs.migrationCost, 1500, 3000)} onInput={(event) => updateMigrationValue("migrationCost", Number(event.currentTarget.value))} />
             </label>
             <label className="hero-roi-control">
               <span><b>Years to compare</b><output>{migrationInputs.years} years</output></span>
-              <input type="range" min="1" max="7" step="1" value={migrationInputs.years} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
+              <input type="range" min="1" max="7" step="1" value={migrationInputs.years} style={roiRangeStyle(migrationInputs.years, 1, 7)} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
             </label>
           </div>
         ) : activeProduct === "better-quote" ? (
           <div className="hero-roi-controls hero-roi-controls-compact">
             <label className="hero-roi-control">
               <span><b>Current written quote</b><output>{formatCompactCurrency(quoteInputs.quoteValue)}</output></span>
-              <input type="range" min="1000" max="50000" step="500" value={quoteInputs.quoteValue} onInput={(event) => updateQuoteValue("quoteValue", Number(event.currentTarget.value))} />
+              <input type="range" min="1000" max="50000" step="500" value={quoteInputs.quoteValue} style={roiRangeStyle(quoteInputs.quoteValue, 1000, 50000)} onInput={(event) => updateQuoteValue("quoteValue", Number(event.currentTarget.value))} />
             </label>
             <label className="hero-roi-control">
               <span><b>Qualifying savings found</b><output>{quoteInputs.savingsRate}%</output></span>
-              <input type="range" min="2" max="40" step="1" value={quoteInputs.savingsRate} onInput={(event) => updateQuoteValue("savingsRate", Number(event.currentTarget.value))} />
+              <input type="range" min="2" max="40" step="1" value={quoteInputs.savingsRate} style={roiRangeStyle(quoteInputs.savingsRate, 2, 40)} onInput={(event) => updateQuoteValue("savingsRate", Number(event.currentTarget.value))} />
             </label>
           </div>
         ) : (
           <div className="hero-roi-controls">
             <label className="hero-roi-control">
               <span><b>Eligible residential jobs each month</b><output>{reviewInputs.eligibleJobs}</output></span>
-              <input type="range" min="25" max="500" step="25" value={reviewInputs.eligibleJobs} onInput={(event) => updateReviewValue("eligibleJobs", Number(event.currentTarget.value))} />
+              <input type="range" min="25" max="500" step="25" value={reviewInputs.eligibleJobs} style={roiRangeStyle(reviewInputs.eligibleJobs, 25, 500)} onInput={(event) => updateReviewValue("eligibleJobs", Number(event.currentTarget.value))} />
             </label>
             <label className="hero-roi-control">
               <span><b>Published-review response rate</b><output>{reviewInputs.responseRate}%</output></span>
-              <input type="range" min="1" max="25" step="1" value={reviewInputs.responseRate} onInput={(event) => updateReviewValue("responseRate", Number(event.currentTarget.value))} />
+              <input type="range" min="1" max="25" step="1" value={reviewInputs.responseRate} style={roiRangeStyle(reviewInputs.responseRate, 1, 25)} onInput={(event) => updateReviewValue("responseRate", Number(event.currentTarget.value))} />
             </label>
             <label className="hero-roi-control">
               <span><b>Your value for one new review</b><output>{formatCompactCurrency(reviewInputs.valuePerReview)}</output></span>
-              <input type="range" min="0" max="500" step="25" value={reviewInputs.valuePerReview} onInput={(event) => updateReviewValue("valuePerReview", Number(event.currentTarget.value))} />
+              <input type="range" min="0" max="500" step="25" value={reviewInputs.valuePerReview} style={roiRangeStyle(reviewInputs.valuePerReview, 0, 500)} onInput={(event) => updateReviewValue("valuePerReview", Number(event.currentTarget.value))} />
             </label>
           </div>
         )}
 
         <div className="hero-roi-results" aria-live="polite" aria-atomic="true">
-          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><strong>{result.value}</strong></div>)}
+          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><motion.strong key={`${activeProduct}-${result.value}`} initial={reduceMotion ? false : { opacity: 0.55, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}>{result.value}</motion.strong></div>)}
         </div>
 
-        <p className="hero-roi-note">
-          {activeProduct === "website-migration"
-            ? "Illustrative estimate assumes about $15/year for a domain. Scope and pricing are confirmed in writing."
-            : activeProduct === "better-quote"
-              ? "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."
-              : "This is an illustrative model using your own value assumption. The 20-review guarantee applies only to qualifying HVAC companies after full production launch. No revenue, lead, rating, or ranking result is promised."}
-        </p>
+        <div className="hero-roi-foot">
+          <p className="hero-roi-note">
+            {activeProduct === "website-migration"
+              ? "Illustrative estimate assumes about $15/year for a domain. Scope and pricing are confirmed in writing."
+              : activeProduct === "better-quote"
+                ? "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."
+                : "Illustrative model using your assumptions. No revenue, lead, rating, or ranking result is promised."}
+          </p>
+          <Link className="hero-roi-action" href={product.href}>{product.action} <ArrowRight size={13} aria-hidden="true" /></Link>
+        </div>
       </div>
     </div>
   );
@@ -3154,6 +3176,7 @@ function ProjectForm({ className = "" }: { className?: string }) {
   const [business, setBusiness] = useState(profile?.business ?? "");
   const [email, setEmail] = useState(profile?.email ?? "");
   const [details, setDetails] = useState("");
+  const [formStep, setFormStep] = useState<0 | 1>(0);
   const nameEdited = useRef(false);
   const businessEdited = useRef(false);
   const emailEdited = useRef(false);
@@ -3204,6 +3227,48 @@ function ProjectForm({ className = "" }: { className?: string }) {
 
   const detailsPlaceholder = "Estimates, follow-ups, scheduling, website updates...";
 
+  const continueToContact = () => {
+    const checks = [
+      {
+        control: document.getElementById("email") as HTMLInputElement | null,
+        error: document.getElementById("email-error"),
+        empty: "Enter your email so we can send you next steps.",
+        invalid: "Enter a valid email address, like name@company.com.",
+      },
+      {
+        control: document.getElementById("details") as HTMLTextAreaElement | null,
+        error: document.getElementById("details-error"),
+        empty: "Tell us the workflow you want to fix, even one line helps.",
+      },
+    ];
+    let firstInvalid: HTMLInputElement | HTMLTextAreaElement | null = null;
+
+    for (const { control, error, empty, invalid } of checks) {
+      if (!control) continue;
+      const message = control.validity.valid
+        ? ""
+        : control.validity.valueMissing
+          ? empty
+          : invalid ?? empty;
+      if (message) {
+        control.setAttribute("aria-invalid", "true");
+        if (error) error.textContent = message;
+        if (!firstInvalid) firstInvalid = control;
+      } else {
+        control.removeAttribute("aria-invalid");
+        if (error) error.textContent = "";
+      }
+    }
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      return;
+    }
+
+    setFormStep(1);
+    window.requestAnimationFrame(() => document.getElementById("contactName")?.focus());
+  };
+
   return (
     <div className={`form-card ${className}`.trim()}>
       <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
@@ -3213,84 +3278,99 @@ function ProjectForm({ className = "" }: { className?: string }) {
         <input type="hidden" name="selectedWorkflow" value={selectedWorkflow?.label ?? "Not selected"} readOnly />
         <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow?.build ?? "Discuss the right first product"} readOnly />
 
-        <label className="form-field" htmlFor="contactName">
-          <span>Name *</span>
-          <input
-            id="contactName"
-            name="yourName"
-            type="text"
-            autoComplete="name"
-            placeholder="Marcus Reed"
-            value={name}
-            onChange={(event) => {
-              nameEdited.current = true;
-              setName(event.target.value);
-            }}
-            aria-describedby="contactName-error"
-            required
-          />
-          <small className="field-error" id="contactName-error" role="alert" />
-        </label>
-        <label className="form-field" htmlFor="businessName">
-          <span>Business</span>
-          <input
-            id="businessName"
-            name="businessName"
-            type="text"
-            autoComplete="organization"
-            placeholder="Dayton Roofing"
-            value={business}
-            onChange={(event) => {
-              businessEdited.current = true;
-              setBusiness(event.target.value);
-            }}
-          />
-        </label>
-        <label className="form-field email-form-field" htmlFor="email">
-          <span>Email *</span>
-          <div className="favicon-field">
-            <input
-              id="email"
-              name="emailAddress"
-              type="email"
-              autoComplete="email"
-              placeholder="marcus@company.com"
-              value={email}
-              onChange={(event) => {
-                emailEdited.current = true;
-                setEmail(event.target.value);
-              }}
-              aria-describedby="email-error"
+        <div className="form-step-status" aria-live="polite">
+          <span>Step {formStep + 1} of 2</span>
+          <strong>{formStep === 0 ? "Describe the work" : "Where should we reply?"}</strong>
+        </div>
+
+        <div className="form-stage form-stage-one" hidden={formStep !== 0}>
+          <label className="form-field email-form-field" htmlFor="email">
+            <span>Email *</span>
+            <div className="favicon-field">
+              <input
+                id="email"
+                name="emailAddress"
+                type="email"
+                autoComplete="email"
+                placeholder="marcus@company.com"
+                value={email}
+                onChange={(event) => {
+                  emailEdited.current = true;
+                  setEmail(event.target.value);
+                }}
+                aria-describedby="email-error"
+                required
+              />
+              {faviconDomain ? <BusinessFavicon domain={faviconDomain} className="field-favicon" /> : null}
+            </div>
+            <small className="field-error" id="email-error" role="alert" />
+          </label>
+          <label className="form-field full project-details-field" htmlFor="details">
+            <span>What’s taking too long? *</span>
+            <textarea
+              id="details"
+              name="notes"
+              rows={3}
+              placeholder={detailsPlaceholder}
+              value={details}
+              onChange={(event) => setDetails(event.target.value)}
+              aria-describedby="details-error"
               required
             />
-            {faviconDomain ? <BusinessFavicon domain={faviconDomain} className="field-favicon" /> : null}
-          </div>
-          <small className="field-error" id="email-error" role="alert" />
-        </label>
-        <label className="form-field full project-details-field" htmlFor="details">
-          <span>What’s taking too long? *</span>
-          <textarea
-            id="details"
-            name="notes"
-            rows={4}
-            placeholder={detailsPlaceholder}
-            value={details}
-            onChange={(event) => setDetails(event.target.value)}
-            aria-describedby="details-error"
-            required
-          />
-          <small className="field-error" id="details-error" role="alert" />
-        </label>
-        <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
+            <small className="field-error" id="details-error" role="alert" />
+          </label>
+          <button type="button" className="button button-primary large form-continue" onClick={continueToContact}>
+            Continue <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
 
-        <button type="submit" className="button button-primary large form-submit">
-          <span className="form-submit-label">Send request</span>
-          <ArrowRight className="form-submit-arrow" size={16} aria-hidden="true" />
-          <Check className="form-submit-check" size={16} strokeWidth={2.5} aria-hidden="true" />
-        </button>
-        <p className="cta-trust form-cta-trust">Reply within 1 business day · No obligation</p>
-        <a className="form-privacy-link" href="/privacy-policy/">Privacy policy</a>
-        <div id="auditStatus" aria-live="assertive" className="form-status" />
+        <div className="form-stage form-stage-two" hidden={formStep !== 1}>
+          <label className="form-field" htmlFor="contactName">
+            <span>Name *</span>
+            <input
+              id="contactName"
+              name="yourName"
+              type="text"
+              autoComplete="name"
+              placeholder="Marcus Reed"
+              value={name}
+              onChange={(event) => {
+                nameEdited.current = true;
+                setName(event.target.value);
+              }}
+              aria-describedby="contactName-error"
+              required
+            />
+            <small className="field-error" id="contactName-error" role="alert" />
+          </label>
+          <label className="form-field" htmlFor="businessName">
+            <span>Business</span>
+            <input
+              id="businessName"
+              name="businessName"
+              type="text"
+              autoComplete="organization"
+              placeholder="Dayton Roofing"
+              value={business}
+              onChange={(event) => {
+                businessEdited.current = true;
+                setBusiness(event.target.value);
+              }}
+            />
+          </label>
+          <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
+          <div className="form-stage-actions">
+            <button type="button" className="form-back" onClick={() => setFormStep(0)}>Back</button>
+            <button type="submit" className="button button-primary large form-submit">
+              <span className="form-submit-label">Send request</span>
+              <ArrowRight className="form-submit-arrow" size={16} aria-hidden="true" />
+              <Check className="form-submit-check" size={16} strokeWidth={2.5} aria-hidden="true" />
+            </button>
+          </div>
+          <p className="cta-trust form-cta-trust">Reply within 1 business day · No obligation</p>
+          <a className="form-privacy-link" href="/privacy-policy/">Privacy policy</a>
+          <div id="auditStatus" aria-live="assertive" className="form-status" />
+        </div>
       </form>
       <dialog
         id="formSuccessDialog"
@@ -3323,10 +3403,26 @@ function ProjectForm({ className = "" }: { className?: string }) {
 }
 
 function FinalCTA() {
+  const reduceMotion = useReducedMotion();
   const { profile } = usePersonalization();
   const [isVideoPaused, setIsVideoPaused] = useState(false);
   const firstName = firstNameOf(profile?.name ?? "");
   const business = profile?.business?.trim();
+
+  useEffect(() => {
+    const alignCta = () => {
+      if (window.location.hash !== "#cta") return;
+      window.requestAnimationFrame(() => {
+        document.getElementById("cta")?.scrollIntoView({
+          block: "start",
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      });
+    };
+    alignCta();
+    window.addEventListener("hashchange", alignCta);
+    return () => window.removeEventListener("hashchange", alignCta);
+  }, [reduceMotion]);
   return (
     <section id="cta" className="final-cta home-inquiry-repair">
       <BackgroundVideo className="home-inquiry-video" poster={videos.form.poster} stream={videos.form.stream} preload="metadata" paused={isVideoPaused} />
@@ -6073,7 +6169,6 @@ function BuiltForStrip() {
                 transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
               >
                 <strong>{activeClient.name}</strong>
-                <span>{activeClient.project}</span>
                 <p>{activeClient.outcome}</p>
                 <Link
                   className={clientProofStyles.detailLink}
@@ -6344,7 +6439,6 @@ function BetterQuotePreview() {
     <section className={`${homepageClarityStyles.quoteSection} homepage-component`} aria-labelledby="home-quote-preview-title">
       <div className={homepageClarityStyles.quoteShell}>
         <header className={homepageClarityStyles.quoteCopy}>
-          <span className={homepageClarityStyles.eyebrow}>Better Quote example</span>
           <h2 id="home-quote-preview-title">See the decision, not another wall of numbers.</h2>
           <p>A real person reviews comparable written quotes. This example shows how the published fee would affect a qualifying comparison.</p>
           <a className={homepageClarityStyles.primaryLink} href="/quote/start/">
@@ -6352,60 +6446,82 @@ function BetterQuotePreview() {
           </a>
         </header>
 
-        <div
-          ref={visualRef}
-          className={homepageClarityStyles.quoteVisual}
-          data-visible={visualVisible ? "true" : "false"}
-          aria-label="Illustrative quote comparison"
-        >
-          <div className={homepageClarityStyles.quoteBarRow}>
-            <span>Current quote</span>
-            <div><i style={{ inlineSize: "100%" }} /></div>
-            <strong>{formatCompactCurrency(currentQuote)}</strong>
+        <div className={homepageClarityStyles.quoteVisualColumn}>
+          <div
+            ref={visualRef}
+            className={homepageClarityStyles.quoteVisual}
+            data-visible={visualVisible ? "true" : "false"}
+            aria-label="Illustrative quote comparison"
+          >
+            <div className={homepageClarityStyles.quoteBarRow}>
+              <span>Current quote</span>
+              <div><i style={{ inlineSize: "100%" }} /></div>
+              <strong>{formatCompactCurrency(currentQuote)}</strong>
+            </div>
+            <div className={homepageClarityStyles.quoteBarRow}>
+              <span>Comparable lower quote</span>
+              <div><i style={{ inlineSize: "70%" }} /></div>
+              <strong>{formatCompactCurrency(comparisonQuote)}</strong>
+            </div>
+            <div className={homepageClarityStyles.quoteResult}>
+              <span>Estimated net savings after the program fee</span>
+              <strong>{formatCompactCurrency(estimatedNetSavings)}</strong>
+            </div>
+            <p>Illustrative only. Quotes must be legitimate and comparable. Savings are not guaranteed.</p>
           </div>
-          <div className={homepageClarityStyles.quoteBarRow}>
-            <span>Comparable lower quote</span>
-            <div><i style={{ inlineSize: "70%" }} /></div>
-            <strong>{formatCompactCurrency(comparisonQuote)}</strong>
-          </div>
-          <div className={homepageClarityStyles.quoteResult}>
-            <span>Estimated net savings after the program fee</span>
-            <strong>{formatCompactCurrency(estimatedNetSavings)}</strong>
-          </div>
-          <p>Illustrative only. Quotes must be legitimate and comparable. Savings are not guaranteed.</p>
+
+          <details
+            className={homepageClarityStyles.calculatorDisclosure}
+            onToggle={(event) => setCalculatorOpen(event.currentTarget.open)}
+          >
+            <summary>Use the interactive savings calculator</summary>
+            {calculatorOpen ? <BetterQuoteSavingsCalculator /> : null}
+          </details>
         </div>
       </div>
-
-      <details
-        className={homepageClarityStyles.calculatorDisclosure}
-        onToggle={(event) => setCalculatorOpen(event.currentTarget.open)}
-      >
-        <summary>Use the interactive savings calculator</summary>
-        {calculatorOpen ? <BetterQuoteSavingsCalculator /> : null}
-      </details>
     </section>
   );
 }
 
 function HowWeWork() {
+  const reduceMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
+  const [processVisible, setProcessVisible] = useState(false);
+  const processRef = useRef<HTMLOListElement>(null);
   const steps = [
     { title: "Map the work", text: "We find the handoffs, follow-ups, and bottlenecks worth fixing first." },
     { title: "Build the right system", text: "We configure the tools, rules, and connections around the way your team actually works." },
     { title: "Stay close after launch", text: "We test, refine, and remain available when the work changes." },
   ];
 
+  useEffect(() => {
+    const diagram = processRef.current;
+    if (!diagram) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setProcessVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setProcessVisible(true);
+      observer.disconnect();
+    }, { threshold: 0.24, rootMargin: "0px 0px -8% 0px" });
+    observer.observe(diagram);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
   return (
     <section className={`${homepageClarityStyles.processSection} homepage-component`} aria-labelledby="homepage-process-title">
       <div className={homepageClarityStyles.processShell}>
         <div className={homepageClarityStyles.processCopy}>
-          <span className={homepageClarityStyles.eyebrow}>How the work moves</span>
           <h2 id="homepage-process-title">Technology that fits the work.</h2>
           <p>One operating problem. One useful system. A clear handoff at every step.</p>
         </div>
         <ol
+          ref={processRef}
           className={homepageClarityStyles.processDiagram}
           aria-label="How DaytonGrowthCo works with a team"
+          data-visible={processVisible ? "true" : "false"}
           style={{ "--process-progress": activeStep / Math.max(steps.length - 1, 1) } as React.CSSProperties}
         >
           {steps.map((step, index) => (
@@ -6458,7 +6574,6 @@ function HomeFaq() {
     <section className={`${homepageClarityStyles.faqSection} homepage-component`} aria-labelledby="home-faq-title">
       <div className={homepageClarityStyles.faqShell}>
         <div className={homepageClarityStyles.faqIntro}>
-          <span className={homepageClarityStyles.eyebrow}>Before we talk</span>
           <h2 id="home-faq-title">
             Questions, answered plainly.
           </h2>
@@ -6748,6 +6863,7 @@ const assistantFaqs = [
 
 function QuickAnswers() {
   const [open, setOpen] = useState(false);
+  const [suppressed, setSuppressed] = useState(false);
   const [query, setQuery] = useState("");
   const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
@@ -6759,6 +6875,17 @@ function QuickAnswers() {
   const matches = assistantFaqs.filter(([question]) => question.toLowerCase().includes(query.trim().toLowerCase()));
 
   useEffect(() => () => { if (timeoutRef.current) window.clearTimeout(timeoutRef.current); }, []);
+
+  useEffect(() => {
+    const cta = document.getElementById("cta");
+    if (!cta || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setSuppressed(entry.isIntersecting);
+      if (entry.isIntersecting) setOpen(false);
+    }, { threshold: 0.08, rootMargin: "0px 0px -10% 0px" });
+    observer.observe(cta);
+    return () => observer.disconnect();
+  }, []);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -6788,7 +6915,7 @@ function QuickAnswers() {
   };
 
   return (
-    <aside className={`quick-answers ${open ? "is-open" : ""}`} aria-label="Quick answers">
+    <aside className={`quick-answers ${open ? "is-open" : ""} ${suppressed ? "is-suppressed" : ""}`} aria-label="Quick answers">
       {open ? (
         <div id="quickAnswersPanel" className="quick-answers-panel" role="dialog" aria-modal="false" aria-label="Answers to common questions">
           <div className="quick-answers-head">
