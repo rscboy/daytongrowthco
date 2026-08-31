@@ -138,12 +138,22 @@
   margin-top: clamp(2.25rem, 5vw, 4.5rem);
   grid-template-columns: minmax(18rem, 0.85fr) minmax(0, 1.15fr);
   gap: clamp(3rem, 8vw, 8rem);
-  align-items: center;
+  align-items: start;
 }
 
 .calculatorStage {
+  width: 100%;
+  margin: 0;
+  align-self: start;
+}
+
+.resultGridWithoutCalculator {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.resultGridWithoutCalculator .detailViewport {
   width: min(100%, 42rem);
-  margin: clamp(1.5rem, 3vw, 2.5rem) 0 0 auto;
+  margin-left: auto;
 }
 
 .calculatorStage :global(.program-roi-card) {
@@ -151,86 +161,47 @@
 }
 
 .calculatorStage :global(.hero-roi-panel) {
-  padding: clamp(1.35rem, 2.4vw, 1.8rem);
+  padding: clamp(1rem, 1.8vw, 1.3rem);
+}
+
+.calculatorStage :global(.hero-roi-windowbar) {
+  min-height: 2.7rem;
+  padding-inline: 0.85rem;
 }
 
 .calculatorStage :global(.hero-roi-copy h3) {
-  font-size: clamp(1.3rem, 2.15vw, 1.65rem);
+  font-size: clamp(1.15rem, 1.65vw, 1.4rem);
 }
 
 .calculatorStage :global(.hero-roi-copy p) {
   max-width: 54ch;
-  font-size: 0.86rem;
+  font-size: 0.76rem;
 }
 
 .calculatorStage :global(.hero-roi-control > span) {
-  font-size: 0.78rem;
-}
-
-.calculatorStage :global(.hero-roi-control output) {
-  font-size: 0.88rem;
-}
-
-.calculatorStage :global(.hero-roi-results span) {
   font-size: 0.7rem;
 }
 
+.calculatorStage :global(.hero-roi-control output) {
+  font-size: 0.8rem;
+}
+
+.calculatorStage :global(.hero-roi-results span) {
+  font-size: 0.62rem;
+}
+
 .calculatorStage :global(.hero-roi-results strong) {
-  font-size: 1.04rem;
+  font-size: 0.92rem;
 }
 
 .calculatorStage :global(.hero-roi-primary-result strong) {
-  font-size: 1.28rem;
+  font-size: 1.12rem;
 }
 
 .calculatorStage :global(.hero-roi-note),
 .calculatorStage :global(.hero-roi-action) {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
 }
-
-.pathVisual {
-  display: grid;
-  min-height: 16rem;
-  grid-template-columns: auto minmax(2.5rem, 1fr) auto minmax(2.5rem, 1fr) auto;
-  align-items: center;
-  color: rgba(228, 236, 241, 0.58);
-  font-size: 0.76rem;
-  font-weight: 680;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.pathVisual > span:first-child,
-.pathVisual > span:last-child { max-width: 7rem; }
-.pathVisual > span:last-child { color: #dcebf4; text-align: end; }
-
-.pathLine {
-  position: relative;
-  height: 1px;
-  overflow: hidden;
-  background: rgba(255,255,255,.15);
-}
-
-.pathLine i {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, #7eb0d3, transparent);
-  transform: translateX(-100%);
-}
-
-.pathNode {
-  display: grid;
-  width: 4.75rem;
-  height: 4.75rem;
-  place-items: center;
-  color: #d9edf9;
-  border: 1px solid rgba(139, 193, 229, 0.32);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(79,130,168,.28), rgba(79,130,168,.08));
-  box-shadow: 0 0 0 0.75rem rgba(79, 130, 168, 0.05);
-}
-
-.pathNode svg { stroke-width: 1.55; }
 
 .detailViewport {
   min-height: 21rem;
@@ -316,19 +287,6 @@
     animation: destination-handoff var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both;
   }
 
-  .pathLine i { animation: path-signal var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both; }
-  .pathLine:nth-child(4) i { animation-delay: 70ms; }
-  .pathNode { animation: path-node-settle var(--dgc-duration-marketing, 420ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)) both; }
-}
-
-@keyframes path-signal {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-@keyframes path-node-settle {
-  from { opacity: 0.55; transform: scale(0.94); }
-  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes destination-handoff {
@@ -347,7 +305,6 @@
   .choice:nth-child(-n+2) { border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14)); }
   .resultGrid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .calculatorStage { width: min(100%, 44rem); margin-left: 0; }
-  .pathVisual { min-height: 7rem; }
   .detailViewport { min-height: 0; }
   .offerDetail { min-height: 15rem; }
 }
@@ -387,18 +344,14 @@
   .choiceIcon { width: 2.2rem; height: 2.2rem; }
   .choiceArrow { display: block; }
   .resultGrid { margin-top: 2rem; }
-  .calculatorStage { width: 100%; margin-top: 1.5rem; }
-  .calculatorStage :global(.hero-roi-windowbar) { min-height: 2.9rem; padding-inline: 0.9rem; }
+  .calculatorStage { width: 100%; margin: 0; }
+  .calculatorStage :global(.hero-roi-windowbar) { min-height: 2.7rem; padding-inline: 0.85rem; }
   .calculatorStage :global(.hero-roi-live) { font-size: 0.62rem; }
   .calculatorStage :global(.hero-roi-panel) { padding: 1.1rem; }
-  .calculatorStage :global(.hero-roi-copy h3) { font-size: 1.28rem; }
-  .calculatorStage :global(.hero-roi-copy p) { font-size: 0.8rem; }
+  .calculatorStage :global(.hero-roi-copy h3) { font-size: 1.15rem; }
+  .calculatorStage :global(.hero-roi-copy p) { font-size: 0.76rem; }
   .calculatorStage :global(.hero-roi-foot) { grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
   .calculatorStage :global(.hero-roi-action) { width: 100%; justify-content: center; }
-  .pathVisual { min-height: 6rem; grid-template-columns: auto minmax(1rem,1fr) auto minmax(1rem,1fr) auto; font-size: 0.66rem; }
-  .pathVisual > span:first-child,
-  .pathVisual > span:last-child { max-width: 4.4rem; }
-  .pathNode { width: 3.75rem; height: 3.75rem; box-shadow: 0 0 0 0.5rem rgba(79,130,168,.05); }
   .detailViewport { padding: 1.35rem; border-radius: var(--dgc-radius-md, 10px); }
   .offerDetail { min-height: 16rem; }
   .offerDetail h3 { font-size: clamp(1.65rem, 8vw, 2rem); }
@@ -411,7 +364,6 @@
   .choice { border-right: 0; border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14)); }
   .choice:nth-child(3) { border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14)); }
   .choice:last-child { border-bottom: 0; }
-  .pathVisual { font-size: 0.62rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

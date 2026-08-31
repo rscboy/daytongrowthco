@@ -6206,7 +6206,6 @@ function FlagshipOverview() {
   const [activeOfferId, setActiveOfferId] = useState<HomepageOfferId>("quote");
   const activeOffer = homepageOffers.find((offer) => offer.id === activeOfferId) ?? homepageOffers[0];
   const activeCalculator = homepageOfferCalculators[activeOffer.id];
-  const ActiveIcon = activeOffer.icon;
 
   return (
     <section className={`${flagshipStyles.section} homepage-component`} id="programs" aria-labelledby="flagship-overview-title">
@@ -6237,14 +6236,21 @@ function FlagshipOverview() {
           })}
         </div>
 
-        <div className={flagshipStyles.resultGrid}>
-          <div className={flagshipStyles.pathVisual} aria-hidden="true" key={`path-${activeOffer.id}`}>
-            <span>Repeated friction</span>
-            <span className={flagshipStyles.pathLine}><i /></span>
-            <span className={flagshipStyles.pathNode}><ActiveIcon size={25} /></span>
-            <span className={flagshipStyles.pathLine}><i /></span>
-            <span>Clear next step</span>
-          </div>
+        <div className={`${flagshipStyles.resultGrid} ${!activeCalculator ? flagshipStyles.resultGridWithoutCalculator : ""}`}>
+          {activeCalculator ? (
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                className={flagshipStyles.calculatorStage}
+                key={activeCalculator}
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <ProgramRoiCalculator productKey={activeCalculator} />
+              </motion.div>
+            </AnimatePresence>
+          ) : null}
 
           <div className={flagshipStyles.detailViewport} id="homepage-offer-detail" aria-live="polite" aria-atomic="true">
             <AnimatePresence initial={false} mode="wait">
@@ -6276,20 +6282,6 @@ function FlagshipOverview() {
           </div>
         </div>
 
-        <AnimatePresence initial={false} mode="wait">
-          {activeCalculator ? (
-            <motion.div
-              className={flagshipStyles.calculatorStage}
-              key={activeCalculator}
-              initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
-              transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <ProgramRoiCalculator productKey={activeCalculator} />
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
       </div>
     </section>
   );
