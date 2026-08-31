@@ -56,7 +56,6 @@ import { DotMatrix } from "@/components/ui/dot-matrix";
 import { KineticGrid } from "@/components/ui/kinetic-grid";
 import { ClearInput } from "./clear-input";
 import { socialLinks } from "./social-links";
-import { BetterQuoteSavingsCalculator } from "./better-quote-savings-calculator";
 import { websiteMigrationPricing } from "./website-migration-pricing";
 import { captureAttribution, trackFunnelEvent } from "./funnel-analytics";
 import {
@@ -2063,8 +2062,6 @@ const heroRoiProducts = {
   },
 } as const;
 
-const heroRoiProductKeys = Object.keys(heroRoiProducts) as HeroRoiProduct[];
-
 function formatCompactCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -2085,9 +2082,8 @@ function roiRangeStyle(value: number, min: number, max: number) {
   return { "--roi-range-progress": `${Math.max(0, Math.min(100, progress))}%` } as React.CSSProperties;
 }
 
-function HeroRoiCalculator() {
+function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
   const reduceMotion = useReducedMotion();
-  const [activeProduct, setActiveProduct] = useState<HeroRoiProduct>("website-migration");
   const [inputs, setInputs] = useState(() => ({
     "website-migration": {
       platformMonthly: 100,
@@ -2104,8 +2100,7 @@ function HeroRoiCalculator() {
       valuePerReview: 125,
     },
   }));
-  const product = heroRoiProducts[activeProduct];
-  const activeProductIndex = heroRoiProductKeys.indexOf(activeProduct);
+  const product = heroRoiProducts[productKey];
   const migrationInputs = inputs["website-migration"];
   const quoteInputs = inputs["better-quote"];
   const ownedDomainCost = migrationInputs.years * 15;
@@ -2130,13 +2125,13 @@ function HeroRoiCalculator() {
   const annualReviewProgramFee = 2500;
   const reviewRoi = Math.round(((annualModeledReviewValue - annualReviewProgramFee) / annualReviewProgramFee) * 100);
   const annualCostPerModeledReview = annualReviewProgramFee / Math.max(1, modeledThirtyDayReviews * 12);
-  const results = activeProduct === "website-migration"
+  const results = productKey === "website-migration"
     ? [
         { label: "Estimated break-even", value: `${migrationBreakEvenMonths} mo` },
         { label: `${migrationInputs.years}-year net savings`, value: formatCompactCurrency(migrationNetSavings) },
         { label: `${migrationInputs.years}-year ROI`, value: `${migrationRoi > 0 ? "+" : ""}${migrationRoi}%`, primary: true },
       ]
-    : activeProduct === "better-quote" ? [
+    : productKey === "better-quote" ? [
         { label: "Qualifying savings", value: formatCompactCurrency(qualifyingSavings) },
         { label: "Program fee", value: formatCompactCurrency(quoteProgramFee) },
         { label: "ROI on the fee", value: quoteRoi === null ? "No fee" : `+${quoteRoi}%`, primary: true },
@@ -2167,23 +2162,8 @@ function HeroRoiCalculator() {
     }));
   };
 
-  const selectProductFromKeyboard = (event: React.KeyboardEvent<HTMLButtonElement>, key: HeroRoiProduct) => {
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-    event.preventDefault();
-    const currentIndex = heroRoiProductKeys.indexOf(key);
-    const nextKey: HeroRoiProduct = event.key === "Home"
-      ? heroRoiProductKeys[0]
-      : event.key === "End"
-        ? heroRoiProductKeys[heroRoiProductKeys.length - 1]
-        : event.key === "ArrowRight"
-          ? heroRoiProductKeys[(currentIndex + 1) % heroRoiProductKeys.length]
-          : heroRoiProductKeys[(currentIndex - 1 + heroRoiProductKeys.length) % heroRoiProductKeys.length];
-    setActiveProduct(nextKey);
-    requestAnimationFrame(() => document.getElementById(`hero-roi-tab-${nextKey}`)?.focus());
-  };
-
   return (
-    <div className="hero-roi-card">
+    <section className="hero-roi-card program-roi-card" aria-labelledby={`program-roi-title-${productKey}`}>
       <div className="hero-roi-windowbar">
         <span className="hero-roi-window-dots" aria-hidden="true">
           <i />
@@ -2194,42 +2174,13 @@ function HeroRoiCalculator() {
         <span className="hero-roi-live"><i aria-hidden="true" /> Live estimate</span>
       </div>
 
-      <div className="hero-roi-tabs" role="tablist" aria-label="Choose a program to estimate">
-        <span
-          className="hero-roi-tab-indicator"
-          style={{ transform: `translateX(${activeProductIndex * 100}%)` }}
-          aria-hidden="true"
-        />
-        {heroRoiProductKeys.map((key) => (
-          <button
-            type="button"
-            role="tab"
-            id={`hero-roi-tab-${key}`}
-            aria-controls="hero-roi-panel"
-            aria-selected={activeProduct === key}
-            tabIndex={activeProduct === key ? 0 : -1}
-            className={activeProduct === key ? "is-active" : ""}
-            onClick={() => setActiveProduct(key)}
-            onKeyDown={(event) => selectProductFromKeyboard(event, key)}
-            key={key}
-          >
-            {heroRoiProducts[key].tab}
-          </button>
-        ))}
-      </div>
-
-      <div
-        className="hero-roi-panel"
-        id="hero-roi-panel"
-        role="tabpanel"
-        aria-labelledby={`hero-roi-tab-${activeProduct}`}
-      >
+      <div className="hero-roi-panel">
         <header className="hero-roi-copy">
-          <h2>{product.title}</h2>
+          <h3 id={`program-roi-title-${productKey}`}>{product.title}</h3>
           <p>{product.description}</p>
         </header>
 
-        {activeProduct === "website-migration" ? (
+        {productKey === "website-migration" ? (
           <div className="hero-roi-controls">
             <label className="hero-roi-control">
               <span><b>Current website platform / month</b><output>{formatCompactCurrency(migrationInputs.platformMonthly)}</output></span>
@@ -2244,7 +2195,7 @@ function HeroRoiCalculator() {
               <input type="range" min="1" max="7" step="1" value={migrationInputs.years} style={roiRangeStyle(migrationInputs.years, 1, 7)} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
             </label>
           </div>
-        ) : activeProduct === "better-quote" ? (
+        ) : productKey === "better-quote" ? (
           <div className="hero-roi-controls hero-roi-controls-compact">
             <label className="hero-roi-control">
               <span><b>Current written quote</b><output>{formatCompactCurrency(quoteInputs.quoteValue)}</output></span>
@@ -2273,21 +2224,21 @@ function HeroRoiCalculator() {
         )}
 
         <div className="hero-roi-results" aria-live="polite" aria-atomic="true">
-          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><motion.strong key={`${activeProduct}-${result.value}`} initial={reduceMotion ? false : { opacity: 0.55, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}>{result.value}</motion.strong></div>)}
+          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><motion.strong key={`${productKey}-${result.value}`} initial={reduceMotion ? false : { opacity: 0.55, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}>{result.value}</motion.strong></div>)}
         </div>
 
         <div className="hero-roi-foot">
           <p className="hero-roi-note">
-            {activeProduct === "website-migration"
+            {productKey === "website-migration"
               ? "Illustrative estimate assumes about $15/year for a domain. Scope and pricing are confirmed in writing."
-              : activeProduct === "better-quote"
+              : productKey === "better-quote"
                 ? "Uses the published success-fee schedule. No qualifying savings means no fee; savings are not guaranteed."
                 : "Illustrative model using your assumptions. No revenue, lead, rating, or ranking result is promised."}
           </p>
           <Link className="hero-roi-action" href={product.href}>{product.action} <ArrowRight size={13} aria-hidden="true" /></Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -2398,9 +2349,6 @@ function Hero() {
             </p>
           ) : null}
         </div>
-        <aside className="hero-proof hero-entrance" aria-label="Interactive program return estimator">
-          <HeroRoiCalculator />
-        </aside>
       </div>
     </section>
   );
@@ -6246,11 +6194,18 @@ const homepageOffers = [
 
 type HomepageOfferId = (typeof homepageOffers)[number]["id"];
 
+const homepageOfferCalculators: Partial<Record<HomepageOfferId, HeroRoiProduct>> = {
+  quote: "better-quote",
+  website: "website-migration",
+  reviews: "review-growth",
+};
+
 function FlagshipOverview() {
   useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_home_offer_viewed"); }, []);
   const reduceMotion = useReducedMotion();
   const [activeOfferId, setActiveOfferId] = useState<HomepageOfferId>("quote");
   const activeOffer = homepageOffers.find((offer) => offer.id === activeOfferId) ?? homepageOffers[0];
+  const activeCalculator = homepageOfferCalculators[activeOffer.id];
   const ActiveIcon = activeOffer.icon;
 
   return (
@@ -6320,6 +6275,21 @@ function FlagshipOverview() {
             </AnimatePresence>
           </div>
         </div>
+
+        <AnimatePresence initial={false} mode="wait">
+          {activeCalculator ? (
+            <motion.div
+              className={flagshipStyles.calculatorStage}
+              key={activeCalculator}
+              initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+              transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <ProgramRoiCalculator productKey={activeCalculator} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
     </section>
   );
@@ -6408,7 +6378,6 @@ function ProgramMatch() {
 
 function BetterQuotePreview() {
   const reduceMotion = useReducedMotion();
-  const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [visualVisible, setVisualVisible] = useState(false);
   const visualRef = useRef<HTMLDivElement>(null);
   const currentQuote = 10000;
@@ -6470,13 +6439,6 @@ function BetterQuotePreview() {
             <p>Illustrative only. Quotes must be legitimate and comparable. Savings are not guaranteed.</p>
           </div>
 
-          <details
-            className={homepageClarityStyles.calculatorDisclosure}
-            onToggle={(event) => setCalculatorOpen(event.currentTarget.open)}
-          >
-            <summary>Use the interactive savings calculator</summary>
-            {calculatorOpen ? <BetterQuoteSavingsCalculator /> : null}
-          </details>
         </div>
       </div>
     </section>

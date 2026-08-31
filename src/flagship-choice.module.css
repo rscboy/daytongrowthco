@@ -141,6 +141,53 @@
   align-items: center;
 }
 
+.calculatorStage {
+  width: min(100%, 42rem);
+  margin: clamp(1.5rem, 3vw, 2.5rem) 0 0 auto;
+}
+
+.calculatorStage :global(.program-roi-card) {
+  box-shadow: 0 1.25rem 3.5rem rgba(0, 0, 0, 0.2);
+}
+
+.calculatorStage :global(.hero-roi-panel) {
+  padding: clamp(1.35rem, 2.4vw, 1.8rem);
+}
+
+.calculatorStage :global(.hero-roi-copy h3) {
+  font-size: clamp(1.3rem, 2.15vw, 1.65rem);
+}
+
+.calculatorStage :global(.hero-roi-copy p) {
+  max-width: 54ch;
+  font-size: 0.86rem;
+}
+
+.calculatorStage :global(.hero-roi-control > span) {
+  font-size: 0.78rem;
+}
+
+.calculatorStage :global(.hero-roi-control output) {
+  font-size: 0.88rem;
+}
+
+.calculatorStage :global(.hero-roi-results span) {
+  font-size: 0.7rem;
+}
+
+.calculatorStage :global(.hero-roi-results strong) {
+  font-size: 1.04rem;
+}
+
+.calculatorStage :global(.hero-roi-primary-result strong) {
+  font-size: 1.28rem;
+}
+
+.calculatorStage :global(.hero-roi-note),
+.calculatorStage :global(.hero-roi-action) {
+  font-size: 0.72rem;
+}
+
 .pathVisual {
   display: grid;
   min-height: 16rem;
@@ -299,6 +346,7 @@
   .choice:nth-child(2) { border-right: 0; }
   .choice:nth-child(-n+2) { border-bottom: 1px solid var(--dgc-line-dark, rgba(255,255,255,.14)); }
   .resultGrid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .calculatorStage { width: min(100%, 44rem); margin-left: 0; }
   .pathVisual { min-height: 7rem; }
   .detailViewport { min-height: 0; }
   .offerDetail { min-height: 15rem; }
@@ -339,6 +387,14 @@
   .choiceIcon { width: 2.2rem; height: 2.2rem; }
   .choiceArrow { display: block; }
   .resultGrid { margin-top: 2rem; }
+  .calculatorStage { width: 100%; margin-top: 1.5rem; }
+  .calculatorStage :global(.hero-roi-windowbar) { min-height: 2.9rem; padding-inline: 0.9rem; }
+  .calculatorStage :global(.hero-roi-live) { font-size: 0.62rem; }
+  .calculatorStage :global(.hero-roi-panel) { padding: 1.1rem; }
+  .calculatorStage :global(.hero-roi-copy h3) { font-size: 1.28rem; }
+  .calculatorStage :global(.hero-roi-copy p) { font-size: 0.8rem; }
+  .calculatorStage :global(.hero-roi-foot) { grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
+  .calculatorStage :global(.hero-roi-action) { width: 100%; justify-content: center; }
   .pathVisual { min-height: 6rem; grid-template-columns: auto minmax(1rem,1fr) auto minmax(1rem,1fr) auto; font-size: 0.66rem; }
   .pathVisual > span:first-child,
   .pathVisual > span:last-child { max-width: 4.4rem; }

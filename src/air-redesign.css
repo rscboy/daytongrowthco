@@ -653,7 +653,7 @@
   padding: 1.3rem 1.25rem 1.15rem;
 }
 
-.hero-roi-copy h2 {
+.hero-roi-copy :is(h2, h3) {
   margin: 0;
   color: var(--air-ink);
   font-size: clamp(1.12rem, 1.55vw, 1.36rem);
