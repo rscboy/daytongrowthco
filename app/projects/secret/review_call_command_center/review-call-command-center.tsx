@@ -1,16 +1,48 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Clipboard, ExternalLink, Phone, Search } from "lucide-react";
 import { industryScripts, prospects } from "./prospects";
 import styles from "./review-call-command-center.module.css";
 
 type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Landline / no-go" | "Wrong number" | "Skip";
-type RecordState = { outcome: Outcome; notes: string };
+type RecordState = { outcome: Outcome; notes: string; updatedAt: number };
 type Records = Record<number, RecordState>;
 
 const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Landline / no-go", "Wrong number", "Skip"];
 const storageKey = "dgc-secret-review-voicemail-command-center-v1";
+const recordsEndpoint = "/projects/secret/review_call_command_center/api";
+const validOutcomes = new Set<Outcome>(["Not called", ...outcomes]);
+
+function normalizeRecords(value: unknown): Records {
+  const source = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  const normalized: Records = {};
+  for (const [key, value] of Object.entries(source)) {
+    const id = Number(key);
+    if (!Number.isInteger(id) || !value || typeof value !== "object") continue;
+    const raw = value as Partial<RecordState>;
+    if (!raw.outcome || !validOutcomes.has(raw.outcome)) continue;
+    normalized[id] = {
+      outcome: raw.outcome,
+      notes: typeof raw.notes === "string" ? raw.notes : "",
+      updatedAt: typeof raw.updatedAt === "number" && Number.isFinite(raw.updatedAt) ? raw.updatedAt : 1,
+    };
+  }
+  return normalized;
+}
+
+function mergeRecords(left: Records, right: Records) {
+  const merged = { ...left };
+  for (const [key, record] of Object.entries(right)) {
+    const id = Number(key);
+    if (!merged[id] || record.updatedAt >= merged[id].updatedAt) merged[id] = record;
+  }
+  return merged;
+}
+
+function timeLabel() {
+  return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
 
 function telValue(phone: string) {
   return `+1${phone.replace(/\D/g, "").slice(-10)}`;
@@ -28,24 +60,99 @@ export function ReviewCallCommandCenter() {
   const [industry, setIndustry] = useState("All industries");
   const [status, setStatus] = useState<"All" | "Remaining" | "Completed">("All");
   const [copied, setCopied] = useState(false);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [syncState, setSyncState] = useState("Loading saved progress…");
+  const recordsRef = useRef<Records>({});
+  const syncInFlightRef = useRef(false);
+  const syncRequestedRef = useRef(false);
 
-  useEffect(() => {
+  const applyRecords = useCallback((next: Records) => {
+    recordsRef.current = next;
+    setRecords(next);
     try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Records;
-        setRecords(parsed);
-        const next = prospects.find((prospect) => !parsed[prospect.id] || parsed[prospect.id].outcome === "Not called");
-        if (next) setCurrentId(next.id);
-      }
-    } catch {
-      window.localStorage.removeItem(storageKey);
+      window.localStorage.setItem(storageKey, JSON.stringify(next));
+    } catch (error) {
+      console.error("[review-call-command-center] Unable to update the device backup.", error);
     }
   }, []);
 
+  const syncLatest = useCallback(async () => {
+    if (syncInFlightRef.current) {
+      syncRequestedRef.current = true;
+      return;
+    }
+
+    syncInFlightRef.current = true;
+    setSyncState("Saving to shared records…");
+    try {
+      do {
+        syncRequestedRef.current = false;
+        const response = await fetch(recordsEndpoint, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ records: recordsRef.current }),
+        });
+        if (!response.ok) throw new Error(`Sync failed with ${response.status}`);
+        const payload = await response.json() as { records?: unknown };
+        applyRecords(mergeRecords(recordsRef.current, normalizeRecords(payload.records)));
+      } while (syncRequestedRef.current);
+      setSyncState(`Synced ${timeLabel()}`);
+    } catch (error) {
+      console.error("[review-call-command-center] Unable to sync records.", error);
+      syncRequestedRef.current = false;
+      setSyncState("Offline — saved on this device");
+    } finally {
+      syncInFlightRef.current = false;
+      if (syncRequestedRef.current) window.setTimeout(() => void syncLatest(), 0);
+    }
+  }, [applyRecords]);
+
+  useEffect(() => {
+    let local: Records = {};
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) local = normalizeRecords(JSON.parse(saved));
+    } catch {
+      window.localStorage.removeItem(storageKey);
+    }
+    applyRecords(local);
+
+    let cancelled = false;
+    async function loadSharedRecords() {
+      try {
+        const response = await fetch(recordsEndpoint, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Load failed with ${response.status}`);
+        const payload = await response.json() as { records?: unknown };
+        if (cancelled) return;
+        const merged = mergeRecords(recordsRef.current, normalizeRecords(payload.records));
+        applyRecords(merged);
+        const next = prospects.find((prospect) => !merged[prospect.id] || merged[prospect.id].outcome === "Not called");
+        if (next) setCurrentId(next.id);
+        await syncLatest();
+      } catch (error) {
+        console.error("[review-call-command-center] Unable to load shared records.", error);
+        if (!cancelled) {
+          const next = prospects.find((prospect) => !local[prospect.id] || local[prospect.id].outcome === "Not called");
+          if (next) setCurrentId(next.id);
+          setSyncState("Offline — saved on this device");
+        }
+      }
+    }
+
+    void loadSharedRecords();
+    const refresh = window.setInterval(() => void loadSharedRecords(), 30000);
+    const retry = () => void syncLatest();
+    window.addEventListener("online", retry);
+    window.addEventListener("focus", loadSharedRecords);
+    return () => {
+      cancelled = true;
+      window.clearInterval(refresh);
+      window.removeEventListener("online", retry);
+      window.removeEventListener("focus", loadSharedRecords);
+    };
+  }, [applyRecords, syncLatest]);
+
   const current = prospects.find((prospect) => prospect.id === currentId) ?? prospects[0];
-  const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "" };
+  const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "", updatedAt: 0 };
   const completed = Object.values(records).filter((item) => item.outcome !== "Not called").length;
   const industries = useMemo(() => ["All industries", ...Array.from(new Set(prospects.map((prospect) => prospect.industry))).sort()], []);
   const voicemail = makeScript(current.industry, current.business);
@@ -60,13 +167,13 @@ export function ReviewCallCommandCenter() {
   }), [industry, query, records, status]);
 
   function persistRecords(next: Records) {
-    setRecords(next);
-    window.localStorage.setItem(storageKey, JSON.stringify(next));
-    setSavedAt(new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+    applyRecords(next);
+    void syncLatest();
   }
 
   function updateRecord(update: Partial<RecordState>) {
-    persistRecords({ ...records, [current.id]: { ...record, ...update } });
+    const latest = recordsRef.current[current.id] ?? record;
+    persistRecords({ ...recordsRef.current, [current.id]: { ...latest, ...update, updatedAt: Date.now() } });
   }
 
   function moveNext(sourceRecords: Records, skipId?: number) {
@@ -77,7 +184,8 @@ export function ReviewCallCommandCenter() {
   }
 
   function saveVoicemailAndNext() {
-    const next = { ...records, [current.id]: { ...record, outcome: "Voicemail left" as Outcome } };
+    const latest = recordsRef.current[current.id] ?? record;
+    const next = { ...recordsRef.current, [current.id]: { ...latest, outcome: "Voicemail left" as Outcome, updatedAt: Date.now() } };
     persistRecords(next);
     moveNext(next, current.id);
   }
@@ -137,7 +245,7 @@ export function ReviewCallCommandCenter() {
           </article>
 
           <article className={styles.resultCard}>
-            <div className={styles.resultHeading}><div><p>LOG THE RESULT</p><h2>What happened?</h2></div><div className={styles.saveState}><span>{record.outcome}</span><small>{savedAt ? `Saved ${savedAt}` : "Saves automatically"}</small></div></div>
+            <div className={styles.resultHeading}><div><p>LOG THE RESULT</p><h2>What happened?</h2></div><div className={styles.saveState}><span>{record.outcome}</span><small>{syncState}</small></div></div>
             <div className={styles.outcomes}>{outcomes.map((outcome) => <button key={outcome} className={record.outcome === outcome ? styles.selectedOutcome : ""} onClick={() => updateRecord({ outcome })}>{outcome}</button>)}</div>
             <label className={styles.notes}>Notes<textarea value={record.notes} onChange={(event) => updateRecord({ notes: event.target.value })} placeholder="Name, callback time, correction, or next step…" /></label>
             <div className={styles.resultActions}><button className={styles.clear} onClick={() => updateRecord({ outcome: "Not called", notes: "" })}>Clear</button><button className={styles.saveNext} onClick={saveVoicemailAndNext}>Mark voicemail & next <span>→</span></button></div>
