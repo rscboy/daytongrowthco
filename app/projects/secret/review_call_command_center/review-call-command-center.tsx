@@ -5,11 +5,11 @@ import { ArrowLeft, Check, Clipboard, ExternalLink, Phone, Search } from "lucide
 import { industryScripts, prospects } from "./prospects";
 import styles from "./review-call-command-center.module.css";
 
-type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Wrong number" | "Skip";
+type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Landline / no-go" | "Wrong number" | "Skip";
 type RecordState = { outcome: Outcome; notes: string };
 type Records = Record<number, RecordState>;
 
-const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Wrong number", "Skip"];
+const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Landline / no-go", "Wrong number", "Skip"];
 const storageKey = "dgc-secret-review-voicemail-command-center-v1";
 
 function telValue(phone: string) {
@@ -28,7 +28,7 @@ export function ReviewCallCommandCenter() {
   const [industry, setIndustry] = useState("All industries");
   const [status, setStatus] = useState<"All" | "Remaining" | "Completed">("All");
   const [copied, setCopied] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -39,14 +39,10 @@ export function ReviewCallCommandCenter() {
         const next = prospects.find((prospect) => !parsed[prospect.id] || parsed[prospect.id].outcome === "Not called");
         if (next) setCurrentId(next.id);
       }
-    } finally {
-      setReady(true);
+    } catch {
+      window.localStorage.removeItem(storageKey);
     }
   }, []);
-
-  useEffect(() => {
-    if (ready) window.localStorage.setItem(storageKey, JSON.stringify(records));
-  }, [ready, records]);
 
   const current = prospects.find((prospect) => prospect.id === currentId) ?? prospects[0];
   const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "" };
@@ -63,20 +59,27 @@ export function ReviewCallCommandCenter() {
       && (status === "All" || (status === "Completed" ? isDone : !isDone));
   }), [industry, query, records, status]);
 
-  function updateRecord(update: Partial<RecordState>) {
-    setRecords((existing) => ({ ...existing, [current.id]: { ...record, ...update } }));
+  function persistRecords(next: Records) {
+    setRecords(next);
+    window.localStorage.setItem(storageKey, JSON.stringify(next));
+    setSavedAt(new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
   }
 
-  function moveNext(skipId?: number) {
+  function updateRecord(update: Partial<RecordState>) {
+    persistRecords({ ...records, [current.id]: { ...record, ...update } });
+  }
+
+  function moveNext(sourceRecords: Records, skipId?: number) {
     const index = prospects.findIndex((prospect) => prospect.id === current.id);
-    const isRemaining = (prospect: typeof current) => prospect.id !== skipId && (records[prospect.id]?.outcome ?? "Not called") === "Not called";
+    const isRemaining = (prospect: typeof current) => prospect.id !== skipId && (sourceRecords[prospect.id]?.outcome ?? "Not called") === "Not called";
     const next = prospects.slice(index + 1).find(isRemaining) ?? prospects.find(isRemaining);
     if (next) setCurrentId(next.id);
   }
 
   function saveVoicemailAndNext() {
-    setRecords((existing) => ({ ...existing, [current.id]: { ...record, outcome: "Voicemail left" } }));
-    window.setTimeout(() => moveNext(current.id), 0);
+    const next = { ...records, [current.id]: { ...record, outcome: "Voicemail left" as Outcome } };
+    persistRecords(next);
+    moveNext(next, current.id);
   }
 
   async function copyScript() {
@@ -134,7 +137,7 @@ export function ReviewCallCommandCenter() {
           </article>
 
           <article className={styles.resultCard}>
-            <div className={styles.resultHeading}><div><p>LOG THE RESULT</p><h2>What happened?</h2></div><span>{record.outcome}</span></div>
+            <div className={styles.resultHeading}><div><p>LOG THE RESULT</p><h2>What happened?</h2></div><div className={styles.saveState}><span>{record.outcome}</span><small>{savedAt ? `Saved ${savedAt}` : "Saves automatically"}</small></div></div>
             <div className={styles.outcomes}>{outcomes.map((outcome) => <button key={outcome} className={record.outcome === outcome ? styles.selectedOutcome : ""} onClick={() => updateRecord({ outcome })}>{outcome}</button>)}</div>
             <label className={styles.notes}>Notes<textarea value={record.notes} onChange={(event) => updateRecord({ notes: event.target.value })} placeholder="Name, callback time, correction, or next step…" /></label>
             <div className={styles.resultActions}><button className={styles.clear} onClick={() => updateRecord({ outcome: "Not called", notes: "" })}>Clear</button><button className={styles.saveNext} onClick={saveVoicemailAndNext}>Mark voicemail & next <span>→</span></button></div>
