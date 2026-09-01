@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Clipboard, ExternalLink, MessageCircleQuestion, Phone, PhoneCall, Search } from "lucide-react";
-import { industryScripts, legacyProspects } from "./prospects";
+import { legacyProspects } from "./prospects";
 import { replacementProspects } from "./replacement-prospects";
 import { partTwoProspects } from "./part-two-prospects";
 import { ObjectionPlaybook } from "./objection-playbook";
@@ -58,9 +58,8 @@ function telValue(phone: string) {
   return `+1${phone.replace(/\D/g, "").slice(-10)}`;
 }
 
-function makeScript(industry: string, business: string) {
-  const [moment] = industryScripts[industry] ?? ["a customer interaction is completed"];
-  return `Hi, this is Sam Caruso with DaytonGrowthCo, a local Dayton-area agency. I found ${business} on Google. After ${moment}, are review requests automatic, or does someone have to remember? We built a managed system that handles it. Call or text me at 937-369-0829. Again, 937-369-0829.`;
+function makeScript() {
+  return "Hi, this is Sam Caruso with DaytonGrowthCo, we’re local here in Dayton. Most agencies lose reviews because nobody follows up after a project wraps. We built a system that fixes that automatically. Shops using it pick up 8 to 12 new reviews a month, which means more inbound leads without spending on ads. Call or text me at 937-369-0829. Again, 937-369-0829.";
 }
 
 export function ReviewCallCommandCenter() {
@@ -180,7 +179,7 @@ export function ReviewCallCommandCenter() {
   const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "", updatedAt: 0 };
   const completed = activeProspects.filter((prospect) => records[prospect.id]?.outcome && records[prospect.id].outcome !== "Not called").length;
   const industries = useMemo(() => ["All industries", ...Array.from(new Set(activeProspects.map((prospect) => prospect.industry))).sort()], [activeProspects]);
-  const voicemail = makeScript(current.industry, current.business);
+  const voicemail = makeScript();
   const currentPosition = activeProspects.findIndex((prospect) => prospect.id === current.id) + 1;
 
   const filtered = useMemo(() => activeProspects.filter((prospect) => {
