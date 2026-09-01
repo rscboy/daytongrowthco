@@ -59,7 +59,7 @@ function telValue(phone: string) {
 }
 
 function makeScript() {
-  return "Hi, this is Sam Caruso with DaytonGrowthCo, we’re local here in Dayton. We built a system that gets businesses more organic Google reviews so they rank higher and pull in more customers. Most businesses using it pick up 8 to 12 new reviews a month without spending a dime on ads. Call or text me at 937-369-0829. Again, 937-369-0829.";
+  return "Hi, this is Sam Caruso with DaytonGrowthCo. I help businesses generate more organic Google reviews so they rank higher and attract more customers. Most clients pick up 8 to 12 new reviews a month, no ad spend required. Call or text me at 937-369-0829 — again, that’s 937-369-0829.";
 }
 
 export function ReviewCallCommandCenter() {
