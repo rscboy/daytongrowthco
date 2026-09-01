@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Clipboard, ExternalLink, MessageCircleQuestion, Phone, PhoneCall, Search } from "lucide-react";
 import { industryScripts, legacyProspects } from "./prospects";
 import { replacementProspects } from "./replacement-prospects";
+import { partTwoProspects } from "./part-two-prospects";
 import { ObjectionPlaybook } from "./objection-playbook";
 import styles from "./review-call-command-center.module.css";
 
@@ -50,7 +51,7 @@ function timeLabel() {
 
 function directoryProspects(records: Records) {
   const contacted = legacyProspects.filter((prospect) => records[prospect.id] && records[prospect.id].outcome !== "Not called");
-  return [...contacted, ...replacementProspects];
+  return [...contacted, ...replacementProspects, ...partTwoProspects];
 }
 
 function telValue(phone: string) {
