@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Clipboard, ExternalLink, Phone, Search } from "lucide-react";
+import { ArrowLeft, Check, Clipboard, ExternalLink, MessageCircleQuestion, Phone, PhoneCall, Search } from "lucide-react";
 import { industryScripts, legacyProspects } from "./prospects";
 import { replacementProspects } from "./replacement-prospects";
+import { ObjectionPlaybook } from "./objection-playbook";
 import styles from "./review-call-command-center.module.css";
 
 type Outcome = "Not called" | "Voicemail left" | "No answer" | "Callback" | "Landline / no-go" | "Wrong number" | "Skip";
@@ -62,6 +63,7 @@ function makeScript(industry: string, business: string) {
 }
 
 export function ReviewCallCommandCenter() {
+  const [view, setView] = useState<"calls" | "objections">("calls");
   const [records, setRecords] = useState<Records>({});
   const [currentId, setCurrentId] = useState(replacementProspects[0].id);
   const [query, setQuery] = useState("");
@@ -226,12 +228,18 @@ export function ReviewCallCommandCenter() {
   return (
     <main className={styles.shell}>
       <header className={styles.topbar}>
-        <div className={styles.brand}><span>DG</span><div><strong>Voicemail Command Center</strong><small>DaytonGrowthCo. · Secret Project</small></div></div>
-        <div className={styles.progress}><div><span style={{ width: `${completed / activeProspects.length * 100}%` }} /></div><small>{completed} of {activeProspects.length} complete</small></div>
+        <div className={styles.brand}><span>DG</span><div><strong>Sales Command Center</strong><small>DaytonGrowthCo. · Secret Project</small></div></div>
+        <div className={styles.topbarCenter}>
+          <nav className={styles.modeSwitch} aria-label="Sales tools">
+            <button className={view === "calls" ? styles.activeMode : ""} onClick={() => setView("calls")}><PhoneCall size={14} /> Call Center</button>
+            <button className={view === "objections" ? styles.activeMode : ""} onClick={() => setView("objections")}><MessageCircleQuestion size={14} /> Objections</button>
+          </nav>
+          {view === "calls" ? <div className={styles.progress}><div><span style={{ width: `${completed / activeProspects.length * 100}%` }} /></div><small>{completed} of {activeProspects.length} complete</small></div> : <small className={styles.liveReference}>Live-call reference</small>}
+        </div>
         <a className={styles.backLink} href="/projects/secret-projects"><ArrowLeft size={15} /> Back to Secret Projects</a>
       </header>
 
-      <div className={styles.layout}>
+      {view === "objections" ? <ObjectionPlaybook /> : <div className={styles.layout}>
         <aside className={styles.directory}>
           <div className={styles.directoryHeading}><p>PROSPECT DIRECTORY</p><strong>{filtered.length} showing</strong></div>
           <label className={styles.search}><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search businesses" aria-label="Search businesses" /></label>
@@ -289,7 +297,7 @@ export function ReviewCallCommandCenter() {
 
           <p className={styles.guardrail}>Manual outreach only. Ask eligible customers for honest reviews and follow healthcare, privacy, consent, and professional rules for each industry.</p>
         </section>
-      </div>
+      </div>}
       {copied ? <div className={styles.toast}>Script copied</div> : null}
     </main>
   );
