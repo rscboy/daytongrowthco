@@ -17,9 +17,15 @@ function argumentValue(name) {
 
 async function accessCode() {
   if (process.env.CARUSO_RECIPE_ADD_TOKEN) return process.env.CARUSO_RECIPE_ADD_TOKEN.trim();
+  if (process.argv.includes("--code-stdin")) {
+    let value = "";
+    process.stdin.setEncoding("utf8");
+    for await (const chunk of process.stdin) value += chunk;
+    return value.trim();
+  }
   const codeFile = argumentValue("--code-file");
   if (codeFile) return (await readFile(resolve(codeFile), "utf8")).trim();
-  if (!process.stdin.isTTY) throw new Error("Setup needs a terminal, CARUSO_RECIPE_ADD_TOKEN, or --code-file /absolute/path/to/code.txt.");
+  if (!process.stdin.isTTY) throw new Error("Setup needs a terminal, CARUSO_RECIPE_ADD_TOKEN, --code-stdin, or --code-file /absolute/path/to/code.txt.");
   const terminal = createInterface({ input: process.stdin, output: process.stdout });
   try {
     return (await terminal.question("Paste the add-only Recipe Book access code: ")).trim();

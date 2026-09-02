@@ -13,12 +13,12 @@ Configure these server-side environment variables in the production Vercel proje
 - `CARUSO_RECIPE_GITHUB_BRANCH`: optional; defaults to `main`.
 - `CARUSO_RECIPE_SITE_URL`: optional; defaults to the production recipe-book URL.
 
-Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 30 days and can add recipes only. Give each contributor the skill ZIP or public repository link and their guest code through a separate private channel. The bundled `scripts/configure.mjs` saves both production service addresses and tries them in order.
+Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 30 days and can add recipes only. Give each contributor the public repository link, then have them paste the guest code into their Codex or Claude chat when the skill asks for it. The code remains in that chat history until it expires, so never use the permanent service, GitHub, or Vercel credentials for this flow. The bundled `scripts/configure.mjs` saves both production service addresses and tries them in order.
 
 - `CARUSO_RECIPE_API_URL=https://www.daytongrowth.co/api/caruso-recipe-book`
 - `CARUSO_RECIPE_ADD_TOKEN=<the guest code>`
 
-Environment variables remain supported for managed installations. For noninteractive agents, put the code in a temporary local file and run `node scripts/configure.mjs --code-file /absolute/path/to/code.txt`; delete that temporary file afterward. The setup stores equivalent values at `~/.config/caruso-recipe-book/credentials.json` with user-only file permissions.
+Environment variables remain supported for managed installations. A noninteractive agent can pass the chat-provided code through standard input with `node scripts/configure.mjs --code-stdin`, or use a temporary user-only file with `--code-file` and delete it afterward. Never print the code in command output. The setup stores equivalent values at `~/.config/caruso-recipe-book/credentials.json` with user-only file permissions.
 
 Some hosted AI environments block every non-allowlisted service, including the publish API. This cannot be bypassed inside a skill. In that case the script returns `browser_handoff_required` with the prepared JSON path. The contributor downloads that JSON, opens the website's **Add** panel in a normal browser, and uses **Publish a prepared recipe** with the guest code. The same add-only server validation applies.
 
