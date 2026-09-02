@@ -12,6 +12,11 @@ const RECIPE_SOURCE_PATH = "app/projects/secret/recipes_for_benny/recipe-book.ts
 const INITIAL_LIVE_CHECKS = 6;
 const FALLBACK_LIVE_CHECKS = 12;
 const LIVE_CHECK_DELAY_MS = 10_000;
+const DEFAULT_ENDPOINTS = [
+  "https://www.daytongrowth.co/api/caruso-recipe-book",
+  "https://daytongrowthco.vercel.app/api/caruso-recipe-book",
+];
+const MANUAL_PUBLISH_URL = "https://www.daytongrowth.co/projects/secret/recipes_for_benny";
 
 function fail(message) {
   console.error(message);
@@ -104,22 +109,46 @@ function report(outcome) {
   console.log(JSON.stringify(outcome, null, 2));
 }
 
+function uniqueHttpsEndpoints(values) {
+  return [...new Set(values.flatMap((value) => typeof value === "string" ? value.split(",") : []).map((value) => value.trim()).filter(Boolean))]
+    .filter((value) => /^https:\/\//i.test(value));
+}
+
+async function recipeRequest(endpoints, options = {}) {
+  let lastReason = "The Recipe Book service could not be reached from this environment.";
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, { ...options, signal: AbortSignal.timeout(12_000) });
+      const result = await response.json().catch(() => ({ error: `Unexpected response (${response.status}).` }));
+      if (response.ok || (response.status !== 403 && response.status < 500)) return { response, result };
+      lastReason = result.error ?? `The service returned ${response.status}.`;
+    } catch {
+      lastReason = "The Recipe Book service could not be reached from this environment.";
+    }
+  }
+  return { blocked: true, reason: lastReason };
+}
+
 let savedCredentials = {};
 try {
-  savedCredentials = JSON.parse(await readFile(resolve(homedir(), ".config/caruso-recipe-book/credentials.json"), "utf8"));
+  const configPath = resolve(process.env.CARUSO_RECIPE_CONFIG_PATH || resolve(homedir(), ".config/caruso-recipe-book/credentials.json"));
+  savedCredentials = JSON.parse(await readFile(configPath, "utf8"));
 } catch {
   // Environment variables can provide credentials when no saved setup exists.
 }
 
-const endpoint = process.env.CARUSO_RECIPE_API_URL || savedCredentials.apiUrl;
+const explicitEndpoints = process.env.CARUSO_RECIPE_API_URLS || process.env.CARUSO_RECIPE_API_URL;
+const endpoints = explicitEndpoints
+  ? uniqueHttpsEndpoints([explicitEndpoints])
+  : uniqueHttpsEndpoints([savedCredentials.apiUrl, ...(Array.isArray(savedCredentials.apiUrls) ? savedCredentials.apiUrls : []), ...DEFAULT_ENDPOINTS]);
 const token = process.env.CARUSO_RECIPE_ADD_TOKEN || savedCredentials.addToken;
-if (!endpoint) fail("CARUSO_RECIPE_API_URL is not configured.");
+if (!endpoints.length) fail("No HTTPS Recipe Book service address is configured.");
 if (!token) fail("CARUSO_RECIPE_ADD_TOKEN is not configured.");
-if (!/^https:\/\//i.test(endpoint)) fail("CARUSO_RECIPE_API_URL must use HTTPS.");
 
 if (process.argv.includes("--list-owners")) {
-  const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
-  const result = await response.json().catch(() => ({ error: `Unexpected response (${response.status}).` }));
+  const request = await recipeRequest(endpoints, { headers: { Authorization: `Bearer ${token}` } });
+  if (request.blocked) fail("Owner lookup is blocked in this environment. Use Sammy, Autumn, Addison, and Sam G, or add somebody else.");
+  const { response, result } = request;
   if (!response.ok || !result.ok) fail(result.error ?? `Owner lookup failed (${response.status}).`);
   console.log(JSON.stringify(result.owners, null, 2));
   process.exit(0);
@@ -136,12 +165,23 @@ try {
   fail(`Could not read the recipe payload: ${error instanceof Error ? error.message : String(error)}`);
 }
 
-const response = await fetch(endpoint, {
+const request = await recipeRequest(endpoints, {
   method: "POST",
   headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
   body: JSON.stringify(payload),
 });
-const result = await response.json().catch(() => ({ error: `Unexpected response (${response.status}).` }));
+if (request.blocked) {
+  report({
+    outcome: "browser_handoff_required",
+    recipeId: typeof payload?.recipe?.id === "string" ? payload.recipe.id : "",
+    recipeTitle: typeof payload?.recipe?.title === "string" ? payload.recipe.title : "",
+    payloadPath: resolve(payloadArg),
+    manualPublishUrl: MANUAL_PUBLISH_URL,
+    reason: "This environment cannot reach the Recipe Book service. Open the Recipe Book Add panel in a browser and upload this prepared JSON file.",
+  });
+  process.exit(0);
+}
+const { response, result } = request;
 if (!response.ok || !result.ok) fail(result.error ?? `Publishing failed (${response.status}).`);
 
 const recipeId = typeof result.recipeId === "string" ? result.recipeId : "";

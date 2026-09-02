@@ -35,7 +35,7 @@ Run:
 node scripts/add-recipe.mjs --payload /absolute/path/to/recipe.json
 ```
 
-The script reads the connection from environment variables or the local credentials file created by `node scripts/configure.mjs`. If neither is configured, stop and explain that the contributor needs a guest access code from the Recipe Book website's **Add** panel and should rerun the installer setup. Never request, accept, store, or use a GitHub token, Vercel token, repository write credential, or general deployment credential.
+The script reads the connection from environment variables or the local credentials file created by `node scripts/configure.mjs`. Setup can be interactive, use `CARUSO_RECIPE_ADD_TOKEN`, or safely read a code from `node scripts/configure.mjs --code-file /absolute/path/to/code.txt` when no interactive terminal is available. If no connection is configured, stop and explain that the contributor needs a guest access code from the Recipe Book website's **Add** panel. Never ask the user to paste an access code into the conversation. Never request, accept, store, or use a GitHub token, Vercel token, repository write credential, or general deployment credential.
 
 The service only appends a new recipe (and, when requested, a new person) to the canonical source. It rejects duplicate IDs, unsupported fields, malformed data, source-format drift, and non-fast-forward updates. The resulting Git commit starts the normal production deployment.
 
@@ -47,6 +47,7 @@ Report the script's outcome clearly:
 - `deployment_still_pending`: report that the exact-commit deployment finished but the public page is still pending, with both links.
 - `fallback_redeployment_succeeded`: report that the normal deployment failed to reach production and the exact-commit fallback succeeded, with both links.
 - `fallback_could_not_run`: report the non-sensitive reason and both links. Do not retry the addition or use another checkout.
+- `browser_handoff_required`: the AI environment blocked both service addresses before the recipe was accepted. Preserve the prepared JSON file, direct the user to the returned `manualPublishUrl`, and tell them to use **Add → Publish a prepared recipe** in their normal browser. Do not expose the guest code, retry indefinitely, or claim the recipe was published.
 
 ## Hard boundary
 

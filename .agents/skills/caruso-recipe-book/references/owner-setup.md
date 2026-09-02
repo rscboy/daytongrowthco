@@ -2,7 +2,7 @@
 
 This is the one-time setup for the website owner. Contributors do not need GitHub or Vercel access.
 
-Install the shared `caruso-recipe-book` folder under the contributor’s Codex skills directory (normally `$CODEX_HOME/skills`, or `~/.codex/skills` when `CODEX_HOME` is unset). Keep the folder name unchanged so `$caruso-recipe-book` invokes it.
+Share the public GitHub repository as the primary source. A contributor can ask Codex or Claude Code to install the attached downloaded ZIP after reviewing it, which avoids depending on an AI sandbox being allowed to contact the recipe website. Keep the folder name `caruso-recipe-book`; Codex normally uses `$CODEX_HOME/skills` or `~/.codex/skills`, and Claude Code normally uses `~/.claude/skills`.
 
 Configure these server-side environment variables in the production Vercel project:
 
@@ -13,12 +13,14 @@ Configure these server-side environment variables in the production Vercel proje
 - `CARUSO_RECIPE_GITHUB_BRANCH`: optional; defaults to `main`.
 - `CARUSO_RECIPE_SITE_URL`: optional; defaults to the production recipe-book URL.
 
-Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 30 days and can add recipes only. Give each contributor the skill ZIP and their guest code through a separate private channel. The bundled `scripts/configure.mjs` saves this local connection:
+Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 30 days and can add recipes only. Give each contributor the skill ZIP or public repository link and their guest code through a separate private channel. The bundled `scripts/configure.mjs` saves both production service addresses and tries them in order.
 
 - `CARUSO_RECIPE_API_URL=https://www.daytongrowth.co/api/caruso-recipe-book`
 - `CARUSO_RECIPE_ADD_TOKEN=<the guest code>`
 
-Environment variables remain supported for managed installations. The interactive setup stores equivalent values at `~/.config/caruso-recipe-book/credentials.json` with user-only file permissions.
+Environment variables remain supported for managed installations. For noninteractive agents, put the code in a temporary local file and run `node scripts/configure.mjs --code-file /absolute/path/to/code.txt`; delete that temporary file afterward. The setup stores equivalent values at `~/.config/caruso-recipe-book/credentials.json` with user-only file permissions.
+
+Some hosted AI environments block every non-allowlisted service, including the publish API. This cannot be bypassed inside a skill. In that case the script returns `browser_handoff_required` with the prepared JSON path. The contributor downloads that JSON, opens the website's **Add** panel in a normal browser, and uses **Publish a prepared recipe** with the guest code. The same add-only server validation applies.
 
 The deployment fail-safe runs automatically after an accepted recipe. It can redeploy only from a disposable exact-commit checkout when the machine running the skill is already inside a locally linked Vercel checkout of this website. Otherwise it reports a non-sensitive pending reason and never deploys from the contributor's current files.
 

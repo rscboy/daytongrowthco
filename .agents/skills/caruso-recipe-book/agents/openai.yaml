@@ -1,7 +1,7 @@
 interface:
   display_name: "Caruso Recipe Book"
-  short_description: "Safely add and publish a family recipe"
-  default_prompt: "Use $caruso-recipe-book to add a recipe to the Caruso family recipe website."
+  short_description: "Add a family recipe from Codex or Claude"
+  default_prompt: "Use the Caruso Recipe Book skill to interview me, preview one recipe, and publish it through the add-only service."
 
 policy:
   allow_implicit_invocation: true
