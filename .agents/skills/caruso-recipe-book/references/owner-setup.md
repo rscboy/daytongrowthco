@@ -20,6 +20,8 @@ Open the Recipe Book website's **Add** panel and use **Generate guest code** for
 
 Environment variables remain supported for managed installations. The interactive setup stores equivalent values at `~/.config/caruso-recipe-book/credentials.json` with user-only file permissions.
 
+The deployment fail-safe runs automatically after an accepted recipe. It can redeploy only from a disposable exact-commit checkout when the machine running the skill is already inside a locally linked Vercel checkout of this website. Otherwise it reports a non-sensitive pending reason and never deploys from the contributor's current files.
+
 Do not place any guest code or token in the skill files or a Git repository. Rotate `CARUSO_RECIPE_INVITE_SECRET` to invalidate every existing guest code immediately.
 
 The server-side GitHub credential is intentionally never distributed. The public token can call only this route; the route constructs an append-only commit to the recipe source and optional dish-image path.

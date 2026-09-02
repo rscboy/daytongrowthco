@@ -39,13 +39,20 @@ The script reads the connection from environment variables or the local credenti
 
 The service only appends a new recipe (and, when requested, a new person) to the canonical source. It rejects duplicate IDs, unsupported fields, malformed data, source-format drift, and non-fast-forward updates. The resulting Git commit starts the normal production deployment.
 
-After success, report the recipe link, commit link, and that deployment has started. Do not claim the live site is updated until the recipe URL responds with the new recipe. Check for a bounded period; if it is still deploying, say so and provide the link rather than retrying the addition.
+After a successful publish response, let the bundled script complete its deployment fail-safe. It captures the recipe ID, recipe URL, commit URL, and commit SHA; checks the live recipe URL for a bounded period; and, if production is stale, inspects the accepted commit before attempting one exact-commit production redeploy. Read [references/deployment-failsafe.md](references/deployment-failsafe.md) if the script reports a non-live outcome.
+
+Report the script's outcome clearly:
+
+- `recipe_is_live`: report the recipe and commit links.
+- `deployment_still_pending`: report that the exact-commit deployment finished but the public page is still pending, with both links.
+- `fallback_redeployment_succeeded`: report that the normal deployment failed to reach production and the exact-commit fallback succeeded, with both links.
+- `fallback_could_not_run`: report the non-sensitive reason and both links. Do not retry the addition or use another checkout.
 
 ## Hard boundary
 
 - Add exactly one new recipe per confirmed run.
 - Never edit, replace, reorder, or delete an existing recipe or person.
-- Never use repository access as a fallback.
+- Never edit, commit, push, or deploy from the user's current working tree. The bundled fallback may only create a disposable detached checkout pinned to the accepted commit and may only reuse a local `.vercel/project.json` linkage already present in that checkout's repository.
 - Never expose either add-only token in output, files, logs, or URLs.
 - If asked to modify or delete content, decline that part and explain that this skill is intentionally add-only.
 
