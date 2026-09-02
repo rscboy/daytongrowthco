@@ -441,25 +441,41 @@ export function BennyRecipeBook() {
     </header>
 
     {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
-      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title">
+      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title" aria-describedby="benny-add-description">
         <div className="benny-add-dialog-head">
-          <div><p className="benny-eyebrow">Recipe contributor</p><h2 id="benny-add-title">Add a recipe</h2></div>
+          <div><p className="benny-eyebrow">Caruso Recipe Book</p><h2 id="benny-add-title">Add a family recipe.</h2></div>
           <button ref={addGuideCloseRef} type="button" onClick={() => setAddGuideOpen(false)} aria-label="Close add recipe instructions"><X size={19} /></button>
         </div>
-        <p className="benny-add-intro">Install the Recipe Book skill once. It asks for the person, recipe, notes, and photo, then shows a preview before publishing.</p>
-        <div className="benny-add-platforms" role="tablist" aria-label="Choose your coding assistant">
-          {(Object.keys(recipeSkillGuides) as (keyof typeof recipeSkillGuides)[]).map((platform) => <button key={platform} type="button" role="tab" aria-selected={addGuidePlatform === platform} className={addGuidePlatform === platform ? "active" : ""} onClick={() => { setAddGuidePlatform(platform); setCopiedGuide(""); }}>{recipeSkillGuides[platform].label}</button>)}
+        <div className="benny-add-overview">
+          <div className="benny-add-overview-copy">
+            <span className="benny-add-time">About two minutes</span>
+            <p className="benny-add-intro" id="benny-add-description">Give the skill a link or paste a recipe. It organizes everything, lets you review it, and publishes it to the right person&apos;s collection.</p>
+            <div className="benny-add-promise"><span aria-hidden="true">✓</span><p><strong>Add-only access</strong><small>It cannot edit or delete anything already in the book.</small></p></div>
+          </div>
+          <ol className="benny-add-journey" aria-label="What the Recipe Book skill asks">
+            <li><span>01</span><div><strong>Choose a person</strong><small>Sammy, Autumn, Addison, Sam G—or someone new.</small></div></li>
+            <li><span>02</span><div><strong>Share the recipe</strong><small>Paste a link or the full recipe text.</small></div></li>
+            <li><span>03</span><div><strong>Add the details</strong><small>Include any special notes and a dish photo.</small></div></li>
+            <li><span>04</span><div><strong>Review, then publish</strong><small>Approve the preview and the site redeploys.</small></div></li>
+          </ol>
         </div>
-        <div className="benny-add-step">
-          <div><span>01</span><div><strong>Install once</strong><small>Paste this into Terminal. It will ask for your private add-only access code.</small></div></div>
-          <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install command">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy"}</span></button></div>
+        <div className="benny-add-setup">
+          <div className="benny-add-setup-head">
+            <div><span>One-time setup</span><h3>Choose your assistant</h3></div>
+            <div className="benny-add-platforms" role="tablist" aria-label="Choose your coding assistant">
+              {(Object.keys(recipeSkillGuides) as (keyof typeof recipeSkillGuides)[]).map((platform) => <button key={platform} type="button" role="tab" aria-selected={addGuidePlatform === platform} className={addGuidePlatform === platform ? "active" : ""} onClick={() => { setAddGuidePlatform(platform); setCopiedGuide(""); }}>{recipeSkillGuides[platform].label}</button>)}
+            </div>
+          </div>
+          <div className="benny-add-step">
+            <div><span>1</span><div><strong>Install the skill once</strong><small>Copy this, paste it into Terminal, and enter the private add-only access code when asked.</small></div></div>
+            <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install command">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy"}</span></button></div>
+          </div>
+          <div className="benny-add-step">
+            <div><span>2</span><div><strong>Start the Recipe Book</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste the short command, and answer the four prompts above.</small></div></div>
+            <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
+          </div>
         </div>
-        <div className="benny-add-step">
-          <div><span>02</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
-          <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
-        </div>
-        <p className="benny-add-footnote">After you approve the preview, the recipe is added and the website deployment starts automatically. This access can add recipes only—it cannot change or delete existing ones.</p>
-        <a className="benny-add-download" href="/recipe-book/Caruso-Recipe-Book.zip" download>Download the skill instead</a>
+        <div className="benny-add-finish"><span className="benny-add-finish-mark" aria-hidden="true"><i /><i /><i /></span><p><strong>That&apos;s it.</strong> Approve the preview and the recipe appears here after the automatic deployment.</p><a className="benny-add-download" href="/recipe-book/Caruso-Recipe-Book.zip" download>Download skill</a></div>
       </section>
     </div>}
 
