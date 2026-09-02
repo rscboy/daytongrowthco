@@ -24,13 +24,15 @@ Send one JSON object with `owner`, `recipe`, and `image`.
 }
 ```
 
-Existing owner IDs are `sammy`, `autumn`, `addison`, and `sam-g`. For a new person, include `name` and optionally `initials`:
+Use the exact owner ID returned by `--list-owners` for every existing person. The initial IDs are `sammy`, `autumn`, `addison`, and `sam-g`, and the live list can contain people created by earlier runs. An existing person needs only their returned ID.
+
+For “Add somebody else,” include the new lowercase-hyphenated ID, display name, and optionally initials:
 
 ```json
 "owner": { "id": "jane-caruso", "name": "Jane Caruso", "initials": "JC" }
 ```
 
-New people receive the family profile image by default. Adding a custom profile picture is outside this skill’s add-only recipe scope.
+The first recipe for a new person atomically creates their permanent subsection and owner tab. Later `--list-owners` calls return that person, so future recipes reuse the saved ID without recreating the profile. New people receive the family profile image by default. Adding a custom profile picture is outside this skill’s add-only recipe scope.
 
 For an attached local dish image, use `image/jpeg`, `image/png`, or `image/webp`. Set `filename`, `mimeType`, and base64-encoded file bytes instead of `url`.
 
