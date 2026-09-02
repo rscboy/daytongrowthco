@@ -5,8 +5,7 @@ dist/
 .DS_Store
 .claude/
 .vercel
-.env.local
-.automation.env
+.env*
 
 # Local Codex/agent workspace configuration (keep on this machine)
 /.agents/

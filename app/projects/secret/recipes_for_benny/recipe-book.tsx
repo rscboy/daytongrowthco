@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, Upload, X } from "lucide-react";
 import "./recipes.css";
 
 type Recipe = {
@@ -64,6 +64,7 @@ const recipes: Recipe[] = [
   { id: "joshua-weissman-canes-chicken", title: "Joshua Weissman's", subtitle: "Raising Cane's chicken", image: "https://cdn.prod.website-files.com/6744d2d124649f6ecd466f50/67ad3cd3be65e23b026a379a_Making%20Raising%20Cane%27s%20Chicken%20Finger%20Combo%20At%20Home%20%7C%20But%20Better.jpg", description: "Sammy's favorite Raising Cane's-style chicken-tender combo: crisp buttermilk chicken, seasoned fries, buttery Texas toast, slaw, and a punchy signature sauce.", prep: "1 hr 30 min", cook: "45 min", total: "2 hr 15 min", yield: "4 combos", tags: ["Dinner", "Crispy", "Weekend"], color: "gold", ingredients: [{ category: "Cane's-style sauce", items: ["¾ cup mayonnaise", "5 tbsp ketchup", "1½ tbsp Worcestershire sauce", "3 garlic cloves, finely grated", "1½ tsp kosher salt", "Freshly ground black pepper"] }, { category: "Chicken and coating", items: ["4 boneless, skinless chicken breasts, halved lengthwise", "1½ cups buttermilk", "1 tbsp kosher salt", "1 tbsp garlic powder", "1 tbsp ground white pepper", "1½ cups all-purpose flour", "2 tsp each garlic powder, paprika, and white pepper", "Oil, for frying"] }, { category: "Fries, slaw, and toast", items: ["2½ lb russet potatoes", "½ head green cabbage, thinly sliced", "2 carrots, grated", "2 dill pickles, grated", "½ cup mayonnaise + ¼ cup buttermilk", "1 lemon, zested and juiced", "4 thick slices sourdough or brioche", "½ cup butter + 1–3 garlic cloves"] }], steps: [{ title: "Make the sauce", text: "Stir mayonnaise, ketchup, Worcestershire, garlic, salt, and black pepper together. Refrigerate at least 1 hour so the flavor settles in." }, { title: "Mix the slaw", text: "Combine mayo, buttermilk, lemon, grated carrot and pickle, then fold in cabbage. Season to taste and keep chilled." }, { title: "Marinate the chicken", text: "Whisk buttermilk with salt, garlic powder, and white pepper. Coat the chicken and refrigerate for at least 1 hour, or overnight." }, { title: "Prepare the fries", text: "Cut potatoes into thin batons and soak in cold salted water for 30 minutes. Dry thoroughly, fry once at 300°F until softened, then again at 400°F until crisp. Salt immediately." }, { title: "Dredge and fry", text: "Mix flour with salt, garlic powder, paprika, and white pepper. Press each tender firmly into the flour, then fry at 350°F in small batches for 5–7 minutes, until deeply golden and cooked through." }, { title: "Make Texas toast and serve", text: "Melt butter with garlic, toast bread in the butter on both sides, brush with more garlic butter, and finish with flaky salt. Serve each plate with two tenders, fries, slaw, toast, and the sauce." }], note: "Credit: adapted from Joshua Weissman's 'Making Raising Cane's Chicken Finger Combo At Home | But Better' (joshuaweissman.com)." },
   { id: "addisons-fish-sauce-wings", title: "Addison's Fish Sauce", subtitle: "Chicken wings", image: "https://delightfulplate.com/wp-content/uploads/2020/03/Vietnamese-Fish-Sauce-Chicken-Wings-Canh-Ga-Chien-Nuoc-Mam.jpg", description: "Crispy air-fried chicken wings with a simple sweet-savory fish-sauce marinade and a fresh green-onion finish.", prep: "10 min", cook: "7–14 min", total: "2 hr 20 min", yield: "4 servings", tags: ["Dinner", "Crispy", "Quick"], color: "gold", owner: "addison", ingredients: [{ category: "Wings", items: ["2 lb chicken wings, split at joints and patted dry", "1 tbsp fish sauce", "1 tbsp sugar", "1 tsp garlic powder", "1 tsp onion powder", "2 tbsp cornstarch", "Cooking spray or neutral oil spray"] }, { category: "To finish", items: ["2–3 green onions, thinly sliced", "Lime wedges, optional"] }], steps: [{ title: "Season and marinate", text: "Add wings, fish sauce, sugar, garlic powder, and onion powder to a large zip-top bag. Seal, shake until coated, then refrigerate for 2–4 hours." }, { title: "Coat the wings", text: "Remove the wings from the bag and coat evenly in cornstarch. Shake away loose excess so the coating stays light and crisp." }, { title: "Air-fry crisp", text: "Preheat the air fryer to 400°F. Arrange wings in a single layer, lightly spray with oil, and air-fry for 7 minutes. Flip, then continue in short 3–5 minute intervals until crisp, browned, and the thickest piece reaches 165°F." }, { title: "Garnish and serve", text: "Transfer the hot wings to a serving plate and shower with sliced green onion. Add lime if you want a bright finish." }], note: "Do not crowd the air-fryer basket. Depending on wing size and the air fryer, a second crisping pass after the initial 7 minutes gives the best result." },
   { id: "easy-homemade-horchata", title: "Easy Homemade", subtitle: "Horchata", image: "https://bellyfull.net/wp-content/uploads/2022/04/Horchata-blog-1.jpg", description: "A creamy, cinnamon-kissed rice drink made at home with both evaporated and sweetened condensed milk.", prep: "10 min", cook: "0 min", total: "4 hr 10 min", yield: "6 servings", tags: ["Drinks", "Sweet", "Make ahead"], color: "peach", owner: "sammy", ingredients: [{ category: "For the horchata", items: ["1 cup long-grain white rice", "2 cinnamon sticks", "4 cups hot water", "1 can (12 oz) evaporated milk", "½ can (7 oz) sweetened condensed milk", "1 tsp vanilla extract", "¼ tsp ground cinnamon, plus more for serving", "Pinch of salt"] }, { category: "To serve", items: ["Ice", "Cinnamon sticks, optional"] }], steps: [{ title: "Soak the rice", text: "Add the rice and cinnamon sticks to a blender. Pour in the hot water, pulse a few times to break up the rice, then cover and refrigerate for at least 4 hours or overnight." }, { title: "Blend smooth", text: "Blend the soaked rice mixture for 1–2 minutes, until the rice is very finely ground and the mixture looks milky." }, { title: "Strain", text: "Pour through a fine-mesh strainer lined with cheesecloth or a clean thin kitchen towel into a pitcher. Press gently; do not force gritty rice solids through." }, { title: "Make it creamy", text: "Whisk in evaporated milk, sweetened condensed milk, vanilla, ground cinnamon, and salt. Taste and add a splash of water if you want it lighter." }, { title: "Chill and serve", text: "Refrigerate until cold. Stir well, pour over ice, and finish each glass with a light dusting of cinnamon." }], note: "For the smoothest horchata, give the rice a full overnight soak and strain it twice. It keeps chilled for up to 3 days; stir before pouring." },
+  {"id":"easy-chicken-pad-thai-sammy","title":"Easy Chicken","subtitle":"Pad Thai","description":"Rice noodles tossed with chicken, peanuts, garlic, and a simple homemade pad Thai sauce.","prep":"30 min","cook":"20 min","total":"50 min","yield":"6 servings","tags":["Dinner","Thai","Chicken","Noodles"],"color":"coral","ingredients":[{"category":"Pad Thai Sauce","items":["1/4 cup light brown sugar","1 tablespoon cornstarch","1/4 teaspoon white pepper","1 tablespoon Sriracha, plus more for serving","2 teaspoons tamarind paste (adjust to taste by brand)","1/2 cup low-sodium chicken broth","2 tablespoons fish sauce"]},{"category":"Chicken and Noodles","items":["1 1/2 pounds boneless, skinless chicken breast halves or tenders, thinly sliced","3 tablespoons low-sodium tamari","1 tablespoon cornstarch","14 ounces stir-fry rice noodles","1 tablespoon extra-light olive oil","1/3 cup finely chopped or ground lightly salted roasted peanuts, plus more for serving","4 cloves fresh garlic, minced","2 eggs","12 ounces fresh bean sprouts, rinsed","6 green onions, cut into 1-inch pieces","1/4 cup torn fresh cilantro, for serving","Lime wedges, for serving"]}],"steps":[{"title":"Soak noodles","text":"Place the rice noodles in a large bowl and cover with lukewarm water. Soak for 1 hour, then drain and set aside."},{"title":"Make sauce","text":"Whisk together the brown sugar, 1 tablespoon cornstarch, white pepper, Sriracha, tamarind paste, fish sauce, and chicken broth until the sugar dissolves. Set aside."},{"title":"Coat chicken","text":"Toss the sliced chicken with tamari and the remaining 1 tablespoon cornstarch in a shallow bowl. Set aside."},{"title":"Cook chicken","text":"Heat the olive oil in a wok or 12-inch chef's pan over medium-high heat. Add chicken in an even layer; cook undisturbed for 3 to 5 minutes, then flip and cook 1 to 2 minutes more, until fully cooked."},{"title":"Stir-fry","text":"Add peanuts and garlic; stir-fry 1 minute. Add noodles and sauce, then stir-fry for a few minutes until noodles are tender with a little chew, adding a little water if needed."},{"title":"Finish","text":"Move chicken and noodles aside, add eggs, and cook 1 to 1 1/2 minutes before tossing through. Add bean sprouts and green onions; toss until wilted. Serve topped with cilantro, extra peanuts, lime wedges, and extra Sriracha if desired."}],"note":"Special note: have fun. Source: Easy Chicken Pad Thai by Laurie McNamara, Simply Scratch — https://www.simplyscratch.com/easy-chicken-pad-thai/","image":"https://www.simplyscratch.com/wp-content/uploads/2020/05/Easy-Chicken-Pad-Thai-l-SimplyScratch.com-homemade-padthai-chicken-noodles-stirfry-easy-dinner-recipe-23.jpg","owner":"sammy"},
 ];
 
 const recipeProfiles: RecipeProfile[] = [
@@ -83,6 +84,22 @@ const samGRecipeIds = new Set([
 
 const SAVED_RECIPES_KEY = "benny-saved-recipes-v1";
 const RECIPE_CHECKLISTS_KEY = "benny-recipe-checklists-v1";
+const RECIPE_SKILL_URL = "https://www.daytongrowth.co/recipe-book/Caruso-Recipe-Book.zip";
+const RECIPE_SKILL_REPOSITORY = "https://github.com/rscboy/caruso-recipe-book";
+const recipeSkillGuides = {
+  codex: {
+    label: "Codex",
+    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Codex skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
+    run: "$caruso-recipe-book",
+  },
+  claude: {
+    label: "Claude Code",
+    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Claude skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
+    run: "/caruso-recipe-book",
+  },
+} as const;
+
+type PreparedRecipe = { fileName: string; payload: Record<string, unknown>; title: string; owner: string };
 
 function recipeOwner(recipe: Recipe): RecipeOwnerId {
   if (recipe.owner) return recipe.owner;
@@ -215,10 +232,23 @@ export function BennyRecipeBook() {
   const [storageReady, setStorageReady] = useState(false);
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [addGuideOpen, setAddGuideOpen] = useState(false);
+  const [addGuidePlatform, setAddGuidePlatform] = useState<keyof typeof recipeSkillGuides>("codex");
+  const [copiedGuide, setCopiedGuide] = useState<"install" | "run" | "">("");
+  const [guestCode, setGuestCode] = useState("");
+  const [guestCodeStatus, setGuestCodeStatus] = useState<"idle" | "creating" | "error">("idle");
+  const [guestCodeCopied, setGuestCodeCopied] = useState(false);
+  const [preparedRecipe, setPreparedRecipe] = useState<PreparedRecipe | null>(null);
+  const [preparedAccessCode, setPreparedAccessCode] = useState("");
+  const [preparedStatus, setPreparedStatus] = useState<"idle" | "publishing" | "success" | "error">("idle");
+  const [preparedMessage, setPreparedMessage] = useState("");
+  const [preparedLinks, setPreparedLinks] = useState<{ recipeUrl?: string; commit?: string }>({});
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
   const recipeSheetRef = useRef<HTMLDivElement>(null);
+  const addGuideCloseRef = useRef<HTMLButtonElement>(null);
   const shareTimerRef = useRef<number | null>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? recipes[0];
   const checked = checkedByRecipe[selected.id] ?? [];
   const ingredientCount = selected.ingredients.flatMap((group) => group.items).length;
@@ -281,12 +311,20 @@ export function BennyRecipeBook() {
   }, []);
   useEffect(() => () => {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
   }, []);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const isTyping = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
-      if (event.key === "Escape" && mobileRecipeOpen) closeRecipe();
+      if (event.key === "Escape" && addGuideOpen) setAddGuideOpen(false);
+      else if (event.key === "Escape" && mobileRecipeOpen) {
+        setMobileRecipeOpen(false);
+        setShareStatus("");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("recipe");
+        window.history.replaceState({}, "", url);
+      }
       if (event.key === "/" && !isTyping) {
         event.preventDefault();
         searchInputRef.current?.focus();
@@ -294,7 +332,18 @@ export function BennyRecipeBook() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mobileRecipeOpen]);
+  }, [addGuideOpen, mobileRecipeOpen]);
+  useEffect(() => {
+    if (!addGuideOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => addGuideCloseRef.current?.focus());
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [addGuideOpen]);
   useEffect(() => {
     if (!mobileRecipeOpen) return;
     const previousOverflow = document.body.style.overflow;
@@ -360,6 +409,91 @@ export function BennyRecipeBook() {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
     shareTimerRef.current = window.setTimeout(() => setShareStatus(""), 2200);
   };
+  const copyGuideText = async (kind: "install" | "run") => {
+    const text = recipeSkillGuides[addGuidePlatform][kind];
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setCopiedGuide(kind);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setCopiedGuide(""), 1800);
+  };
+  const generateGuestCode = async () => {
+    setGuestCodeStatus("creating");
+    setGuestCodeCopied(false);
+    try {
+      const response = await fetch("/api/caruso-recipe-book/invite", { method: "POST" });
+      const result = await response.json().catch(() => ({})) as { ok?: boolean; code?: string };
+      if (!response.ok || !result.ok || !result.code) throw new Error();
+      setGuestCode(result.code);
+      setGuestCodeStatus("idle");
+    } catch {
+      setGuestCodeStatus("error");
+    }
+  };
+  const copyGuestCode = async () => {
+    if (!guestCode) return;
+    try {
+      await navigator.clipboard.writeText(guestCode);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = guestCode;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setGuestCodeCopied(true);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setGuestCodeCopied(false), 1800);
+  };
+  const selectPreparedRecipe = async (file?: File) => {
+    setPreparedStatus("idle");
+    setPreparedMessage("");
+    setPreparedLinks({});
+    if (!file) { setPreparedRecipe(null); return; }
+    if (file.size > 16_000_000) { setPreparedRecipe(null); setPreparedStatus("error"); setPreparedMessage("That file is too large. Choose the JSON file created by the skill."); return; }
+    try {
+      const payload = JSON.parse(await file.text()) as Record<string, unknown>;
+      const recipe = payload.recipe as { title?: unknown } | undefined;
+      const owner = payload.owner as { name?: unknown; id?: unknown } | undefined;
+      if (!recipe || typeof recipe.title !== "string" || !owner || (typeof owner.name !== "string" && typeof owner.id !== "string")) throw new Error();
+      setPreparedRecipe({ fileName: file.name, payload, title: recipe.title, owner: typeof owner.name === "string" ? owner.name : String(owner.id) });
+    } catch {
+      setPreparedRecipe(null);
+      setPreparedStatus("error");
+      setPreparedMessage("That does not look like a Recipe Book JSON file.");
+    }
+  };
+  const publishPreparedRecipe = async () => {
+    const accessCode = (preparedAccessCode || guestCode).trim();
+    if (!preparedRecipe || !accessCode) { setPreparedStatus("error"); setPreparedMessage("Choose the prepared JSON file and enter a guest code."); return; }
+    setPreparedStatus("publishing");
+    setPreparedMessage("");
+    try {
+      const response = await fetch("/api/caruso-recipe-book", { method: "POST", headers: { Authorization: `Bearer ${accessCode}`, "Content-Type": "application/json" }, body: JSON.stringify(preparedRecipe.payload) });
+      const result = await response.json().catch(() => ({})) as { ok?: boolean; error?: string; recipeUrl?: string; commit?: string };
+      if (!response.ok || !result.ok) throw new Error(result.error || "The recipe could not be published.");
+      setPreparedStatus("success");
+      setPreparedMessage(`${preparedRecipe.title} was accepted. The website deployment has started.`);
+      setPreparedLinks({ recipeUrl: result.recipeUrl, commit: result.commit });
+      setPreparedAccessCode("");
+    } catch (error) {
+      setPreparedStatus("error");
+      setPreparedMessage(error instanceof Error ? error.message : "The recipe could not be published.");
+    }
+  };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setCheckedByRecipe((checklists) => {
     const current = checklists[selected.id] ?? [];
@@ -379,8 +513,52 @@ export function BennyRecipeBook() {
     <header className="benny-header">
       <a className="benny-brand" href="#top" aria-label={`${activeProfile.label} home`}><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
-      <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
+      <div className="benny-header-actions">
+        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Add</button>
+        <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
+      </div>
     </header>
+
+    {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
+      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title">
+        <div className="benny-add-dialog-head">
+          <div><p className="benny-eyebrow">Recipe contributor</p><h2 id="benny-add-title">Add a recipe</h2></div>
+          <button ref={addGuideCloseRef} type="button" onClick={() => setAddGuideOpen(false)} aria-label="Close add recipe instructions"><X size={19} /></button>
+        </div>
+        <p className="benny-add-intro">Install the public Recipe Book skill once. It asks four short questions, shows a preview, and can only add a new recipe.</p>
+        <div className="benny-add-platforms" role="tablist" aria-label="Choose your coding assistant">
+          {(Object.keys(recipeSkillGuides) as (keyof typeof recipeSkillGuides)[]).map((platform) => <button key={platform} type="button" role="tab" aria-selected={addGuidePlatform === platform} className={addGuidePlatform === platform ? "active" : ""} onClick={() => { setAddGuidePlatform(platform); setCopiedGuide(""); }}>{recipeSkillGuides[platform].label}</button>)}
+        </div>
+        <div className="benny-add-step">
+          <div><span>01</span><div><strong>Install from GitHub</strong><small>Send this public repo to {recipeSkillGuides[addGuidePlatform].label}, or download the ZIP and attach it. The assistant can inspect every file first.</small></div></div>
+          <div className="benny-add-source"><a href={RECIPE_SKILL_REPOSITORY} target="_blank" rel="noreferrer">Open public skill repo <ChevronRight size={14} /></a><a href={RECIPE_SKILL_URL} download>Download ZIP</a></div>
+          <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install request">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy request"}</span></button></div>
+        </div>
+        <div className="benny-add-step">
+          <div><span>02</span><div><strong>Make a guest code</strong><small>Paste this code into their Codex or Claude chat once. It can only add recipes and stays saved on that computer for 60 days.</small></div></div>
+          <div className="benny-add-guest" aria-live="polite">{guestCode ? <><code>{guestCode}</code><button type="button" onClick={copyGuestCode} aria-label="Copy guest access code">{guestCodeCopied ? <Check size={16} /> : <Copy size={16} />}<span>{guestCodeCopied ? "Copied" : "Copy code"}</span></button></> : <button type="button" onClick={generateGuestCode} disabled={guestCodeStatus === "creating"}>{guestCodeStatus === "creating" ? "Making code…" : "Generate guest code"}</button>}</div>
+          {guestCodeStatus === "error" && <small className="benny-add-guest-error">Couldn&apos;t make a code yet. Please try again.</small>}
+        </div>
+        <div className="benny-add-step">
+          <div><span>03</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
+          <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
+        </div>
+        <p className="benny-add-footnote">After you approve the preview, the recipe is added and the website deployment starts automatically. This access can add recipes only—it cannot change or delete existing ones.</p>
+        <details className="benny-add-fallback">
+          <summary>AI says the Recipe Book website is blocked?</summary>
+          <p>Have it finish the interview and give you the prepared JSON file. You can publish that file here from your normal browser.</p>
+          <label className="benny-add-file">
+            <Upload size={16} />
+            <span>{preparedRecipe ? preparedRecipe.fileName : "Choose prepared recipe JSON"}</span>
+            <input type="file" accept="application/json,.json" onChange={(event) => void selectPreparedRecipe(event.target.files?.[0])} />
+          </label>
+          {preparedRecipe && <div className="benny-add-file-preview"><strong>{preparedRecipe.title}</strong><span>{preparedRecipe.owner}</span></div>}
+          <label className="benny-add-code"><span>Guest code</span><input type="password" autoComplete="off" value={preparedAccessCode} onChange={(event) => setPreparedAccessCode(event.target.value)} placeholder={guestCode ? "Use the code generated above" : "Enter the 60-day guest code"} /></label>
+          <button className="benny-add-publish" type="button" disabled={preparedStatus === "publishing" || !preparedRecipe || (!preparedAccessCode && !guestCode)} onClick={() => void publishPreparedRecipe()}>{preparedStatus === "publishing" ? "Publishing…" : "Publish prepared recipe"}</button>
+          {preparedMessage && <div className={`benny-add-publish-result ${preparedStatus}`} role="status"><span>{preparedMessage}</span>{preparedStatus === "success" && <nav>{preparedLinks.recipeUrl && <a href={preparedLinks.recipeUrl}>View recipe</a>}{preparedLinks.commit && <a href={preparedLinks.commit} target="_blank" rel="noreferrer">View commit</a>}</nav>}</div>}
+        </details>
+      </section>
+    </div>}
 
     <section className="benny-intro" id="top" style={{ "--benny-profile-image": `url("${activeProfile.image}")`, "--benny-profile-position": activeProfile.imagePosition } as CSSProperties}>
       <p className="benny-eyebrow">{activeProfile.label}</p>
