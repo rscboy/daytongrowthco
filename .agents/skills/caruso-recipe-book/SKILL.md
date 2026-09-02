@@ -35,7 +35,7 @@ Run:
 node scripts/add-recipe.mjs --payload /absolute/path/to/recipe.json
 ```
 
-The script reads the connection from environment variables or the local credentials file created by `node scripts/configure.mjs`. If neither is configured, stop and explain that the contributor needs the owner-issued add-only access code and should rerun the installer setup. Never request, accept, store, or use a GitHub token, Vercel token, repository write credential, or general deployment credential.
+The script reads the connection from environment variables or the local credentials file created by `node scripts/configure.mjs`. If neither is configured, stop and explain that the contributor needs a guest access code from the Recipe Book website's **Add** panel and should rerun the installer setup. Never request, accept, store, or use a GitHub token, Vercel token, repository write credential, or general deployment credential.
 
 The service only appends a new recipe (and, when requested, a new person) to the canonical source. It rejects duplicate IDs, unsupported fields, malformed data, source-format drift, and non-fast-forward updates. The resulting Git commit starts the normal production deployment.
 

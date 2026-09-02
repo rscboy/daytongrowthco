@@ -231,6 +231,9 @@ export function BennyRecipeBook() {
   const [addGuideOpen, setAddGuideOpen] = useState(false);
   const [addGuidePlatform, setAddGuidePlatform] = useState<keyof typeof recipeSkillGuides>("codex");
   const [copiedGuide, setCopiedGuide] = useState<"install" | "run" | "">("");
+  const [guestCode, setGuestCode] = useState("");
+  const [guestCodeStatus, setGuestCodeStatus] = useState<"idle" | "creating" | "error">("idle");
+  const [guestCodeCopied, setGuestCodeCopied] = useState(false);
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
   const recipeSheetRef = useRef<HTMLDivElement>(null);
@@ -415,6 +418,37 @@ export function BennyRecipeBook() {
     if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     copyTimerRef.current = window.setTimeout(() => setCopiedGuide(""), 1800);
   };
+  const generateGuestCode = async () => {
+    setGuestCodeStatus("creating");
+    setGuestCodeCopied(false);
+    try {
+      const response = await fetch("/api/caruso-recipe-book/invite", { method: "POST" });
+      const result = await response.json().catch(() => ({})) as { ok?: boolean; code?: string };
+      if (!response.ok || !result.ok || !result.code) throw new Error();
+      setGuestCode(result.code);
+      setGuestCodeStatus("idle");
+    } catch {
+      setGuestCodeStatus("error");
+    }
+  };
+  const copyGuestCode = async () => {
+    if (!guestCode) return;
+    try {
+      await navigator.clipboard.writeText(guestCode);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = guestCode;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setGuestCodeCopied(true);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setGuestCodeCopied(false), 1800);
+  };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setCheckedByRecipe((checklists) => {
     const current = checklists[selected.id] ?? [];
@@ -455,7 +489,12 @@ export function BennyRecipeBook() {
           <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install command">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy"}</span></button></div>
         </div>
         <div className="benny-add-step">
-          <div><span>02</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
+          <div><span>02</span><div><strong>Make a guest code</strong><small>Copy this code to the guest. It works for adding recipes for 30 days.</small></div></div>
+          <div className="benny-add-guest" aria-live="polite">{guestCode ? <><code>{guestCode}</code><button type="button" onClick={copyGuestCode} aria-label="Copy guest access code">{guestCodeCopied ? <Check size={16} /> : <Copy size={16} />}<span>{guestCodeCopied ? "Copied" : "Copy code"}</span></button></> : <button type="button" onClick={generateGuestCode} disabled={guestCodeStatus === "creating"}>{guestCodeStatus === "creating" ? "Making code…" : "Generate guest code"}</button>}</div>
+          {guestCodeStatus === "error" && <small className="benny-add-guest-error">Couldn&apos;t make a code yet. Please try again.</small>}
+        </div>
+        <div className="benny-add-step">
+          <div><span>03</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
           <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
         </div>
         <p className="benny-add-footnote">After you approve the preview, the recipe is added and the website deployment starts automatically. This access can add recipes only—it cannot change or delete existing ones.</p>

@@ -1,4 +1,5 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash } from "node:crypto";
+import { authorizedRecipeAccess } from "./access";
 
 export const runtime = "nodejs";
 
@@ -28,15 +29,6 @@ type CreatedCommit = { sha: string; html_url: string };
 
 function jsonError(message: string, status: number) {
   return Response.json({ ok: false, error: message }, { status });
-}
-
-function authorized(request: Request) {
-  const expected = process.env.CARUSO_RECIPE_ADD_TOKEN;
-  const supplied = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-  if (!expected || !supplied) return false;
-  const expectedBytes = Buffer.from(expected);
-  const suppliedBytes = Buffer.from(supplied);
-  return expectedBytes.length === suppliedBytes.length && timingSafeEqual(expectedBytes, suppliedBytes);
 }
 
 function isText(value: unknown, max = 500) {
@@ -140,7 +132,7 @@ function ownerList(source: string) {
 }
 
 export async function GET(request: Request) {
-  if (!authorized(request)) return jsonError("Unauthorized.", 401);
+  if (!authorizedRecipeAccess(request)) return jsonError("Unauthorized.", 401);
   try {
     return Response.json({ ok: true, owners: ownerList(await currentSource()) });
   } catch (error) {
@@ -149,7 +141,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!authorized(request)) return jsonError("Unauthorized.", 401);
+  if (!authorizedRecipeAccess(request)) return jsonError("Unauthorized.", 401);
   const raw = await request.text();
   if (Buffer.byteLength(raw, "utf8") > 15_200_000) return jsonError("Request is too large.", 413);
   let body: unknown;
