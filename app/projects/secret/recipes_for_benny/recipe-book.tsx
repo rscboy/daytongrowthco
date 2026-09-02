@@ -436,7 +436,7 @@ export function BennyRecipeBook() {
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
       <div className="benny-header-actions">
         <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Add</button>
-        <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
+        <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
       </div>
     </header>
 
