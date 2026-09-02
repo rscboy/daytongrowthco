@@ -1,7 +1,7 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 const INVITE_PREFIX = "CRB1";
-const INVITE_TTL_SECONDS = 60 * 60 * 24 * 30;
+const INVITE_TTL_SECONDS = 60 * 60 * 24 * 60;
 
 function safeEqual(left: string, right: string) {
   const leftBytes = Buffer.from(left);

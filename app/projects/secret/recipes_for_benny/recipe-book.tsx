@@ -89,12 +89,12 @@ const RECIPE_SKILL_REPOSITORY = "https://github.com/rscboy/caruso-recipe-book";
 const recipeSkillGuides = {
   codex: {
     label: "Codex",
-    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Codex skills. Ask me to paste the 30-day add-only guest code in this chat, use it for setup without repeating it, then start the recipe interview.`,
+    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Codex skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
     run: "$caruso-recipe-book",
   },
   claude: {
     label: "Claude Code",
-    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Claude skills. Ask me to paste the 30-day add-only guest code in this chat, use it for setup without repeating it, then start the recipe interview.`,
+    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Claude skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
     run: "/caruso-recipe-book",
   },
 } as const;
@@ -535,7 +535,7 @@ export function BennyRecipeBook() {
           <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install request">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy request"}</span></button></div>
         </div>
         <div className="benny-add-step">
-          <div><span>02</span><div><strong>Make a guest code</strong><small>Paste this code into their Codex or Claude chat. It can only add recipes and expires after 30 days.</small></div></div>
+          <div><span>02</span><div><strong>Make a guest code</strong><small>Paste this code into their Codex or Claude chat once. It can only add recipes and stays saved on that computer for 60 days.</small></div></div>
           <div className="benny-add-guest" aria-live="polite">{guestCode ? <><code>{guestCode}</code><button type="button" onClick={copyGuestCode} aria-label="Copy guest access code">{guestCodeCopied ? <Check size={16} /> : <Copy size={16} />}<span>{guestCodeCopied ? "Copied" : "Copy code"}</span></button></> : <button type="button" onClick={generateGuestCode} disabled={guestCodeStatus === "creating"}>{guestCodeStatus === "creating" ? "Making code…" : "Generate guest code"}</button>}</div>
           {guestCodeStatus === "error" && <small className="benny-add-guest-error">Couldn&apos;t make a code yet. Please try again.</small>}
         </div>
@@ -553,7 +553,7 @@ export function BennyRecipeBook() {
             <input type="file" accept="application/json,.json" onChange={(event) => void selectPreparedRecipe(event.target.files?.[0])} />
           </label>
           {preparedRecipe && <div className="benny-add-file-preview"><strong>{preparedRecipe.title}</strong><span>{preparedRecipe.owner}</span></div>}
-          <label className="benny-add-code"><span>Guest code</span><input type="password" autoComplete="off" value={preparedAccessCode} onChange={(event) => setPreparedAccessCode(event.target.value)} placeholder={guestCode ? "Use the code generated above" : "Enter the 30-day guest code"} /></label>
+          <label className="benny-add-code"><span>Guest code</span><input type="password" autoComplete="off" value={preparedAccessCode} onChange={(event) => setPreparedAccessCode(event.target.value)} placeholder={guestCode ? "Use the code generated above" : "Enter the 60-day guest code"} /></label>
           <button className="benny-add-publish" type="button" disabled={preparedStatus === "publishing" || !preparedRecipe || (!preparedAccessCode && !guestCode)} onClick={() => void publishPreparedRecipe()}>{preparedStatus === "publishing" ? "Publishing…" : "Publish prepared recipe"}</button>
           {preparedMessage && <div className={`benny-add-publish-result ${preparedStatus}`} role="status"><span>{preparedMessage}</span>{preparedStatus === "success" && <nav>{preparedLinks.recipeUrl && <a href={preparedLinks.recipeUrl}>View recipe</a>}{preparedLinks.commit && <a href={preparedLinks.commit} target="_blank" rel="noreferrer">View commit</a>}</nav>}</div>}
         </details>

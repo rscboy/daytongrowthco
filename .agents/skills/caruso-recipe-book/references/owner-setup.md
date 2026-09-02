@@ -7,13 +7,13 @@ Share the public GitHub repository as the primary source. A contributor can ask 
 Configure these server-side environment variables in the production Vercel project:
 
 - `CARUSO_RECIPE_ADD_TOKEN`: the private service token; do not distribute it to contributors.
-- `CARUSO_RECIPE_INVITE_SECRET`: a random value of at least 32 characters used to generate 30-day guest codes.
+- `CARUSO_RECIPE_INVITE_SECRET`: a random value of at least 32 characters used to generate 60-day guest codes.
 - `CARUSO_RECIPE_GITHUB_TOKEN`: a fine-grained GitHub token or GitHub App token with Contents write access only to `rscboy/daytongrowthco`.
 - `CARUSO_RECIPE_GITHUB_REPOSITORY`: optional; defaults to `rscboy/daytongrowthco`.
 - `CARUSO_RECIPE_GITHUB_BRANCH`: optional; defaults to `main`.
 - `CARUSO_RECIPE_SITE_URL`: optional; defaults to the production recipe-book URL.
 
-Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 30 days and can add recipes only. Give each contributor the public repository link, then have them paste the guest code into their Codex or Claude chat when the skill asks for it. The code remains in that chat history until it expires, so never use the permanent service, GitHub, or Vercel credentials for this flow. The bundled `scripts/configure.mjs` saves both production service addresses and tries them in order.
+Open the Recipe Book website's **Add** panel and use **Generate guest code** for each contributor. Guest codes expire after 60 days and can add recipes only. Give each contributor the public repository link, then have them paste the guest code into their Codex or Claude chat when the skill asks for it. Setup saves the connection privately on that computer, so they are not asked again while the code remains valid. The code remains in that chat history until it expires, so never use the permanent service, GitHub, or Vercel credentials for this flow. The bundled `scripts/configure.mjs` saves both production service addresses and tries them in order.
 
 - `CARUSO_RECIPE_API_URL=https://www.daytongrowth.co/api/caruso-recipe-book`
 - `CARUSO_RECIPE_ADD_TOKEN=<the guest code>`
