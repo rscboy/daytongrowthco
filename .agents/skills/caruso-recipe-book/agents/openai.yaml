@@ -1,0 +1,7 @@
+interface:
+  display_name: "Caruso Recipe Book"
+  short_description: "Safely add and publish a family recipe"
+  default_prompt: "Use $caruso-recipe-book to add a recipe to the Caruso family recipe website."
+
+policy:
+  allow_implicit_invocation: true

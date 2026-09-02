@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 
 type Recipe = {
@@ -83,6 +83,19 @@ const samGRecipeIds = new Set([
 
 const SAVED_RECIPES_KEY = "benny-saved-recipes-v1";
 const RECIPE_CHECKLISTS_KEY = "benny-recipe-checklists-v1";
+const RECIPE_SKILL_URL = "https://www.daytongrowth.co/recipe-book/Caruso-Recipe-Book.zip";
+const recipeSkillGuides = {
+  codex: {
+    label: "Codex",
+    install: `curl -fsSL "${RECIPE_SKILL_URL}" -o "/tmp/Caruso-Recipe-Book.zip" && mkdir -p ~/.codex/skills && unzip -oq "/tmp/Caruso-Recipe-Book.zip" -d ~/.codex/skills && node ~/.codex/skills/caruso-recipe-book/scripts/configure.mjs`,
+    run: "$caruso-recipe-book",
+  },
+  claude: {
+    label: "Claude Code",
+    install: `curl -fsSL "${RECIPE_SKILL_URL}" -o "/tmp/Caruso-Recipe-Book.zip" && mkdir -p ~/.claude/skills && unzip -oq "/tmp/Caruso-Recipe-Book.zip" -d ~/.claude/skills && node ~/.claude/skills/caruso-recipe-book/scripts/configure.mjs`,
+    run: "/caruso-recipe-book",
+  },
+} as const;
 
 function recipeOwner(recipe: Recipe): RecipeOwnerId {
   if (recipe.owner) return recipe.owner;
@@ -215,10 +228,15 @@ export function BennyRecipeBook() {
   const [storageReady, setStorageReady] = useState(false);
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [addGuideOpen, setAddGuideOpen] = useState(false);
+  const [addGuidePlatform, setAddGuidePlatform] = useState<keyof typeof recipeSkillGuides>("codex");
+  const [copiedGuide, setCopiedGuide] = useState<"install" | "run" | "">("");
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
   const recipeSheetRef = useRef<HTMLDivElement>(null);
+  const addGuideCloseRef = useRef<HTMLButtonElement>(null);
   const shareTimerRef = useRef<number | null>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? recipes[0];
   const checked = checkedByRecipe[selected.id] ?? [];
   const ingredientCount = selected.ingredients.flatMap((group) => group.items).length;
@@ -281,12 +299,20 @@ export function BennyRecipeBook() {
   }, []);
   useEffect(() => () => {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
   }, []);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const isTyping = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
-      if (event.key === "Escape" && mobileRecipeOpen) closeRecipe();
+      if (event.key === "Escape" && addGuideOpen) setAddGuideOpen(false);
+      else if (event.key === "Escape" && mobileRecipeOpen) {
+        setMobileRecipeOpen(false);
+        setShareStatus("");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("recipe");
+        window.history.replaceState({}, "", url);
+      }
       if (event.key === "/" && !isTyping) {
         event.preventDefault();
         searchInputRef.current?.focus();
@@ -294,7 +320,18 @@ export function BennyRecipeBook() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mobileRecipeOpen]);
+  }, [addGuideOpen, mobileRecipeOpen]);
+  useEffect(() => {
+    if (!addGuideOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => addGuideCloseRef.current?.focus());
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [addGuideOpen]);
   useEffect(() => {
     if (!mobileRecipeOpen) return;
     const previousOverflow = document.body.style.overflow;
@@ -360,6 +397,24 @@ export function BennyRecipeBook() {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
     shareTimerRef.current = window.setTimeout(() => setShareStatus(""), 2200);
   };
+  const copyGuideText = async (kind: "install" | "run") => {
+    const text = recipeSkillGuides[addGuidePlatform][kind];
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setCopiedGuide(kind);
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setCopiedGuide(""), 1800);
+  };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setCheckedByRecipe((checklists) => {
     const current = checklists[selected.id] ?? [];
@@ -379,8 +434,34 @@ export function BennyRecipeBook() {
     <header className="benny-header">
       <a className="benny-brand" href="#top" aria-label={`${activeProfile.label} home`}><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
-      <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
+      <div className="benny-header-actions">
+        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Add</button>
+        <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /> Saved <b>{saved.length}</b></button>
+      </div>
     </header>
+
+    {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
+      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title">
+        <div className="benny-add-dialog-head">
+          <div><p className="benny-eyebrow">Recipe contributor</p><h2 id="benny-add-title">Add a recipe</h2></div>
+          <button ref={addGuideCloseRef} type="button" onClick={() => setAddGuideOpen(false)} aria-label="Close add recipe instructions"><X size={19} /></button>
+        </div>
+        <p className="benny-add-intro">Install the Recipe Book skill once. It asks for the person, recipe, notes, and photo, then shows a preview before publishing.</p>
+        <div className="benny-add-platforms" role="tablist" aria-label="Choose your coding assistant">
+          {(Object.keys(recipeSkillGuides) as (keyof typeof recipeSkillGuides)[]).map((platform) => <button key={platform} type="button" role="tab" aria-selected={addGuidePlatform === platform} className={addGuidePlatform === platform ? "active" : ""} onClick={() => { setAddGuidePlatform(platform); setCopiedGuide(""); }}>{recipeSkillGuides[platform].label}</button>)}
+        </div>
+        <div className="benny-add-step">
+          <div><span>01</span><div><strong>Install once</strong><small>Paste this into Terminal. It will ask for your private add-only access code.</small></div></div>
+          <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install command">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy"}</span></button></div>
+        </div>
+        <div className="benny-add-step">
+          <div><span>02</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
+          <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
+        </div>
+        <p className="benny-add-footnote">After you approve the preview, the recipe is added and the website deployment starts automatically. This access can add recipes only—it cannot change or delete existing ones.</p>
+        <a className="benny-add-download" href="/recipe-book/Caruso-Recipe-Book.zip" download>Download the skill instead</a>
+      </section>
+    </div>}
 
     <section className="benny-intro" id="top" style={{ "--benny-profile-image": `url("${activeProfile.image}")`, "--benny-profile-position": activeProfile.imagePosition } as CSSProperties}>
       <p className="benny-eyebrow">{activeProfile.label}</p>
