@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Clipboard, ExternalLink, MessageCircleQuestion, Phone
 import { legacyProspects } from "./prospects";
 import { replacementProspects } from "./replacement-prospects";
 import { partTwoProspects } from "./part-two-prospects";
+import { bulkProspects } from "./bulk-prospects";
 import { ObjectionPlaybook } from "./objection-playbook";
 import styles from "./review-call-command-center.module.css";
 
@@ -15,7 +16,7 @@ type Records = Record<number, RecordState>;
 const outcomes: Outcome[] = ["Voicemail left", "No answer", "Callback", "Landline / no-go", "Wrong number", "Skip"];
 const storageKey = "dgc-secret-review-voicemail-command-center-v1";
 const directoryVersionKey = "dgc-secret-review-voicemail-directory-version";
-const directoryVersion = 3;
+const directoryVersion = 4;
 const recordsEndpoint = "/projects/secret/review_call_command_center/api";
 const validOutcomes = new Set<Outcome>(["Not called", ...outcomes]);
 
@@ -51,7 +52,7 @@ function timeLabel() {
 
 function directoryProspects(records: Records) {
   const contacted = legacyProspects.filter((prospect) => records[prospect.id] && records[prospect.id].outcome !== "Not called");
-  return [...contacted, ...replacementProspects, ...partTwoProspects];
+  return [...contacted, ...replacementProspects, ...partTwoProspects, ...bulkProspects];
 }
 
 function telValue(phone: string) {

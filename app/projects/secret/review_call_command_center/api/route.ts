@@ -16,8 +16,8 @@ export const runtime = "nodejs";
 const projectId = "review_call_command_center";
 const blobPath = "secret-projects/review-call-command-center/records.json";
 const localPath = path.join(process.cwd(), "data", "review-call-command-center-records.json");
-const maximumProspectId = 2000;
-const currentDirectoryVersion = 3;
+const maximumProspectId = 9999;
+const currentDirectoryVersion = 4;
 
 const outcomes = new Set([
   "Not called",
