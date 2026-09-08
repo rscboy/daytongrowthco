@@ -33,7 +33,9 @@ type StoredRecord = { outcome: string; notes: string; updatedAt: number };
 type RecordStore = { records: Record<string, StoredRecord>; updatedAt: number; directoryVersion: number; resetReplacementRecords?: boolean };
 
 function blobConfigured() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN));
+  // The Blob SDK obtains Vercel's OIDC token from the request context at runtime.
+  // BLOB_STORE_ID is therefore the durable-storage signal in production.
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 function normalizeRecords(value: unknown) {
@@ -109,6 +111,9 @@ async function writeStore(store: RecordStore) {
     });
     return;
   }
+  if (process.env.VERCEL) {
+    throw new Error("Review-call Blob storage is not connected to this Vercel environment.");
+  }
   await mkdir(path.dirname(localPath), { recursive: true });
   await writeFile(localPath, `${body}\n`, "utf8");
 }
@@ -146,6 +151,11 @@ export async function PUT(request: Request) {
   }
 
   const store = { records: merged, updatedAt: Date.now(), directoryVersion: currentDirectoryVersion };
-  await writeStore(store);
+  try {
+    await writeStore(store);
+  } catch (error) {
+    console.error("[review-call-records] Unable to persist records.", error);
+    return noStoreJson({ error: "Shared records could not be saved." }, 503);
+  }
   return noStoreJson(store);
 }

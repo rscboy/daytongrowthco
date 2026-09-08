@@ -85,7 +85,10 @@ function defaultSetting(): SecretProjectSetting {
 }
 
 function blobConfigured() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN));
+  // On Vercel, the OIDC token is supplied through the request context rather
+  // than exposed as a regular environment variable. @vercel/blob resolves it
+  // automatically; BLOB_STORE_ID is the durable connection marker.
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 function normalizeSettings(value: unknown): SettingsStore {
@@ -115,11 +118,11 @@ export async function getSecretProjectSettings(): Promise<SettingsStore> {
   if (!blobConfigured()) return readLocalSettings();
   try {
     const result = await get(SETTINGS_BLOB_PATH, { access: "private", useCache: false });
-    if (!result?.stream) return normalizeSettings({});
+    if (!result?.stream) return readLocalSettings();
     return normalizeSettings(await new Response(result.stream).json());
   } catch (error) {
     console.error("[secret-projects-storage] Unable to read project settings.", error);
-    return normalizeSettings({});
+    return readLocalSettings();
   }
 }
 
@@ -135,6 +138,9 @@ export async function saveSecretProjectSettings(settings: SettingsStore) {
       cacheControlMaxAge: 60,
     });
     return;
+  }
+  if (process.env.VERCEL) {
+    throw new Error("Secret-project Blob storage is not connected to this Vercel environment.");
   }
   await mkdir(path.dirname(SETTINGS_FILE_PATH), { recursive: true });
   await writeFile(SETTINGS_FILE_PATH, `${body}\n`, "utf8");
