@@ -77,6 +77,7 @@ export const secretProjects: readonly SecretProjectDefinition[] = [
 const SETTINGS_BLOB_PATH = "secret-projects/settings.json";
 const SETTINGS_FILE_PATH = path.join(process.cwd(), "data", "secret-projects-settings.json");
 const SHARE_SESSION_SECONDS = 60 * 60 * 24 * 14;
+const ALWAYS_SHARED_PROJECTS = new Set(["review_call_command_center"]);
 
 type SettingsStore = Record<string, SecretProjectSetting>;
 
@@ -98,7 +99,7 @@ function normalizeSettings(value: unknown): SettingsStore {
       ? source[project.id] as Partial<SecretProjectSetting>
       : {};
     return [project.id, {
-      active: raw.active === true,
+      active: ALWAYS_SHARED_PROJECTS.has(project.id) || raw.active === true,
       passwordEnabled: raw.passwordEnabled === true,
       passwordHash: typeof raw.passwordHash === "string" ? raw.passwordHash : null,
       updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : null,
