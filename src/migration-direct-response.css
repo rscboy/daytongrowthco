@@ -182,52 +182,6 @@
   line-height: 1;
 }
 
-.migration-landing-shell .migration-wizard-actions {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  height: 52px;
-  padding: 0;
-  background: var(--brand-indigo);
-}
-
-.migration-landing-shell .migration-wizard .conversion-button {
-  width: 108px;
-  min-height: 52px;
-  margin-left: auto;
-  padding: 0 14px;
-  border-radius: 0;
-  background: rgba(255, 255, 255, .13);
-  box-shadow: none;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .03em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.migration-landing-shell .migration-wizard .conversion-button svg {
-  width: 17px;
-}
-
-.migration-landing-shell .migration-wizard-back {
-  height: 52px;
-  padding: 0 18px;
-  color: #fff;
-  font-size: 13px;
-  text-transform: uppercase;
-}
-
-.migration-landing-shell .migration-form-error {
-  position: static;
-  margin: 2px 0 0;
-  font-size: 11px;
-  line-height: 1.35;
-}
-
 /* Keep the linked legal labels legible inside the compact assessment card. */
 .migration-landing-shell .migration-consent button {
   display: inline;
@@ -459,3 +413,51 @@
     border-radius: 0;
   }
 }
+
+/* One visual language from the overview through assessment and booking. */
+.migration-landing-shell.deck-sales-shell { --brand-charcoal: #eaf2f6; --brand-indigo: #a6c8dc; --brand-text-muted: #acc0cd; background: #0d1821; color: #eaf2f6; }
+.migration-landing-shell .deck-sales-header, .migration-landing-shell .deck-sales-footer { background: #0d1821; color: #d8e7f0; border-color: #9ebbd029; }
+.migration-landing-shell .deck-sales-intro h1 { font-family: var(--font-ui), sans-serif; color: #eaf2f6; }
+.migration-landing-shell .deck-sales-next { max-width: 1120px; }
+.migration-full-presentation { display: flex; align-items: center; justify-content: flex-end; gap: .6rem; min-height: 44px; margin-bottom: 2.5rem; color: #a5c0d1; font-size: .75rem; text-decoration: none; }
+.migration-landing-shell .migration-form-section { display: grid; grid-template-columns: .9fr 1.1fr; align-items: start; gap: clamp(2rem, 5vw, 5rem); width: 100%; max-width: none; margin: 0 auto 2rem; padding: 3rem 0; border: 0; border-top: 1px solid #a2bfd025; border-radius: 0; background: transparent; scroll-margin-top: 2rem; }
+.migration-assessment-intro > span { color: #90afc3; font-size: .66rem; letter-spacing: .07em; text-transform: uppercase; }
+.migration-form-section .migration-assessment-intro h2 { max-width: 14ch; margin: 1rem 0; color: #e8f1f6; font: 550 clamp(2rem, 3.4vw, 3rem)/1.05 var(--font-ui), sans-serif; letter-spacing: -.045em; }
+.migration-assessment-intro p { max-width: 35ch; font-size: .93rem; line-height: 1.7; color: #9cb4c4; }
+.migration-landing-shell .migration-wizard { min-width: 0; display: grid; gap: 1.4rem; padding: 1.8rem; border: 1px solid #a1c0d52b; background: #162631; border-radius: 12px; }
+.migration-wizard .migration-wizard-topline { color: #a7becc; font: 500 .65rem/1.5 var(--font-ui), sans-serif; letter-spacing: .01em; text-transform: none; }
+.migration-wizard .migration-wizard-track { height: 2px; background: #ffffff15; margin: -.7rem 0 .5rem; }
+.migration-wizard .migration-wizard-track span { width: 100%; background: #a3cbe3; transform-origin: left; transition: transform 220ms cubic-bezier(.23,1,.32,1); }
+.migration-field-stage { min-height: 178px; min-width: 0; }
+.migration-wizard .migration-field-stage > label:not(.migration-consent), .migration-field-stage > h3 { font-size: 1.2rem; font-weight: 550; letter-spacing: -.025em; color: #eff6fa; margin: 0; }
+.migration-field-stage > p { color: #a0bacb; font-size: .8rem; line-height: 1.55; margin: .7rem 0 1.4rem; }
+.migration-wizard .migration-field-stage > input, .migration-wizard .migration-field-stage > select { min-height: 50px; font-size: 1rem; background: #0c1c27; color: #eef5f9; border: 1px solid #8daec448; border-radius: 6px; padding: .8rem; width: 100%; }
+.migration-field-stage > select option { background: #142330; color: #f3f6f8; }
+.migration-wizard .migration-field-stage [aria-invalid="true"] { border-color: #e4a59b; }
+.migration-wizard p.migration-form-error { color: #ffbeb3; font-size: .79rem; line-height: 1.5; margin-top: .8rem; }
+.migration-wizard .migration-wizard-actions { position: static; height: auto; padding: 0; background: transparent; justify-content: space-between; }
+.migration-wizard-actions .conversion-button { margin-left: auto; min-height: 48px; display: inline-flex; align-items: center; gap: .6rem; padding: .75rem 1rem; background: #dbeaf3 !important; color: #152e3e !important; border-radius: 6px; font-size: .86rem; font-weight: 650; text-transform: none; }
+.migration-wizard-actions .conversion-button svg { width: 15px; }
+.migration-wizard-actions .migration-wizard-back { min-height: 44px; padding: .5rem; color: #b1c7d5; font-size: .8rem; }
+.migration-draft-help { color: #8aa7ba; font-size: .65rem; line-height: 1.6; margin: 0; }
+.migration-draft-notice { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; color: #b4cbd9; font-size: .68rem; }
+.migration-draft-notice button { padding: .2rem; min-height: 44px; background: transparent; color: #d7e8f3; text-decoration: underline; }
+.migration-answer-summary { display: grid; gap: .35rem; padding: 1rem 0; border-block: 1px solid #ffffff1b; margin-bottom: 1.1rem; font-size: .8rem; color: #b2cad9; overflow-wrap: anywhere; }
+.migration-wizard .migration-consent { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: .75rem; padding: .5rem 0; color: #c1d4df !important; font-size: .8rem; }
+.migration-consent input { accent-color: #7cabca; }
+.migration-consent button { background: none; color: #d9edf9; text-decoration: underline; padding: .2rem; }
+.migration-saved { padding: 2rem; border: 1px solid #8fb3ca3b; border-radius: 12px; background: #1b303e; color: #c9e2f0; }
+.migration-saved h3 { color: #edf6fb; font-size: 1.5rem; }
+.migration-saved p { font-size: .9rem; }
+.migration-booking-page .booking-intro h1 { font-family: var(--font-ui), sans-serif; font-weight: 550; letter-spacing: -.04em; }
+.migration-booking-page .booking-intro > p { color: #607e91; font-style: normal; font-weight: 450; }
+@media (max-width: 760px) {
+  .migration-landing-shell .migration-form-section { grid-template-columns: minmax(0,1fr); gap: 1.5rem; padding-top: 2rem; margin-inline: 0; }
+  .migration-landing-shell .migration-wizard { padding: 1.3rem; }
+  .migration-field-stage { min-height: 200px; }
+  .migration-field-stage input, .migration-field-stage select { scroll-margin-block: 2rem; }
+  .migration-wizard-actions { padding-bottom: env(safe-area-inset-bottom); }
+  .migration-form-section .migration-assessment-intro h2 { max-width: 19ch; }
+  .migration-full-presentation { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .migration-wizard-track span { transition: none !important; } }

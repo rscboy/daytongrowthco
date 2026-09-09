@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Check, PhoneCall } from "lucide-react";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { BrandWordmark } from "@/src/brand-wordmark";
@@ -19,23 +19,35 @@ function Footer() {
 
 function Calendar() {
   const router = useRouter();
+  const [calendarReady, setCalendarReady] = useState(false);
+  const [slow, setSlow] = useState(false);
   const calLink = process.env.NEXT_PUBLIC_APPOINTRELAY_CAL_LINK || "daytongrowthco/appointrelay-workflow-fit";
   useEffect(() => {
+    let active = true;
+    let unsubscribe: (() => void) | undefined;
+    const timer = window.setTimeout(() => setSlow(true), 8000);
     (async function () {
       const cal = await getCalApi({ namespace: "appointrelay-workflow-fit" });
+      if (!active) return;
+      const onReady = () => { if (active) { setCalendarReady(true); window.clearTimeout(timer); } };
+      cal("on", { action: "linkReady", callback: onReady });
       cal("ui", { theme: "dark", hideEventTypeDetails: true, layout: "month_view" });
-      cal("on", { action: "bookingSuccessfulV2", callback: () => {
+      const onBooked = (event: CustomEvent<{ data: { status?: string; paymentRequired: boolean } }>) => {
+        if (!active || event.detail.data.status?.toUpperCase() !== "ACCEPTED" || event.detail.data.paymentRequired) return;
         trackFunnelEvent("appointrelay", "appointrelay_appointment_booked");
         router.push("/appointrelay/confirmed/");
-      } });
-    })();
+      };
+      cal("on", { action: "bookingSuccessfulV2", callback: onBooked });
+      unsubscribe = () => { cal("off", { action: "linkReady", callback: onReady }); cal("off", { action: "bookingSuccessfulV2", callback: onBooked }); };
+    })().catch(() => { if (active) setSlow(true); });
+    return () => { active = false; window.clearTimeout(timer); unsubscribe?.(); };
   }, [router]);
-  return <Cal namespace="appointrelay-workflow-fit" calLink={calLink} style={{ width: "100%", height: "100%", overflow: "scroll" }} config={{ layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "dark" }} />;
+  return <div className={styles.embeddedCalendar}>{!calendarReady && <div className={styles.calendarLoading} role="status"><span>{slow ? "The calendar is taking longer to load." : "Finding the available dates…"}</span><p>{slow ? "You can use the full calendar link above, or contact us for help." : "Choose your timezone, then a day and time that work for you."}</p></div>}<Cal namespace="appointrelay-workflow-fit" calLink={calLink} style={{ width: "100%", height: "100%", overflow: "scroll" }} config={{ layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "dark" }} /></div>;
 }
 
 export function AppointRelayBookingPage() {
   useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_calendar_viewed"); }, []);
-  return <main className={styles.shell}><Header /><section className={styles.intro}><p>WORKFLOW FIT CALL</p><h1>Put the appointment workflow review on your calendar.</h1><span>We’ll map the queue, economics, current system, exception rules, and the smallest implementation that can produce a clean dispatcher handoff.</span><div><em><Check aria-hidden="true" /> 30 minutes</em><em><Check aria-hidden="true" /> Operational numbers</em><em><Check aria-hidden="true" /> No generic AI demo</em></div></section><section className={styles.calendar} aria-label="Schedule an AppointRelay workflow fit call"><Calendar /></section><Footer /></main>;
+  return <main className={styles.shell}><Header /><section className={styles.intro}><p>WORKFLOW FIT CALL</p><h1>Put the appointment workflow review on your calendar.</h1><span>We’ll map the queue, economics, current system, exception rules, and the smallest implementation that can produce a clean dispatcher handoff.</span><div><em><Check aria-hidden="true" /> 30 minutes</em><em><Check aria-hidden="true" /> Operational numbers</em><em><Check aria-hidden="true" /> No generic AI demo</em></div></section><p className={styles.calendarHelp}><a href={`https://cal.com/${process.env.NEXT_PUBLIC_APPOINTRELAY_CAL_LINK || "daytongrowthco/appointrelay-workflow-fit"}`} target="_blank" rel="noreferrer">Open the calendar in a new tab ↗</a><a href="mailto:help@daytongrowth.co">Need help finding a time?</a></p><section className={styles.calendar} aria-label="Schedule an AppointRelay workflow fit call"><Calendar /></section><Footer /></main>;
 }
 
 export function AppointRelayConfirmedPage() {

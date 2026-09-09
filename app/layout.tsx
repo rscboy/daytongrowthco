@@ -288,7 +288,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth scroll-pt-24" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth scroll-pt-24" suppressHydrationWarning>
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />

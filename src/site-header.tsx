@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { BrandWordmark } from "./brand-wordmark";
+import { openScheduler } from "./scheduling/entry";
 
 type PrimaryNavLink = { href: string; label: string; mobileLabel?: string };
 const MOBILE_NAV_SCROLL_KEY = "dgc:mobile-nav-scroll-top";
@@ -140,10 +141,6 @@ export function Header() {
                 scroll
                 aria-current={active ? "page" : undefined}
                 className={active ? "is-active" : undefined}
-                onClick={() => {
-                  window.sessionStorage.setItem(MOBILE_NAV_SCROLL_KEY, "1");
-                  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-                }}
               >
                 {link.label}
               </Link>
@@ -152,8 +149,8 @@ export function Header() {
         </div>
         <div className="header-actions">
           {isHome ? (
-            <a className="button button-primary" href="#cta">
-              Start a conversation
+            <a className="button button-primary" href="#schedule" onClick={event => { event.preventDefault(); openScheduler(undefined, event.detail > 0); }}>
+              Find a time
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (
@@ -213,8 +210,8 @@ export function Header() {
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
           {isHome ? (
-            <a className="button button-primary" href="#cta" onClick={() => { restoreMobileFocusRef.current = false; setMobileOpen(false); }}>
-              Start a conversation
+            <a className="button button-primary" href="#schedule" onClick={event => { event.preventDefault(); restoreMobileFocusRef.current = false; setMobileOpen(false); requestAnimationFrame(() => openScheduler(undefined, event.detail > 0)); }}>
+              Find a time
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           ) : (

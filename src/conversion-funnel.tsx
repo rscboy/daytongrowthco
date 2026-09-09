@@ -8,6 +8,8 @@ import Cal, { getCalApi } from "@calcom/embed-react";
 import { BrandWordmark } from "@/src/brand-wordmark";
 import { LockedVsl } from "@/src/locked-vsl";
 import { DeckSalesLetter } from "@/src/deck-sales-letter";
+import { MigrationPresentation } from "./workflow-studio";
+import { emptyMigrationAssessment, migrationDraftKey, readMigrationDraft, type MigrationAssessment } from "./migration-assessment";
 import { getFunnelSessionId, trackFunnelEvent, trackFunnelLeadProgress } from "@/src/funnel-analytics";
 import "./conversion-funnel.css";
 import "./migration-funnel.css";
@@ -31,8 +33,6 @@ const funnel = {
 // funnel origin removes the Google Drive relay from the visitor experience.
 const migrationVslVideoUrl = process.env.NEXT_PUBLIC_WEBSITE_VSL_VIDEO_URL || "/vsl/website-migration-program.mp4?v=20260803";
 const migrationVslPosterUrl = "/vsl/website-migration-program-poster.jpg";
-type MigrationAssessment = { name: string; email: string; business: string; phone: string; website: string; platform: string; annualCost: string; timeline: string; intent: string; budget: string };
-const emptyMigrationAssessment: MigrationAssessment = { name: "", email: "", business: "", phone: "", website: "", platform: "", annualCost: "", timeline: "", intent: "", budget: "" };
 
 type MigrationAttribution = Partial<Record<"utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "fbclid" | "gclid" | "msclkid", string>>;
 const attributionKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid", "msclkid"] as const;
@@ -77,53 +77,150 @@ function Footer() {
   );
 }
 
+const migrationFields: Array<{ key: keyof MigrationAssessment; label: string; hint: string; type?: string; autocomplete?: string; options?: string[] }> = [
+  { key: "name", label: "What should we call you?", hint: "Let’s start with your name.", autocomplete: "name" },
+  { key: "email", label: "Where can we reach you?", hint: "Use the email you would like us to reply to.", type: "email", autocomplete: "email" },
+  { key: "business", label: "What’s your company called?", hint: "The business this website belongs to.", autocomplete: "organization" },
+  { key: "phone", label: "What’s the best phone number?", hint: "A number we can use to discuss your migration.", type: "tel", autocomplete: "tel" },
+  { key: "website", label: "What’s your current website?", hint: "Include https:// so we can find the right site.", type: "url", autocomplete: "url" },
+  { key: "platform", label: "What platform are you using?", hint: "It is fine if you are not sure.", options: ["WordPress", "Webflow", "Shopify", "Wix or Squarespace", "Other / not sure"] },
+  { key: "annualCost", label: "What do you spend each year?", hint: "Your current website costs. An estimate is useful.", options: ["Under $250", "$250–$999", "$1,000–$2,499", "$2,500–$4,999", "$5,000+", "Not sure"] },
+  { key: "timeline", label: "When would you like to launch?", hint: "We will confirm a realistic timeline with your scope.", options: ["Within 30 days", "30–90 days", "More than 90 days", "Not scheduled"] },
+  { key: "intent", label: "What are you planning?", hint: "Choose the option closest to your situation.", options: ["Planning a migration to a new platform", "Looking to upgrade or improve my current website", "I’m not sure yet — I’d like to learn more", "Already have a website and happy with it", "Do not need a website right now"] },
+  { key: "budget", label: "What budget have you set aside?", hint: "This helps us recommend a useful next step.", options: ["Under $1,000", "$1,000–$2,500", "$2,500–$5,000", "$5,000+", "Still deciding"] },
+];
+
 function MigrationForm() {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [legalOpen, setLegalOpen] = useState<"terms" | "privacy" | null>(null);
   const [step, setStep] = useState(0);
   const [assessment, setAssessment] = useState<MigrationAssessment>(emptyMigrationAssessment);
+  const [consent, setConsent] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
+  const [fieldError, setFieldError] = useState("");
+  const [draftReady, setDraftReady] = useState(false);
+  const [restored, setRestored] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const assessmentStarted = useRef(false);
+  const userAdvanced = useRef(false);
+  const buttonPointer = useRef(false);
   const totalSteps = 11;
   const stepNames = ["name", "email", "company", "phone", "website", "platform", "annual_cost", "timeline", "migration_goal", "budget", "consent"] as const;
+  const field = migrationFields[step];
+
+  useEffect(() => {
+    try {
+      const draft = readMigrationDraft(window.sessionStorage.getItem(migrationDraftKey));
+      if (draft && Object.values(draft.assessment).some((value) => value.trim())) { setAssessment(draft.assessment); setStep(draft.step); setRestored(true); }
+    } catch { /* The form remains usable when browser storage is unavailable. */ }
+    setDraftReady(true);
+  }, []);
+  useEffect(() => {
+    if (!draftReady || submitted) return;
+    try {
+      if (!Object.values(assessment).some((value) => value.trim())) { window.sessionStorage.removeItem(migrationDraftKey); return; }
+      window.sessionStorage.setItem(migrationDraftKey, JSON.stringify({ assessment, step, savedAt: Date.now() }));
+    } catch { /* Optional recovery only. */ }
+  }, [assessment, step, draftReady, submitted]);
+  useEffect(() => {
+    if (!userAdvanced.current) return;
+    const control = fieldRef.current?.querySelector<HTMLElement>("input, select");
+    control?.focus({ preventScroll: true });
+    control?.scrollIntoView({ block: "nearest", behavior: "instant" });
+    if (buttonPointer.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const animation = fieldRef.current?.animate([{ opacity: .65, transform: "translateY(5px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 200, easing: "cubic-bezier(.23,1,.32,1)" });
+      return () => animation?.cancel();
+    }
+  }, [step]);
+
   function startAssessment() {
     if (assessmentStarted.current) return;
     assessmentStarted.current = true;
     trackFunnelEvent("website-migration", "migration_assessment_started");
   }
+  function moveTo(nextStep: number) {
+    userAdvanced.current = true;
+    setFieldError(""); setSubmissionError(""); setStep(nextStep);
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setSubmitting(true);
+    event.preventDefault();
+    if (submitting) return;
+    const control = fieldRef.current?.querySelector<HTMLInputElement | HTMLSelectElement>("input, select");
+    if (control && !control.checkValidity()) {
+      const message = control.validity.valueMissing ? (step === 10 ? "Please review and agree to the terms before continuing." : "Please complete this answer to continue.") : field?.type === "email" ? "Enter a valid email address, such as name@company.com." : field?.type === "url" ? "Enter a full website address, starting with https://." : "Please check this answer.";
+      setFieldError(message); control.focus(); return;
+    }
+    setFieldError("");
+    if (step < totalSteps - 1) {
+      if (step === 0) trackFunnelEvent("website-migration", "migration_cta_clicked", { cta: "assessment_next" });
+      trackFunnelEvent("website-migration", "migration_assessment_step_completed", { step_number: step + 1, step_name: stepNames[step] });
+      if (step >= 1 && assessment.name && assessment.email) trackFunnelLeadProgress("website-migration", { name: assessment.name, email: assessment.email, stepNumber: step + 1, stepName: stepNames[step], totalSteps });
+      moveTo(step + 1); return;
+    }
+    if (!consent) { setFieldError("Please review and agree to the terms before continuing."); return; }
+    const invalidStep = migrationFields.findIndex((item) => !assessment[item.key].trim() || (item.options && !item.options.includes(assessment[item.key])));
+    if (invalidStep >= 0) { moveTo(invalidStep); setFieldError("Please complete this answer before submitting."); return; }
+    setSubmitting(true); setSubmissionError("");
     const disqualified = ["Already have a website and happy with it", "Do not need a website right now"].includes(assessment.intent) || assessment.budget === "Under $1,000";
-    setSubmissionError("");
     try {
       const response = await fetch("/api/funnel-lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ funnel: "website-migration", sessionId: getFunnelSessionId("website-migration"), qualification: disqualified ? "disqualified" : "qualified", ...assessment, goal: assessment.intent, attribution: { ...migrationAttribution(), funnel_variant: "standard" } }) });
       if (!response.ok) throw new Error("Lead handoff failed");
       trackFunnelEvent("website-migration", "migration_assessment_submitted", { qualification: disqualified ? "disqualified" : "qualified" });
       trackFunnelEvent("website-migration", disqualified ? "migration_disqualified" : "migration_qualified", { budget_band: assessment.budget });
       trackFunnelEvent("website-migration", "migration_lead_captured", { qualification: disqualified ? "disqualified" : "qualified" });
+      setSubmitted(true);
+      try { window.sessionStorage.removeItem(migrationDraftKey); } catch { /* No draft to clear. */ }
       router.push(disqualified ? "/websites/not-a-fit/" : "/websites/book-call/");
     } catch {
-      setSubmissionError("We couldn’t save your assessment. Please try again before continuing.");
+      setSubmissionError("We couldn’t save your assessment. Your answers are still here. Please try again.");
       setSubmitting(false);
     }
   }
-  function next(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (event.currentTarget.reportValidity()) {
-      if (step === 0) trackFunnelEvent("website-migration", "migration_cta_clicked", { cta: "assessment_next" });
-      trackFunnelEvent("website-migration", "migration_assessment_step_completed", { step_number: step + 1, step_name: stepNames[step] });
-      if (step >= 1 && assessment.name && assessment.email) trackFunnelLeadProgress("website-migration", { name: assessment.name, email: assessment.email, stepNumber: step + 1, stepName: stepNames[step], totalSteps });
-      setStep((current) => Math.min(current + 1, totalSteps - 1));
-    }
+  function startOver() {
+    setAssessment(emptyMigrationAssessment); setConsent(false); setRestored(false); moveTo(0);
   }
-  const update = <K extends keyof MigrationAssessment>(key: K, value: MigrationAssessment[K]) => setAssessment((current) => ({ ...current, [key]: value }));
-  return <section className="migration-form-section" id="assessment"><form onFocusCapture={startAssessment} onSubmit={step === totalSteps - 1 ? submit : next} className="migration-form migration-wizard"><div className="migration-wizard-topline"><span>Question {step + 1} of {totalSteps}</span><span>{Math.round(((step + 1) / totalSteps) * 100)}%</span></div><div className="migration-wizard-track"><span style={{ width: `${((step + 1) / totalSteps) * 100}%` }} /></div>{step === 0 && <label>Name<input name="name" autoComplete="name" required value={assessment.name} onChange={(event) => update("name", event.target.value)} /></label>}{step === 1 && <label>Work email<input name="email" type="email" autoComplete="email" required value={assessment.email} onChange={(event) => update("email", event.target.value)} /></label>}{step === 2 && <label>Company<input name="business" autoComplete="organization" required value={assessment.business} onChange={(event) => update("business", event.target.value)} /></label>}{step === 3 && <label>Phone<input name="phone" type="tel" autoComplete="tel" inputMode="tel" required value={assessment.phone} onChange={(event) => update("phone", event.target.value)} /></label>}{step === 4 && <label>Current website URL<input name="website" type="url" inputMode="url" placeholder="https://www.example.com" required value={assessment.website} onChange={(event) => update("website", event.target.value)} /></label>}{step === 5 && <label>Current platform<select name="platform" required value={assessment.platform} onChange={(event) => update("platform", event.target.value)}><option value="" disabled>Select one</option><option>WordPress</option><option>Webflow</option><option>Shopify</option><option>Wix or Squarespace</option><option>Other / not sure</option></select></label>}{step === 6 && <label>What do you currently spend each year on your website?<select name="annualCost" required value={assessment.annualCost} onChange={(event) => update("annualCost", event.target.value)}><option value="" disabled>Select one</option><option>Under $250</option><option>$250–$999</option><option>$1,000–$2,499</option><option>$2,500–$4,999</option><option>$5,000+</option><option>Not sure</option></select></label>}{step === 7 && <label>Target launch<select name="timeline" required value={assessment.timeline} onChange={(event) => update("timeline", event.target.value)}><option value="" disabled>Select one</option><option>Within 30 days</option><option>30–90 days</option><option>More than 90 days</option><option>Not scheduled</option></select></label>}{step === 8 && <label>What best describes your website plans?<select name="intent" required value={assessment.intent} onChange={(event) => update("intent", event.target.value)}><option value="" disabled>Select one</option><option>Planning a migration to a new platform</option><option>Looking to upgrade or improve my current website</option><option>I’m not sure yet — I’d like to learn more</option><option>Already have a website and happy with it</option><option>Do not need a website right now</option></select></label>}{step === 9 && <label>What budget have you set aside for this work?<select name="budget" required value={assessment.budget} onChange={(event) => update("budget", event.target.value)}><option value="" disabled>Select one</option><option>Under $1,000</option><option>$1,000–$2,500</option><option>$2,500–$5,000</option><option>$5,000+</option><option>Still deciding</option></select></label>}{step === 10 && <label className="migration-consent"><input type="checkbox" required /> <span>I agree to the <button type="button" onClick={() => setLegalOpen("terms")}>terms</button> and <button type="button" onClick={() => setLegalOpen("privacy")}>privacy policy</button>.</span></label>}{submissionError && <p className="migration-form-error" role="alert">{submissionError}</p>}<div className="migration-wizard-actions">{step > 0 && <button className="migration-wizard-back" type="button" onClick={() => setStep((current) => current - 1)}>Back</button>}<button className="conversion-button" type="submit" disabled={submitting}>{submitting ? "Loading…" : step === totalSteps - 1 ? "Continue" : "Next"} <ArrowRight aria-hidden="true" /></button></div></form>{legalOpen && <LegalModal type={legalOpen} onClose={() => setLegalOpen(null)} />}</section>;
+  const update = (key: keyof MigrationAssessment, value: string) => { setAssessment((current) => ({ ...current, [key]: value })); setFieldError(""); };
+  return <section className="migration-form-section" id="assessment" aria-labelledby="migration-assessment-heading">
+    <header className="migration-assessment-intro"><span>Plan the next step</span><h2 id="migration-assessment-heading">Let’s make the move specific.</h2><p>A few details about your current site, your plans, and what matters to your team.</p></header>
+    {submitted ? <div className="migration-saved" role="status"><Check size={28} /><h3>Your assessment is saved.</h3><p>Opening your next step…</p></div> : <form ref={formRef} noValidate onFocusCapture={startAssessment} onSubmit={submit} className="migration-form migration-wizard" aria-busy={submitting}>
+      <div className="migration-wizard-topline"><span aria-live="polite">Question {step + 1} of {totalSteps}</span><span>{Math.round((step / totalSteps) * 100)}% complete</span></div>
+      <div className="migration-wizard-track" role="progressbar" aria-label="Assessment progress" aria-valuemin={0} aria-valuemax={totalSteps} aria-valuenow={step}><span style={{ transform: `scaleX(${step / totalSteps})` }} /></div>
+      {restored && <div className="migration-draft-notice"><span>Your answers from this tab are restored.</span><button type="button" onClick={startOver}>Start over</button></div>}
+      <div className="migration-field-stage" ref={fieldRef} key={step}>
+        {field ? <><label htmlFor={`migration-${field.key}`}>{field.label}</label><p id="migration-field-hint">{field.hint}</p>{field.options ? <select id={`migration-${field.key}`} name={field.key} required value={assessment[field.key]} aria-invalid={Boolean(fieldError)} aria-describedby={`migration-field-hint${fieldError ? " migration-field-error" : ""}`} onChange={(event) => update(field.key, event.target.value)}><option value="" disabled>Select one</option>{field.options.map((option) => <option key={option}>{option}</option>)}</select> : <input id={`migration-${field.key}`} name={field.key} type={field.type ?? "text"} autoComplete={field.autocomplete} inputMode={field.type === "tel" ? "tel" : field.type === "url" ? "url" : field.type === "email" ? "email" : "text"} required maxLength={2000} value={assessment[field.key]} aria-invalid={Boolean(fieldError)} aria-describedby={`migration-field-hint${fieldError ? " migration-field-error" : ""}`} onChange={(event) => update(field.key, event.target.value)} />}</> : <><h3>Ready for the next step.</h3><p>Review your details and give us permission to follow up about your website.</p><div className="migration-answer-summary"><strong>{assessment.business}</strong><span>{assessment.email}</span><span>{assessment.website}</span></div><label className="migration-consent"><input type="checkbox" required checked={consent} onChange={(event) => { setConsent(event.target.checked); setFieldError(""); }} aria-invalid={Boolean(fieldError)} aria-describedby={fieldError ? "migration-field-error" : undefined} /><span>I agree to the <button type="button" onClick={() => setLegalOpen("terms")}>terms</button> and <button type="button" onClick={() => setLegalOpen("privacy")}>privacy policy</button>.</span></label></>}
+        {fieldError && <p className="migration-form-error" id="migration-field-error" role="alert">{fieldError}</p>}
+      </div>
+      {submissionError && <p className="migration-form-error" role="alert">{submissionError}</p>}
+      <div className="migration-wizard-actions">{step > 0 && <button className="migration-wizard-back" type="button" disabled={submitting} onClick={(event) => { buttonPointer.current = event.detail > 0; moveTo(step - 1); }}>Back</button>}<button className="conversion-button" type="submit" disabled={submitting || !draftReady} onClick={(event) => { buttonPointer.current = event.detail > 0; }}>{submitting ? "Saving your assessment…" : step === totalSteps - 1 ? "Save and continue" : "Next"}<ArrowRight aria-hidden="true" /></button></div>
+      <p className="migration-draft-help">You can go back and change an answer. Answers stay in this tab for up to 24 hours.</p>
+    </form>}
+    {legalOpen && <LegalModal type={legalOpen} onClose={() => setLegalOpen(null)} />}
+  </section>;
 }
 
 function LegalModal({ type, onClose }: { type: "terms" | "privacy"; onClose: () => void }) {
-  useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, [onClose]);
-  return <div className="legal-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title"><button className="legal-modal-close" type="button" onClick={onClose} autoFocus><X aria-hidden="true" /><span>Close</span></button><h2 id="legal-modal-title">{type === "terms" ? "Terms & communication consent" : "Privacy policy"}</h2>{type === "terms" ? <TermsContent /> : <PrivacyContent />}</section></div>;
+  const dialogRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const dialog = dialogRef.current;
+    const controls = () => Array.from(dialog?.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, [tabindex="0"]') ?? []);
+    controls()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); }
+      if (event.key !== "Tab") return;
+      const items = controls(); const first = items[0]; const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => { document.body.style.overflow = oldOverflow; window.removeEventListener("keydown", onKeyDown); opener?.focus({ preventScroll: true }); };
+  }, [onClose]);
+  return <div className="legal-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section ref={dialogRef} className="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title"><button className="legal-modal-close" type="button" onClick={onClose}><X aria-hidden="true" /><span>Close</span></button><h2 id="legal-modal-title">{type === "terms" ? "Terms & communication consent" : "Privacy policy"}</h2>{type === "terms" ? <TermsContent /> : <PrivacyContent />}</section></div>;
 }
 
 function VslPlaceholder() {
@@ -136,7 +233,7 @@ function VslPlaceholder() {
 
 export function ConversionLandingPage() {
   useEffect(() => { trackFunnelEvent("website-migration", "migration_landing_viewed"); }, []);
-  return <DeckSalesLetter className="migration-landing-shell" title="The Website Migration Program™" deckId="1vvqb58Ujse1QVEkPpGQPLV9BLOkLs4lTWm4uAGiv4r0"><MigrationForm /></DeckSalesLetter>;
+  return <DeckSalesLetter className="migration-landing-shell" title="The Website Migration Program™" deckId="1vvqb58Ujse1QVEkPpGQPLV9BLOkLs4lTWm4uAGiv4r0" media={<MigrationPresentation />} mediaLabel="Website migration program presentation"><a className="migration-full-presentation" href="https://docs.google.com/presentation/d/1vvqb58Ujse1QVEkPpGQPLV9BLOkLs4lTWm4uAGiv4r0/preview" target="_blank" rel="noopener noreferrer">Read the full program presentation <ArrowRight size={14} /></a><MigrationForm /></DeckSalesLetter>;
 }
 
 export function ConversionBookingPage() {

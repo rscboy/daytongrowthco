@@ -83,3 +83,21 @@
 .deck-sales-footer a{color:inherit;font-size:.75rem}
 @media(max-width:760px){.deck-sales-header{padding:0 20px}.deck-sales-phone span{display:none}.deck-sales-phone svg{width:19px;height:19px}.deck-sales-intro{padding:14px 20px 10px}.deck-sales-intro h1{font-size:1.08rem}.deck-sales-frame{padding:0 16px 22px}.deck-sales-nudge{top:auto;right:28px;bottom:34px;width:48px;height:48px}.deck-sales-nudge span{font-size:2.45rem}.deck-sales-nudge small{display:none}.deck-sales-next{padding:10px 16px 40px}.deck-sales-cta{padding:24px 18px}.deck-sales-cta button{width:100%}.deck-sales-footer{flex-direction:column;gap:9px}.migration-landing-shell .deck-sales-intro h1{white-space:normal}}
 @media(prefers-reduced-motion:reduce){.deck-sales-nudge{animation:none;transition:none}}
+
+/* Shared presentation shell follows the public site's type and surfaces. */
+.deck-sales-shell { --brand-surface: #0d1821; --brand-charcoal: #eaf2f6; --brand-indigo: #a6c8dc; --brand-border: #8fb5cc30; --brand-text-muted: #acc0cd; min-height: 100svh; background: #0d1821; color: #eaf2f6; font-family: var(--font-ui), sans-serif; }
+.deck-sales-shell .deck-sales-header { height: 76px; border-color: #9ebbd029; }
+.deck-sales-shell .deck-sales-intro { padding-block: 2.25rem 1.5rem; }
+.deck-sales-shell .deck-sales-intro h1 { font: 550 clamp(1.5rem, 2.5vw, 2.1rem)/1.1 var(--font-ui), sans-serif; letter-spacing: -.04em; color: #eaf2f6; }
+.deck-sales-shell .deck-sales-frame { padding-bottom: 1.5rem; }
+.deck-sales-shell .deck-sales-footer { background: #0d1821; color: #9cb3c2; border-color: #9ebbd029; }
+.deck-sales-shell .deck-sales-footer a { color: #d5e5ef; }
+.deck-sales-shell .deck-sales-footer p { max-width: 72ch; line-height: 1.6; }
+.deck-embed-shell { position: relative; }
+.deck-embed-preview { position: absolute; z-index: 1; inset: 0 0 2rem; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(1.5rem, 5vw, 4rem); background: #152633; border: 1px solid #97b5c52e; border-radius: 14px; }
+.deck-embed-preview > span { color: #9cb8c9; font-size: .7rem; }
+.deck-embed-preview h2 { max-width: 18ch; margin-block: 1.5rem; color: #eef5f8; font-size: clamp(1.7rem, 3vw, 3rem); font-weight: 550; line-height: 1.1; letter-spacing: -.04em; }
+.deck-embed-preview p, .deck-embed-preview a { color: #aec6d5; font-size: .8rem; }
+.deck-embed-preview a { min-height: 44px; display: flex; align-items: center; }
+.deck-embed-hint { color: #9cb3c2; font-size: .7rem; text-align: right; margin: .75rem 0 0; }
+@media (max-width: 599px) { .deck-embed-shell iframe { min-height: 270px; } .deck-embed-preview { padding: 1.25rem; } .deck-embed-preview h2 { font-size: 1.45rem; margin-block: 1rem; } }
