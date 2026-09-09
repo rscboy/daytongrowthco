@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Clipboard, ExternalLink, MessageCircleQuestion, Phone, PhoneCall, Search } from "lucide-react";
-import { legacyProspects } from "./prospects";
+import { legacyProspects, type Prospect } from "./prospects";
 import { replacementProspects } from "./replacement-prospects";
 import { partTwoProspects } from "./part-two-prospects";
 import { bulkProspects } from "./bulk-prospects";
@@ -59,8 +59,34 @@ function telValue(phone: string) {
   return `+1${phone.replace(/\D/g, "").slice(-10)}`;
 }
 
-function makeScript() {
-  return "Hi, this is Sam Caruso with DaytonGrowthCo. I help businesses generate more organic Google reviews so they rank higher and attract more customers. Most clients pick up 8 to 12 new reviews a month, no ad spend required. Call or text me at 937-369-0829 — again, that’s 937-369-0829.";
+function scriptDetails(industry: string) {
+  const value = industry.toLowerCase();
+
+  if (/auto repair|diesel repair|rv repair|motorcycle/.test(value)) return { audience: "repair shops", moment: "after each completed repair" };
+  if (/detailing|tint|wrap|auto audio/.test(value)) return { audience: "automotive shops", moment: "after each completed service" };
+  if (/hvac|plumbing|electrical|garage door|locksmith|sewer/.test(value)) return { audience: "home-service companies", moment: "after each completed service call" };
+  if (/roof|remodel|construction|builder|home improvement|contract|concrete|fence|chimney|excavation/.test(value)) return { audience: "contractors", moment: "after each completed project" };
+  if (/landscap|lawn|tree|outdoor|land clearing|pest/.test(value)) return { audience: "property-service companies", moment: "after each completed job" };
+  if (/clean|restoration|pressure washing|exterior cleaning|junk|dumpster/.test(value)) return { audience: "local service companies", moment: "after each completed job" };
+  if (/dental|orthodont|chiropractic|physical therapy|optometr|vision|health practice/.test(value)) return { audience: "local practices", moment: "after each eligible patient visit" };
+  if (/medical aesthetics|med spa|massage|wellness|salon|beauty|tattoo/.test(value)) return { audience: "appointment-based businesses", moment: "after each completed appointment" };
+  if (/veterinary|pet grooming|pet boarding|pet service/.test(value)) return { audience: "pet-care businesses", moment: "after each completed visit or stay" };
+  if (/moving/.test(value)) return { audience: "moving companies", moment: "after each completed move" };
+  if (/photograph|wedding venue|event|party rental|catering/.test(value)) return { audience: "event businesses", moment: "after each completed event" };
+  if (/real estate|mortgage|property management|home inspection|property inspection/.test(value)) return { audience: "property professionals", moment: "after each completed client milestone" };
+  if (/insurance|accounting|tax|law firm|notary/.test(value)) return { audience: "professional-service firms", moment: "after each completed client engagement" };
+  if (/childcare|tutoring|driving school|dance|gymnastics|martial arts|fitness/.test(value)) return { audience: "enrollment-based businesses", moment: "after a customer reaches a positive milestone" };
+  if (/hotel|senior living|home care|assisted transportation|self storage/.test(value)) return { audience: "local service businesses", moment: "after each completed stay, move-in, or service" };
+  if (/computer|it |it services|technology|device repair|security/.test(value)) return { audience: "technology-service companies", moment: "after each resolved service request" };
+  if (/marketing agency/.test(value)) return { audience: "agencies", moment: "after each successful client milestone" };
+  if (/retail|mattress|used car dealer/.test(value)) return { audience: "local retailers", moment: "after each completed purchase" };
+
+  return { audience: "local businesses", moment: "after each completed customer experience" };
+}
+
+function makeScript(prospect: Prospect) {
+  const { audience, moment } = scriptDetails(prospect.industry);
+  return `Hi, this is Sam Caruso with DaytonGrowthCo. I came across ${prospect.business} in ${prospect.cityArea}. I help ${audience} generate more organic Google reviews by automatically following up ${moment}. That can help ${prospect.business} rank higher and attract more customers. Most clients pick up 8 to 12 new reviews a month, with no ad spend required. Call or text me at 937-369-0829 — again, that’s 937-369-0829.`;
 }
 
 export function ReviewCallCommandCenter() {
@@ -180,7 +206,7 @@ export function ReviewCallCommandCenter() {
   const record = records[current.id] ?? { outcome: "Not called" as Outcome, notes: "", updatedAt: 0 };
   const completed = activeProspects.filter((prospect) => records[prospect.id]?.outcome && records[prospect.id].outcome !== "Not called").length;
   const industries = useMemo(() => ["All industries", ...Array.from(new Set(activeProspects.map((prospect) => prospect.industry))).sort()], [activeProspects]);
-  const voicemail = makeScript();
+  const voicemail = makeScript(current);
   const currentPosition = activeProspects.findIndex((prospect) => prospect.id === current.id) + 1;
 
   const filtered = useMemo(() => activeProspects.filter((prospect) => {
