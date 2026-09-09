@@ -2,7 +2,7 @@ const storageBaseUrl = process.env.CRM_PROJECT_STORAGE_ENDPOINT
   || "https://daytongrowthco-crm.vercel.app/api/internal/project-storage";
 
 function storageSecret() {
-  return process.env.FUNNEL_CRM_API_SECRET || process.env.CRM_API_SECRET || "";
+  return process.env.PROJECT_STORAGE_API_SECRET || "";
 }
 
 export function internalProjectStorageConfigured() {
