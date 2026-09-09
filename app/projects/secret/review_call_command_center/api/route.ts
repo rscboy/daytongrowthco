@@ -9,12 +9,18 @@ import {
   hasProjectAccessSession,
   projectAccessCookie,
 } from "@/lib/secret-projects";
+import {
+  internalProjectStorageConfigured,
+  readInternalProjectStorage,
+  writeInternalProjectStorage,
+} from "@/lib/internal-project-storage";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const projectId = "review_call_command_center";
 const blobPath = "secret-projects/review-call-command-center/records.json";
+const storageKey = "review-call-command-center-records";
 const localPath = path.join(process.cwd(), "data", "review-call-command-center-records.json");
 const maximumProspectId = 9999;
 const currentDirectoryVersion = 4;
@@ -85,6 +91,10 @@ async function canAccess() {
 
 async function readStore(): Promise<RecordStore> {
   try {
+    if (internalProjectStorageConfigured()) {
+      const stored = await readInternalProjectStorage<RecordStore>(storageKey);
+      if (stored) return normalizeStore(stored);
+    }
     if (blobConfigured()) {
       const result = await get(blobPath, { access: "private", useCache: false });
       if (!result?.stream) return normalizeStore({});
@@ -101,6 +111,10 @@ async function readStore(): Promise<RecordStore> {
 
 async function writeStore(store: RecordStore) {
   const body = JSON.stringify(store, null, 2);
+  if (internalProjectStorageConfigured()) {
+    await writeInternalProjectStorage(storageKey, store);
+    return;
+  }
   if (blobConfigured()) {
     await put(blobPath, body, {
       access: "private",
