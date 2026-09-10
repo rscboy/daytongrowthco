@@ -64,6 +64,14 @@ const requiredMarkers = [
     ],
   },
   {
+    file: "app/api/caruso-recipe-book/invite/route.ts",
+    markers: [
+      "hasSecretProjectsSession",
+      'error: "Unauthorized."',
+      "status: 401",
+    ],
+  },
+  {
     file: "app/quote/pricing/page.tsx",
     markers: [
       'initialPath="/quote/pricing"',

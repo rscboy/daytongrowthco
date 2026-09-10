@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Check, PhoneCall } from "lucide-react";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { BrandWordmark } from "@/src/brand-wordmark";
@@ -19,35 +19,23 @@ function Footer() {
 
 function Calendar() {
   const router = useRouter();
-  const [calendarReady, setCalendarReady] = useState(false);
-  const [slow, setSlow] = useState(false);
   const calLink = process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_CAL_LINK || "daytongrowthco/google-review-program-fit";
   useEffect(() => {
-    let active = true;
-    let unsubscribe: (() => void) | undefined;
-    const timer = window.setTimeout(() => setSlow(true), 8000);
     (async function () {
       const cal = await getCalApi({ namespace: "google-review-program-fit" });
-      if (!active) return;
-      const onReady = () => { if (active) { setCalendarReady(true); window.clearTimeout(timer); } };
-      cal("on", { action: "linkReady", callback: onReady });
       cal("ui", { theme: "dark", hideEventTypeDetails: true, layout: "month_view" });
-      const onBooked = (event: CustomEvent<{ data: { status?: string; paymentRequired: boolean } }>) => {
-        if (!active || event.detail.data.status?.toUpperCase() !== "ACCEPTED" || event.detail.data.paymentRequired) return;
+      cal("on", { action: "bookingSuccessfulV2", callback: () => {
         trackFunnelEvent("google-review-program", "google_review_appointment_booked");
         router.push("/google-reviews/confirmed/");
-      };
-      cal("on", { action: "bookingSuccessfulV2", callback: onBooked });
-      unsubscribe = () => { cal("off", { action: "linkReady", callback: onReady }); cal("off", { action: "bookingSuccessfulV2", callback: onBooked }); };
-    })().catch(() => { if (active) setSlow(true); });
-    return () => { active = false; window.clearTimeout(timer); unsubscribe?.(); };
+      } });
+    })();
   }, [router]);
-  return <div className={styles.embeddedCalendar}>{!calendarReady && <div className={styles.calendarLoading} role="status"><span>{slow ? "The calendar is taking longer to load." : "Finding the available dates…"}</span><p>{slow ? "You can use the full calendar link above, or contact us for help." : "Choose your timezone, then a day and time that work for you."}</p></div>}<Cal namespace="google-review-program-fit" calLink={calLink} style={{ width: "100%", height: "100%", overflow: "scroll" }} config={{ layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "dark" }} /></div>;
+  return <Cal namespace="google-review-program-fit" calLink={calLink} style={{ width: "100%", height: "100%", overflow: "scroll" }} config={{ layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "dark" }} />;
 }
 
 export function GoogleReviewProgramBookingPage() {
   useEffect(() => { trackFunnelEvent("google-review-program", "google_review_calendar_viewed"); }, []);
-  return <main className={styles.simpleBooking}><nav className={styles.calendarHelp}><Link href="/google-reviews/">← Back to the review program</Link><a href="mailto:help@daytongrowth.co">Need help finding a time?</a></nav><h1>Schedule your demo</h1><p className={styles.calendarHelp}><a href={`https://cal.com/${process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_CAL_LINK || "daytongrowthco/google-review-program-fit"}`} target="_blank" rel="noreferrer">Open the calendar in a new tab ↗</a></p><section className={styles.simpleCalendar} aria-label="Schedule an HVAC Google Review Growth Program demo"><Calendar /></section></main>;
+  return <main className={styles.simpleBooking}><h1>Schedule your demo</h1><section className={styles.simpleCalendar} aria-label="Schedule an HVAC Google Review Growth Program demo"><Calendar /></section></main>;
 }
 
 export function GoogleReviewProgramConfirmedPage() {

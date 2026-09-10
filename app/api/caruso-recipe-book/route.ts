@@ -1,10 +1,10 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash } from "node:crypto";
+import { authorizedRecipeAccess } from "./access";
 
 export const runtime = "nodejs";
 
 const RECIPE_SOURCE_PATH = "app/projects/secret/recipes_for_benny/recipe-book.tsx";
 const COLORS = new Set(["blue", "coral", "gold", "green", "lavender", "lilac", "mint", "peach", "pink", "rust", "tomato"]);
-const DEFAULT_OWNERS = new Set(["sammy", "sam-g", "autumn", "addison"]);
 
 type RecipeGroup = { category: string; items: string[] };
 type RecipeStep = { title: string; text: string };
@@ -30,15 +30,6 @@ function jsonError(message: string, status: number) {
   return Response.json({ ok: false, error: message }, { status });
 }
 
-function authorized(request: Request) {
-  const expected = process.env.CARUSO_RECIPE_ADD_TOKEN;
-  const supplied = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-  if (!expected || !supplied) return false;
-  const expectedBytes = Buffer.from(expected);
-  const suppliedBytes = Buffer.from(supplied);
-  return expectedBytes.length === suppliedBytes.length && timingSafeEqual(expectedBytes, suppliedBytes);
-}
-
 function isText(value: unknown, max = 500) {
   return typeof value === "string" && value.trim().length > 0 && value.length <= max;
 }
@@ -58,7 +49,8 @@ function validateBody(body: unknown): body is AddRecipeBody {
   if (!recipe.ingredients.every((group) => isText(group?.category, 120) && Array.isArray(group.items) && group.items.length > 0 && group.items.length <= 60 && group.items.every((item) => isText(item, 500)))) return false;
   if (!Array.isArray(recipe.steps) || recipe.steps.length < 1 || recipe.steps.length > 30) return false;
   if (!recipe.steps.every((step) => isText(step?.title, 120) && isText(step?.text, 1_500))) return false;
-  if (!DEFAULT_OWNERS.has(owner.id) && (!isText(owner.name, 80) || (owner.initials !== undefined && !isText(owner.initials, 6)))) return false;
+  if (owner.name !== undefined && !isText(owner.name, 80)) return false;
+  if (owner.initials !== undefined && !isText(owner.initials, 6)) return false;
   const hasUrl = isText(image.url, 2_000) && /^https:\/\//i.test(image.url!);
   const hasUpload = isText(image.filename, 160) && isText(image.base64, 15_000_000) && /^image\/(jpeg|png|webp)$/i.test(image.mimeType ?? "");
   return Boolean(hasUrl || hasUpload) && !(hasUrl && hasUpload);
@@ -102,6 +94,7 @@ function sourceWithAddition(source: string, body: AddRecipeBody, imageUrl: strin
   let next = source.replace(recipeMarker, `\n  ${JSON.stringify(recipe)},\n];\n\nconst recipeProfiles: RecipeProfile[] = [`);
 
   if (!profileExists) {
+    if (!isText(body.owner.name, 80)) throw new Error("A new recipe owner needs a display name; no update was made.");
     const ownerType = next.match(/^type RecipeOwnerId = ([^;]+);$/m)?.[0];
     if (!ownerType) throw new Error("The recipe owner type has changed; no update was made.");
     next = next.replace(ownerType, ownerType.replace(";", ` | ${JSON.stringify(body.owner.id)};`));
@@ -140,7 +133,7 @@ function ownerList(source: string) {
 }
 
 export async function GET(request: Request) {
-  if (!authorized(request)) return jsonError("Unauthorized.", 401);
+  if (!authorizedRecipeAccess(request)) return jsonError("Unauthorized.", 401);
   try {
     return Response.json({ ok: true, owners: ownerList(await currentSource()) });
   } catch (error) {
@@ -149,7 +142,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!authorized(request)) return jsonError("Unauthorized.", 401);
+  if (!authorizedRecipeAccess(request)) return jsonError("Unauthorized.", 401);
   const raw = await request.text();
   if (Buffer.byteLength(raw, "utf8") > 15_200_000) return jsonError("Request is too large.", 413);
   let body: unknown;

@@ -8,7 +8,6 @@ import { BrandWordmark } from "@/src/brand-wordmark";
 import { AppointRelayVslPlayer, readGoogleReviewProgramVslLead } from "@/src/appointrelay-vsl-player";
 import { captureAttribution, getFunnelSessionId, trackFunnelEvent } from "@/src/funnel-analytics";
 import styles from "./appointrelay-funnel.module.css";
-import { classifyReviews as classify } from "./scheduling/catalog";
 
 type Assessment = {
   name: string;
@@ -42,6 +41,12 @@ const steps = [
   { key: "readiness", title: "Is the business ready to launch responsibly?" },
 ] as const;
 
+function classify(a: Assessment): "qualified" | "manual-review" | "disqualified" {
+  if (a.googleProfile === "No" || a.messagingPermission === "No" || a.decisionAuthority === "No" || a.completionSource === "No reliable completion record" || a.industry === "HVAC installation or new construction only" || a.nativeReviewAutomation === "Yes, and we are satisfied with it") return "disqualified";
+  if (a.timeline === "Researching for later" || a.monthlyCompletions === "Under 100" || [a.googleProfile, a.monthlyCompletions, a.completionSource, a.messagingPermission, a.nativeReviewAutomation].includes("Not sure")) return "manual-review";
+  if (a.industry !== "Residential HVAC service and repair") return "manual-review";
+  return "qualified";
+}
 
 function Header() {
   return <header className={styles.header}>

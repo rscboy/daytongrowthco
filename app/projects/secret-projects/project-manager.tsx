@@ -194,7 +194,7 @@ function ProjectCard({
         </div>
         <div className={styles.previewViewport}>
           <iframe key={previewKey} src={project.href} title={`${project.title} live preview`} loading="lazy" tabIndex={-1} />
-          <a href={project.href} target="_blank" rel="noreferrer" className={styles.previewOpen}><span>Open preview <ArrowUpRight size={14} /></span></a>
+          <a href={project.href} target="_blank" rel="noreferrer" className={styles.previewOpen}>Open preview <ArrowUpRight size={14} /></a>
         </div>
       </div>
 
@@ -202,7 +202,7 @@ function ProjectCard({
         <div className={styles.cardTitleRow}>
           <div>
             <span className={styles.projectType}>{project.type}</span>
-            <h2><a href={project.href} target="_blank" rel="noreferrer">{project.title}</a></h2>
+            <h2>{project.title}</h2>
           </div>
           <button
             type="button"
@@ -252,10 +252,10 @@ function ProjectCard({
         </div>
 
         <div className={styles.shareRow}>
-          <a className={styles.shareLink} href={sharePath} target="_blank" rel="noreferrer" aria-label={`Open share link for ${project.title}`}>
+          <div className={styles.shareLink} aria-label="Share link">
             <ExternalLink size={14} />
             <span>{sharePath}</span>
-          </a>
+          </div>
           <button type="button" onClick={() => onCopy(project)} disabled={!project.setting.active} title={project.setting.active ? "Copy share link" : "Turn sharing on first"}>
             <Copy size={14} /> Copy
           </button>

@@ -99,7 +99,6 @@
 .choice:last-child { border-right: 0; }
 
 .choice::after {
-  display: none;
   position: absolute;
   right: 0.8rem;
   bottom: -1px;
@@ -111,32 +110,6 @@
   transform-origin: center;
   transition: transform var(--dgc-duration-standard, 220ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1));
 }
-
-.selectionIndicator {
-  position: absolute;
-  left: .8rem;
-  right: .8rem;
-  bottom: -1px;
-  height: 2px;
-  background: #a7d2eb;
-}
-
-.offerStack { display: grid; margin-top: clamp(2rem, 4vw, 3.5rem); }
-.offerPanel {
-  grid-area: 1 / 1;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 220ms ease, visibility 220ms;
-}
-.offerPanel[data-active="true"] { opacity: 1; visibility: visible; pointer-events: auto; }
-.offerStack[data-instant="true"] .offerPanel { transition: none; }
-.offerPanel .detailViewport { display: grid; min-height: 22rem; }
 
 .choice[aria-pressed="true"] {
   color: #fff;
@@ -301,7 +274,7 @@
 }
 
 .primaryAction svg { transition: transform var(--dgc-duration-fast, 150ms) var(--dgc-ease-out, cubic-bezier(.23,1,.32,1)); }
-.primaryAction:active { transform: scale(0.98); }
+.primaryAction:active { transform: scale(0.96); }
 
 @media (hover: hover) and (pointer: fine) {
   .choice:hover { color: #fff; background: rgba(255,255,255,.03); }
@@ -324,7 +297,6 @@
 }
 
 @media (max-width: 62rem) {
-  .offerPanel { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .intro { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
   .intro h2 { max-width: 14ch; }
   .intro p { max-width: 48ch; }
@@ -338,7 +310,6 @@
 }
 
 @media (max-width: 43.75rem) {
-  .selectionIndicator { top: .55rem; bottom: .55rem; left: 0; right: auto; height: auto; width: 2px; }
   .section { padding: 3.75rem var(--dgc-gutter, 1.25rem) 4.25rem; }
   .intro { margin-bottom: 1.75rem; padding-top: 0.85rem; }
   .intro h2 { font-size: clamp(2.2rem, 10.5vw, 2.75rem); line-height: 1.02; }
@@ -396,7 +367,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .offerPanel { transition: none; }
   .section::after { display: none; }
   .choice,
   .choice::after,

@@ -1,5 +1,5 @@
-import { legacyHtmlResponse } from "../_legacy/html";
+import { NextResponse } from "next/server";
 
 export function GET() {
-  return legacyHtmlResponse("local-seo/index.html");
+  return NextResponse.redirect("https://www.daytongrowth.co/local-search", 308);
 }

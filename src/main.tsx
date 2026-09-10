@@ -71,10 +71,6 @@ import flagshipStyles from "./flagship-choice.module.css";
 import homepageClarityStyles from "./homepage-clarity.module.css";
 import interiorPageStyles from "./interior-page-polish.module.css";
 import appointRelayOfferStyles from "./appointrelay-offer.module.css";
-import { WorkflowScene, ServiceDemo, ProcessStory, ProjectStudies } from "./workflow-studio";
-import { ExactRange, MigrationCostChart, QuoteCostBreakdown, WebsiteComparison, inquiryServices, selectInquiryService, saveCalculatorScenario, useInquiryJourney, type InquiryService } from "./homepage-experience";
-import { SchedulingSection } from "./scheduling/section";
-import { openScheduler } from "./scheduling/entry";
 
 // Register ScrollTrigger once for all scroll-driven sections. Safe in this
 // client-rendered SPA (no SSR), and a no-op if called more than once.
@@ -1075,43 +1071,44 @@ function RouteTransition() {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    // Do not stack a page-entry animation over the existing section reveals.
+    // The brief exit state is cleared once the new route is ready.
     document.documentElement.classList.remove("is-page-leaving");
-    const enteredFromClick = document.documentElement.dataset.navigationMotion === "pointer";
-    delete document.documentElement.dataset.navigationMotion;
-    if (!enteredFromClick || reduceMotion) return;
-    const main = document.getElementById("main-content");
-    const animation = main?.animate([{ opacity: .72 }, { opacity: 1 }], { duration: 160, easing: "ease-out" });
-    return () => animation?.cancel();
-  }, [pathname, reduceMotion]);
+  }, [pathname]);
 
   useEffect(() => {
+    if (reduceMotion) return;
+    let isNavigating = false;
+
     const handleDocumentClick = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0 || event.detail === 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+      if (isNavigating || event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>("a[href]");
       if (!link || link.target === "_blank" || link.hasAttribute("download") || link.dataset.noPageTransition !== undefined) return;
+
       const destination = new URL(link.href, window.location.href);
-      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return;
-      if (/^\/(terms-of-service|privacy-policy|accessibility)\/?$/.test(destination.pathname)) return;
-      // Next Link handles its own clicks; this listener runs after its handler.
+      if (destination.origin !== window.location.origin || destination.protocol !== window.location.protocol) return;
+      const legalDocumentPaths = new Set(["/terms-of-service", "/terms-of-service/", "/privacy-policy", "/privacy-policy/", "/accessibility", "/accessibility/"]);
+      // The legal overlay owns these links and preserves the reader's current
+      // position. Do not turn them into a route transition first.
+      if (legalDocumentPaths.has(destination.pathname)) return;
+      if (destination.pathname === window.location.pathname) return;
+
       event.preventDefault();
-      router.push(`${destination.pathname}${destination.search}${destination.hash}`);
+      isNavigating = true;
+      document.documentElement.classList.add("is-page-leaving");
+      window.setTimeout(() => {
+        router.push(`${destination.pathname}${destination.search}${destination.hash}`);
+      }, 110);
     };
-    const markNavigation = (event: MouseEvent) => {
-      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
-      if (!link || event.detail === 0 || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === "_blank" || link.hasAttribute("download")) return;
-      const destination = new URL(link.href, window.location.href);
-      if (destination.origin === window.location.origin && destination.pathname !== window.location.pathname) document.documentElement.dataset.navigationMotion = "pointer";
-    };
-    const clearNavigation = () => { delete document.documentElement.dataset.navigationMotion; };
-    document.addEventListener("click", markNavigation, true);
-    document.addEventListener("click", handleDocumentClick);
-    window.addEventListener("popstate", clearNavigation);
-    return () => {
-      document.removeEventListener("click", markNavigation, true);
-      document.removeEventListener("click", handleDocumentClick);
-      window.removeEventListener("popstate", clearNavigation);
-    };
-  }, [router]);
+
+    document.addEventListener("click", handleDocumentClick, true);
+    return () => document.removeEventListener("click", handleDocumentClick, true);
+  }, [reduceMotion, router]);
+
   return null;
 }
 
@@ -1142,9 +1139,7 @@ function useTurnstileProtection() {
     };
     form.addEventListener("focusin", onFormFocus);
 
-    let submissionInFlight = false;
     const setSubmitting = (isSubmitting: boolean) => {
-      submissionInFlight = isSubmitting;
       if (!submitButton) return;
       submitButton.disabled = isSubmitting;
       submitButton.dataset.loading = String(isSubmitting);
@@ -1308,7 +1303,6 @@ function useTurnstileProtection() {
 
     const onSubmit = (event: SubmitEvent) => {
       event.preventDefault();
-      if (submissionInFlight || submitButton?.dataset.state === "sent") return;
       const status = getStatus();
 
       const firstInvalid = validateFields();
@@ -1342,8 +1336,6 @@ function useTurnstileProtection() {
       // fires). A no-cors fetch delivers the data without needing to read the
       // framed response, so the UI can resolve on the request settling instead.
       const payload = new FormData(form);
-      const assumptions = String(payload.get("calculatorAssumptions") || "");
-      if (assumptions) payload.set("notes", `${payload.get("notes") || ""}\n\nCalculator assumptions included by visitor:\n${assumptions}`);
       payload.set("cf-turnstile-response", token);
       const crmPayload = {
         funnel: "marketing-site",
@@ -2092,14 +2084,6 @@ function roiRangeStyle(value: number, min: number, max: number) {
 
 function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
   const reduceMotion = useReducedMotion();
-  const resultsRef = useRef<HTMLDivElement>(null);
-  const resultAnimation = useRef<Animation | null>(null);
-  useEffect(() => () => resultAnimation.current?.cancel(), []);
-  const finishAdjustment = () => {
-    if (reduceMotion) return;
-    resultAnimation.current?.cancel();
-    resultAnimation.current = resultsRef.current?.animate([{ opacity: .72 }, { opacity: 1 }], { duration: 160, easing: "ease-out" }) ?? null;
-  };
   const [inputs, setInputs] = useState(() => ({
     "website-migration": {
       platformMonthly: 100,
@@ -2143,7 +2127,7 @@ function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
   const annualCostPerModeledReview = annualReviewProgramFee / Math.max(1, modeledThirtyDayReviews * 12);
   const results = productKey === "website-migration"
     ? [
-        { label: "Estimated break-even", value: monthlyPlatformSavings > 0 ? `${migrationBreakEvenMonths} mo` : "No break-even" },
+        { label: "Estimated break-even", value: `${migrationBreakEvenMonths} mo` },
         { label: `${migrationInputs.years}-year net savings`, value: formatCompactCurrency(migrationNetSavings) },
         { label: `${migrationInputs.years}-year ROI`, value: `${migrationRoi > 0 ? "+" : ""}${migrationRoi}%`, primary: true },
       ]
@@ -2178,17 +2162,8 @@ function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
     }));
   };
 
-  useEffect(() => {
-    const service = productKey === "website-migration" ? "website" : productKey === "better-quote" ? "quote" : "reviews";
-    const scenario = service === "website"
-      ? `Website estimate: $${migrationInputs.platformMonthly}/month current platform; $${migrationInputs.migrationCost} migration; ${migrationInputs.years} years; $15/year domain assumption. Estimated net savings: ${formatCompactCurrency(migrationNetSavings)}. Hosting, maintenance, and additional scope excluded.`
-      : service === "quote" ? `Quote estimate: $${quoteInputs.quoteValue} original quote; ${quoteInputs.savingsRate}% qualifying savings assumed; ${formatCompactCurrency(quoteProgramFee)} success fee; ${formatCompactCurrency(quoteNetSavings)} estimated net savings. Not a guaranteed result.`
-      : `Review model: ${reviewInputs.eligibleJobs} eligible jobs/month; ${reviewInputs.responseRate}% assumed response; $${reviewInputs.valuePerReview} assumed value/review. Not a revenue forecast or guaranteed result.`;
-    saveCalculatorScenario(service, scenario);
-  }, [productKey, migrationInputs.platformMonthly, migrationInputs.migrationCost, migrationInputs.years, migrationNetSavings, quoteInputs.quoteValue, quoteInputs.savingsRate, quoteProgramFee, quoteNetSavings, reviewInputs.eligibleJobs, reviewInputs.responseRate, reviewInputs.valuePerReview]);
-
   return (
-    <section className="hero-roi-card program-roi-card" aria-labelledby={`program-roi-title-${productKey}`} onPointerUp={finishAdjustment}>
+    <section className="hero-roi-card program-roi-card" aria-labelledby={`program-roi-title-${productKey}`}>
       <div className="hero-roi-windowbar">
         <span className="hero-roi-window-dots" aria-hidden="true">
           <i />
@@ -2196,7 +2171,7 @@ function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
           <i />
         </span>
         <strong>{product.windowTitle}</strong>
-        <span className="hero-roi-live"><i aria-hidden="true" /> Your estimate</span>
+        <span className="hero-roi-live"><i aria-hidden="true" /> Live estimate</span>
       </div>
 
       <div className="hero-roi-panel">
@@ -2207,27 +2182,49 @@ function ProgramRoiCalculator({ productKey }: { productKey: HeroRoiProduct }) {
 
         {productKey === "website-migration" ? (
           <div className="hero-roi-controls">
-            <ExactRange label="Current website platform / month" value={migrationInputs.platformMonthly} min={0} max={500} step={5} unit="$" onChange={value => updateMigrationValue("platformMonthly", value)} />
-            <ExactRange label="Migration investment" value={migrationInputs.migrationCost} min={1500} max={3000} step={500} unit="$" onChange={value => updateMigrationValue("migrationCost", value)} />
-            <ExactRange label="Years to compare" value={migrationInputs.years} min={1} max={7} step={1} unit="" onChange={value => updateMigrationValue("years", value)} />
+            <label className="hero-roi-control">
+              <span><b>Current website platform / month</b><output>{formatCompactCurrency(migrationInputs.platformMonthly)}</output></span>
+              <input type="range" min="25" max="500" step="5" value={migrationInputs.platformMonthly} style={roiRangeStyle(migrationInputs.platformMonthly, 25, 500)} onInput={(event) => updateMigrationValue("platformMonthly", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Migration investment</b><output>{formatCompactCurrency(migrationInputs.migrationCost)}</output></span>
+              <input type="range" min="1500" max="3000" step="500" value={migrationInputs.migrationCost} style={roiRangeStyle(migrationInputs.migrationCost, 1500, 3000)} onInput={(event) => updateMigrationValue("migrationCost", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Years to compare</b><output>{migrationInputs.years} years</output></span>
+              <input type="range" min="1" max="7" step="1" value={migrationInputs.years} style={roiRangeStyle(migrationInputs.years, 1, 7)} onInput={(event) => updateMigrationValue("years", Number(event.currentTarget.value))} />
+            </label>
           </div>
         ) : productKey === "better-quote" ? (
           <div className="hero-roi-controls hero-roi-controls-compact">
-            <ExactRange label="Current written quote" value={quoteInputs.quoteValue} min={1000} max={50000} step={500} unit="$" onChange={value => updateQuoteValue("quoteValue", value)} />
-            <ExactRange label="Qualifying savings found" value={quoteInputs.savingsRate} min={0} max={40} step={1} unit="%" onChange={value => updateQuoteValue("savingsRate", value)} />
+            <label className="hero-roi-control">
+              <span><b>Current written quote</b><output>{formatCompactCurrency(quoteInputs.quoteValue)}</output></span>
+              <input type="range" min="1000" max="50000" step="500" value={quoteInputs.quoteValue} style={roiRangeStyle(quoteInputs.quoteValue, 1000, 50000)} onInput={(event) => updateQuoteValue("quoteValue", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Qualifying savings found</b><output>{quoteInputs.savingsRate}%</output></span>
+              <input type="range" min="2" max="40" step="1" value={quoteInputs.savingsRate} style={roiRangeStyle(quoteInputs.savingsRate, 2, 40)} onInput={(event) => updateQuoteValue("savingsRate", Number(event.currentTarget.value))} />
+            </label>
           </div>
         ) : (
           <div className="hero-roi-controls">
-            <ExactRange label="Eligible residential jobs each month" value={reviewInputs.eligibleJobs} min={25} max={500} step={25} unit="" onChange={value => updateReviewValue("eligibleJobs", value)} />
-            <ExactRange label="Published-review response rate" value={reviewInputs.responseRate} min={1} max={25} step={1} unit="%" onChange={value => updateReviewValue("responseRate", value)} />
-            <ExactRange label="Your value for one new review" value={reviewInputs.valuePerReview} min={0} max={500} step={25} unit="$" onChange={value => updateReviewValue("valuePerReview", value)} />
+            <label className="hero-roi-control">
+              <span><b>Eligible residential jobs each month</b><output>{reviewInputs.eligibleJobs}</output></span>
+              <input type="range" min="25" max="500" step="25" value={reviewInputs.eligibleJobs} style={roiRangeStyle(reviewInputs.eligibleJobs, 25, 500)} onInput={(event) => updateReviewValue("eligibleJobs", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Published-review response rate</b><output>{reviewInputs.responseRate}%</output></span>
+              <input type="range" min="1" max="25" step="1" value={reviewInputs.responseRate} style={roiRangeStyle(reviewInputs.responseRate, 1, 25)} onInput={(event) => updateReviewValue("responseRate", Number(event.currentTarget.value))} />
+            </label>
+            <label className="hero-roi-control">
+              <span><b>Your value for one new review</b><output>{formatCompactCurrency(reviewInputs.valuePerReview)}</output></span>
+              <input type="range" min="0" max="500" step="25" value={reviewInputs.valuePerReview} style={roiRangeStyle(reviewInputs.valuePerReview, 0, 500)} onInput={(event) => updateReviewValue("valuePerReview", Number(event.currentTarget.value))} />
+            </label>
           </div>
         )}
 
-        {productKey === "website-migration" ? <MigrationCostChart monthly={migrationInputs.platformMonthly} investment={migrationInputs.migrationCost} years={migrationInputs.years} /> : productKey === "better-quote" ? <QuoteCostBreakdown original={quoteInputs.quoteValue} savings={qualifyingSavings} fee={quoteProgramFee} /> : null}
-
-        <div className="hero-roi-results" ref={resultsRef}>
-          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><strong>{result.value}</strong></div>)}
+        <div className="hero-roi-results" aria-live="polite" aria-atomic="true">
+          {results.map((result) => <div className={result.primary ? "hero-roi-primary-result" : undefined} key={result.label}><span>{result.label}</span><motion.strong key={`${productKey}-${result.value}`} initial={reduceMotion ? false : { opacity: 0.55, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}>{result.value}</motion.strong></div>)}
         </div>
 
         <div className="hero-roi-foot">
@@ -3118,10 +3115,6 @@ function BusinessFavicon({ domain, className = "" }: Pick<BusinessIdentity, "dom
 
 function ProjectForm({ className = "" }: { className?: string }) {
   const { profile, workflowChoice } = usePersonalization();
-  const journey = useInquiryJourney();
-  const [includeScenario, setIncludeScenario] = useState(false);
-  useEffect(() => setIncludeScenario(false), [journey.service]);
-  const scenario = journey.scenarios[journey.service];
   const selectedWorkflow = workflowSimulationOptions.find((option) => option.id === workflowChoice);
   const selectedOffer = coreProductOffers.find((offer) => offer.id === workflowChoice);
 
@@ -3180,12 +3173,7 @@ function ProjectForm({ className = "" }: { className?: string }) {
     if (profile?.email && !emailEdited.current) setEmail(profile.email);
   }, [profile]);
 
-  const detailsPlaceholder = { website: "Which platform are you using, and what would you like to improve?", quote: "What is the written quote for, and what would you like compared?", appointments: "Where do scheduling requests or handoffs get stuck?", reviews: "How does your team currently follow up after a completed job?", other: "Estimates, follow-ups, scheduling, website updates..." }[journey.service];
-
-  const returnToDetails = (target: "inquiry-service" | "details") => {
-    setFormStep(0);
-    window.requestAnimationFrame(() => document.getElementById(target)?.focus());
-  };
+  const detailsPlaceholder = "Estimates, follow-ups, scheduling, website updates...";
 
   const continueToContact = () => {
     const checks = [
@@ -3232,9 +3220,8 @@ function ProjectForm({ className = "" }: { className?: string }) {
   return (
     <div className={`form-card ${className}`.trim()}>
       <form id="auditForm" method="POST" action={formAction} className="project-form" noValidate>
-        <input type="hidden" name="calculatorAssumptions" value={includeScenario ? scenario || "" : ""} readOnly />
         <input type="hidden" name="mainGoal" value="Build a business tool" readOnly />
-        <input type="hidden" name="serviceTier" value={inquiryServices[journey.service]} readOnly />
+        <input type="hidden" name="serviceTier" value={selectedOffer ? selectedOffer.freeTitle : "Discuss the process"} readOnly />
         <input type="hidden" name="teamSize" value={profile?.teamSize ?? ""} readOnly />
         <input type="hidden" name="selectedWorkflow" value={selectedWorkflow?.label ?? "Not selected"} readOnly />
         <input type="hidden" name="suggestedFirstBuild" value={selectedWorkflow?.build ?? "Discuss the right first product"} readOnly />
@@ -3245,8 +3232,6 @@ function ProjectForm({ className = "" }: { className?: string }) {
         </div>
 
         <div className="form-stage form-stage-one" hidden={formStep !== 0}>
-          <label className="form-field inquiry-context" htmlFor="inquiry-service"><span>What would you like help with?</span><select id="inquiry-service" aria-label="What would you like help with?" value={journey.service} onChange={event => selectInquiryService(event.target.value as InquiryService)}>{Object.entries(inquiryServices).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
-          {scenario && <div className="inquiry-scenario"><label><input type="checkbox" checked={includeScenario} onChange={event => setIncludeScenario(event.target.checked)} /><span>Include my calculator assumptions</span></label><details><summary>Review what will be included</summary><p>{scenario}</p></details><small>{includeScenario ? "These assumptions will be added to your message." : "Calculator assumptions are not included unless you choose."}</small></div>}
           <label className="form-field email-form-field" htmlFor="email">
             <span>Email *</span>
             <div className="favicon-field">
@@ -3288,7 +3273,6 @@ function ProjectForm({ className = "" }: { className?: string }) {
         </div>
 
         <div className="form-stage form-stage-two" hidden={formStep !== 1}>
-          <p className="inquiry-review">About: {inquiryServices[journey.service]}{includeScenario && scenario ? " · Calculator assumptions included" : ""}. <button type="button" onClick={() => returnToDetails("inquiry-service")}>Edit context</button></p>
           <label className="form-field" htmlFor="contactName">
             <span>Name *</span>
             <input
@@ -3324,7 +3308,7 @@ function ProjectForm({ className = "" }: { className?: string }) {
           </label>
           <div id="turnstileWidget" className="turnstile-field" aria-label="Verification" />
           <div className="form-stage-actions">
-            <button type="button" className="form-back" onClick={() => returnToDetails("details")}>Back</button>
+            <button type="button" className="form-back" onClick={() => setFormStep(0)}>Back</button>
             <button type="submit" className="button button-primary large form-submit">
               <span className="form-submit-label">Send request</span>
               <ArrowRight className="form-submit-arrow" size={16} aria-hidden="true" />
@@ -3401,7 +3385,6 @@ function FinalCTA() {
       </button>
       <div className="home-inquiry-layout">
         <div className="final-cta-copy home-inquiry-copy">
-          <div className="founder-introduction"><img src="/samuel-caruso-320.jpg" alt="Samuel Caruso, founder of DaytonGrowthCo" width="320" height="480" loading="lazy" /><div><span>Rooted in Dayton.</span><strong>Samuel Caruso</strong><span>Founder, DaytonGrowthCo.</span><a href="/aboutus">Meet the person behind the work <ArrowRight size={14} aria-hidden="true" /></a></div></div>
           <h2>
             {firstName ? <span className="final-cta-greeting">{firstName},</span> : null}
             Tell us what repeats. We will help simplify it.
@@ -3837,6 +3820,40 @@ function ServiceArchitecture() {
   );
 }
 
+function BuildPrinciples() {
+  const principles = [
+    ["Fix the expensive bottleneck first.", "Start where time, errors, or lost work cost the most."],
+    ["Use existing software when it fits.", "Set up the tools that already work. Build only what is unique."],
+    ["Build custom where it creates an advantage.", "Reserve custom work for the parts of your process that are genuinely different."],
+    ["Measure what improves.", "Success is less time and fewer errors—not more features."],
+  ];
+
+  return (
+    <section className="build-principles" aria-labelledby="build-principles-title">
+      <div className="build-principles-media" aria-hidden="true">
+        <BackgroundVideo className="build-principles-video" src={videos.process.src} playbackRate={0.55} preload="metadata" />
+      </div>
+      <div className="build-principles-film-mask" aria-hidden="true" />
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="dedicated-heading" data-reveal>
+          <h2 id="build-principles-title">Find the bottleneck. Fix only what matters.</h2>
+          <p>We start with the highest-cost friction, prove the economics, and build only what the work requires.</p>
+        </div>
+        <div className="build-principles-list" role="list" data-stagger>
+          {principles.map(([title, text]) => (
+            <article key={title} role="listitem">
+              <div>
+                <strong>{title}</strong>
+                <p>{text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DiscoveryDiagnosis() {
   const steps = [
     ["Start with the constraint", "Find the repeated handoff, delay, or error that costs the most."],
@@ -4125,7 +4142,24 @@ const servicePages: Record<string, ServicePageConfig> = {
 };
 
 function CompactProductVisual({ service }: { service: ServicePageConfig }) {
-  return <ServiceDemo key={service.productId} product={service.productId} />;
+  const visualByProduct: Record<string, { label: string; title: string; rows: string[]; icon: React.ReactNode }> = {
+    calls: { label: "CALL INTAKE", title: "Every call gets a next step", rows: ["Caller details captured", "Appointment request routed", "Urgent call sent to a person"], icon: <PhoneCall size={22} aria-hidden="true" /> },
+    estimates: { label: "QUOTE BUILDER", title: "A quote your team can send", rows: ["Scope selected", "Pricing rules applied", "Proposal ready to review"], icon: <Calculator size={22} aria-hidden="true" /> },
+    website: { label: "REDESIGN PLAN", title: "A clearer website path", rows: ["Core services made easy to find", "Calls and forms checked", "Useful pages and tracking protected"], icon: <Globe2 size={22} aria-hidden="true" /> },
+    followup: { label: "FOLLOW-UP QUEUE", title: "The next step stays visible", rows: ["Missed call flagged", "Estimate follow-up scheduled", "Owner alerted when needed"], icon: <MessageSquare size={22} aria-hidden="true" /> },
+    reviews: { label: "REVIEW REQUEST", title: "The ask goes out on time", rows: ["Completed service received", "Personalized text scheduled", "Direct Google link included"], icon: <MessageSquare size={22} aria-hidden="true" /> },
+    search: { label: "LOCAL PRESENCE", title: "Your services are easy to verify", rows: ["Services explained clearly", "Service area aligned", "Proof connected to the offer"], icon: <Search size={22} aria-hidden="true" /> },
+    dashboards: { label: "WORK QUEUE", title: "The work in one place", rows: ["Requests grouped by owner", "Status visible at a glance", "Next action never buried"], icon: <LayoutDashboard size={22} aria-hidden="true" /> },
+  };
+  const visual = visualByProduct[service.productId ?? ""] ?? visualByProduct.dashboards;
+  return (
+    <div className="compact-product-visual" aria-label={`${visual.title} preview`}>
+      <div className="compact-product-visual-top"><span className="compact-product-visual-icon">{visual.icon}</span><span>{visual.label}</span><i aria-hidden="true" /></div>
+      <h2>{visual.title}</h2>
+      <ul>{visual.rows.map((row) => <li key={row}><CheckCircle2 size={16} aria-hidden="true" />{row}</li>)}</ul>
+      <div className="compact-product-visual-footer"><span>DaytonGrowthCo.</span><span>READY TO USE</span></div>
+    </div>
+  );
 }
 
 function ServicePage({ service }: { service: ServicePageConfig }) {
@@ -5913,7 +5947,7 @@ const orbitClients = [
     name: "Waibel Energy Solutions",
     logo: "/client-logos/waibel.jpg",
     logoClassName: "waibel",
-    href: "/examples#project-waibel",
+    href: "/website",
     project: "Website migration",
     outcome: "A clearer service structure that is easier for the team to keep current.",
   },
@@ -5921,7 +5955,7 @@ const orbitClients = [
     name: "Khan Construction",
     monogram: "KC",
     logoClassName: "khan",
-    href: "/examples#project-khan",
+    href: "/dashboards-portals",
     project: "Clearer service visibility",
     outcome: "Operational information organized around the work already in motion.",
   },
@@ -5929,7 +5963,7 @@ const orbitClients = [
     name: "FlightFix",
     logo: "/client-logos/flightfix.jpg",
     logoClassName: "flightfix",
-    href: "/examples#project-flightfix",
+    href: "/systems-that-pay",
     project: "Workflow simplification",
     outcome: "A focused workflow that makes handoffs and next steps easier to see.",
   },
@@ -5937,7 +5971,7 @@ const orbitClients = [
     name: "Shmu's Automotive",
     logo: "/client-logos/shmus.png",
     logoClassName: "shmus",
-    href: "/examples#project-shmus",
+    href: "/google-review-texting",
     project: "Review growth",
     outcome: "Consistent customer follow-up without relying on the team to remember it.",
   },
@@ -6092,7 +6126,7 @@ function BuiltForStrip() {
                     destination: activeClient.href,
                   })}
                 >
-                  Read project brief <ArrowRight size={14} aria-hidden="true" />
+                  View related work <ArrowRight size={14} aria-hidden="true" />
                 </Link>
               </motion.div>
             </AnimatePresence>
@@ -6167,35 +6201,90 @@ const homepageOfferCalculators: Partial<Record<HomepageOfferId, HeroRoiProduct>>
 };
 
 function FlagshipOverview() {
+  useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_home_offer_viewed"); }, []);
   const reduceMotion = useReducedMotion();
   const [activeOfferId, setActiveOfferId] = useState<HomepageOfferId>("quote");
-  const [keyboardSelection, setKeyboardSelection] = useState(false);
-  useEffect(() => { trackFunnelEvent("appointrelay", "appointrelay_home_offer_viewed"); }, []);
-  return <section className={`${flagshipStyles.section} homepage-component`} id="programs" aria-labelledby="flagship-overview-title">
-    <div className={flagshipStyles.shell}>
-      <header className={flagshipStyles.intro}><h2 id="flagship-overview-title">Start with the work that costs you most.</h2><p>Choose the operating problem in front of you. We will show you the clearest next step.</p></header>
-      <div className={flagshipStyles.selector} role="group" aria-label="Choose the problem you want to solve">
-        {homepageOffers.map((offer) => {
-          const Icon = offer.icon; const active = activeOfferId === offer.id;
-          return <button key={offer.id} type="button" className={flagshipStyles.choice} aria-pressed={active} aria-controls={`offer-${offer.id}`} onClick={(event) => { setKeyboardSelection(event.detail === 0); setActiveOfferId(offer.id); selectInquiryService(offer.id); }}>
-            <span className={flagshipStyles.choiceIcon} aria-hidden="true"><Icon size={19} /></span><span>{offer.prompt}</span><ArrowRight className={flagshipStyles.choiceArrow} size={16} aria-hidden="true" />
-            {active && <motion.span className={flagshipStyles.selectionIndicator} layoutId="homepage-offer-indicator" transition={{ duration: reduceMotion || keyboardSelection ? 0 : .22, ease: [.23, 1, .32, 1] }} aria-hidden="true" />}
-          </button>;
-        })}
+  const activeOffer = homepageOffers.find((offer) => offer.id === activeOfferId) ?? homepageOffers[0];
+  const activeCalculator = homepageOfferCalculators[activeOffer.id];
+
+  return (
+    <section className={`${flagshipStyles.section} homepage-component`} id="programs" aria-labelledby="flagship-overview-title">
+      <div className={flagshipStyles.shell}>
+        <header className={flagshipStyles.intro}>
+          <h2 id="flagship-overview-title">Start with the work that costs you most.</h2>
+          <p>Choose the operating problem in front of you. We will show you the clearest next step.</p>
+        </header>
+
+        <div className={flagshipStyles.selector} role="group" aria-label="Choose the problem you want to solve">
+          {homepageOffers.map((offer) => {
+            const Icon = offer.icon;
+            const active = offer.id === activeOffer.id;
+            return (
+              <button
+                key={offer.id}
+                type="button"
+                className={flagshipStyles.choice}
+                aria-pressed={active}
+                aria-controls="homepage-offer-detail"
+                onClick={() => setActiveOfferId(offer.id)}
+              >
+                <span className={flagshipStyles.choiceIcon} aria-hidden="true"><Icon size={19} /></span>
+                <span>{offer.prompt}</span>
+                <ArrowRight className={flagshipStyles.choiceArrow} size={16} aria-hidden="true" />
+              </button>
+            );
+          })}
+        </div>
+
+        <div className={`${flagshipStyles.resultGrid} ${!activeCalculator ? flagshipStyles.resultGridWithoutCalculator : ""}`}>
+          {activeCalculator ? (
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                className={flagshipStyles.calculatorStage}
+                key={activeCalculator}
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <ProgramRoiCalculator productKey={activeCalculator} />
+              </motion.div>
+            </AnimatePresence>
+          ) : null}
+
+          <div className={flagshipStyles.detailViewport} id="homepage-offer-detail" aria-live="polite" aria-atomic="true">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.article
+                className={flagshipStyles.offerDetail}
+                key={activeOffer.id}
+                initial={reduceMotion ? false : { opacity: 0, transform: "translateY(8px)" }}
+                animate={{ opacity: 1, transform: "translateY(0px)" }}
+                exit={reduceMotion ? undefined : { opacity: 0, transform: "translateY(-4px)" }}
+                transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <span className={flagshipStyles.category}>{activeOffer.category}</span>
+                <h3>{activeOffer.name}</h3>
+                <p>{activeOffer.description}</p>
+                <strong>{activeOffer.detail}</strong>
+                <Link
+                  className={flagshipStyles.primaryAction}
+                  href={activeOffer.href}
+                  onClick={() => {
+                    if (activeOffer.id === "appointments") {
+                      trackFunnelEvent("appointrelay", "appointrelay_home_offer_clicked");
+                    }
+                  }}
+                >
+                  {activeOffer.action} <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </motion.article>
+            </AnimatePresence>
+          </div>
+        </div>
+
       </div>
-      <div className={flagshipStyles.offerStack} data-instant={keyboardSelection || reduceMotion ? "true" : "false"}>
-        {homepageOffers.map((offer) => {
-          const calculator = homepageOfferCalculators[offer.id]; const active = activeOfferId === offer.id;
-          return <div key={offer.id} id={`offer-${offer.id}`} className={flagshipStyles.offerPanel} data-active={active} inert={!active} aria-hidden={!active}>
-            <div className={flagshipStyles.calculatorStage}>{calculator ? <ProgramRoiCalculator productKey={calculator} /> : <ServiceDemo product="appointments" />}</div>
-            <article className={flagshipStyles.detailViewport}>
-              <div className={flagshipStyles.offerDetail}><span className={flagshipStyles.category}>{offer.category}</span><h3>{offer.name}</h3><p>{offer.description}</p><strong>{offer.detail}</strong><Link className={flagshipStyles.primaryAction} href={offer.href} onClick={() => { if (offer.id === "appointments") trackFunnelEvent("appointrelay", "appointrelay_home_offer_clicked"); }}>{offer.action} <ArrowRight size={16} aria-hidden="true" /></Link>{offer.id !== "quote" && <a className="homepage-schedule-link" href={`#schedule-${offer.id}`} onClick={event => { event.preventDefault(); openScheduler(offer.id, event.detail > 0); }}>Find a time to talk <ArrowRight size={15} aria-hidden="true" /></a>}</div>{offer.id === "website" ? <WebsiteComparison /> : offer.id === "reviews" ? <ServiceDemo product="reviews" /> : offer.id === "quote" ? <div className="quote-comparison-explanation"><span>One scope. Comparable options.</span><ol><li>Your written scope stays the reference.</li><li>A real person checks legitimate local providers.</li><li>You review the options and decide.</li></ol></div> : null}
-            </article>
-          </div>;
-        })}
-      </div>
-    </div>
-  </section>;
+    </section>
+  );
 }
 
 function ProgramSteps({ items }: { items: Array<{ title: string; text: string }> }) {
@@ -6279,6 +6368,145 @@ function ProgramMatch() {
   return <section className="program-match" aria-labelledby="program-match-title"><div className="flagship-shell"><header><h2 id="program-match-title">Which system do you need?</h2></header><div className="program-match-grid"><article><p>I’m trying to lower an expensive service quote.</p><strong>Use The Better Quote Program™</strong><a href="/quote/start/">Upload Your Quote <ArrowRight size={15} aria-hidden="true" /></a></article><article><p>I need to move, rebuild, or modernize an existing website.</p><strong>Use The Website Migration Program™</strong><Link href="/website/">Start My Migration <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Our team has an approved appointment queue it cannot keep up with.</p><strong>Use AppointRelay™</strong><Link href="/appointrelay/">Review the Queue <ArrowRight size={15} aria-hidden="true" /></Link></article><article><p>Completed HVAC jobs are not consistently becoming Google reviews.</p><strong>Use The HVAC Google Review Growth Program™</strong><Link href="/google-reviews/book-call/">Schedule a Demo <ArrowRight size={15} aria-hidden="true" /></Link></article></div></div></section>;
 }
 
+function BetterQuotePreview() {
+  const reduceMotion = useReducedMotion();
+  const [visualVisible, setVisualVisible] = useState(false);
+  const visualRef = useRef<HTMLDivElement>(null);
+  const currentQuote = 10000;
+  const comparisonQuote = 7000;
+  const grossDifference = currentQuote - comparisonQuote;
+  const estimatedNetSavings = grossDifference - betterQuoteProgramFee(grossDifference);
+
+  useEffect(() => {
+    const visual = visualRef.current;
+    if (!visual) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setVisualVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setVisualVisible(true);
+        observer.disconnect();
+      },
+      { threshold: 0.28, rootMargin: "0px 0px -8% 0px" },
+    );
+    observer.observe(visual);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
+  return (
+    <section className={`${homepageClarityStyles.quoteSection} homepage-component`} aria-labelledby="home-quote-preview-title">
+      <div className={homepageClarityStyles.quoteShell}>
+        <header className={homepageClarityStyles.quoteCopy}>
+          <h2 id="home-quote-preview-title">See the decision, not another wall of numbers.</h2>
+          <p>A real person reviews comparable written quotes. This example shows how the published fee would affect a qualifying comparison.</p>
+          <a className={homepageClarityStyles.primaryLink} href="/quote/start/">
+            Check my quote <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </header>
+
+        <div className={homepageClarityStyles.quoteVisualColumn}>
+          <div
+            ref={visualRef}
+            className={homepageClarityStyles.quoteVisual}
+            data-visible={visualVisible ? "true" : "false"}
+            aria-label="Illustrative quote comparison"
+          >
+            <div className={homepageClarityStyles.quoteBarRow}>
+              <span>Current quote</span>
+              <div><i style={{ inlineSize: "100%" }} /></div>
+              <strong>{formatCompactCurrency(currentQuote)}</strong>
+            </div>
+            <div className={homepageClarityStyles.quoteBarRow}>
+              <span>Comparable lower quote</span>
+              <div><i style={{ inlineSize: "70%" }} /></div>
+              <strong>{formatCompactCurrency(comparisonQuote)}</strong>
+            </div>
+            <div className={homepageClarityStyles.quoteResult}>
+              <span>Estimated net savings after the program fee</span>
+              <strong>{formatCompactCurrency(estimatedNetSavings)}</strong>
+            </div>
+            <p>Illustrative only. Quotes must be legitimate and comparable. Savings are not guaranteed.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowWeWork() {
+  const reduceMotion = useReducedMotion();
+  const [activeStep, setActiveStep] = useState(0);
+  const [processVisible, setProcessVisible] = useState(false);
+  const processRef = useRef<HTMLOListElement>(null);
+  const steps = [
+    { title: "Map the work", text: "We find the handoffs, follow-ups, and bottlenecks worth fixing first." },
+    { title: "Build the right system", text: "We configure the tools, rules, and connections around the way your team actually works." },
+    { title: "Stay close after launch", text: "We test, refine, and remain available when the work changes." },
+  ];
+
+  useEffect(() => {
+    const diagram = processRef.current;
+    if (!diagram) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setProcessVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setProcessVisible(true);
+      observer.disconnect();
+    }, { threshold: 0.24, rootMargin: "0px 0px -8% 0px" });
+    observer.observe(diagram);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
+  return (
+    <section className={`${homepageClarityStyles.processSection} homepage-component`} aria-labelledby="homepage-process-title">
+      <div className={homepageClarityStyles.processShell}>
+        <div className={homepageClarityStyles.processCopy}>
+          <h2 id="homepage-process-title">Technology that fits the work.</h2>
+          <p>One operating problem. One useful system. A clear handoff at every step.</p>
+        </div>
+        <ol
+          ref={processRef}
+          className={homepageClarityStyles.processDiagram}
+          aria-label="How DaytonGrowthCo works with a team"
+          data-visible={processVisible ? "true" : "false"}
+          style={{ "--process-progress": activeStep / Math.max(steps.length - 1, 1) } as React.CSSProperties}
+        >
+          {steps.map((step, index) => (
+            <li
+              key={step.title}
+              className={homepageClarityStyles.processStep}
+              data-active={activeStep === index ? "true" : "false"}
+            >
+              <button
+                type="button"
+                className={homepageClarityStyles.processTrigger}
+                aria-pressed={activeStep === index}
+                onClick={() => setActiveStep(index)}
+                onFocus={() => setActiveStep(index)}
+                onPointerEnter={(event) => {
+                  if (event.pointerType !== "touch") setActiveStep(index);
+                }}
+              >
+                <span className={homepageClarityStyles.processNode} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <strong>{step.title}</strong>
+                <p>{step.text}</p>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <a className={homepageClarityStyles.textLink} href="#cta">Talk through the first step <ArrowRight size={15} aria-hidden="true" /></a>
+      </div>
+    </section>
+  );
+}
+
 const homeFaqs = [
   {
     q: "What kind of problem should I bring?",
@@ -6331,8 +6559,6 @@ function HomeFaq() {
                   className={homepageClarityStyles.faqAnswer}
                   role="region"
                   aria-labelledby={buttonId}
-                  aria-hidden={!isOpen}
-                  inert={!isOpen}
                 >
                   <div>
                     <p>{item.a}</p>
@@ -6355,9 +6581,8 @@ function Homepage() {
         <Hero />
         <PostHeroBridge />
         <FlagshipOverview />
-        <ProjectStudies compact />
-        <SchedulingSection />
-        <ProcessStory title="Technology that fits the work." />
+        <BetterQuotePreview />
+        <HowWeWork />
         <HomeFaq />
         <FinalCTA />
       </main>
@@ -6418,7 +6643,7 @@ function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
           <h1>{title}</h1>
           <p>{summary}</p>
         </div>
-        {title === "Products" ? <WorkflowScene compact /> : title === "Examples" ? <ServiceDemo product="website" /> : title === "How It Works" ? <ServiceDemo product="dashboards" /> : <aside className={interiorPageStyles.signal} aria-label={`${title} overview`} data-reveal>
+        <aside className={interiorPageStyles.signal} aria-label={`${title} overview`} data-reveal>
           <div className={interiorPageStyles.signalHeader}>
             <span>Working path</span>
             <span>{title}</span>
@@ -6432,7 +6657,7 @@ function PageHubIntro({ eyebrow, title, summary, stages }: PageHubIntroProps) {
               </li>
             ))}
           </ol>
-        </aside>}
+        </aside>
       </div>
       <div
         className={interiorPageStyles.localNavigator}
@@ -6470,7 +6695,6 @@ function ExamplesPage() {
       <PageChrome />
       <main id="main-content" className={`${interiorPageStyles.page} dedicated-page examples-page`} tabIndex={-1}>
         <PageHubIntro eyebrow="Working proof" title="Examples" summary="A closer look at the inputs, working artifacts, and useful outputs behind the systems we build." stages={["See the input", "Inspect the workflow", "Judge the output"]} />
-        <ProjectStudies />
         <WebsiteTransformation />
         <PhoneAgentOffer />
         <OutcomeSection />
@@ -6489,7 +6713,7 @@ function HowItWorksPage() {
       <PageChrome />
       <main id="main-content" className={`${interiorPageStyles.page} dedicated-page how-page`} tabIndex={-1}>
         <PageHubIntro eyebrow="Operating method" title="How It Works" summary="We narrow the problem, prove the economics, and build the smallest useful system first." stages={["Narrow the problem", "Prove the economics", "Build the smallest useful system"]} />
-        <ProcessStory title="Technology that fits the work." />
+        <BuildPrinciples />
         <DiscoveryDiagnosis />
         <EconomicCase />
         <LaborCostCalculator sectionId="process-cost" />

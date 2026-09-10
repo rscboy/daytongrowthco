@@ -8,7 +8,6 @@ import { BrandWordmark } from "@/src/brand-wordmark";
 import { AppointRelayVslPlayer, readAppointRelayVslLead } from "@/src/appointrelay-vsl-player";
 import { captureAttribution, getFunnelSessionId, trackFunnelEvent } from "@/src/funnel-analytics";
 import styles from "./appointrelay-funnel.module.css";
-import { classifyAppointments as classify } from "./scheduling/catalog";
 
 type Assessment = {
   name: string; email: string; phone: string; business: string; website: string;
@@ -32,6 +31,11 @@ const steps = [
   { key: "timing", title: "What needs to change first?" },
 ] as const;
 
+function classify(a: Assessment): "qualified" | "manual-review" | "disqualified" {
+  if (a.access === "No" || a.schedulingOwner === "No owner yet" || a.monthlyOpportunities === "Under 100" || a.timeline === "Researching for later") return "disqualified";
+  if ([a.industry, a.monthlyOpportunities, a.access, a.schedulingOwner].some((value) => value === "Not sure") || a.schedulingOwner === "Shared responsibility" || a.industry === "Other appointment-based operation") return "manual-review";
+  return "qualified";
+}
 
 function Header() {
   return <header className={styles.header}>

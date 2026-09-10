@@ -2,6 +2,11 @@ import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypt
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { get, put } from "@vercel/blob";
+import {
+  internalProjectStorageConfigured,
+  readInternalProjectStorage,
+  writeInternalProjectStorage,
+} from "@/lib/internal-project-storage";
 
 export type SecretProjectDefinition = {
   id: string;
@@ -75,8 +80,16 @@ export const secretProjects: readonly SecretProjectDefinition[] = [
 ] as const;
 
 const SETTINGS_BLOB_PATH = "secret-projects/settings.json";
+const SETTINGS_STORAGE_KEY = "secret-projects-settings";
 const SETTINGS_FILE_PATH = path.join(process.cwd(), "data", "secret-projects-settings.json");
 const SHARE_SESSION_SECONDS = 60 * 60 * 24 * 14;
+const INITIALLY_SHARED_PROJECTS = new Set([
+  "taa_roi_calculator",
+  "taa_roi_calculator_v2",
+  "taa_roi_calculator_v3",
+  "profit_calculator",
+  "review_call_command_center",
+]);
 
 type SettingsStore = Record<string, SecretProjectSetting>;
 
@@ -106,6 +119,14 @@ function normalizeSettings(value: unknown): SettingsStore {
   }));
 }
 
+function initialSettings() {
+  return normalizeSettings(Object.fromEntries(secretProjects.map((project) => [project.id, {
+    ...defaultSetting(),
+    active: INITIALLY_SHARED_PROJECTS.has(project.id),
+    updatedAt: new Date().toISOString(),
+  }])));
+}
+
 async function readLocalSettings(): Promise<SettingsStore> {
   try {
     return normalizeSettings(JSON.parse(await readFile(SETTINGS_FILE_PATH, "utf8")));
@@ -115,6 +136,17 @@ async function readLocalSettings(): Promise<SettingsStore> {
 }
 
 export async function getSecretProjectSettings(): Promise<SettingsStore> {
+  if (internalProjectStorageConfigured()) {
+    try {
+      const stored = await readInternalProjectStorage<SettingsStore>(SETTINGS_STORAGE_KEY);
+      if (stored) return normalizeSettings(stored);
+      const seeded = initialSettings();
+      await writeInternalProjectStorage(SETTINGS_STORAGE_KEY, seeded);
+      return seeded;
+    } catch (error) {
+      console.error("[secret-projects-storage] Unable to read CRM project settings.", error);
+    }
+  }
   if (!blobConfigured()) return readLocalSettings();
   try {
     const result = await get(SETTINGS_BLOB_PATH, { access: "private", useCache: false });
@@ -129,6 +161,10 @@ export async function getSecretProjectSettings(): Promise<SettingsStore> {
 export async function saveSecretProjectSettings(settings: SettingsStore) {
   const normalized = normalizeSettings(settings);
   const body = JSON.stringify(normalized, null, 2);
+  if (internalProjectStorageConfigured()) {
+    await writeInternalProjectStorage(SETTINGS_STORAGE_KEY, normalized);
+    return;
+  }
   if (blobConfigured()) {
     await put(SETTINGS_BLOB_PATH, body, {
       access: "private",
