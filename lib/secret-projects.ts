@@ -30,6 +30,14 @@ export type SecretProjectPublicSetting = Omit<SecretProjectSetting, "passwordHas
 
 export const secretProjects: readonly SecretProjectDefinition[] = [
   {
+    id: "five_star_freeway",
+    title: "Five-Star Freeway",
+    description: "A 3D Dayton highway driving game with six vehicles, customer moments, and a personalized reputation roadmap.",
+    href: "/projects/secret/five-star-freeway/",
+    type: "Prototype",
+    accent: "#d9e77b",
+  },
+  {
     id: "recipes_for_benny",
     title: "Sammy's Recipe Book",
     description: "Family recipes, baking notes, ingredients, and step-by-step cooking instructions.",
