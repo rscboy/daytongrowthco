@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Add a family recipe · Caruso Recipe Book</title>
+  <style>
+    * { box-sizing: border-box; } body { margin: 0; background: #f7f3ed; color: #1b1d21; font-family: system-ui, sans-serif; line-height: 1.6; } main { max-width: 680px; margin: 0 auto; padding: 40px 24px 64px; } a { color: #795644; text-underline-offset: 3px; } .eyebrow { margin-top: 28px; color: #8b7162; font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; } h1 { margin: 10px 0 16px; font-family: Georgia, serif; font-size: clamp(2rem,6vw,3rem); line-height: 1.15; font-weight: 400; letter-spacing: -.035em; } h2 { margin: 28px 0 10px; font-size: 1rem; } h3 { margin: 20px 0 8px; font-size: .9rem; } p { margin: 10px 0; } .muted { color: #69665f; font-size: .9rem; } #review { border-top: 1px solid #e3ddd4; margin-top: 26px; padding-top: 12px; } #dish-photo { display: block; width: 100%; max-height: 280px; object-fit: cover; border-radius: 8px; margin: 20px 0; } ul, ol { padding-left: 22px; } li { margin-bottom: 9px; } #details { display: flex; flex-wrap: wrap; gap: 8px 20px; color: #69665f; font-size: .85rem; } #notes { white-space: pre-wrap; } form { border-top: 1px solid #e3ddd4; margin-top: 32px; padding-top: 24px; } label { display: block; margin-bottom: 8px; font-size: .9rem; } input, textarea, button { font: inherit; } input[type=password], textarea { width: 100%; border: 1px solid #c9c1b5; border-radius: 6px; background: #fffdf9; padding: 12px; color: #1b1d21; } input[type=file] { max-width: 100%; font-size: .85rem; } button { min-height: 44px; border: 0; border-radius: 6px; background: #1b1d21; color: #fffdf9; padding: 12px 20px; cursor: pointer; } form button { width: 100%; margin-top: 16px; } button:disabled { opacity: .55; cursor: default; } :focus-visible { outline: 2px solid #795644; outline-offset: 3px; } #status { white-space: pre-wrap; margin-top: 16px; } .error { color: #9b3528; } details { margin-top: 20px; font-size: .85rem; } summary { cursor: pointer; color: #795644; } textarea { min-height: 180px; margin: 12px 0; } [hidden] { display: none !important; } #success { border-top: 1px solid #e3ddd4; margin-top: 28px; padding-top: 20px; } #success a { display: inline-block; margin: 10px 18px 0 0; } .photo-choice { margin-top: 24px; }
+  </style>
+</head>
+<body>
+<main>
+  <a href="/projects/secret/recipes_for_benny">← Recipe Book</a>
+  <p class="eyebrow">Caruso Recipe Book</p>
+  <h1 id="heading">Review your recipe.</h1>
+  <p class="muted" id="intro">Check the recipe, enter the family password, and add it to the book.</p>
+  <div id="empty" hidden><p>Your assistant can prepare a review link for you. Paste the starter message from the Recipe Book into Claude Code or Codex.</p></div>
+  <section id="review" hidden aria-label="Recipe preview">
+    <p class="muted" id="owner"></p><h2 id="title"></h2><p id="description"></p>
+    <div id="details"></div><img id="dish-photo" alt="Recipe photo" referrerpolicy="no-referrer">
+    <div id="ingredients"></div><h2>Instructions</h2><ol id="steps"></ol><h2>Notes</h2><p id="notes"></p>
+    <div class="photo-choice"><label for="photo">Use your own photo <span class="muted">(optional)</span></label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"><p id="photo-status" class="muted" role="status"></p></div>
+    <form id="publish-form">
+      <label for="password">Recipe Book password</label><input id="password" type="password" autocomplete="off" required maxlength="200" placeholder="Enter the family password">
+      <button id="publish" type="submit">Add this recipe</button><p class="muted">Clicking adds this recipe. Existing recipes stay unchanged.</p>
+    </form>
+  </section>
+  <p id="status" role="status" aria-live="polite"></p>
+  <section id="success" hidden><h2>Added to the family book.</h2><p>Your recipe is saved. Open the book to see it.</p><a id="recipe-link">View recipe</a><a id="commit-link" target="_blank" rel="noreferrer" hidden>View saved addition</a></section>
+  <details id="paste-option"><summary>Have a prepared recipe instead of a link?</summary><label for="draft-json">Paste the recipe JSON from your assistant</label><textarea id="draft-json" spellcheck="false"></textarea><button id="load-draft" type="button">Review recipe</button></details>
+</main>
+<script>
+  'use strict';
+  const MAX_LINK_BYTES = 24000;
+  const COLORS = new Set(['blue','coral','gold','green','lavender','lilac','mint','peach','pink','rust','tomato']);
+  const RECIPE_FIELDS = ['id','title','subtitle','description','prep','cook','total','yield','tags','color','ingredients','steps','note'];
+  const byId = (id) => document.getElementById(id);
+  let draft = null, submitted = false, busy = false, photoBusy = false;
+  function text(value, max) { return typeof value === 'string' && value.trim().length > 0 && value.length <= max; }
+  function slug(value) { return typeof value === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) && value.length <= 80; }
+  function validImage(value) { try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password && value.length <= 2000; } catch { return false; } }
+  function validateDraft(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('The review link does not contain a recipe. Ask your assistant for a new link.');
+    if (Object.keys(value).some((key) => !['version','owner','recipe','image'].includes(key)) || (value.version !== undefined && value.version !== 1)) throw new Error('Unsupported recipe format. Ask your assistant for a new review link.');
+    const { owner, recipe, image } = value;
+    if (!owner || !recipe || !image || !slug(owner.id) || !text(owner.name,80) || (owner.initials !== undefined && !text(owner.initials,6)) || !slug(recipe.id)) throw new Error('The recipe needs a valid collection name and recipe ID.');
+    if (!['title','subtitle','description','prep','cook','total','yield','note'].every((key) => text(recipe[key],1500))) throw new Error('The recipe is missing a title, timing, servings, description, or notes.');
+    if (!Array.isArray(recipe.tags) || recipe.tags.length < 1 || recipe.tags.length > 6 || !recipe.tags.every((tag) => text(tag,40)) || !COLORS.has(recipe.color)) throw new Error('The recipe has unsupported tags or a color.');
+    if (!Array.isArray(recipe.ingredients) || recipe.ingredients.length < 1 || recipe.ingredients.length > 12 || !recipe.ingredients.every((group) => group && text(group.category,120) && Array.isArray(group.items) && group.items.length > 0 && group.items.length <= 60 && group.items.every((item) => text(item,500)))) throw new Error('The ingredient list is incomplete.');
+    if (!Array.isArray(recipe.steps) || recipe.steps.length < 1 || recipe.steps.length > 30 || !recipe.steps.every((step) => step && text(step.title,120) && text(step.text,1500))) throw new Error('The cooking instructions are incomplete.');
+    if (!validImage(image.url) || Object.keys(image).some((key) => key !== 'url')) throw new Error('The review link needs an HTTPS photo URL. You can choose your own photo on this page.');
+    const cleanRecipe = Object.fromEntries(RECIPE_FIELDS.map((key) => [key,recipe[key]]));
+    cleanRecipe.ingredients = recipe.ingredients.map((group) => ({category:group.category,items:group.items}));
+    cleanRecipe.steps = recipe.steps.map((step) => ({title:step.title,text:step.text}));
+    return {owner:{id:owner.id,name:owner.name,...(owner.initials ? {initials:owner.initials} : {})},recipe:cleanRecipe,image:{url:image.url}};
+  }
+  function decodeLink(hash) {
+    const encoded = new URLSearchParams(hash.slice(1)).get('recipe');
+    if (!encoded) return null;
+    if (encoded.length > MAX_LINK_BYTES * 4 / 3 + 4 || !/^[A-Za-z0-9_-]+$/.test(encoded)) throw new Error('This review link is invalid or too long. Ask your assistant to use the paste option.');
+    const bytes = Uint8Array.from(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')), (char) => char.charCodeAt(0));
+    if (bytes.length > MAX_LINK_BYTES) throw new Error('The recipe is too long for this link. Use the paste option.');
+    return validateDraft(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));
+  }
+  function setStatus(message, error = false) { byId('status').textContent = message; byId('status').className = error ? 'error' : ''; }
+  function appendText(parent, tag, content) { const el = document.createElement(tag); el.textContent = content; parent.appendChild(el); return el; }
+  function showDraft(value) {
+    if (submitted || busy || photoBusy) return;
+    draft = value; byId('empty').hidden = true; byId('review').hidden = false;
+    byId('owner').textContent = value.owner.name + "'s collection";
+    byId('title').textContent = value.recipe.title + ' · ' + value.recipe.subtitle;
+    byId('description').textContent = value.recipe.description;
+    byId('details').replaceChildren();
+    for (const [label,key] of [['Prep','prep'],['Cook','cook'],['Total','total'],['Serves','yield']]) appendText(byId('details'),'span',label + ': ' + value.recipe[key]);
+    byId('dish-photo').src = value.image.url;
+    byId('ingredients').replaceChildren(); appendText(byId('ingredients'),'h2','Ingredients');
+    for (const group of value.recipe.ingredients) { appendText(byId('ingredients'),'h3',group.category); const list = appendText(byId('ingredients'),'ul',''); for (const item of group.items) appendText(list,'li',item); }
+    byId('steps').replaceChildren(); for (const step of value.recipe.steps) { const item = appendText(byId('steps'),'li',''); appendText(item,'strong',step.title); appendText(item,'p',step.text); }
+    byId('notes').textContent = value.recipe.note;
+    byId('photo').value = ''; byId('photo-status').textContent = ''; byId('paste-option').open = false; setStatus('');
+  }
+  byId('load-draft').addEventListener('click', () => {
+    try { const raw = byId('draft-json').value; if (new TextEncoder().encode(raw).length > MAX_LINK_BYTES) throw new Error('Please keep the prepared recipe under 24 KB.'); showDraft(validateDraft(JSON.parse(raw))); } catch (error) { setStatus(error.message || 'Could not read this recipe.',true); }
+  });
+  byId('photo').addEventListener('change', async () => {
+    const file = byId('photo').files[0];
+    if (!file || !draft || busy || submitted) return;
+    if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size < 100 || file.size > 25000000) { byId('photo-status').textContent = 'Choose a JPG, PNG, or WebP photo under 25 MB.'; byId('photo').value = ''; return; }
+    photoBusy = true; byId('publish').disabled = true; byId('photo').disabled = true; byId('load-draft').disabled = true;
+    try {
+      const data = await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+      const image = await new Promise((resolve,reject) => { const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = String(data); });
+      const scale = Math.min(1,1600 / Math.max(image.naturalWidth,image.naturalHeight));
+      const canvas = document.createElement('canvas'); canvas.width = Math.max(1,Math.round(image.naturalWidth * scale)); canvas.height = Math.max(1,Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext('2d'); if (!context) throw new Error('Photo conversion unavailable.'); context.fillStyle = '#ffffff'; context.fillRect(0,0,canvas.width,canvas.height); context.drawImage(image,0,0,canvas.width,canvas.height);
+      const photo = canvas.toDataURL('image/jpeg',0.85); const base64 = photo.split(',')[1]; if (!base64 || base64.length * 3 / 4 > 3000000) throw new Error('Photo is too large.');
+      draft.image = {filename:file.name.replace(/\.[^.]+$/,'').slice(0,140) + '.jpg',mimeType:'image/jpeg',base64}; byId('dish-photo').src = photo; byId('photo-status').textContent = 'Your photo is ready.';
+    } catch { byId('photo-status').textContent = 'Could not read the photo. Please choose it again.'; }
+    finally { photoBusy = false; byId('publish').disabled = busy || submitted; byId('photo').disabled = busy || submitted; byId('load-draft').disabled = busy || submitted; }
+  });
+  byId('publish-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); if (!draft || submitted || busy || photoBusy) return;
+    const password = byId('password').value; if (!password) return;
+    busy = true; byId('publish').disabled = true; byId('load-draft').disabled = true; byId('photo').disabled = true;
+    byId('publish').textContent = 'Adding…'; setStatus('');
+    try {
+      const response = await fetch('/api/caruso-recipe-book', {method:'POST',redirect:'error',credentials:'omit',headers:{'Content-Type':'application/json',Authorization:'Bearer ' + password},body:JSON.stringify(draft),signal:AbortSignal.timeout(30000)});
+      const result = await response.json();
+      if (!response.ok || result.ok !== true) {
+        if (response.status === 401) { setStatus('That password was not accepted. Please try again.',true); return; }
+        if (response.status === 400 || response.status === 413) { setStatus('The recipe could not be added: ' + (result.error || 'Please check the recipe.'),true); return; }
+        submitted = true; setStatus(response.status === 409 ? 'A recipe with this ID already exists. Check the Recipe Book before asking for a new review link.' : 'We could not confirm whether the addition finished. Please check the Recipe Book or ask its owner before retrying.',true); return;
+      }
+      submitted = true; byId('publish-form').hidden = true; byId('photo').disabled = true; byId('paste-option').hidden = true; byId('success').hidden = false;
+      byId('heading').textContent = 'Recipe saved.'; byId('intro').textContent = 'Thanks for sharing something good.';
+      byId('recipe-link').href = '/projects/secret/recipes_for_benny/?recipe=' + encodeURIComponent(draft.recipe.id);
+      if (typeof result.commit === 'string' && /^https:\/\/github\.com\/rscboy\/daytongrowthco\/commit\/[a-f0-9]+$/.test(result.commit)) { byId('commit-link').href = result.commit; byId('commit-link').hidden = false; }
+      setStatus('');
+    } catch { submitted = true; setStatus('The connection was interrupted. The recipe may already have been added. Check the Recipe Book or ask its owner before trying again.',true); }
+    finally { byId('password').value = ''; busy = false; byId('publish').disabled = submitted; byId('publish').textContent = submitted ? 'Check the Recipe Book' : 'Add this recipe'; byId('load-draft').disabled = submitted; byId('photo').disabled = submitted; }
+  });
+  try { const value = decodeLink(window.location.hash); if (value) showDraft(value); else byId('empty').hidden = false; } catch (error) { byId('empty').hidden = false; setStatus(error.message || 'Could not read the review link.',true); }
+</script>
+</body>
+</html>

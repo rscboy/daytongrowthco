@@ -1,8 +1,9 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, Upload, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
 import "./recipes.css";
+import { parseRecipeAdditions, type RecipeAdditions } from "@/lib/caruso-recipe-additions";
 
 type Recipe = {
   id: string;
@@ -22,7 +23,7 @@ type Recipe = {
   owner?: RecipeOwnerId;
 };
 
-type RecipeOwnerId = "sammy" | "sam-g" | "autumn" | "addison";
+type RecipeOwnerId = "sammy" | "sam-g" | "autumn" | "addison" | (string & {});
 type RecipeProfileId = "all" | RecipeOwnerId;
 
 type RecipeProfile = {
@@ -85,22 +86,8 @@ const samGRecipeIds = new Set([
 
 const SAVED_RECIPES_KEY = "benny-saved-recipes-v1";
 const RECIPE_CHECKLISTS_KEY = "benny-recipe-checklists-v1";
-const RECIPE_SKILL_URL = "https://www.daytongrowth.co/recipe-book/Caruso-Recipe-Book.zip";
-const RECIPE_SKILL_REPOSITORY = "https://github.com/rscboy/caruso-recipe-book";
-const recipeSkillGuides = {
-  codex: {
-    label: "Codex",
-    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Codex skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
-    run: "$caruso-recipe-book",
-  },
-  claude: {
-    label: "Claude Code",
-    install: `Install the Caruso Recipe Book skill from ${RECIPE_SKILL_REPOSITORY}. Review the files first, then install it under my Claude skills. If this computer is not already connected, ask me to paste the 60-day add-only guest code in this chat and use it for setup without repeating it. Save the connection locally so I am not asked again during those 60 days, then start the recipe interview.`,
-    run: "/caruso-recipe-book",
-  },
-} as const;
-
-type PreparedRecipe = { fileName: string; payload: Record<string, unknown>; title: string; owner: string };
+const RECIPE_SKILL_SOURCE_URL = "https://github.com/rscboy/caruso-recipe-book";
+const RECIPE_SKILL_PROMPT = `Use the Caruso Recipe Book skill from ${RECIPE_SKILL_SOURCE_URL}. Help me prepare my recipe and give me a browser review link. Do not connect to the recipe service from this workspace; I will enter the password and approve it on the website.`;
 
 function recipeOwner(recipe: Recipe): RecipeOwnerId {
   if (recipe.owner) return recipe.owner;
@@ -222,7 +209,39 @@ function CharliePizzaCalculator() {
   </section>;
 }
 
+const bundledRecipes = recipes;
+const bundledProfiles = recipeProfiles;
+
 export function BennyRecipeBook() {
+  const [additions, setAdditions] = useState<RecipeAdditions>({ version: 1, entries: [] });
+  const [additionsError, setAdditionsError] = useState("");
+  const recipes = useMemo(() => {
+    const bundledIds = new Set(bundledRecipes.map((recipe) => recipe.id));
+    return [...bundledRecipes, ...additions.entries.filter((entry) => !bundledIds.has(entry.recipe.id)).map((entry) => entry.recipe)];
+  }, [additions]);
+  const recipeProfiles = useMemo(() => {
+    const profiles = [...bundledProfiles];
+    for (const { owner } of additions.entries) if (!profiles.some((profile) => profile.id === owner.id)) profiles.push({ id: owner.id, name: owner.name, label: `${owner.name}'s Recipes`, initials: owner.initials, image: "/recipe-book/all-recipes-family.jpg", imagePosition: "center" });
+    return profiles;
+  }, [additions]);
+  const profileForOwner = (owner: RecipeProfileId) => recipeProfiles.find((profile) => profile.id === owner) ?? recipeProfiles[0];
+  useEffect(() => {
+    let stopped = false, pending = false;
+    const refresh = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const response = await fetch("/api/caruso-recipe-book?live=1", { cache: "no-store", credentials: "same-origin", redirect: "error", signal: AbortSignal.timeout(15000) });
+        if (!response.ok) throw new Error("Could not load additions.");
+        const next = parseRecipeAdditions(await response.text());
+        if (!stopped) { setAdditions(next); setAdditionsError(""); }
+      } catch { if (!stopped) setAdditionsError("New additions are temporarily unavailable. Refresh the page to try again."); }
+      finally { pending = false; }
+    };
+    void refresh();
+    window.addEventListener("focus", refresh);
+    return () => { stopped = true; window.removeEventListener("focus", refresh); };
+  }, []);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("All");
   const [activeOwner, setActiveOwner] = useState<RecipeProfileId>("sammy");
@@ -234,16 +253,7 @@ export function BennyRecipeBook() {
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [addGuideOpen, setAddGuideOpen] = useState(false);
-  const [addGuidePlatform, setAddGuidePlatform] = useState<keyof typeof recipeSkillGuides>("codex");
-  const [copiedGuide, setCopiedGuide] = useState<"install" | "run" | "">("");
-  const [guestCode, setGuestCode] = useState("");
-  const [guestCodeStatus, setGuestCodeStatus] = useState<"idle" | "creating" | "error">("idle");
-  const [guestCodeCopied, setGuestCodeCopied] = useState(false);
-  const [preparedRecipe, setPreparedRecipe] = useState<PreparedRecipe | null>(null);
-  const [preparedAccessCode, setPreparedAccessCode] = useState("");
-  const [preparedStatus, setPreparedStatus] = useState<"idle" | "publishing" | "success" | "error">("idle");
-  const [preparedMessage, setPreparedMessage] = useState("");
-  const [preparedLinks, setPreparedLinks] = useState<{ recipeUrl?: string; commit?: string }>({});
+  const [copiedGuide, setCopiedGuide] = useState<"run" | "">("");
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
   const recipeSheetRef = useRef<HTMLDivElement>(null);
@@ -256,14 +266,14 @@ export function BennyRecipeBook() {
   const basePortions = recipePortions(selected);
   const activePortions = portions[selected.id] ?? basePortions;
   const portionMultiplier = activePortions / basePortions;
-  const activeProfile = recipeProfile(activeOwner);
-  const selectedProfile = recipeProfile(recipeOwner(selected));
+  const activeProfile = profileForOwner(activeOwner);
+  const selectedProfile = profileForOwner(recipeOwner(selected));
   const activeOwnerCount = activeOwner === "all" ? recipes.length : recipes.filter((recipe) => recipeOwner(recipe) === activeOwner).length;
   const filtered = useMemo(() => {
     const activeCollection = collections.find((collection) => collection.id === tag) ?? collections[0];
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return recipes
-      .filter((recipe) => (!showSaved || saved.includes(recipe.id)) && activeCollection.matches(recipe) && terms.every((term) => recipeSearchText(recipe).includes(term)))
+      .filter((recipe) => (!showSaved || saved.includes(recipe.id)) && activeCollection.matches(recipe) && terms.every((term) => `${recipeSearchText(recipe)} ${profileForOwner(recipeOwner(recipe)).name.toLowerCase()}`.includes(term)))
       .sort((first, second) => {
         const savedPriority = Number(saved.includes(second.id)) - Number(saved.includes(first.id));
         if (savedPriority) return savedPriority;
@@ -272,14 +282,14 @@ export function BennyRecipeBook() {
         const secondPriority = recipeOwner(second) === activeOwner ? 0 : 1;
         return firstPriority - secondPriority || first.title.localeCompare(second.title) || first.subtitle.localeCompare(second.subtitle);
       });
-  }, [activeOwner, query, saved, showSaved, tag]);
+  }, [activeOwner, query, saved, showSaved, tag, recipes, recipeProfiles]);
   useEffect(() => {
     try {
       const storedSaved = JSON.parse(window.localStorage.getItem(SAVED_RECIPES_KEY) ?? "[]");
       const storedChecklists = JSON.parse(window.localStorage.getItem(RECIPE_CHECKLISTS_KEY) ?? "{}");
-      if (Array.isArray(storedSaved)) setSaved(storedSaved.filter((id): id is string => typeof id === "string" && recipes.some((recipe) => recipe.id === id)));
+      if (Array.isArray(storedSaved)) setSaved(storedSaved.filter((id): id is string => typeof id === "string" && /^[a-z0-9-]+$/.test(id)));
       if (storedChecklists && typeof storedChecklists === "object" && !Array.isArray(storedChecklists)) {
-        const validChecklists = Object.fromEntries(Object.entries(storedChecklists).filter(([id, items]) => recipes.some((recipe) => recipe.id === id) && Array.isArray(items)).map(([id, items]) => [id, (items as unknown[]).filter((item): item is string => typeof item === "string")]));
+        const validChecklists = Object.fromEntries(Object.entries(storedChecklists).filter(([id, items]) => /^[a-z0-9-]+$/.test(id) && Array.isArray(items)).map(([id, items]) => [id, (items as unknown[]).filter((item): item is string => typeof item === "string")]));
         setCheckedByRecipe(validChecklists);
       }
     } catch {
@@ -309,7 +319,7 @@ export function BennyRecipeBook() {
     syncRecipeFromUrl();
     window.addEventListener("popstate", syncRecipeFromUrl);
     return () => window.removeEventListener("popstate", syncRecipeFromUrl);
-  }, []);
+  }, [recipes]);
   useEffect(() => () => {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
     if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
@@ -410,8 +420,8 @@ export function BennyRecipeBook() {
     if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
     shareTimerRef.current = window.setTimeout(() => setShareStatus(""), 2200);
   };
-  const copyGuideText = async (kind: "install" | "run") => {
-    const text = recipeSkillGuides[addGuidePlatform][kind];
+  const copyGuideText = async () => {
+    const text = RECIPE_SKILL_PROMPT;
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -424,76 +434,9 @@ export function BennyRecipeBook() {
       document.execCommand("copy");
       input.remove();
     }
-    setCopiedGuide(kind);
+    setCopiedGuide("run");
     if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     copyTimerRef.current = window.setTimeout(() => setCopiedGuide(""), 1800);
-  };
-  const generateGuestCode = async () => {
-    setGuestCodeStatus("creating");
-    setGuestCodeCopied(false);
-    try {
-      const response = await fetch("/api/caruso-recipe-book/invite", { method: "POST" });
-      const result = await response.json().catch(() => ({})) as { ok?: boolean; code?: string };
-      if (!response.ok || !result.ok || !result.code) throw new Error();
-      setGuestCode(result.code);
-      setGuestCodeStatus("idle");
-    } catch {
-      setGuestCodeStatus("error");
-    }
-  };
-  const copyGuestCode = async () => {
-    if (!guestCode) return;
-    try {
-      await navigator.clipboard.writeText(guestCode);
-    } catch {
-      const input = document.createElement("textarea");
-      input.value = guestCode;
-      input.style.position = "fixed";
-      input.style.opacity = "0";
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      input.remove();
-    }
-    setGuestCodeCopied(true);
-    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
-    copyTimerRef.current = window.setTimeout(() => setGuestCodeCopied(false), 1800);
-  };
-  const selectPreparedRecipe = async (file?: File) => {
-    setPreparedStatus("idle");
-    setPreparedMessage("");
-    setPreparedLinks({});
-    if (!file) { setPreparedRecipe(null); return; }
-    if (file.size > 16_000_000) { setPreparedRecipe(null); setPreparedStatus("error"); setPreparedMessage("That file is too large. Choose the JSON file created by the skill."); return; }
-    try {
-      const payload = JSON.parse(await file.text()) as Record<string, unknown>;
-      const recipe = payload.recipe as { title?: unknown } | undefined;
-      const owner = payload.owner as { name?: unknown; id?: unknown } | undefined;
-      if (!recipe || typeof recipe.title !== "string" || !owner || (typeof owner.name !== "string" && typeof owner.id !== "string")) throw new Error();
-      setPreparedRecipe({ fileName: file.name, payload, title: recipe.title, owner: typeof owner.name === "string" ? owner.name : String(owner.id) });
-    } catch {
-      setPreparedRecipe(null);
-      setPreparedStatus("error");
-      setPreparedMessage("That does not look like a Recipe Book JSON file.");
-    }
-  };
-  const publishPreparedRecipe = async () => {
-    const accessCode = (preparedAccessCode || guestCode).trim();
-    if (!preparedRecipe || !accessCode) { setPreparedStatus("error"); setPreparedMessage("Choose the prepared JSON file and enter a guest code."); return; }
-    setPreparedStatus("publishing");
-    setPreparedMessage("");
-    try {
-      const response = await fetch("/api/caruso-recipe-book", { method: "POST", headers: { Authorization: `Bearer ${accessCode}`, "Content-Type": "application/json" }, body: JSON.stringify(preparedRecipe.payload) });
-      const result = await response.json().catch(() => ({})) as { ok?: boolean; error?: string; recipeUrl?: string; commit?: string };
-      if (!response.ok || !result.ok) throw new Error(result.error || "The recipe could not be published.");
-      setPreparedStatus("success");
-      setPreparedMessage(`${preparedRecipe.title} was accepted. The website deployment has started.`);
-      setPreparedLinks({ recipeUrl: result.recipeUrl, commit: result.commit });
-      setPreparedAccessCode("");
-    } catch (error) {
-      setPreparedStatus("error");
-      setPreparedMessage(error instanceof Error ? error.message : "The recipe could not be published.");
-    }
   };
   const toggleSaved = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const toggleChecked = (item: string) => setCheckedByRecipe((checklists) => {
@@ -515,49 +458,29 @@ export function BennyRecipeBook() {
       <a className="benny-brand" href="#top" aria-label={`${activeProfile.label} home`}><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
       <div className="benny-header-actions">
-        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Add</button>
+        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Add a recipe</button>
         <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
       </div>
     </header>
 
     {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
-      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title">
+      <section className="benny-add-dialog" role="dialog" aria-modal="true" aria-labelledby="benny-add-title" aria-describedby="benny-add-description">
         <div className="benny-add-dialog-head">
-          <div><p className="benny-eyebrow">Recipe contributor</p><h2 id="benny-add-title">Add a recipe</h2></div>
+          <div><p className="benny-eyebrow">Caruso Recipe Book</p><h2 id="benny-add-title">Add a family recipe.</h2></div>
           <button ref={addGuideCloseRef} type="button" onClick={() => setAddGuideOpen(false)} aria-label="Close add recipe instructions"><X size={19} /></button>
         </div>
-        <p className="benny-add-intro">Install the public Recipe Book skill once. It asks four short questions, shows a preview, and can only add a new recipe.</p>
-        <div className="benny-add-platforms" role="tablist" aria-label="Choose your coding assistant">
-          {(Object.keys(recipeSkillGuides) as (keyof typeof recipeSkillGuides)[]).map((platform) => <button key={platform} type="button" role="tab" aria-selected={addGuidePlatform === platform} className={addGuidePlatform === platform ? "active" : ""} onClick={() => { setAddGuidePlatform(platform); setCopiedGuide(""); }}>{recipeSkillGuides[platform].label}</button>)}
-        </div>
-        <div className="benny-add-step">
-          <div><span>01</span><div><strong>Install from GitHub</strong><small>Send this public repo to {recipeSkillGuides[addGuidePlatform].label}, or download the ZIP and attach it. The assistant can inspect every file first.</small></div></div>
-          <div className="benny-add-source"><a href={RECIPE_SKILL_REPOSITORY} target="_blank" rel="noreferrer">Open public skill repo <ChevronRight size={14} /></a><a href={RECIPE_SKILL_URL} download>Download ZIP</a></div>
-          <div className="benny-add-command"><code>{recipeSkillGuides[addGuidePlatform].install}</code><button type="button" onClick={() => copyGuideText("install")} aria-label="Copy install request">{copiedGuide === "install" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "install" ? "Copied" : "Copy request"}</span></button></div>
-        </div>
-        <div className="benny-add-step">
-          <div><span>02</span><div><strong>Make a guest code</strong><small>Paste this code into their Codex or Claude chat once. It can only add recipes and stays saved on that computer for 60 days.</small></div></div>
-          <div className="benny-add-guest" aria-live="polite">{guestCode ? <><code>{guestCode}</code><button type="button" onClick={copyGuestCode} aria-label="Copy guest access code">{guestCodeCopied ? <Check size={16} /> : <Copy size={16} />}<span>{guestCodeCopied ? "Copied" : "Copy code"}</span></button></> : <button type="button" onClick={generateGuestCode} disabled={guestCodeStatus === "creating"}>{guestCodeStatus === "creating" ? "Making code…" : "Generate guest code"}</button>}</div>
-          {guestCodeStatus === "error" && <small className="benny-add-guest-error">Couldn&apos;t make a code yet. Please try again.</small>}
-        </div>
-        <div className="benny-add-step">
-          <div><span>03</span><div><strong>Run the skill</strong><small>Open {recipeSkillGuides[addGuidePlatform].label}, paste this, and answer the short questions.</small></div></div>
-          <div className="benny-add-command is-short"><code>{recipeSkillGuides[addGuidePlatform].run}</code><button type="button" onClick={() => copyGuideText("run")} aria-label="Copy run command">{copiedGuide === "run" ? <Check size={16} /> : <Copy size={16} />}<span>{copiedGuide === "run" ? "Copied" : "Copy"}</span></button></div>
-        </div>
-        <p className="benny-add-footnote">After you approve the preview, the recipe is added and the website deployment starts automatically. This access can add recipes only—it cannot change or delete existing ones.</p>
-        <details className="benny-add-fallback">
-          <summary>AI says the Recipe Book website is blocked?</summary>
-          <p>Have it finish the interview and give you the prepared JSON file. You can publish that file here from your normal browser.</p>
-          <label className="benny-add-file">
-            <Upload size={16} />
-            <span>{preparedRecipe ? preparedRecipe.fileName : "Choose prepared recipe JSON"}</span>
-            <input type="file" accept="application/json,.json" onChange={(event) => void selectPreparedRecipe(event.target.files?.[0])} />
-          </label>
-          {preparedRecipe && <div className="benny-add-file-preview"><strong>{preparedRecipe.title}</strong><span>{preparedRecipe.owner}</span></div>}
-          <label className="benny-add-code"><span>Guest code</span><input type="password" autoComplete="off" value={preparedAccessCode} onChange={(event) => setPreparedAccessCode(event.target.value)} placeholder={guestCode ? "Use the code generated above" : "Enter the 60-day guest code"} /></label>
-          <button className="benny-add-publish" type="button" disabled={preparedStatus === "publishing" || !preparedRecipe || (!preparedAccessCode && !guestCode)} onClick={() => void publishPreparedRecipe()}>{preparedStatus === "publishing" ? "Publishing…" : "Publish prepared recipe"}</button>
-          {preparedMessage && <div className={`benny-add-publish-result ${preparedStatus}`} role="status"><span>{preparedMessage}</span>{preparedStatus === "success" && <nav>{preparedLinks.recipeUrl && <a href={preparedLinks.recipeUrl}>View recipe</a>}{preparedLinks.commit && <a href={preparedLinks.commit} target="_blank" rel="noreferrer">View commit</a>}</nav>}</div>}
-        </details>
+        <p className="benny-add-intro" id="benny-add-description">Prepare it with Claude Code or Codex. Review and add it here.</p>
+        <ol className="benny-add-simple-steps">
+          <li>
+            <span aria-hidden="true">1</span>
+            <div><h3>Copy &amp; paste</h3><p>Paste the starter message into your assistant.</p>
+              <button className="benny-add-copy" type="button" onClick={copyGuideText}>{copiedGuide === "run" ? "Copied" : "Copy starter message"}</button>
+              <span className="benny-add-copy-status" role="status">{copiedGuide === "run" ? "Ready to paste into Claude Code or Codex." : ""}</span>
+            </div>
+          </li>
+          <li><span aria-hidden="true">2</span><div><h3>Open your review link</h3><p>Check the recipe, enter <code>yummy</code>, and click Add this recipe.</p></div></li>
+        </ol>
+        <div className="benny-add-simple-footer"><p>Only added after you approve.</p><a href={RECIPE_SKILL_SOURCE_URL} target="_blank" rel="noreferrer">View skill</a></div>
       </section>
     </div>}
 
@@ -571,6 +494,7 @@ export function BennyRecipeBook() {
     <nav className="benny-owner-tabs" aria-label="Choose whose recipes appear first" role="tablist">
       {recipeProfiles.map((profile) => <button key={profile.id} type="button" role="tab" aria-selected={activeOwner === profile.id} className={activeOwner === profile.id ? "active" : ""} onClick={() => { setActiveOwner(profile.id); setShowSaved(false); }}><span aria-hidden="true">{profile.initials}</span>{profile.label}</button>)}
     </nav>
+    {additionsError && <div className="benny-owner-note" role="status">{additionsError}</div>}
     {activeOwnerCount === 0 && <div className="benny-owner-note" role="status"><strong>{activeProfile.name}&apos;s recipes haven&apos;t been added yet.</strong><span>The shared family recipe box is still here, ready to browse.</span></div>}
 
     <nav className="benny-filter" aria-label="Recipe categories">{collections.map((collection) => <button key={collection.id} className={!showSaved && tag === collection.id ? "active" : ""} onClick={() => { setTag(collection.id); setShowSaved(false); }}>{collection.label}</button>)}</nav>
@@ -586,7 +510,7 @@ export function BennyRecipeBook() {
     </section>
 
     <section className="benny-cards-section" aria-live="polite"><div className="benny-section-head"><div><p className="benny-eyebrow">The recipe box</p><h2>{resultTitle}</h2></div><span>{filtered.length} {filtered.length === 1 ? "recipe" : "recipes"}</span></div>
-      <div className="benny-cards">{filtered.map((recipe, index) => { const owner = recipeProfile(recipeOwner(recipe)); return <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)} aria-label={`Open ${recipe.title} ${recipe.subtitle}, by ${owner.name}`}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 3 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><div className="benny-card-tags"><span className="benny-owner-tag">By {owner.name}</span><span>{recipe.tags.slice(0, 2).join(" · ")}</span></div><h3>{recipe.title}<small>{recipe.subtitle}</small></h3><span className="benny-card-action">Open recipe <ChevronRight size={15} /></span></div></button>; })}</div>
+      <div className="benny-cards">{filtered.map((recipe, index) => { const owner = profileForOwner(recipeOwner(recipe)); return <button className={`benny-card ${recipe.id === selected.id ? "selected" : ""}`} key={recipe.id} onClick={() => choose(recipe.id)} aria-label={`Open ${recipe.title} ${recipe.subtitle}, by ${owner.name}`}><div className={`benny-card-image ${recipe.color}`}><img src={recipe.image} alt="" loading={index > 3 ? "lazy" : "eager"} /><span>{recipe.total}</span></div><div><div className="benny-card-tags"><span className="benny-owner-tag">By {owner.name}</span><span>{recipe.tags.slice(0, 2).join(" · ")}</span></div><h3>{recipe.title}<small>{recipe.subtitle}</small></h3><span className="benny-card-action">Open recipe <ChevronRight size={15} /></span></div></button>; })}</div>
       {!filtered.length && <div className="benny-empty"><Sparkles size={20} /><div><strong>No matches yet.</strong><p>Try a dish, ingredient, or choose another collection.</p></div><button onClick={() => { setQuery(""); setTag("All"); setShowSaved(false); }}>Show all recipes</button></div>}
     </section>
 
