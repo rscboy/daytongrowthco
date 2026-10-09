@@ -76,7 +76,7 @@ const recipeProfiles: RecipeProfile[] = [
   { id: "sam-g", label: "Sam G's Recipes", name: "Sam G", initials: "SG", image: "/recipe-book/sam-g-profile-v2.jpg", imagePosition: "center 38%" },
   { id: "autumn", label: "Autumn's Recipes", name: "Autumn", initials: "Au", image: "/recipe-book/autumn-profile.jpg", imagePosition: "center 38%" },
   { id: "addison", label: "Addison's Recipes", name: "Addison", initials: "Ad", image: "/recipe-book/addison-profile.jpg", imagePosition: "center 18%" },
-  {"id":"benny","label":"Benny's Recipes","name":"Benny","initials":"B","image":"/recipe-book/benny-profile.png","imagePosition":"center 30%"},
+  {"id":"benny","label":"Benny's Recipes","name":"Benny","initials":"B","image":"/recipe-book/benny-profile.png","imagePosition":"center 10%"},
 ];
 
 const samGRecipeIds = new Set([
@@ -223,7 +223,7 @@ export function BennyRecipeBook() {
   }, [additions]);
   const recipeProfiles = useMemo(() => {
     const profiles = [...bundledProfiles];
-    for (const { owner } of additions.entries) if (!profiles.some((profile) => profile.id === owner.id)) profiles.push({ id: owner.id, name: owner.name, label: `${owner.name}'s Recipes`, initials: owner.initials, image: owner.id === "benny" ? "/recipe-book/benny-profile.png" : "/recipe-book/all-recipes-family.jpg", imagePosition: owner.id === "benny" ? "center 30%" : "center" });
+    for (const { owner } of additions.entries) if (!profiles.some((profile) => profile.id === owner.id)) profiles.push({ id: owner.id, name: owner.name, label: `${owner.name}'s Recipes`, initials: owner.initials, image: owner.id === "benny" ? "/recipe-book/benny-profile.png" : "/recipe-book/all-recipes-family.jpg", imagePosition: owner.id === "benny" ? "center 10%" : "center" });
     return profiles;
   }, [additions]);
   const profileForOwner = (owner: RecipeProfileId) => recipeProfiles.find((profile) => profile.id === owner) ?? recipeProfiles[0];
