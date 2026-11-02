@@ -27,6 +27,11 @@ const nextConfig = {
   },
   async headers() {
     return [
+      ...[
+        "/recipe-book/manage.html", "/recipe-book/manage.js", "/recipe-book/manage.css",
+        "/recipe-book/add.html", "/recipe-book/Caruso-Recipe-Book.zip",
+        "/recipe-book/caruso-recipe-book/:path*",
+      ].map((source) => ({ source, headers: [{ key: "Cache-Control", value: "private, no-store" }] })),
       {
         source: "/(.*)",
         headers: [
