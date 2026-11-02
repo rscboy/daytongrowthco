@@ -33,6 +33,10 @@ test('storage reads and writes fail closed, confirm saves, and reject races',asy
   await t.test('corrupt saved data never falls back to the seed',async()=>{
    globalThis.fetch=async u=>String(u).includes('/git/ref/')?json({object:{sha:'head'}}):file({version:2,records:[],profiles:'bad',history:[]});await assert.rejects(loadBook());
   });
+  await t.test('books above GitHub’s inline limit remain readable through the blob API',async()=>{
+   globalThis.fetch=async u=>{u=String(u);if(u.includes('/git/ref/'))return json({object:{sha:'head'}});if(u.includes('/git/blobs/'))return file(seed);return json({encoding:'none',content:'',sha:'large-history-blob'});};
+   const loaded=await loadBook();assert.equal(loaded.initialized,true);assert.equal(loaded.store.records.length,30);
+  });
   await t.test('uninitialized book imports current additions without writing',async()=>{
    const methods=[];globalThis.fetch=async(u,init)=>{methods.push(init.method||'GET');u=String(u);if(u.includes('/git/ref/'))return json({object:{sha:'head'}});if(u.includes('/commits?'))return json([]);if(u.includes('caruso-recipe-book-v2'))return json({},404);return file({version:1,entries:[]});};
    const loaded=await loadBook();assert.equal(loaded.initialized,false);assert.equal(loaded.store.records.length,30);assert.ok(methods.every(m=>m==='GET'));
