@@ -9,7 +9,7 @@ async function handleRecipeAccount(b){
  const fail=(message,status)=>{throw Object.assign(new Error(message),{status});};
  const email=String(b.email||'').trim().toLowerCase();
  const publicAccount=a=>({id:a.id,email:a.email,name:a.name,version:a.version,inviteIds:a.inviteIds});
- if(b.action==='session'){const a=[...accounts.values()].find(a=>a.id===b.id);if(!a||a.version!==b.version)fail('Please sign in again.',401);return publicAccount(a);}
+ if(b.action==='session'){const a=[...accounts.values()].find(a=>a.id===b.id);if(!a||a.version!==b.version)fail('Please sign in again.',401);return {...publicAccount(a),inviteIds:JSON.stringify(a.inviteIds)};}
  let a=accounts.get(email);
  if(b.action==='register'){
   if(a&&a.password!==b.password)fail('This email already has an account. Enter its existing password.',409);
@@ -32,6 +32,7 @@ globalThis.fetch=async(input,init={})=>{
  const u=new URL(url);const method=init.method||'GET';
  const body=typeof init.body==='string'?JSON.parse(init.body):{};
  if(u.hostname==='api.github.com'&&u.pathname.startsWith('/repos/recipe-test/book/')){
+  if(process.env.CARUSO_TEST_STORAGE_OFFLINE==='1'||(process.env.CARUSO_TEST_STORAGE_OFFLINE_FILE&&fs.existsSync(process.env.CARUSO_TEST_STORAGE_OFFLINE_FILE)))return reply({message:'Temporary test outage'},503);
   const p=decodeURIComponent(u.pathname.slice('/repos/recipe-test/book'.length));
   if(p==='/git/ref/heads/recipe-workflow-test')return reply({object:{sha:head}});
   if(p.startsWith('/contents/')){

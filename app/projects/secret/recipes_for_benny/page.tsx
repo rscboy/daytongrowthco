@@ -41,6 +41,6 @@ export default async function RecipesForBennyPage() {
       const { store } = await loadBook();
       initialBook = {version:1,entries:store.records.filter(r => !r.deletedAt).map(r => ({recipe:r.recipe,owner:store.profiles.find(p => p.id === r.recipe.owner)!}))};
     }
-  } catch { initialError = "We couldn’t open the saved recipe book. Your recipes are safe. Try again below, or sign in."; }
+  } catch (error) { console.error("Recipe page:", error instanceof Error ? error.message : "Unavailable"); initialError = "We couldn’t open the saved recipe book. Your recipes are safe. Try again below, or sign in."; }
   return <BennyRecipeBook initialBook={initialBook} initialError={initialError} />;
 }

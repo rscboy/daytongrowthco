@@ -10,7 +10,7 @@ test('invitation -> immediate password -> sign out -> email sign-in -> password 
  const setup=await person.call('/account');assert.equal(setup.email,'account@example.test');assert.equal(setup.hasPassword,false);
  assert.equal((await person.call('/account',{action:'register',email:setup.email,password:'short'})).status,400);
  assert.equal((await person.call('/account',{action:'register',email:'someone-else@example.test',password:'a secure testing passphrase'})).status,403);
- const password='a secure testing passphrase';assert.equal((await person.call('/account',{action:'register',email:setup.email,password})).status,200);assert.equal((await person.call('/account')).hasPassword,true);
+ const password='a secure testing passphrase';assert.equal((await person.call('/account',{action:'register',email:setup.email,password})).status,200);assert.equal((await person.call('/account')).hasPassword,true);const afterSetup=await person.call('?live=1&after-account-setup=1');assert.equal(afterSetup.status,200,'reader remains available when the account service returns legacy JSON-encoded grants');assert.equal(afterSetup.entries.length,initial.records.filter(r=>!r.deletedAt).length);
  await person.call('/session',undefined,'DELETE');assert.equal((await person.call('/manage')).actor,null);
  assert.equal((await returning.call('/session',{email:setup.email,password:'wrong'})).status,401);
  assert.equal((await returning.call('/session',{email:setup.email.toUpperCase(),password})).status,200);

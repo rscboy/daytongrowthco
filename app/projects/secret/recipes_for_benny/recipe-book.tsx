@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, ChevronDown, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 import { parseRecipeAdditions, type RecipeAdditions } from "@/lib/caruso-recipe-additions";
 
@@ -428,18 +428,18 @@ export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:Rec
   const activeCollection = collections.find((collection) => collection.id === tag);
   const resultTitle = showSaved ? "Saved recipes" : tag === "All" ? activeOwner === "all" ? "All recipes" : `${activeProfile.name}'s recipes first.` : activeCollection?.label;
 
-  if (!bookLoaded) return <main className="benny-book"><section className="benny-intro"><h1>Family Recipe Book</h1><p role="status">{additionsError || "Opening the recipe book…"}</p>{additionsError && <button type="button" onClick={() => { setAdditionsError(""); setLoadAttempt(n => n + 1); }}>Try opening the book again</button>}<a href="/recipe-book/manage.html">Sign in or manage recipes</a><noscript>JavaScript is needed to open the recipe book. Enable it, then reload this page.</noscript></section></main>;
-  if (!recipes.length) return <main className="benny-book"><section className="benny-intro"><h1>Your recipe box is ready.</h1><p>Add a recipe or restore one from Trash.</p><a href="/recipe-book/manage.html">Manage recipes</a></section></main>;
+  if (!bookLoaded) return <main className="benny-book"><section className="benny-load-state"><a className="benny-load-home" href="/book">Caruso Recipes</a><h1>Let’s get your recipes open.</h1><p role="status">{additionsError || "Opening the recipe book…"}</p>{additionsError && <button type="button" onClick={() => { setAdditionsError(""); setLoadAttempt(n => n + 1); }}>Try opening the book again</button>}<a href="/recipe-book/manage.html">Sign in or manage recipes</a><noscript>JavaScript is needed to open the recipe book. Enable it, then reload this page.</noscript></section></main>;
+  if (!recipes.length) return <main className="benny-book"><section className="benny-load-state"><h1>Your recipe box is ready.</h1><p>Add a recipe or restore one from Trash.</p><a href="/recipe-book/manage.html">Manage recipes</a></section></main>;
 
   return <main className="benny-book">
     {additionsError && <aside role="status">{additionsError} <button type="button" onClick={() => {setAdditionsError("");setLoadAttempt(n => n + 1);}}>Try again</button></aside>}<header className="benny-header">
       <a className="benny-brand" href="/book" aria-label="Caruso Recipe Book home"><span className="benny-wordmark"><b>Caruso</b><em>Recipes</em></span><span>Your family recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
-      <div className="benny-header-actions">
-        <a className="benny-add-trigger" href="/recipe-book/manage.html?tab=account">My account / Sign in</a><a className="benny-add-trigger" href="/recipe-book/manage.html">Manage recipes</a>
+      <nav className="benny-header-actions" aria-label="Recipe book navigation">
+        <a className="benny-add-trigger" href="/recipe-book/manage.html?tab=account" aria-label="My account or sign in">Account</a><a className="benny-add-trigger" href="/recipe-book/manage.html" aria-label="Manage recipes"><span className="benny-nav-full">Manage recipes</span><span className="benny-nav-short">Manage</span></a>
         <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Use AI</button>
-        <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
-      </div>
+        <button aria-label={`Saved recipes, ${saved.length} saved`} className={`benny-saved ${saved.length ? "has-saved" : ""} ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
+      </nav>
     </header>
 
     {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
@@ -463,7 +463,7 @@ export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:Rec
       </section>
     </div>}
 
-    <aside className="benny-owner-note"><span>Keep the family book close: bookmark <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a>. Use ⌘D on Mac, Ctrl+D on Windows, or Share → Add Bookmark on your phone.</span></aside>
+    <details className="benny-bookmark"><summary><Bookmark size={16} aria-hidden="true" /><span>Bookmark the recipe book</span><ChevronDown size={16} aria-hidden="true" /></summary><div><p>Save <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a> for next time.</p><p>On your phone, use your browser’s Share or menu button, then choose Add Bookmark.</p><p className="benny-bookmark-desktop">On a computer, press ⌘D or Ctrl+D.</p></div></details>
     <section className="benny-intro" id="top" style={{ "--benny-profile-image": `url("${activeProfile.image}")`, "--benny-profile-position": activeProfile.imagePosition } as CSSProperties}>
       <p className="benny-eyebrow">{activeProfile.label}</p>
       <h2>What should we make<br /><i>tonight?</i></h2>
