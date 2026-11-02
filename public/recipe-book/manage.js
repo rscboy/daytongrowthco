@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const API='/api/caruso-recipe-book';
-let book=null, draft=null, prepared=null, selected=null, tabName='recipes', busy=false, inviteId=null, invitation=null, photoBusy=false;
+let book=null, draft=null, prepared=null, selected=null, tabName=new URLSearchParams(location.search).get('tab')==='invite'?'invite':'recipes', busy=false, inviteId=null, invitation=null, photoBusy=false, inviteEmailRequest=null;
 const fallbackPhoto='https://www.daytongrowth.co/recipe-book/all-recipes-family.jpg';
 function status(message='',error=false){$('status').textContent=message;$('status').className=error?'error':'';}
 function node(parent,tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;parent.append(n);return n;}
@@ -18,11 +18,14 @@ async function load(){
  if(!book.actor)return;
  $('identity').textContent=book.actor.name+' · '+(book.actor.role==='editor'?'Family editor':'Your collection');$('invite-tab').hidden=book.actor.role!=='editor';
  if(!book.profiles.some(p=>p.id===book.actor.ownerId))book.profiles.push({id:book.actor.ownerId,name:book.actor.name,initials:book.actor.name.slice(0,2)});
+ const previousInviteOwner=$('invite-owner').value;
  $('invite-owner').replaceChildren();node($('invite-owner'),'option','Create their collection').value='new';for(const p of book.profiles)node($('invite-owner'),'option',p.name+"'s collection").value=p.id;
+ if(Array.from($('invite-owner').options).some(o=>o.value===previousInviteOwner))$('invite-owner').value=previousInviteOwner;
  render();
 }
 function render(){
  if(!book?.actor)return;
+ if(tabName==='invite'&&book.actor.role!=='editor')tabName='recipes';
  const detailVisible=!$('editor').hidden||!$('review').hidden||!$('success').hidden;
  $('recipes-panel').hidden=detailVisible||!['recipes','trash'].includes(tabName);$('history-panel').hidden=detailVisible||tabName!=='history';$('invite-panel').hidden=detailVisible||tabName!=='invite';
  $('new-recipe').hidden=tabName==='trash';$('undo').hidden=tabName==='trash';
@@ -142,7 +145,20 @@ $('approve').addEventListener('click',()=>run(async()=>{
 $('continue').addEventListener('click',()=>{panels();tabName='recipes';render();});
 $('load-draft').addEventListener('click',()=>run(async()=>{const raw=$('draft-json').value;if(new TextEncoder().encode(raw).length>24000)throw Error('Keep the prepared change under 24 KB.');await openDraft(JSON.parse(raw));$('paste-option').open=false;}));
 $('invite-role').addEventListener('change',()=>{$('invite-permissions').textContent=$('invite-role').value==='editor'?'A family editor can change every recipe and create or revoke invitations. Access expires after 30 days.':'They can manage recipes in the selected collection. Access expires after 30 days.';});
-$('invite-form').addEventListener('submit',e=>{e.preventDefault();run(async()=>{const name=$('invite-name').value.trim();const id=$('invite-owner').value==='new'?makeId(name):$('invite-owner').value;const p=$('invite-owner').value==='new'?{id,name,initials:name.slice(0,2)}:owner(id);const result=await api('/invite',{role:$('invite-role').value,owner:p});inviteId=result.id;$('invitation-url').value=result.url;$('invite-result').hidden=false;$('revoke-invite').disabled=false;await load();});});
+async function sendInvitationEmail(body){
+ status('Creating the invitation and sending the email…');
+ const result=await api('/invite',body);inviteId=result.id;$('invitation-url').value=result.url;$('invite-result').hidden=false;
+ $('invite-result-title').textContent=result.emailStatus==='sent'?'Invitation emailed.':'Invitation saved. Email not confirmed.';
+ $('invite-delivery').textContent=result.emailStatus==='sent'?'Sent to '+body.email+'. They can open the invitation and follow the steps in the email. If it doesn’t arrive, ask them to check spam.':'We couldn’t confirm the email. Retry using the same invitation, or copy the private link and share it yourself.';
+ $('retry-invite-email').hidden=result.emailStatus==='sent';await load();status();
+}
+$('invite-form').addEventListener('submit',e=>{e.preventDefault();run(async()=>{
+ const name=$('invite-name').value.trim();const email=$('invite-email').value.trim();const choice=$('invite-owner').value;
+ const fingerprint=JSON.stringify({name,email,choice,role:$('invite-role').value});
+ if(!inviteEmailRequest||inviteEmailRequest.fingerprint!==fingerprint){const id=choice==='new'?makeId(name):choice;const p=choice==='new'?{id,name,initials:name.slice(0,2)}:owner(id);inviteEmailRequest={fingerprint,body:{name,email,role:$('invite-role').value,owner:p,requestId:crypto.randomUUID(),createdAt:new Date().toISOString()}};}
+ await sendInvitationEmail(inviteEmailRequest.body);
+});});
+$('retry-invite-email').addEventListener('click',()=>run(async()=>{if(inviteEmailRequest)await sendInvitationEmail(inviteEmailRequest.body);}));
 $('copy-invite').addEventListener('click',()=>run(async()=>{await navigator.clipboard.writeText($('invitation-url').value);status('Invitation copied. Share it privately.');}));
 $('revoke-invite').addEventListener('click',()=>run(async()=>{await api('/invite',{id:inviteId},'DELETE');$('invite-result').hidden=true;status('Invitation revoked. Existing access from this invitation is also revoked.');}));
 $('photo').addEventListener('change',()=>run(async()=>{
