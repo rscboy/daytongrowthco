@@ -94,6 +94,20 @@ export async function recordInvitationEmail(record:Invitation, messageId:string)
   if(JSON.stringify(saved)!==JSON.stringify(next))throw new RecipeError('Email confirmation could not be saved.',503);
 }
 export async function invitationEmailReceipt(id:string){return readInternalProjectStorage<{messageId:string}>(`caruso-recipe-invite-email-${id}`);}
+export async function invitationForResend(id:unknown){
+ if(typeof id!=='string'||!/^[a-f0-9]{32}$/.test(id))throw new RecipeError('Choose an invitation.');
+ const record=await readInternalProjectStorage<Invitation>(inviteKey(id));
+ if(!record||record.revoked||record.expires<=Date.now()||await readInternalProjectStorage(revokedKey(id)))throw new RecipeError('This invitation expired or was revoked.',409);
+ if(!record.recipientEmail)throw new RecipeError('This invitation has no saved email address. Create an emailed invitation for this person.');
+ const key=createHmac('sha256',secret()).update(`caruso-invitation-token:${id}`).digest('base64url');
+ if(!safeEqual(record.tokenHash,digest(key)))throw new RecipeError('This older invitation cannot be resent. Create a new invitation for this person.',409);
+ return {record,token:`${id}.${key}`};
+}
+export async function resendEmailReceipt(id:string,deliveryId:string){return readInternalProjectStorage<{messageId:string}>(`caruso-recipe-update-email-${id}-${deliveryId}`);}
+export async function recordResendEmail(id:string,deliveryId:string,messageId:string){
+ const value={id,deliveryId,messageId,sentAt:new Date().toISOString()};const saved=await writeInternalProjectStorage(`caruso-recipe-update-email-${id}-${deliveryId}`,value);
+ if(JSON.stringify(saved)!==JSON.stringify(value))throw new RecipeError('Email confirmation could not be saved.',503);
+}
 export async function acceptInvitation(token:unknown) {
   if(typeof token!=='string'||!/^([a-f0-9]{32})\.([A-Za-z0-9_-]{43})$/.test(token))throw new RecipeError('This invitation is invalid.',401);
   const [id,key]=token.split('.');

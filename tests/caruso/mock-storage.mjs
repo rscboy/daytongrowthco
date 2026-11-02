@@ -49,7 +49,7 @@ globalThis.fetch=async(input,init={})=>{
  if(u.hostname==='recipe-test-accounts.invalid'){try{return reply({ok:true,account:await handleRecipeAccount(body)});}catch(e){return reply({error:e.message},e.status||503);}}
  if(u.hostname==='recipe-test-email.invalid'){
   if(method==='GET')return reply({ok:true,ready:true});
-  const attempts=(mailCalls.get(body.id)||0)+1;mailCalls.set(body.id,attempts);
+  const deliveryKey=body.deliveryId?body.id+':'+body.deliveryId:body.id;const attempts=(mailCalls.get(deliveryKey)||0)+1;mailCalls.set(deliveryKey,attempts);
   if(body.email==='retry@example.test'&&attempts===1)return reply({ok:false},502);
   return reply({ok:true,messageId:'test-mail-'+body.id+'-attempt-'+attempts});
  }

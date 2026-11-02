@@ -4,6 +4,7 @@ import { checkOrigin, createInvitation, currentActor, errorResponse, readBody, r
 import { invitationEmail, emailInvitation, invitationEmailReady } from '@/lib/caruso-recipe-email';
 import { RecipeError, validateProfile } from '@/lib/caruso-recipe-management';
 import { loadBook, saveBook } from '@/lib/caruso-recipe-storage';
+import {invitationForResend,resendEmailReceipt,recordResendEmail} from '@/lib/caruso-recipe-auth';
 export const runtime='nodejs';
 export const maxDuration=60;
 async function editor() {
@@ -17,6 +18,19 @@ export async function GET(){try{const denied=await editor();if(denied)return den
 export async function POST(request:Request) {
   try {
     checkOrigin(request);const denied=await editor();if(denied)return denied;const body=await readBody(request,2000);
+    if(body.action==='resend'){
+      if(typeof body.requestId!=='string'||!/^[a-f0-9-]{36}$/i.test(body.requestId)||typeof body.createdAt!=='string'||!Number.isFinite(Date.parse(body.createdAt)))throw new RecipeError('Start a fresh invitation resend.');
+      const {record,token}=await invitationForResend(body.id);
+      const receipt=await resendEmailReceipt(record.id,body.requestId);
+      if(!receipt){
+        const age=Date.now()-Date.parse(body.createdAt);if(age < -5*60000 || age > 23*3600000)throw new RecipeError('Start a fresh invitation resend.');
+        const {store}=await loadBook();const ownerName=store.profiles.find(p=>p.id===record.actor.ownerId)?.name||record.actor.name;
+        const origin=process.env.NODE_ENV==='production'?'https://recipes.daytongrowth.co':request.headers.get('origin');
+        const messageId=await emailInvitation(record,`${origin}/recipe-book/manage.html?v=3#invite=${token}`,ownerName,{id:body.requestId,createdAt:body.createdAt});
+        await recordResendEmail(record.id,body.requestId,messageId);
+      }
+      return Response.json({ok:true,id:record.id,email:record.recipientEmail,emailStatus:'sent'},{headers:{'Cache-Control':'private, no-store'}});
+    }
     const owner=validateProfile(body.owner);
     if(!['contributor','editor'].includes(body.role))throw new RecipeError('Choose contributor or family editor.');
     const email=invitationEmail(body.email);
