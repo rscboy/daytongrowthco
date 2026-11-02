@@ -30,8 +30,8 @@ export async function POST(request:Request) {
       store.invitations=[...(store.invitations??[]),{id:record.id,name:record.actor.name,role:record.actor.role,ownerId:record.actor.ownerId,expires:record.expires,revoked:false}];
       await saveBook(sha,store,`Invite ${record.actor.name} to the recipe book`);
     }
-    const origin=process.env.NODE_ENV==='production'?'https://www.daytongrowth.co':request.headers.get('origin');
-    const url=`${origin}/recipe-book/manage.html?v=2#invite=${token}`;
+    const origin=process.env.NODE_ENV==='production'?'https://recipes.daytongrowth.co':request.headers.get('origin');
+    const url=`${origin}/recipe-book/manage.html?v=3#invite=${token}`;
     let emailStatus:'sent'|'unconfirmed'|'not-requested'='not-requested';
     if(email){try{const receipt=await invitationEmailReceipt(record.id);if(!receipt){const messageId=await emailInvitation(record,url,owner.name);await recordInvitationEmail(record,messageId);}emailStatus='sent';}catch{emailStatus='unconfirmed';}}
     return Response.json({ok:true,url,id:record.id,expires:record.expires,emailStatus},{headers:{'Cache-Control':'private, no-store'}});

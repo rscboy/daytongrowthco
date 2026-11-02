@@ -3,8 +3,7 @@
 Run the deterministic behavior and storage tests with Node 22.7 or newer:
 
 ```sh
-node --experimental-transform-types --test tests/caruso/management.test.mjs
-node --test tests/caruso/storage.test.mjs tests/caruso/browser-drafts.test.mjs
+node --test tests/caruso/management.test.mjs tests/caruso/storage.test.mjs tests/caruso/browser-drafts.test.mjs tests/caruso/reader.test.mjs
 ```
 
 For the real Next.js route and browser workflow, start a fresh isolated test server:
@@ -16,7 +15,7 @@ node tests/caruso/start-test-site.mjs
 Then, in another terminal:
 
 ```sh
-node --test tests/caruso/http.test.mjs
+node --test --test-concurrency=1 tests/caruso/accounts-http.test.mjs tests/caruso/email-http.test.mjs tests/caruso/http.test.mjs
 ```
 
 The test server uses fake credentials and an explicitly preloaded storage simulator.
@@ -32,3 +31,5 @@ open it, and test an AI-prepared draft, edit, trash, restore, and duplicate revi
 Production verification additionally requires a successful build, release guards,
 the protected CRM route, and an uploaded-source comparison against the production
 baseline. Never load the full production environment into this test server.
+
+The account suite verifies invitation-bound setup, sign-out, email sign-in, password rotation, session invalidation and revoked access. The CRM repository tests real salted password hashing, concurrent registration and durable rate limits separately.

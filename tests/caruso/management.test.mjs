@@ -1,7 +1,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {applyChange,prepareChange,parseStore,validateRecipe,validateDraft,findDuplicates} from '../../lib/caruso-recipe-management.ts';
+import {loadRecipeModules} from './load-modules.mjs';
+const {management:{applyChange,prepareChange,parseStore,validateRecipe,validateDraft,findDuplicates}}=await loadRecipeModules();
 const seed=JSON.parse(fs.readFileSync(new URL('../../lib/caruso-recipe-seed.json',import.meta.url),'utf8'));
 const editor={id:'editor-1',name:'Sam',role:'editor',ownerId:'sammy'};
 const contributor={id:'new-person',name:'New Person',role:'contributor',ownerId:'new-person'};

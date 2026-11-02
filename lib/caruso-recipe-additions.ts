@@ -14,6 +14,13 @@ const slug = (value: unknown): value is string => typeof value === "string" && /
 const text = (value: unknown, max: number): value is string => typeof value === "string" && value.trim().length > 0 && value.length <= max;
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 
+// Shared by the saved-book writer and reader, including original book photos.
+export function validRecipeImage(v: unknown): v is string {
+  if (typeof v !== 'string' || v.length > 2000) return false;
+  if (/^\/(?:recipe-book|api\/caruso-recipe-book\/image)\/[a-zA-Z0-9_.\/-]+$/.test(v) && !v.includes('..')) return true;
+  try { const u = new URL(v); return u.protocol === 'https:' && !u.username && !u.password; } catch { return false; }
+}
+
 export function parseRecipeAdditions(raw: string): RecipeAdditions {
   const value: unknown = JSON.parse(raw);
   if (!object(value) || value.version !== 1 || !Array.isArray(value.entries)) throw new Error("Recipe additions have an unsupported format.");
@@ -24,7 +31,7 @@ export function parseRecipeAdditions(raw: string): RecipeAdditions {
     if (!slug(owner.id) || !text(owner.name, 80) || !text(owner.initials, 6) || !slug(recipe.id) || recipe.owner !== owner.id || ids.has(recipe.id)) throw new Error("Recipe addition has an invalid or duplicate ID.");
     for (const key of ["title", "subtitle", "description", "prep", "cook", "total", "yield", "note"]) if (!text(recipe[key], 1500)) throw new Error("Recipe addition has incomplete text.");
     if (!Array.isArray(recipe.tags) || !recipe.tags.length || recipe.tags.length > 6 || !recipe.tags.every((tag) => text(tag, 40)) || !text(recipe.color, 20)) throw new Error("Recipe addition has invalid tags.");
-    if (!text(recipe.image, 2000) || (!/^https:\/\//i.test(recipe.image) && !/^\/(?:recipe-book\/community|api\/caruso-recipe-book\/image)\/[a-z0-9-]+\.(?:jpg|png|webp)$/.test(recipe.image))) throw new Error("Recipe addition has an invalid image.");
+    if (!validRecipeImage(recipe.image)) throw new Error("Recipe addition has an invalid image.");
     if (!Array.isArray(recipe.ingredients) || !recipe.ingredients.length || recipe.ingredients.length > 12 || !recipe.ingredients.every((group) => object(group) && text(group.category, 120) && Array.isArray(group.items) && group.items.length > 0 && group.items.length <= 60 && group.items.every((item) => text(item, 500)))) throw new Error("Recipe addition has invalid ingredients.");
     if (!Array.isArray(recipe.steps) || !recipe.steps.length || recipe.steps.length > 30 || !recipe.steps.every((step) => object(step) && text(step.title, 120) && text(step.text, 1500))) throw new Error("Recipe addition has invalid steps.");
     ids.add(recipe.id);

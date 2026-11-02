@@ -15,6 +15,7 @@ export function SiteAnalytics() {
   const firstPage = useRef(true);
 
   useEffect(() => {
+    if (pathname === "/book" || pathname.startsWith("/projects/secret/recipes_for_benny") || pathname.startsWith("/recipe-book/") || pathname.startsWith("/projects/secret/remembered-care") || pathname === "/projects/secret-projects/share/remembered_care") return;
     captureAttribution("site");
     if (firstPage.current) {
       firstPage.current = false;

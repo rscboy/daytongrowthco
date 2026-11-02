@@ -7,7 +7,7 @@ description: Help anyone with a Caruso Recipe Book invitation add, find, edit, m
 
 Help the contributor manage the family book using their own AI assistant. Prepare changes in chat; the contributor signs in and approves them in their normal browser. The same flow works in Local and Cloud without connectors, repository access, deployment credentials, or workspace access to the recipe service.
 
-Source and installable folder: https://github.com/rscboy/caruso-recipe-book/tree/main/skills/caruso-recipe-book. The website also publishes this folder at https://www.daytongrowth.co/recipe-book/caruso-recipe-book/SKILL.md. Read these instructions directly when installation is unavailable. Do not claim this installs a skill on someone else's computer.
+Source and installable folder: https://github.com/rscboy/caruso-recipe-book/tree/main/skills/caruso-recipe-book. The website also publishes this folder at https://recipes.daytongrowth.co/recipe-book/caruso-recipe-book/SKILL.md. Read these instructions directly when installation is unavailable. Do not claim this installs a skill on someone else's computer.
 
 ## Choose the action
 
@@ -23,7 +23,7 @@ For a new recipe or variation, use a unique slug. A variation preserves its orig
 
 Generate a verified browser review link offline. Return a clickable link labeled **Review your recipe change**, plus one sentence describing the requested action. Say: **Open the link, sign in or accept your invitation, check the exact change, and approve it.** When a name is vague, mention that they will select the recipe first.
 
-Do not ask for a password, invitation token, session cookie, or private key in chat. Never include credentials in a review payload or link. Invitation links go directly to the person's browser; they do not belong in the AI conversation. A person without an invitation can ask a family editor to open **Manage recipes → Invite someone**. The skill itself grants no access.
+Do not ask for a password, invitation token, session cookie, or private key in chat. Never include credentials in a review payload or link. Invitation links go directly to the person's browser; they do not belong in the AI conversation. A person without an invitation can ask a family editor to open **Manage recipes → Invite someone**. The skill itself grants no access. After accepting an invitation, the website offers personal password setup immediately. They can later sign in using email and password, or reopen the private invitation before it expires. Remind them to bookmark https://recipes.daytongrowth.co. Accounts retain only their assigned access until a family editor revokes it.
 
 Contributors manage their assigned collection; family editors manage all recipes and invitations. The website enforces access, identifies duplicates, previews before/after, and checks for intervening edits. Deleted recipes go to Trash and remain restorable. Earlier versions remain in History. A duplicate warning requires an explicit choice to update the existing recipe or save a separate version.
 

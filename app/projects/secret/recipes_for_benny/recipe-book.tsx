@@ -185,10 +185,11 @@ function CharliePizzaCalculator() {
 const bundledRecipes = recipes;
 const bundledProfiles = recipeProfiles;
 
-export function BennyRecipeBook() {
-  const [additions, setAdditions] = useState<RecipeAdditions>({ version: 1, entries: [] });
-  const [additionsError, setAdditionsError] = useState("");
-  const [bookLoaded, setBookLoaded] = useState(false);
+export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:RecipeAdditions;initialError?:string}) {
+  const [additions, setAdditions] = useState<RecipeAdditions>(initialBook ?? { version: 1, entries: [] });
+  const [additionsError, setAdditionsError] = useState(initialError);
+  const [bookLoaded, setBookLoaded] = useState(Boolean(initialBook));
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const recipes = useMemo(() => {
     return bookLoaded ? additions.entries.map((entry) => entry.recipe) : bundledRecipes;
   }, [additions, bookLoaded]);
@@ -205,16 +206,17 @@ export function BennyRecipeBook() {
       pending = true;
       try {
         const response = await fetch("/api/caruso-recipe-book?live=1", { cache: "no-store", credentials: "same-origin", redirect: "error", signal: AbortSignal.timeout(15000) });
-        if (!response.ok) throw new Error("Could not load additions.");
+        if (response.status === 401 || response.status === 403) throw new Error("Open your invitation or sign in to see the family book.");
+        if (!response.ok) throw new Error("The saved book could not be reached. Please try again.");
         const next = parseRecipeAdditions(await response.text());
         if (!stopped) { setAdditions(next); setAdditionsError(""); setBookLoaded(true); }
-      } catch { if (!stopped) setAdditionsError("The recipe book is temporarily unavailable. Refresh the page to try again. Your saved recipes have not been replaced."); }
+      } catch (error) { if (!stopped) setAdditionsError(error instanceof Error && /invitation/.test(error.message) ? error.message : "We couldn’t open the saved recipe book. Your recipes are safe. Try again below, or sign in."); }
       finally { pending = false; }
     };
     void refresh();
     window.addEventListener("focus", refresh);
     return () => { stopped = true; window.removeEventListener("focus", refresh); };
-  }, []);
+  }, [loadAttempt]);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("All");
   const [activeOwner, setActiveOwner] = useState<RecipeProfileId>("sammy");
@@ -426,15 +428,15 @@ export function BennyRecipeBook() {
   const activeCollection = collections.find((collection) => collection.id === tag);
   const resultTitle = showSaved ? "Saved recipes" : tag === "All" ? activeOwner === "all" ? "All recipes" : `${activeProfile.name}'s recipes first.` : activeCollection?.label;
 
-  if (additionsError || !bookLoaded) return <main className="benny-book"><section className="benny-intro"><h1>Family Recipe Book</h1><p role="status">{additionsError || "Opening the recipe book…"}</p><a href="/recipe-book/manage.html">Sign in or manage recipes</a></section></main>;
+  if (!bookLoaded) return <main className="benny-book"><section className="benny-intro"><h1>Family Recipe Book</h1><p role="status">{additionsError || "Opening the recipe book…"}</p>{additionsError && <button type="button" onClick={() => { setAdditionsError(""); setLoadAttempt(n => n + 1); }}>Try opening the book again</button>}<a href="/recipe-book/manage.html">Sign in or manage recipes</a><noscript>JavaScript is needed to open the recipe book. Enable it, then reload this page.</noscript></section></main>;
   if (!recipes.length) return <main className="benny-book"><section className="benny-intro"><h1>Your recipe box is ready.</h1><p>Add a recipe or restore one from Trash.</p><a href="/recipe-book/manage.html">Manage recipes</a></section></main>;
 
   return <main className="benny-book">
-    <header className="benny-header">
-      <a className="benny-brand" href="#top" aria-label={`${activeProfile.label} home`}><span className="benny-wordmark"><i>Dayton</i><b>Growth</b><em>Co.</em></span><span>Private recipe book</span></a>
+    {additionsError && <aside role="status">{additionsError} <button type="button" onClick={() => {setAdditionsError("");setLoadAttempt(n => n + 1);}}>Try again</button></aside>}<header className="benny-header">
+      <a className="benny-brand" href="/book" aria-label="Caruso Recipe Book home"><span className="benny-wordmark"><b>Caruso</b><em>Recipes</em></span><span>Your family recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
       <div className="benny-header-actions">
-        <a className="benny-add-trigger" href="/recipe-book/manage.html">Manage recipes</a>
+        <a className="benny-add-trigger" href="/recipe-book/manage.html?tab=account">My account / Sign in</a><a className="benny-add-trigger" href="/recipe-book/manage.html">Manage recipes</a>
         <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Use AI</button>
         <button className={`benny-saved ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
       </div>
@@ -455,12 +457,13 @@ export function BennyRecipeBook() {
               <span className="benny-add-copy-status" role="status">{copiedGuide === "run" ? "Ready to paste into Claude Code or Codex." : ""}</span>
             </div>
           </li>
-          <li><span aria-hidden="true">2</span><div><h3>Open your review link</h3><p>Sign in with your invitation or family-editor password. Check the exact change and approve it. Deleted recipes can be restored from Trash.</p></div></li>
+          <li><span aria-hidden="true">2</span><div><h3>Open your review link</h3><p>Sign in with your email and password, or open your private invitation. Check the exact change and approve it. Deleted recipes can be restored from Trash.</p></div></li>
         </ol>
-        <div className="benny-add-simple-footer"><a href="/recipe-book/manage.html">Manage recipes and invitations</a><a href={RECIPE_SKILL_SOURCE_URL} target="_blank" rel="noreferrer">Get the skill</a></div>
+        <p>Bookmark <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a> to come back easily. Use ⌘D on Mac, Ctrl+D on Windows, or your phone’s Share menu.</p><div className="benny-add-simple-footer"><a href="/recipe-book/manage.html">Manage recipes and invitations</a><a href={RECIPE_SKILL_SOURCE_URL} target="_blank" rel="noreferrer">Get the skill</a></div>
       </section>
     </div>}
 
+    <aside className="benny-owner-note"><span>Keep the family book close: bookmark <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a>. Use ⌘D on Mac, Ctrl+D on Windows, or Share → Add Bookmark on your phone.</span></aside>
     <section className="benny-intro" id="top" style={{ "--benny-profile-image": `url("${activeProfile.image}")`, "--benny-profile-position": activeProfile.imagePosition } as CSSProperties}>
       <p className="benny-eyebrow">{activeProfile.label}</p>
       <h2>What should we make<br /><i>tonight?</i></h2>
@@ -471,7 +474,7 @@ export function BennyRecipeBook() {
     <nav className="benny-owner-tabs" aria-label="Choose whose recipes appear first" role="tablist">
       {recipeProfiles.map((profile) => <button key={profile.id} type="button" role="tab" aria-selected={activeOwner === profile.id} className={activeOwner === profile.id ? "active" : ""} onClick={() => { setActiveOwner(profile.id); setShowSaved(false); }}><span aria-hidden="true">{profile.initials}</span>{profile.label}</button>)}
     </nav>
-    {additionsError && <div className="benny-owner-note" role="status">{additionsError}</div>}
+
     {activeOwnerCount === 0 && <div className="benny-owner-note" role="status"><strong>{activeProfile.name}&apos;s recipes haven&apos;t been added yet.</strong><span>The shared family recipe box is still here, ready to browse.</span></div>}
 
     <nav className="benny-filter" aria-label="Recipe categories">{collections.map((collection) => <button key={collection.id} className={!showSaved && tag === collection.id ? "active" : ""} onClick={() => { setTag(collection.id); setShowSaved(false); }}>{collection.label}</button>)}</nav>

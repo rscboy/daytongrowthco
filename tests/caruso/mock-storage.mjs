@@ -2,6 +2,24 @@
 // application code has no test endpoint, bypass, or production fixture fallback.
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+// Account transport fixture: real password hashing/storage is independently tested
+// in the CRM service. This fake keeps the website suite self-contained.
+const accounts=new Map();
+async function handleRecipeAccount(b){
+ const fail=(message,status)=>{throw Object.assign(new Error(message),{status});};
+ const email=String(b.email||'').trim().toLowerCase();
+ const publicAccount=a=>({id:a.id,email:a.email,name:a.name,version:a.version,inviteIds:a.inviteIds});
+ if(b.action==='session'){const a=[...accounts.values()].find(a=>a.id===b.id);if(!a||a.version!==b.version)fail('Please sign in again.',401);return publicAccount(a);}
+ let a=accounts.get(email);
+ if(b.action==='register'){
+  if(a&&a.password!==b.password)fail('This email already has an account. Enter its existing password.',409);
+  if(!a){a={id:crypto.randomUUID(),email,name:b.name,password:b.password,version:crypto.randomUUID(),inviteIds:[]};accounts.set(email,a);}
+  a.inviteIds=[...new Set([...a.inviteIds,b.inviteId])];return publicAccount(a);
+ }
+ if(!a||a.password!==b.password)fail('Email or password was not accepted.',401);
+ if(b.action==='password'){if(a.id!==b.id||a.version!==b.version)fail('Please sign in again.',401);a.password=b.newPassword;a.version=crypto.randomUUID();}
+ return publicAccount(a);
+}
 const original=globalThis.fetch;
 const additions=JSON.parse(fs.readFileSync(process.env.CARUSO_TEST_FIXTURE || new URL('./fixtures/live-additions.json',import.meta.url),'utf8'));
 const key='data/caruso-recipe-additions.json';
@@ -28,6 +46,7 @@ globalThis.fetch=async(input,init={})=>{
   if(p==='/git/refs/heads/recipe-workflow-test'&&method==='PATCH'){if(commits.get(body.sha)?.parent!==head)return reply({message:'not fast forward'},422);head=body.sha;return reply({object:{sha:head}});}
   return reply({message:'Unexpected test storage request '+p},500);
  }
+ if(u.hostname==='recipe-test-accounts.invalid'){try{return reply({ok:true,account:await handleRecipeAccount(body)});}catch(e){return reply({error:e.message},e.status||503);}}
  if(u.hostname==='recipe-test-email.invalid'){
   if(method==='GET')return reply({ok:true,ready:true});
   const attempts=(mailCalls.get(body.id)||0)+1;mailCalls.set(body.id,attempts);

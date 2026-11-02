@@ -1,4 +1,5 @@
 import type { CommunityRecipe } from './caruso-recipe-additions';
+import { validRecipeImage } from './caruso-recipe-additions';
 
 export type Actor = { id: string; name: string; role: 'editor' | 'contributor'; ownerId: string };
 export type Profile = { id: string; name: string; initials: string; image?: string; imagePosition?: string };
@@ -17,11 +18,7 @@ export const slug = (v: unknown): v is string => typeof v === 'string' && /^[a-z
 const text = (v: unknown, max: number): v is string => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
 const fields = ['title','subtitle','description','prep','cook','total','yield','tags','color','ingredients','steps','note','image'] as const;
 const colors = new Set(['blue','coral','gold','green','lavender','lilac','mint','peach','pink','rust','tomato','orange','yellow']);
-export function validImage(v: unknown): v is string {
-  if (typeof v !== 'string' || v.length > 2000) return false;
-  if (/^\/(?:recipe-book|api\/caruso-recipe-book\/image)\/[a-zA-Z0-9_.\/-]+$/.test(v) && !v.includes('..')) return true;
-  try { const u = new URL(v); return u.protocol === 'https:' && !u.username && !u.password; } catch { return false; }
-}
+export const validImage = validRecipeImage;
 export function validateRecipe(value: unknown): CommunityRecipe {
   const r = value as CommunityRecipe;
   if (!r || !slug(r.id) || !slug(r.owner)) throw new RecipeError('Choose a valid recipe and collection.');

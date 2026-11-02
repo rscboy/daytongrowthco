@@ -3,9 +3,10 @@ import { cookies } from 'next/headers';
 import { hasSecretProjectsSession, secretProjectsCookie } from './secret-projects-auth';
 import { readInternalProjectStorage, writeInternalProjectStorage } from './internal-project-storage';
 import { RecipeError, type Actor } from './caruso-recipe-management';
+import { recipeAccountService, type RecipeAccount } from './caruso-recipe-accounts';
 
 export const recipeCookie = 'caruso_recipe_contributor';
-type Session = { actor:Actor; expires:number; inviteId?:string; tokenHash?:string };
+type Session = { actor:Actor; expires:number; inviteId?:string; tokenHash?:string;accountId?:string;accountVersion?:string };
 export type Invitation = { id:string; actor:Actor; tokenHash:string; expires:number; revoked:boolean; createdAt:string; requestFingerprint?:string; recipientEmail?:string };
 function secret() {
   const s = process.env.CARUSO_RECIPE_SESSION_SECRET || process.env.SECRET_PROJECTS_SESSION_SECRET;
@@ -30,12 +31,36 @@ export async function currentActor(): Promise<Actor | null> {
   if (!raw) return null;
   const session=readSigned<Session>(raw);
   if (!session || session.expires<=Date.now() || !session.actor) return null;
+  if(session.accountId && session.accountVersion){
+    try {const account=await recipeAccountService({action:'session',id:session.accountId,version:session.accountVersion});return (await accountAccess(account))?.actor??null;}
+    catch(e){if(e instanceof RecipeError && e.status===401)return null;throw e;}
+  }
   if (session.inviteId) {
     const record=await readInternalProjectStorage<Invitation>(inviteKey(session.inviteId));
     if (!record || record.revoked || record.expires<=Date.now() || record.tokenHash!==session.tokenHash || await readInternalProjectStorage(revokedKey(record.id))) return null;
     return record.actor;
   }
   return session.actor;
+}
+export async function accountAccess(account:RecipeAccount) {
+  const grants=await Promise.all(account.inviteIds.map(id=>readInternalProjectStorage<Invitation>(inviteKey(id))));
+  const live:Invitation[]=[];
+  for(const grant of grants)if(grant&&!grant.revoked&&!await readInternalProjectStorage(revokedKey(grant.id)))live.push(grant);
+  return live.find(g=>g.actor.role==='editor')??live[live.length-1]??null;
+}
+export async function currentRecipeSession(){
+ const raw=(await cookies()).get(recipeCookie)?.value;if(!raw)return null;const session=readSigned<Session>(raw);return session&&session.expires>Date.now()?session:null;
+}
+export async function currentInvitation(){
+ const s=await currentRecipeSession();if(!s?.inviteId)return null;
+ const record=await readInternalProjectStorage<Invitation>(inviteKey(s.inviteId));
+ return record&&!record.revoked&&record.expires>Date.now()&&record.tokenHash===s.tokenHash&&!await readInternalProjectStorage(revokedKey(record.id))?record:null;
+}
+export async function setAccountSession(account:RecipeAccount){
+ const grant=await accountAccess(account);if(!grant)throw new RecipeError('Your access was revoked. Ask a family editor for a new invitation.',403);
+ const expires=Date.now()+30*86400000;
+ (await cookies()).set(recipeCookie,signValue({actor:grant.actor,expires,accountId:account.id,accountVersion:account.version}),{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:30*86400});
+ return grant.actor;
 }
 export async function requireActor() { const actor=await currentActor(); if(!actor)throw new RecipeError('Sign in or open your family invitation first.',401); return actor; }
 export async function setRecipeSession(actor:Actor, invitation?:Invitation) {

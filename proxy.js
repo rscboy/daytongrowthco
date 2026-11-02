@@ -24,6 +24,7 @@ const MD_BY_PATH = {
 export const config = {
   matcher: [
     '/',
+    '/projects/secret-projects',
     '/website-design',
     '/website-design/',
     '/local-seo',
@@ -54,6 +55,28 @@ function wantsMarkdown(accept) {
 export async function proxy(request) {
   const hostname = request.headers.get('host')?.split(':')[0].toLowerCase();
   const pathname = new URL(request.url).pathname;
+
+  if (hostname === 'recipes.daytongrowth.co' && pathname === '/') {
+    const url = new URL(request.url); url.pathname = '/book';
+    const response = NextResponse.redirect(url);
+    response.headers.set('Cache-Control', 'private, no-store');
+    return response;
+  }
+
+  if (hostname === 'secret.daytongrowth.co') {
+    const url = new URL(request.url);
+    if (pathname === '/projects/secret-projects') {
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
+    if (pathname === '/') {
+      url.pathname = '/projects/secret-projects';
+      const response = NextResponse.rewrite(url);
+      response.headers.set('Cache-Control', 'private, no-store');
+      response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+      return response;
+    }
+  }
 
   // The bookings subdomain is reserved for active funnels. Keep the main
   // marketing site on the primary domain while sending a bare bookings visit

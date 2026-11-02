@@ -1,6 +1,6 @@
 # Browser review links
 
-Review page: `https://www.daytongrowth.co/recipe-book/manage.html`.
+Review page: `https://recipes.daytongrowth.co/recipe-book/manage.html`.
 
 Prepare one version-2 JSON change as documented in recipe-schema.md. Serialize UTF-8 JSON, encode URL-safe base64 without padding, and append `#change=<encoded>` to the review page. The fragment stays out of the initial server request. Anyone possessing the review link can read its prepared content, so include recipe content only. Never embed credentials or binary photos.
 
@@ -13,7 +13,7 @@ if len(raw) > 24000:
     raise ValueError("Use the browser paste option without truncating the recipe")
 encoded = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
 assert json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4))) == payload
-print("https://www.daytongrowth.co/recipe-book/manage.html#change=" + encoded)
+print("https://recipes.daytongrowth.co/recipe-book/manage.html#change=" + encoded)
 ```
 
 Maximum payload: 24,000 UTF-8 bytes. If too large or no encoder is available, return the full JSON in a copyable code block and link to the review page. The person expands **Have a prepared change from your assistant?**, pastes it, and chooses **Review prepared change**. Do not send downloads or ask them to run commands.

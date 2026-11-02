@@ -19,7 +19,7 @@ Every draft has `version: 2` and `action`. Existing recipes are identified by `r
     "steps":[{"title":"Roast","text":"Roast at 425°F until deeply golden."}],
     "note":"Preserve the supplied source attribution and contributor notes here."
   },
-  "image":{"url":"https://www.daytongrowth.co/recipe-book/all-recipes-family.jpg"}
+  "image":{"url":"https://recipes.daytongrowth.co/recipe-book/all-recipes-family.jpg"}
 }
 ```
 

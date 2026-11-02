@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const API='/api/caruso-recipe-book';
-let book=null, draft=null, prepared=null, selected=null, tabName=new URLSearchParams(location.search).get('tab')==='invite'?'invite':'recipes', busy=false, inviteId=null, invitation=null, photoBusy=false, inviteEmailRequest=null;
+let book=null, draft=null, prepared=null, selected=null, tabName=['invite','account'].includes(new URLSearchParams(location.search).get('tab'))?new URLSearchParams(location.search).get('tab'):'recipes', busy=false, inviteId=null, invitation=null, photoBusy=false, inviteEmailRequest=null, accountInfo=null, accountRequest=null;
 const fallbackPhoto='https://www.daytongrowth.co/recipe-book/all-recipes-family.jpg';
 function status(message='',error=false){$('status').textContent=message;$('status').className=error?'error':'';}
 function node(parent,tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;parent.append(n);return n;}
@@ -14,13 +14,14 @@ async function run(fn){if(busy||photoBusy)return;busy=true;document.querySelecto
 function owner(id){return book.profiles.find(p=>p.id===id)||{id,name:id,initials:id.slice(0,2)};}
 function panels(){for(const id of ['editor','review','success'])$(id).hidden=true;}
 async function load(){
- book=await api('/manage');$('sign-in').hidden=!!book.actor;$('workspace').hidden=!book.actor;
+ book=await api('/manage');$('sign-in').hidden=!!book.actor||!!invitation;$('workspace').hidden=!book.actor;
  if(!book.actor)return;
  $('identity').textContent=book.actor.name+' · '+(book.actor.role==='editor'?'Family editor':'Your collection');$('invite-tab').hidden=book.actor.role!=='editor';
  if(!book.profiles.some(p=>p.id===book.actor.ownerId))book.profiles.push({id:book.actor.ownerId,name:book.actor.name,initials:book.actor.name.slice(0,2)});
  const previousInviteOwner=$('invite-owner').value;
  $('invite-owner').replaceChildren();node($('invite-owner'),'option','Create their collection').value='new';for(const p of book.profiles)node($('invite-owner'),'option',p.name+"'s collection").value=p.id;
  if(Array.from($('invite-owner').options).some(o=>o.value===previousInviteOwner))$('invite-owner').value=previousInviteOwner;
+ if(tabName==='account')await loadAccount();
  render();
 }
 function render(){
@@ -28,6 +29,7 @@ function render(){
  if(tabName==='invite'&&book.actor.role!=='editor')tabName='recipes';
  const detailVisible=!$('editor').hidden||!$('review').hidden||!$('success').hidden;
  $('recipes-panel').hidden=detailVisible||!['recipes','trash'].includes(tabName);$('history-panel').hidden=detailVisible||tabName!=='history';$('invite-panel').hidden=detailVisible||tabName!=='invite';
+ $('account-panel').hidden=detailVisible||tabName!=='account';
  $('new-recipe').hidden=tabName==='trash';$('undo').hidden=tabName==='trash';
  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tabName)));
  const normalize=s=>s.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();const terms=normalize($('search').value).split(' ').filter(Boolean).filter(t=>t!=='s');const list=$('recipe-list');list.replaceChildren();
@@ -40,7 +42,7 @@ function render(){
  }
  if(!records.length)node(list,'p',tabName==='trash'?'No matching recipes in trash.':'No recipes match. Try another name or ingredient.');
  $('selection-help').textContent=draft?'Select the exact recipe for this '+draft.action+'. Nothing is saved until you approve the review.':(tabName==='trash'?'Deleted recipes stay here until you restore them.':'Contributors manage their collection. Family editors can manage the whole book.');
- $('invite-directory').hidden=detailVisible||tabName!=='invite';const directory=$('invitation-list');directory.replaceChildren();for(const invite of book.invitations||[]){const c=node(directory,'article',undefined,'history-item');node(c,'h3',invite.name);node(c,'p',(invite.role==='editor'?'Family editor':'Their collection')+' · '+(invite.revoked?'Revoked':invite.expires<Date.now()?'Expired':'Expires '+new Date(invite.expires).toLocaleDateString()));if(!invite.revoked)button(c,'Revoke access',async()=>{await api('/invite',{id:invite.id},'DELETE');await load();status('Access revoked.');},'danger');}
+ $('invite-directory').hidden=detailVisible||tabName!=='invite';const directory=$('invitation-list');directory.replaceChildren();for(const invite of book.invitations||[]){const c=node(directory,'article',undefined,'history-item');node(c,'h3',invite.name);node(c,'p',(invite.role==='editor'?'Family editor':'Their collection')+' · '+(invite.revoked?'Revoked':invite.expires<Date.now()?'Private link expired':'Private link expires '+new Date(invite.expires).toLocaleDateString()));if(!invite.revoked)button(c,'Revoke access',async()=>{await api('/invite',{id:invite.id},'DELETE');await load();status('Access revoked.');},'danger');}
  const history=$('history-list');history.replaceChildren();
  for(const h of [...book.history].reverse()){
   const c=node(history,'article',undefined,'history-item');node(c,'h3',h.after.recipe.title+' '+h.after.recipe.subtitle);node(c,'p',h.action+' · '+h.actorName+' · '+new Date(h.at).toLocaleString(),'muted');
@@ -112,7 +114,7 @@ function validateLink(v){
 }
 function decode(hash){
  const params=new URLSearchParams(hash.slice(1));invitation=params.get('invite');
- if(invitation){if(!/^[a-f0-9]{32}\.[A-Za-z0-9_-]{43}$/.test(invitation))throw Error('This invitation is invalid.');history.replaceState(null,'',location.pathname);return null;}
+ if(invitation){if(!/^[a-f0-9]{32}\.[A-Za-z0-9_-]{43}$/.test(invitation))throw Error('This invitation is invalid.');return null;}
  const encoded=params.get('change')||params.get('recipe');if(!encoded)return null;
  if(encoded.length>32004||!/^[A-Za-z0-9_-]+$/.test(encoded))throw Error('The link is invalid or too long. Use the paste option.');
  const bytes=Uint8Array.from(atob(encoded.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));if(bytes.length>24000)throw Error('Use the paste option for this change.');
@@ -126,10 +128,10 @@ async function openDraft(value){
  if(draft.recipeId){const r=book.records.find(r=>r.recipe.id===draft.recipeId);if(r)return selectRecipe(r);status('That recipe was not found. Select a matching recipe below.',true);}
 }
 $('login').addEventListener('submit',e=>{e.preventDefault();run(async()=>{try{await api('/session',{password:$('password').value});await load();if(draft)await openDraft(draft);}finally{$('password').value='';}});});
-$('accept-invite').addEventListener('click',()=>run(async()=>{await api('/session',{invitation});invitation=null;$('invitation').hidden=true;await load();if(draft)await openDraft(draft);}));
+$('accept-invite').addEventListener('click',()=>run(async()=>{await api('/session',{invitation});history.replaceState(null,'',location.pathname+location.search);invitation=null;$('invitation').hidden=true;tabName='account';await load();if(draft){status('Your prepared change is waiting. Set your password first, or continue with your private link.');button($('account-message'),'Continue to my prepared change',()=>openDraft(draft));}}));
 $('sign-out').addEventListener('click',()=>run(async()=>{await api('/session',undefined,'DELETE');location.reload();}));
 $('search').addEventListener('input',render);
-for(const b of document.querySelectorAll('[data-tab]'))b.addEventListener('click',()=>{draft=null;prepared=null;panels();tabName=b.dataset.tab;$('search').value='';render();});
+for(const b of document.querySelectorAll('[data-tab]'))b.addEventListener('click',()=>{draft=null;prepared=null;panels();tabName=b.dataset.tab;$('search').value='';render();if(tabName==='account')run(loadAccount);});
 $('new-recipe').addEventListener('click',()=>{draft=null;showEditor({action:'add'},{image:fallbackPhoto,color:'gold',owner:book.actor.ownerId});});
 $('cancel-edit').addEventListener('click',()=>{panels();editing=null;render();});
 $('recipe-form').addEventListener('submit',e=>{e.preventDefault();run(()=>review(readEditor()));});
@@ -144,7 +146,7 @@ $('approve').addEventListener('click',()=>run(async()=>{
 }));
 $('continue').addEventListener('click',()=>{panels();tabName='recipes';render();});
 $('load-draft').addEventListener('click',()=>run(async()=>{const raw=$('draft-json').value;if(new TextEncoder().encode(raw).length>24000)throw Error('Keep the prepared change under 24 KB.');await openDraft(JSON.parse(raw));$('paste-option').open=false;}));
-$('invite-role').addEventListener('change',()=>{$('invite-permissions').textContent=$('invite-role').value==='editor'?'A family editor can change every recipe and create or revoke invitations. Access expires after 30 days.':'They can manage recipes in the selected collection. Access expires after 30 days.';});
+$('invite-role').addEventListener('change',()=>{$('invite-permissions').textContent=$('invite-role').value==='editor'?'A family editor can change every recipe and create or revoke invitations. Private links expire after 30 days. Account access continues until revoked.':'They can manage recipes in the selected collection. Private links expire after 30 days. Account access continues until revoked.';});
 async function sendInvitationEmail(body){
  status('Creating the invitation and sending the email…');
  const result=await api('/invite',body);inviteId=result.id;$('invitation-url').value=result.url;$('invite-result').hidden=false;
@@ -173,3 +175,22 @@ window.addEventListener('hashchange',()=>run(async()=>{
  if(next)await openDraft(next);
 }));
 (async()=>{try{draft=decode(location.hash);$('invitation').hidden=!invitation;await load();if(draft)await openDraft(draft);}catch(e){status(e.message,true);}})();
+
+async function loadAccount(){
+ accountInfo=await api('/account');$('account-email').value=accountInfo.email||'';$('account-name').value=accountInfo.name||'';
+ $('account-email').readOnly=!!accountInfo.email;$('account-name').readOnly=accountInfo.hasPassword;
+ $('current-password-field').hidden=!accountInfo.hasPassword;$('current-password').required=accountInfo.hasPassword;
+ $('account-title').textContent=accountInfo.hasPassword?'Your account.':'Set your password.';
+ $('account-help').textContent=accountInfo.hasPassword?'You can sign in with your email and password. Use this form if you want to change your password.':'Choose a password for future visits. If this email already has an account, enter its existing password to connect this invitation. You can also continue with your private link.';
+ $('save-account').textContent=accountInfo.hasPassword?'Change my password':'Save my password';$('account-continue').textContent=accountInfo.hasPassword?'Recipe home':'Skip password setup and open the book';
+}
+$('account-login').addEventListener('submit',e=>{e.preventDefault();run(async()=>{try{await api('/session',{email:$('login-email').value,password:$('login-password').value});await load();if(draft)await openDraft(draft);}finally{$('login-password').value='';}});});
+$('account-form').addEventListener('submit',e=>{e.preventDefault();run(async()=>{
+ try{
+  if($('new-password').value!==$('confirm-password').value)throw Error('The passwords do not match.');
+  accountRequest??={requestId:crypto.randomUUID(),createdAt:new Date().toISOString()};
+  await api('/account',{action:accountInfo?.hasPassword?'password':'register',email:$('account-email').value,name:$('account-name').value,password:$('new-password').value,currentPassword:$('current-password').value,...accountRequest});
+  await loadAccount();$('account-message').textContent='Password saved. Bookmark recipes.daytongrowth.co. Next time, choose Sign in and use your email and password.';status('Your password is saved.');
+  if(draft)await openDraft(draft);
+ }finally{for(const id of ['new-password','confirm-password','current-password'])$(id).value='';}
+});});
