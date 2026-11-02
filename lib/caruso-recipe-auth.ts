@@ -6,7 +6,7 @@ import { RecipeError, type Actor } from './caruso-recipe-management';
 
 export const recipeCookie = 'caruso_recipe_contributor';
 type Session = { actor:Actor; expires:number; inviteId?:string; tokenHash?:string };
-export type Invitation = { id:string; actor:Actor; tokenHash:string; expires:number; revoked:boolean; createdAt:string };
+export type Invitation = { id:string; actor:Actor; tokenHash:string; expires:number; revoked:boolean; createdAt:string; requestFingerprint?:string; recipientEmail?:string };
 function secret() {
   const s = process.env.CARUSO_RECIPE_SESSION_SECRET || process.env.SECRET_PROJECTS_SESSION_SECRET;
   if (!s) throw new RecipeError('Contributor sign-in is not configured.',503);
@@ -22,6 +22,7 @@ export function readSigned<T>(value:string): T | null {
   try { return JSON.parse(Buffer.from(p,'base64url').toString('utf8')); } catch { return null; }
 }
 const inviteKey = (id:string) => `caruso-recipe-invite-${id}`;
+const revokedKey = (id:string) => `caruso-recipe-invite-revoked-${id}`;
 export async function currentActor(): Promise<Actor | null> {
   const c=await cookies();
   if (hasSecretProjectsSession(c.get(secretProjectsCookie)?.value)) return {id:'family-admin',name:'Family editor',role:'editor',ownerId:'sammy'};
@@ -31,7 +32,7 @@ export async function currentActor(): Promise<Actor | null> {
   if (!session || session.expires<=Date.now() || !session.actor) return null;
   if (session.inviteId) {
     const record=await readInternalProjectStorage<Invitation>(inviteKey(session.inviteId));
-    if (!record || record.revoked || record.expires<=Date.now() || record.tokenHash!==session.tokenHash) return null;
+    if (!record || record.revoked || record.expires<=Date.now() || record.tokenHash!==session.tokenHash || await readInternalProjectStorage(revokedKey(record.id))) return null;
     return record.actor;
   }
   return session.actor;
@@ -45,24 +46,42 @@ export async function setRecipeSession(actor:Actor, invitation?:Invitation) {
 export function familyPasswordMatches(value:unknown) {
   return typeof value==='string' && Boolean(process.env.CARUSO_RECIPE_ADD_TOKEN) && safeEqual(value,process.env.CARUSO_RECIPE_ADD_TOKEN!);
 }
-export async function createInvitation(actor:Actor, days=30) {
-  const id=randomBytes(16).toString('hex'), token=randomBytes(32).toString('base64url');
-  const record:Invitation={id,actor:{...actor,id:`invite-${id}`},tokenHash:digest(token),expires:Date.now()+days*86400000,revoked:false,createdAt:new Date().toISOString()};
+export async function createInvitation(actor:Actor, days=30, request?:{id:string;createdAt:string;email?:string}) {
+  if(request && (!/^[a-f0-9-]{36}$/i.test(request.id) || !Number.isFinite(Date.parse(request.createdAt))))throw new RecipeError('Please start a fresh invitation.');
+  const id=request?digest(`caruso-invitation-request:${request.id}`).slice(0,32):randomBytes(16).toString('hex');
+  const token=createHmac('sha256',secret()).update(`caruso-invitation-token:${id}`).digest('base64url');
+  const fingerprint=digest(JSON.stringify({name:actor.name,role:actor.role,ownerId:actor.ownerId,email:request?.email??'',createdAt:request?.createdAt??''}));
+  if(request){const existing=await readInternalProjectStorage<Invitation>(inviteKey(id));if(existing){
+    if(existing.requestFingerprint!==fingerprint)throw new RecipeError('This invitation request changed. Start a new invitation.',409);
+    if(existing.revoked || existing.expires<=Date.now() || await readInternalProjectStorage(revokedKey(id)))throw new RecipeError('This invitation was revoked or expired. Start a new invitation.',409);
+    if(existing.tokenHash!==digest(token))throw new RecipeError('This invitation can no longer be retried. Start a new one.',409);
+    return {record:existing,token:`${id}.${token}`};
+  }}
+  const createdAt=request?.createdAt??new Date().toISOString();
+  if(Math.abs(Date.now()-Date.parse(createdAt))>5*60000)throw new RecipeError('Please start a fresh invitation.');
+  const record:Invitation={id,actor:{...actor,id:`invite-${id}`},tokenHash:digest(token),expires:Date.parse(createdAt)+days*86400000,revoked:false,createdAt,...(request?{requestFingerprint:fingerprint}:{}),...(request?.email?{recipientEmail:request.email}:{})};
   const saved=await writeInternalProjectStorage(inviteKey(id),record);
   if(JSON.stringify(saved)!==JSON.stringify(record))throw new RecipeError('Invitation storage did not confirm the invitation.',503);
   return {record,token:`${id}.${token}`};
 }
+export async function recordInvitationEmail(record:Invitation, messageId:string) {
+  const next={id:record.id,messageId,sentAt:new Date().toISOString()};const saved=await writeInternalProjectStorage(`caruso-recipe-invite-email-${record.id}`,next);
+  if(JSON.stringify(saved)!==JSON.stringify(next))throw new RecipeError('Email confirmation could not be saved.',503);
+}
+export async function invitationEmailReceipt(id:string){return readInternalProjectStorage<{messageId:string}>(`caruso-recipe-invite-email-${id}`);}
 export async function acceptInvitation(token:unknown) {
   if(typeof token!=='string'||!/^([a-f0-9]{32})\.([A-Za-z0-9_-]{43})$/.test(token))throw new RecipeError('This invitation is invalid.',401);
   const [id,key]=token.split('.');
   const record=await readInternalProjectStorage<Invitation>(inviteKey(id));
-  if(!record||record.revoked||record.expires<=Date.now()||!safeEqual(record.tokenHash,digest(key)))throw new RecipeError('This invitation has expired or was revoked. Ask a family editor for a new one.',401);
+  if(!record||record.revoked||record.expires<=Date.now()||!safeEqual(record.tokenHash,digest(key))||await readInternalProjectStorage(revokedKey(id)))throw new RecipeError('This invitation has expired or was revoked. Ask a family editor for a new one.',401);
   await setRecipeSession(record.actor,record);return record.actor;
 }
 export async function revokeInvitation(id:string) {
   if(!/^[a-f0-9]{32}$/.test(id))throw new RecipeError('Invalid invitation.');
   const record=await readInternalProjectStorage<Invitation>(inviteKey(id));
   if(!record)throw new RecipeError('Invitation not found.',404);
+  const tombstone={id,revoked:true};const confirmed=await writeInternalProjectStorage(revokedKey(id),tombstone);
+  if(JSON.stringify(confirmed)!==JSON.stringify(tombstone))throw new RecipeError('Invitation revocation was not confirmed.',503);
   const next={...record,revoked:true};const saved=await writeInternalProjectStorage(inviteKey(id),next);
   if(JSON.stringify(saved)!==JSON.stringify(next))throw new RecipeError('Invitation revocation was not confirmed.',503);
 }
