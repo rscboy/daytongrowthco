@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../../public/recipe-book/manage.js',import.meta.url),'utf8');
 function form(recipe,intent){
  const fields=new Map();const element=id=>{if(!fields.has(id))fields.set(id,{value:'',addEventListener(){}});return fields.get(id);};
- const context=vm.createContext({document:{getElementById:element,querySelectorAll:()=>[]},window:{addEventListener(){}},crypto:{randomUUID:()=> 'test-unique'},fixtureRecipe:recipe,fixtureIntent:intent});
+ const context=vm.createContext({document:{getElementById:element,querySelectorAll:()=>[]},window:{addEventListener(){}},location:{search:''},URLSearchParams,crypto:{randomUUID:()=> 'test-unique'},fixtureRecipe:recipe,fixtureIntent:intent});
  vm.runInContext(source.slice(0,source.lastIndexOf('(async()=>{try{draft=decode')),context);
  for(const [key,id] of [['title','recipe-title'],['subtitle','subtitle'],['description','description'],['prep','prep'],['cook','cook'],['total','total'],['yield','yield'],['note','note'],['image','photo-url']])element(id).value=recipe[key];
  element('tags').value=recipe.tags.join(', ');element('ingredients').value=recipe.ingredients.map(g=>'['+g.category+']\n'+g.items.join('\n')).join('\n\n');element('steps').value=recipe.steps.map(s=>s.title+'\n'+s.text).join('\n\n');element('collection').value=recipe.owner;
