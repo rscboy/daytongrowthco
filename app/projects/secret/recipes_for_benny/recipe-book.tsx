@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Bookmark, Check, ChevronDown, ChevronRight, Clock3, Copy, Heart, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, ChevronDown, ChevronRight, Clock3, Copy, Heart, Menu, Minus, Plus, Printer, Search, Share2, Sparkles, X } from "lucide-react";
 import "./recipes.css";
 import { parseRecipeAdditions, type RecipeAdditions } from "@/lib/caruso-recipe-additions";
 
@@ -228,6 +228,24 @@ export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:Rec
   const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [addGuideOpen, setAddGuideOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
+  const mobileNavToggleRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    mobileNavRef.current?.querySelector<HTMLAnchorElement>('a')?.focus();
+    const dismiss = (event: PointerEvent) => {
+      if (event.target instanceof Node && !mobileNavRef.current?.contains(event.target)) setMobileNavOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setMobileNavOpen(false); mobileNavToggleRef.current?.focus(); }
+    };
+    const resize = () => setMobileNavOpen(false);
+    document.addEventListener('pointerdown', dismiss);
+    document.addEventListener('keydown', escape);
+    window.addEventListener('resize', resize);
+    return () => { document.removeEventListener('pointerdown', dismiss); document.removeEventListener('keydown', escape); window.removeEventListener('resize', resize); };
+  }, [mobileNavOpen]);
   const [copiedGuide, setCopiedGuide] = useState<"run" | "">("");
   const [portions, setPortions] = useState<Record<string, number>>({});
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -435,11 +453,14 @@ export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:Rec
     {additionsError && <aside role="status">{additionsError} <button type="button" onClick={() => {setAdditionsError("");setLoadAttempt(n => n + 1);}}>Try again</button></aside>}<header className="benny-header">
       <a className="benny-brand" href="/book" aria-label="Caruso Recipe Book home"><span className="benny-wordmark"><b>Caruso</b><em>Recipes</em></span><span>Your family recipe book</span></a>
       <div className="benny-title"><p>Private recipe book</p><h1>{activeProfile.label}</h1></div>
-      <nav className="benny-header-actions" aria-label="Recipe book navigation">
-        <a className="benny-add-trigger" href="/recipe-book/manage.html?tab=account" aria-label="My account or sign in">Account</a><a className="benny-add-trigger" href="/recipe-book/manage.html" aria-label="Manage recipes"><span className="benny-nav-full">Manage recipes</span><span className="benny-nav-short">Manage</span></a>
-        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => setAddGuideOpen(true)}>Use AI</button>
-        <button aria-label={`Saved recipes, ${saved.length} saved`} className={`benny-saved ${saved.length ? "has-saved" : ""} ${showSaved ? "is-active" : ""}`} onClick={() => setShowSaved((value) => !value)} aria-pressed={showSaved}><Heart size={15} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
-      </nav>
+      <div className="benny-header-actions" ref={mobileNavRef} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMobileNavOpen(false); }}>
+        <nav id="benny-utility-navigation" className={`benny-utility-links ${mobileNavOpen ? "is-open" : ""}`} aria-label="Recipe book navigation">
+        <a className="benny-add-trigger" href="/recipe-book/manage.html?tab=account" aria-label="My account or sign in">Account</a><a className="benny-add-trigger" href="/recipe-book/manage.html" aria-label="Manage recipes">Manage recipes</a>
+        <button className="benny-add-trigger" type="button" aria-haspopup="dialog" onClick={() => { setMobileNavOpen(false); setAddGuideOpen(true); }}>Use AI</button>
+        </nav>
+        <button aria-label={`Saved recipes, ${saved.length} saved`} className={`benny-saved ${saved.length ? "has-saved" : ""} ${showSaved ? "is-active" : ""}`} onClick={() => { setMobileNavOpen(false); setShowSaved((value) => !value); }} aria-pressed={showSaved}><Heart size={18} fill={saved.length ? "currentColor" : "none"} /><span>Saved</span><b>{saved.length}</b></button>
+        <button className="benny-mobile-menu-toggle" ref={mobileNavToggleRef} type="button" aria-label="Recipe book menu" aria-expanded={mobileNavOpen} aria-controls="benny-utility-navigation" onClick={() => setMobileNavOpen(value => !value)}>{mobileNavOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}</button>
+      </div>
     </header>
 
     {addGuideOpen && <div className="benny-add-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddGuideOpen(false); }}>
@@ -459,7 +480,7 @@ export function BennyRecipeBook({initialBook,initialError=""}: {initialBook?:Rec
           </li>
           <li><span aria-hidden="true">2</span><div><h3>Open your review link</h3><p>Sign in with your email and password, or open your private invitation. Check the exact change and approve it. Deleted recipes can be restored from Trash.</p></div></li>
         </ol>
-        <p>Bookmark <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a> to come back easily. Use ⌘D on Mac, Ctrl+D on Windows, or your phone’s Share menu.</p><div className="benny-add-simple-footer"><a href="/recipe-book/manage.html">Manage recipes and invitations</a><a href={RECIPE_SKILL_SOURCE_URL} target="_blank" rel="noreferrer">Get the skill</a></div>
+        <p className="benny-bookmark-guide">Bookmark <a href="https://recipes.daytongrowth.co">recipes.daytongrowth.co</a> to come back easily. Use ⌘D on Mac, Ctrl+D on Windows, or your phone’s Share menu.</p><div className="benny-add-simple-footer"><a href="/recipe-book/manage.html">Manage recipes and invitations</a><a href={RECIPE_SKILL_SOURCE_URL} target="_blank" rel="noreferrer">Get the skill</a></div>
       </section>
     </div>}
 
