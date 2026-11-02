@@ -4,7 +4,7 @@ Run the deterministic behavior and storage tests with Node 22.7 or newer:
 
 ```sh
 node --experimental-transform-types --test tests/caruso/management.test.mjs
-node --test tests/caruso/storage.test.mjs
+node --test tests/caruso/storage.test.mjs tests/caruso/browser-drafts.test.mjs
 ```
 
 For the real Next.js route and browser workflow, start a fresh isolated test server:
