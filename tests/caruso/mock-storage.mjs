@@ -6,6 +6,7 @@ const original=globalThis.fetch;
 const additions=JSON.parse(fs.readFileSync(process.env.CARUSO_TEST_FIXTURE || new URL('./fixtures/live-additions.json',import.meta.url),'utf8'));
 const key='data/caruso-recipe-additions.json';
 let cursor=0,head='test-initial-head';const commits=new Map([[head,{files:{[key]:JSON.stringify(additions)},parent:null}]]);const trees=new Map();const invites=new Map();
+const mailCalls=new Map();
 const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
 const id=()=>crypto.createHash('sha1').update(String(++cursor)).digest('hex');
 globalThis.fetch=async(input,init={})=>{
@@ -26,6 +27,12 @@ globalThis.fetch=async(input,init={})=>{
   if(p==='/git/commits'&&method==='POST'){const sha=id();commits.set(sha,{files:trees.get(body.tree),parent:body.parents[0]});return reply({sha},201);}
   if(p==='/git/refs/heads/recipe-workflow-test'&&method==='PATCH'){if(commits.get(body.sha)?.parent!==head)return reply({message:'not fast forward'},422);head=body.sha;return reply({object:{sha:head}});}
   return reply({message:'Unexpected test storage request '+p},500);
+ }
+ if(u.hostname==='recipe-test-email.invalid'){
+  if(method==='GET')return reply({ok:true,ready:true});
+  const attempts=(mailCalls.get(body.id)||0)+1;mailCalls.set(body.id,attempts);
+  if(body.email==='retry@example.test'&&attempts===1)return reply({ok:false},502);
+  return reply({ok:true,messageId:'test-mail-'+body.id+'-attempt-'+attempts});
  }
  if(u.hostname==='recipe-test-storage.invalid'){
   const k=decodeURIComponent(u.pathname.split('/').at(-1));if(method==='GET')return invites.has(k)?reply({value:invites.get(k)}):reply({},404);
