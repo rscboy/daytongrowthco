@@ -1,37 +1,23 @@
 # Browser review links
 
-The assistant prepares the recipe offline. The contributor's normal browser calls the existing password-protected, add-only service. No workspace network access, MCP installation, network-setting change, or restart is required. The browser must still reach the website and the contributor must have the correct family password.
+Review page: `https://www.daytongrowth.co/recipe-book/manage.html`.
 
-## Prepare the link
+Prepare one version-2 JSON change as documented in recipe-schema.md. Serialize UTF-8 JSON, encode URL-safe base64 without padding, and append `#change=<encoded>` to the review page. The fragment stays out of the initial server request. Anyone possessing the review link can read its prepared content, so include recipe content only. Never embed credentials or binary photos.
 
-Review page: `https://www.daytongrowth.co/recipe-book/add.html`
-
-Prepare the schema's JSON object with `owner`, `recipe`, and `image`. Include `owner.name` for every person, including original people. Optionally include `version: 1`. Choose a unique recipe slug. The link supports only `image: {"url":"https://..."}`. Without a supplied HTTPS dish photo, use `https://www.daytongrowth.co/recipe-book/all-recipes-family.jpg` and call it the family-book placeholder. The contributor can replace it with a JPG, PNG, or WebP on the review page; the browser resizes the photo automatically.
-
-Encode the complete JSON as UTF-8, then URL-safe base64 without `=` padding. Append `#recipe=<encoded>` to the review page. Use a fragment, never query parameters. The fragment is read in the browser and is not included in the page request to the server. The page has no analytics or third-party scripts. Anyone with the link can read the prepared recipe: include only recipe content the contributor intends to share. Never include passwords or tokens.
-
-Use an available runtime's standard library. Example, with a local recipe JSON prepared by the assistant:
+Generate and verify offline with an available standard library, for example:
 
 ```python
 import base64, json
-from pathlib import Path
-payload = json.loads(Path("recipe-draft.json").read_text(encoding="utf-8"))
 raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 if len(raw) > 24000:
-    raise ValueError("Use the browser paste option for this recipe.")
+    raise ValueError("Use the browser paste option without truncating the recipe")
 encoded = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
 assert json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4))) == payload
-print("https://www.daytongrowth.co/recipe-book/add.html#recipe=" + encoded)
+print("https://www.daytongrowth.co/recipe-book/manage.html#change=" + encoded)
 ```
 
-The assistant writes and inspects this code itself; it is not a downloaded setup script. Do not send the local file to the contributor. Maximum unencoded payload: 24,000 UTF-8 bytes. Never silently remove quantities, steps, temperatures, or notes to shorten a recipe.
+Maximum payload: 24,000 UTF-8 bytes. If too large or no encoder is available, return the full JSON in a copyable code block and link to the review page. The person expands **Have a prepared change from your assistant?**, pastes it, and chooses **Review prepared change**. Do not send downloads or ask them to run commands.
 
-## If a link cannot be produced
+A person signs in on the website or accepts their private invitation. A name search displays matching recipes; they choose the exact one. Edit drafts merge only supplied fields with the saved recipe. The review shows full before/after recipes, destination collection, and whether the recipe will enter or leave Trash. Nothing changes until they click the approval button. If they change the proposal or a duplicate choice, the website prepares a fresh review. Stale approvals require another review. Repeating the same approval does not apply the change twice.
 
-Return the complete prepared JSON in a copyable code block and link to https://www.daytongrowth.co/recipe-book/add.html. Tell the contributor to expand **Have a prepared recipe instead of a link?**, paste it, and click **Review recipe**. Then they enter the password and click **Add this recipe**. This is copy-and-paste, never a download or command file.
-
-## Publication
-
-The browser validates the draft and renders the ingredients, steps, and notes as text. It makes no publishing request until the contributor clicks **Add this recipe** with a password. It sends the recipe to `/api/caruso-recipe-book` with the password in the authorization header. It never stores the password or includes it in the link. Wrong passwords can be corrected without publishing. Success shows the saved-addition link. The book reads additions directly, without a website rebuild. Uncertain outcomes and duplicate IDs block automatic retries.
-
-Do not use the old direct-HTTP setup flow: it depends on sandbox network access, which this browser flow removes.
+Old `add.html#recipe=...` links continue to work and use the same managed store. Use version-2 links for new work.

@@ -1,10 +1,11 @@
 import { hasSecretProjectAccess } from "@/lib/secret-project-access";
+import { currentActor } from '@/lib/caruso-recipe-auth';
 
 export const runtime = "nodejs";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ filename: string }> }) {
   try {
-    if (!(await hasSecretProjectAccess("recipes_for_benny"))) return new Response("Recipe Book access required.", { status: 403 });
+    if (!(await currentActor()) && !(await hasSecretProjectAccess("recipes_for_benny"))) return new Response("Recipe Book access required.", { status: 403 });
     const { filename } = await params;
     if (!/^[a-z0-9-]+-[a-f0-9]{10}\.(?:jpg|png|webp)$/.test(filename) || filename.length > 110) return new Response("Photo not found.", { status: 404 });
     const token = process.env.CARUSO_RECIPE_GITHUB_TOKEN;

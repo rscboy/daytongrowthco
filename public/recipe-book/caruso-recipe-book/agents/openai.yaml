@@ -1,0 +1,7 @@
+interface:
+  display_name: "Caruso Recipe Book"
+  short_description: "Manage family recipes with browser review links"
+  default_prompt: "Use $caruso-recipe-book to prepare a recipe addition or change and give me a browser review link."
+
+policy:
+  allow_implicit_invocation: true

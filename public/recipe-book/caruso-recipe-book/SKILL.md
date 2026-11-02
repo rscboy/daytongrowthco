@@ -1,33 +1,30 @@
 ---
 name: caruso-recipe-book
-description: Prepare one family recipe and a browser review link for the Caruso Recipe Book. Works in Local or Cloud without contacting the recipe service; the contributor enters the password and approves on the website.
+description: Help anyone with a Caruso Recipe Book invitation add, find, edit, move, trash, restore, undo, or make a variation of family recipes through browser review links.
 ---
 
 # Caruso Recipe Book
 
-Use the same flow in **Local and Cloud**: interview the contributor, prepare a recipe, and give them a browser review link. Their normal browser handles the password and publication. **Do not check access to the recipe service or ask for the password in chat.** A blocked cloud workspace does not prevent preparing a link. Never ask the contributor to run commands, download a ZIP or setup script, install a connector, change network settings, or restart their assistant.
+Help the contributor manage the family book using their own AI assistant. Prepare changes in chat; the contributor signs in and approves them in their normal browser. The same flow works in Local and Cloud without connectors, repository access, deployment credentials, or workspace access to the recipe service.
 
-Read [references/recipe-schema.md](references/recipe-schema.md) and [references/browser-review.md](references/browser-review.md), resolving them relative to this skill. Source: https://github.com/rscboy/caruso-recipe-book; installable folder: `skills/caruso-recipe-book/`. Reading the instructions is enough to begin in this conversation. If asked to install permanently, use a trusted installer or copy the inspected Markdown to the local assistant's skill folder, preserving unrelated skills. Never claim a temporary cloud folder installs on their computer or account. Installation is optional for this workflow.
+Source and installable folder: https://github.com/rscboy/caruso-recipe-book/tree/main/skills/caruso-recipe-book. The website also publishes this folder at https://www.daytongrowth.co/recipe-book/caruso-recipe-book/SKILL.md. Read these instructions directly when installation is unavailable. Do not claim this installs a skill on someone else's computer.
 
-## Ask one question at a time
+## Choose the action
 
-Accept information already supplied and ask only for what is missing.
+Support add, edit (including rename and photo changes), move, delete, restore, revert an earlier version, undo the contributor's last change, and make a variation. Read [references/browser-review.md](references/browser-review.md) for link generation and [references/recipe-schema.md](references/recipe-schema.md) for payloads.
 
-1. **“Whose collection is this for?”** Offer Sammy, Sam G, Autumn, Addison, or somebody else. These are the original collections, not a freshly fetched list. Use IDs `sammy`, `sam-g`, `autumn`, `addison` for those people; derive a lowercase hyphenated ID for a new person. Always include the person's display name in `owner.name`.
-2. **“Share the recipe link or paste the recipe here.”** Read an accessible recipe URL. If it is blocked, ask for the text instead. The recipe website does not need to be reachable from this workspace.
-3. **“Any special notes or changes?”** “No” is a complete answer.
-4. **“Do you have a photo to use?”** Accept a public HTTPS image URL or “no.” For an attached photo, they can choose it on the review page. Never put binary image data in the link. Without an HTTPS image, use the family-book placeholder in the browser reference and identify it honestly.
+Use information already provided. Ask one missing question at a time. For additions, establish whose collection, the recipe link or pasted text, any changes or notes, and photo choice. Accept screenshots, handwritten recipes, and voice transcripts when available; flag unreadable amounts and missing temperatures instead of inventing them. Read accessible recipe URLs, or ask for text when blocked. Preserve quantities, instructions, attribution, and notes.
 
-Preserve ingredients, quantities, timing, temperatures, attribution, and notes. Do not invent missing safety-critical instructions. Use the payload schema and put source attribution and contributor notes in `recipe.note`.
+For edits, include only requested changes. A rename must not replace ingredients or cooking instructions. Do not require the existing full recipe from chat: the website loads it and merges the patch. For vague names, send a search intent using `query`; the contributor selects the exact recipe on the website. Never fabricate an existing recipe ID, assume the first match, or ask the assistant to fetch authenticated recipes.
 
-## Give a review link, never a download
+For a new recipe or variation, use a unique slug. A variation preserves its original recipe and source attribution; the website can copy the original before applying supplied changes. Without a photo, use the family-book placeholder and identify it honestly. The contributor can choose their photo on the review page.
 
-Show a short preview with the collection, title, notes, and photo choice. Generate the review link **offline**, exactly as described in the browser reference, using an available runtime's standard library. Verify it decodes to the exact recipe payload. Never include a password or access token in the link or recipe.
+## One review link per change
 
-Return a clickable Markdown link labeled **“Review and add your recipe”**. Say: **“Open the link, enter the family password, and click Add this recipe.”** They can choose their own photo there. The browser shows the full recipe before anything is added. Do not demand an extra yes in chat before preparing a link: their explicit **Add this recipe** click is the publishing approval.
+Generate a verified browser review link offline. Return a clickable link labeled **Review your recipe change**, plus one sentence describing the requested action. Say: **Open the link, sign in or accept your invitation, check the exact change, and approve it.** When a name is vague, mention that they will select the recipe first.
 
-The assistant must not call the add API or click the publishing button. Report only “ready to review” until the contributor reports success; generating a link does not save or publish a recipe. If the link is too large or no encoder is available, use the browser reference's copy-and-paste option, never a downloaded JSON file or a nonexistent uploader.
+Do not ask for a password, invitation token, session cookie, or private key in chat. Never include credentials in a review payload or link. Invitation links go directly to the person's browser; they do not belong in the AI conversation. A person without an invitation can ask a family editor to open **Manage recipes → Invite someone**. The skill itself grants no access.
 
-## Add-only boundary
+Contributors manage their assigned collection; family editors manage all recipes and invitations. The website enforces access, identifies duplicates, previews before/after, and checks for intervening edits. Deleted recipes go to Trash and remain restorable. Earlier versions remain in History. A duplicate warning requires an explicit choice to update the existing recipe or save a separate version.
 
-Prepare exactly one recipe per run. Never edit, replace, reorder, or delete existing recipes or people. Never request repository write access or deployment credentials, or use them as a fallback. If their normal browser cannot reach the review page, explain that exact limitation; do not promise a skill can overcome browser or account restrictions.
+The assistant prepares changes; it must not submit approval or publishing requests. Report **ready to review**, never saved, until the contributor reports success. If a connection fails after approval, the contributor can retry the same approval safely; do not create a fresh recipe ID to bypass an uncertain result. If the browser cannot reach the website, state that limitation without proposing network, deployment, or repository workarounds.
