@@ -66,6 +66,7 @@ function showEditor(intent,recipe){
  $('tags').value=(recipe.tags||[]).join(', ');$('photo-url').value=recipe.image||fallbackPhoto;$('photo').value='';$('photo-status').textContent='';
  $('ingredients').value=(recipe.ingredients||[]).map(g=>'['+g.category+']\n'+g.items.join('\n')).join('\n\n');
  $('steps').value=(recipe.steps||[]).map(s=>s.title+'\n'+s.text).join('\n\n');
+ editing.rawInputs=Object.fromEntries(['recipe-title','subtitle','description','prep','cook','total','yield','note','tags','ingredients','steps','photo-url'].map(id=>[id,$(id).value]));
  $('collection').disabled=!moving&&intent.action==='edit';render();$('editor').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function readEditor(){
@@ -74,6 +75,7 @@ function readEditor(){
  const ingredients=[];let group=null;for(const raw of $('ingredients').value.split('\n')){const line=raw.trim();if(!line)continue;if(/^\[.+\]$/.test(line)){group={category:line.slice(1,-1),items:[]};ingredients.push(group);}else{if(!group){group={category:'Ingredients',items:[]};ingredients.push(group);}group.items.push(line);}}
  const steps=$('steps').value.trim().split(/\n\s*\n/).map(s=>{const [title,...lines]=s.split('\n');return {title:title.trim(),text:lines.join('\n').trim()};});
  const changes={title:$('recipe-title').value.trim(),subtitle:$('subtitle').value.trim(),description:$('description').value.trim(),prep:$('prep').value.trim(),cook:$('cook').value.trim(),total:$('total').value.trim(),yield:$('yield').value.trim(),note:$('note').value.trim(),tags:$('tags').value.split(',').map(t=>t.trim()).filter(Boolean),ingredients,steps,image:$('photo-url').value.trim(),color:recipe.color||'gold'};
+ for(const [key,id] of [['title','recipe-title'],['subtitle','subtitle'],['description','description'],['prep','prep'],['cook','cook'],['total','total'],['yield','yield'],['note','note'],['tags','tags'],['ingredients','ingredients'],['steps','steps'],['image','photo-url']])if($(id).value===editing.rawInputs?.[id]&&recipe[key]!==undefined)changes[key]=recipe[key];
  const patch=intent.action==='edit'?Object.fromEntries(Object.entries(changes).filter(([k,v])=>JSON.stringify(v)!==JSON.stringify(editing.base?.[k]))):changes;
  const final={...intent};delete final.image;
  return intent.action==='edit'?{action:'edit',recipeId:intent.recipeId,expectedRevision:intent.expectedRevision,changes:patch}:{...final,owner:target,recipe:{...changes,id:recipe.id||makeId(changes.title)}};
@@ -149,5 +151,9 @@ $('photo').addEventListener('change',()=>run(async()=>{
  const bitmap=await createImageBitmap(file);const scale=Math.min(1,1600/Math.max(bitmap.width,bitmap.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(bitmap.width*scale));c.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(bitmap,0,0,c.width,c.height);bitmap.close();const base64=c.toDataURL('image/jpeg',.85).split(',')[1];if(base64.length*3/4>3000000)throw Error('Choose a smaller photo.');
  const result=await api('/manage',{mode:'photo',image:{base64,mimeType:'image/jpeg'}});$('photo-url').value=result.url;$('photo-status').textContent='Photo ready. Review the change before saving it.';
  }finally{photoBusy=false;}
+}));
+window.addEventListener('hashchange',()=>run(async()=>{
+ const next=decode(location.hash);$('invitation').hidden=!invitation;
+ if(next)await openDraft(next);
 }));
 (async()=>{try{draft=decode(location.hash);$('invitation').hidden=!invitation;await load();if(draft)await openDraft(draft);}catch(e){status(e.message,true);}})();
